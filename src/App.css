@@ -1,0 +1,17 @@
+.App {
+  text-align: left;
+}
+
+.App-logo {
+  height: 8vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: white;
+  min-height: 100vh;
+  align-items: left;
+  justify-content: center;
+  font-size: calc(18px + 2vmin);
+  color: black;
+}
