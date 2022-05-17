@@ -13,7 +13,8 @@ class App extends Component {
         measures: [],
         serverUrls: ['https://cloud.alphora.com/sandbox/r4/cqm/fhir/'],
         patients: [],
-        selectedServer: '',
+        selectedKnowledgeRepo: '',
+        selectedDataRepo: '',
         selectedMeasure: '',
         selectedPatient: '',
         startDate: '2019-01-01',
@@ -29,13 +30,15 @@ class App extends Component {
       };
 
       // Bind the functions used as callbacks so they have access to set state
-      this.fetchData = this.fetchData.bind(this);
+      this.fetchMeasures = this.fetchMeasures.bind(this);
+      this.fetchPatients = this.fetchPatients.bind(this);
       this.setMeasure = this.setMeasure.bind(this);
       this.setPatient = this.setPatient.bind(this);
       this.setStartDate = this.setStartDate.bind(this);
       this.setEndDate = this.setEndDate.bind(this);
       this.logResults = this.logResults.bind(this);
       this.evaluateMeasure = this.evaluateMeasure.bind(this);
+      this.getDataRequirements = this.getDataRequirements.bind(this);
       this.clearPopulationCounts = this.clearPopulationCounts.bind(this);
   }
 
@@ -43,13 +46,13 @@ class App extends Component {
     this.setState({ results: message });
   }
 
-  // Fetches the data from the selected server to populate the other options
+  // Fetches the measures from the selected knowledge repo to populate the dropdown
   // This is called by the selection of the server from the dropdown
-  fetchData(e) {
+  fetchMeasures(e) {
     let value = e.target.value;
 
     // Save the server selected
-    this.setState({ selectedServer: value });
+    this.setState({ selectedKnowledgeRepo: value });
 
     // Fetch all the Measures from the selected server
     fetch(value + 'Measure?_count=200')
@@ -68,6 +71,15 @@ class App extends Component {
         let message = 'Calling ' + value + 'Measure caused ' + error;
         this.setState({ results: message });
       });
+  }
+
+  // Fetches the data from the selected server to populate the other options
+  // This is called by the selection of the server from the dropdown
+  fetchPatients(e) {
+    let value = e.target.value;
+
+    // Save the server selected
+    this.setState({ selectedDataRepo: value });
 
     // Fetch all the Patients from the selected server
     fetch(value + 'Patient?_count=200')
@@ -86,7 +98,7 @@ class App extends Component {
         let message = 'Calling ' + value + 'Patient caused ' + error;
         this.setState({ results: message });
       });
-  }
+    }
 
   // Sets the selected Measure state
   setMeasure(e) {
@@ -126,8 +138,8 @@ class App extends Component {
   // This is called by the Evaluate Measure Button being clicked
   evaluateMeasure() {
     // Handle error conditions if they have not selected a server or measure
-    if (this.state.selectedServer === '') {
-        this.logResults('Please select a test server to use');
+    if (this.state.selectedDataRepo === '') {
+        this.logResults('Please select a Data Repository server to use');
         return;
     }
     if (this.state.selectedMeasure === '') {
@@ -142,11 +154,11 @@ class App extends Component {
     // Build the evaluate measure URL based on the options selected
     let Url = '';
     if (this.state.selectedPatient === '') {
-        Url = this.state.selectedServer + 'Measure/' + this.state.selectedMeasure +
+        Url = this.state.selectedDataRepo + 'Measure/' + this.state.selectedMeasure +
             '/$evaluate-measure?periodStart=' + this.state.startDate +
             '&periodEnd=' + this.state.endDate + '&reportType=subject-list';
     } else {
-        Url = this.state.selectedServer + 'Measure/' + this.state.selectedMeasure +
+        Url = this.state.selectedDataRepo + 'Measure/' + this.state.selectedMeasure +
             '/$evaluate-measure?subject=' + this.state.selectedPatient + '&periodStart=' +
             this.state.startDate + '&periodEnd=' + this.state.endDate;
     }
@@ -199,6 +211,44 @@ class App extends Component {
        });
   }
 
+  // Calls the FHIR data repository to get the data requirements for the selected measure
+  // with the given period
+  // This is called by the Get Data Requirements Button being clicked
+  getDataRequirements() {
+    // Handle error conditions if they have not selected a server or measure
+    if (this.state.selectedKnowledgeRepo === '') {
+        this.logResults('Please select a Knowledge Repository server to use');
+        return;
+    }
+    if (this.state.selectedMeasure === '') {
+        this.logResults('Please select a Measure to get data requirements for');
+        return;
+    }
+
+    // Set loading to true for spinner
+    this.setState({ loading: true });
+
+    // Build the evaluate measure URL based on the options selected
+    let Url = this.state.selectedKnowledgeRepo + 'Measure/' + this.state.selectedMeasure +
+        '/$data-requirements?&periodStart=' + this.state.startDate + '&periodEnd=' + this.state.endDate;
+
+    // Call the FHIR server to evaluate the measure
+    fetch(Url)
+       .then((response) => {
+          if(!response.ok) throw new Error(response.status);
+            else return response.json();
+          })
+       .then((data) => {
+         this.setState({ results: JSON.stringify(data, undefined, 2) });
+         this.setState({ loading: false });
+       })
+       .catch((error) => {
+         var message = 'Calling ' + Url + ' caused ' + error;
+         this.setState({ results: message });
+         this.setState({ loading: false });
+       });
+  }
+
   // Render method renders the user interface with the given state
   // This is using Bootstrap to make a clean responsive UI
   render() {
@@ -208,49 +258,94 @@ class App extends Component {
               <img class="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72"/>
               <h2>eCQM Testing Tool</h2>
             </div>
-            <div class="row">
-                <div class="col-md-6 order-md-1">
-                  <label for="server">Test Server</label>
-                  <select class="custom-select d-block w-100" id="server" onChange={this.fetchData} required>
-                    <option value="">Select a Test Server...</option>
-                    {this.state.serverUrls.map((server) => (
-                        <option>{server}</option>
-                    ))}
-                  </select>
+            <div class="card col-md-12">
+                <div class="card-header">
+                    Reporting Period
                 </div>
-                <div class="col-md-6 order-md-2">
-                  <label for="measure">Measure</label>
-                  <select class="custom-select d-block w-100" id="measure" onChange={this.setMeasure} required>
-                    <option value="">Select a Measure to Evaluate...</option>
-                    {this.state.measures.map((measure) => (
-                       <option>{measure}</option>
-                    ))}
-                  </select>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 order-md-1">
+                            <label for="startDate">Start Date</label>
+                            <Form.Control type="date" name="startDate"
+                                 value={this.state.startDate} onChange={this.setStartDate}/>
+                        </div>
+                        <div class="col-md-6 order-md-2">
+                            <label for="endDate">End Date</label>
+                            <Form.Control type="date" name="endDate"
+                                 value={this.state.endDate} onChange={this.setEndDate}/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="card col-md-12">
+                <div class="card-header">
+                    Knowledge Repository
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 order-md-1">
+                          <label for="server">Knowledge Repository Server</label>
+                          <select class="custom-select d-block w-100" id="server" onChange={this.fetchMeasures} required>
+                            <option value="">Select a Server...</option>
+                            {this.state.serverUrls.map((server) => (
+                                <option>{server}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div class="col-md-6 order-md-2">
+                          <label for="measure">Measure</label>
+                          <select class="custom-select d-block w-100" id="measure" onChange={this.setMeasure} required>
+                            <option value="">Select a Measure...</option>
+                            {this.state.measures.map((measure) => (
+                               <option>{measure}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div class="col-md-6 order-md-1">
+                            <label for="requirements">&nbsp;</label>
+                            {this.state.loading ? (
+                                <button class="w-100 btn btn-primary btn-lg" id="requirements" disabled="true">
+                                    Loading...
+                                </button>
+                            ) : (
+                                <button class="w-100 btn btn-primary btn-lg" id="requirements"
+                                     onClick={this.getDataRequirements}>Get Data Requirements</button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="card col-md-12">
+                <div class="card-header">
+                    Data Repository
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 order-md-1">
+                            <label for="server">Data Repository Server</label>
+                            <select class="custom-select d-block w-100" id="server" onChange={this.fetchPatients} required>
+                                <option value="">Select a Server...</option>
+                                    {this.state.serverUrls.map((server) => (
+                                        <option>{server}</option>
+                                    ))}
+                            </select>
+                        </div>
+                        <div class="col-md-6 order-md-2">
+                            <label for="patient">Patient (optional)</label>
+                            <select class="custom-select d-block w-100" id="measure" onChange={this.setPatient} required>
+                                <option value="">Select a Patient...</option>
+                                {this.state.patients.map((patient) => (
+                                   <option>{patient}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6 order-md-1">
-                    <label for="startDate">Start Date</label>
-                    <Form.Control type="date" name="startDate"
-                        value={this.state.startDate} onChange={this.setStartDate}/>
-                </div>
-                <div class="col-md-6 order-md-2">
-                    <label for="endDate">End Date</label>
-                    <Form.Control type="date" name="endDate"
-                        value={this.state.endDate} onChange={this.setEndDate}/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 order-md-1">
-                    <label for="patient">Patient (optional)</label>
-                    <select class="custom-select d-block w-100" id="measure" onChange={this.setPatient} required>
-                        <option value="">Select a Patient...</option>
-                        {this.state.patients.map((patient) => (
-                           <option>{patient}</option>
-                        ))}
-                    </select>
-                </div>
-                <div class="col-md-6 order-md-2">
                     <label for="evaluate">&nbsp;</label>
                     {this.state.loading ? (
                         <button class="w-100 btn btn-primary btn-lg" id="evaluate" disabled="true">
@@ -264,7 +359,7 @@ class App extends Component {
             </div>
             <div class="row">
                 <div class="col-md-12 order-md-1">
-                    <label for="results">Results</label>
+                    <label for="results">&nbsp;</label>
                     <Form.Control as="textarea" name="results" rows="20" value={this.state.results}/>
                 </div>
             </div>
