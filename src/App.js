@@ -10,17 +10,35 @@ class App extends Component {
 
       // Setup the state variables that will need to record everything happening
       this.state = {
-        measures: [],
-        serverUrls: ['https://cloud.alphora.com/sandbox/r4/cqm/fhir/'],
-        patients: [],
-        selectedKnowledgeRepo: '',
-        selectedDataRepo: '',
-        selectedMeasure: '',
-        selectedPatient: '',
-        startDate: '2019-01-01',
-        endDate: '2019-12-31',
+        serverUrls: ['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
+            'http://cqf-ruler.ecqm.icfcloud.com/fhir/'],
         results: '',
         loading: false,
+
+        // Reporting period state (defaulting to 2019)
+        startDate: '2019-01-01',
+        endDate: '2019-12-31',
+
+        // Show states
+        showKnowledgeRepo: true,
+        showDataRepo: false,
+        showReceiving: false,
+
+        // Selected states
+        selectedKnowledgeRepo: '',
+        selectedDataRepo: '',
+        selectedReceiving: '',
+        selectedMeasure: '',
+        selectedPatient: '',
+
+        // FHIR data states
+        dataRequirements: '',
+        dataCollected: '',
+        measureReport: '',
+        measures: [],
+        patients: [],
+
+        // Population states
         initialPopulation: '-',
         denominator: '-',
         denominatorExclusion: '-',
@@ -36,10 +54,16 @@ class App extends Component {
       this.setPatient = this.setPatient.bind(this);
       this.setStartDate = this.setStartDate.bind(this);
       this.setEndDate = this.setEndDate.bind(this);
+      this.setReceiving = this.setReceiving.bind(this);
       this.logResults = this.logResults.bind(this);
       this.evaluateMeasure = this.evaluateMeasure.bind(this);
       this.getDataRequirements = this.getDataRequirements.bind(this);
+      this.collectData = this.collectData.bind(this);
       this.clearPopulationCounts = this.clearPopulationCounts.bind(this);
+      this.toggleShowKnowledgeRepo = this.toggleShowKnowledgeRepo.bind(this);
+      this.toggleShowDataRepo = this.toggleShowDataRepo.bind(this);
+      this.toggleShowReceiving = this.toggleShowReceiving.bind(this);
+      this.submitData = this.submitData.bind(this);
   }
 
   logResults(message) {
@@ -124,6 +148,33 @@ class App extends Component {
     this.setState({ endDate: value });
   }
 
+  // Set the receiving system
+  setReceiving(e) {
+    let value = e.target.value;
+    this.setState({ selectedReceiving: value });
+  }
+
+  // Toggles the show or not for Knowledge Repo
+  // Called by show/hide button press
+  toggleShowKnowledgeRepo() {
+     this.state.showKnowledgeRepo ? this.setState({ showKnowledgeRepo: false }) :
+        this.setState({ showKnowledgeRepo: true })
+  }
+
+  // Toggles the show or not for Data Repo
+  // Called by show/hide button press
+  toggleShowDataRepo() {
+     this.state.showDataRepo ? this.setState({ showDataRepo: false }) :
+        this.setState({ showDataRepo: true })
+  }
+
+  // Toggles the show or not for Receiving System
+  // Called by show/hide button press
+  toggleShowReceiving() {
+     this.state.showReceiving ? this.setState({ showReceiving: false }) :
+        this.setState({ showReceiving: true })
+  }
+
   clearPopulationCounts() {
     this.setState({ initialPopulation: '-' });
     this.setState({ denominator: '-' });
@@ -138,8 +189,8 @@ class App extends Component {
   // This is called by the Evaluate Measure Button being clicked
   evaluateMeasure() {
     // Handle error conditions if they have not selected a server or measure
-    if (this.state.selectedDataRepo === '') {
-        this.logResults('Please select a Data Repository server to use');
+    if (this.state.selectedReceiving === '') {
+        this.logResults('Please select a Receiving server to use');
         return;
     }
     if (this.state.selectedMeasure === '') {
@@ -163,6 +214,9 @@ class App extends Component {
             this.state.startDate + '&periodEnd=' + this.state.endDate;
     }
 
+    let message = 'Calling ' + Url + '...';
+    this.setState({ results: message });
+
     // Call the FHIR server to evaluate the measure
     fetch(Url)
        .then((response) => {
@@ -170,6 +224,7 @@ class App extends Component {
             else return response.json();
           })
        .then((data) => {
+         this.setState({ measureReport: JSON.stringify(data, undefined, 2) });
          this.setState({ results: JSON.stringify(data, undefined, 2) });
          let groups = data.group;
          let populations = groups.map(group => {
@@ -205,13 +260,13 @@ class App extends Component {
          this.setState({ loading: false });
        })
        .catch((error) => {
-         var message = 'Calling ' + Url + ' caused ' + error;
+         let message = 'Calling ' + Url + ' caused ' + error;
          this.setState({ results: message });
          this.setState({ loading: false });
        });
   }
 
-  // Calls the FHIR data repository to get the data requirements for the selected measure
+  // Calls the FHIR knowledge repository to get the data requirements for the selected measure
   // with the given period
   // This is called by the Get Data Requirements Button being clicked
   getDataRequirements() {
@@ -228,18 +283,118 @@ class App extends Component {
     // Set loading to true for spinner
     this.setState({ loading: true });
 
-    // Build the evaluate measure URL based on the options selected
+    // Build the data requirements URL based on the options selected
     let Url = this.state.selectedKnowledgeRepo + 'Measure/' + this.state.selectedMeasure +
-        '/$data-requirements?&periodStart=' + this.state.startDate + '&periodEnd=' + this.state.endDate;
+        '/$data-requirements?periodStart=' + this.state.startDate + '&periodEnd=' + this.state.endDate;
 
-    // Call the FHIR server to evaluate the measure
+    let message = 'Calling ' + Url + '...';
+    this.setState({ results: message });
+
+    // Call the FHIR server to get the data requirements
     fetch(Url)
        .then((response) => {
           if(!response.ok) throw new Error(response.status);
             else return response.json();
           })
        .then((data) => {
+         this.setState({ dataRequirements: JSON.stringify(data, undefined, 2) });
          this.setState({ results: JSON.stringify(data, undefined, 2) });
+         this.setState({ loading: false });
+       })
+       .catch((error) => {
+         var message = 'Calling ' + Url + ' caused ' + error;
+         this.setState({ results: message });
+         this.setState({ loading: false });
+       });
+  }
+
+  // Calls the FHIR data repository to collect the data for the selected measure
+  // with the given period and subject
+  // This is called by the Collect Data Button being clicked
+  collectData() {
+    // Handle error conditions if they have not selected a server or measure
+    if (this.state.selectedDataRepo === '') {
+        this.logResults('Please select a Data Repository server to use');
+        return;
+    }
+    if (this.state.selectedMeasure === '') {
+        this.logResults('Please select a Measure to collect data for');
+        return;
+    }
+
+    // Set loading to true for spinner
+    this.setState({ loading: true });
+
+    // Build the collect data URL based on the options selected
+    let Url = this.state.selectedDataRepo + 'Measure/' + this.state.selectedMeasure +
+        '/$collect-data?periodStart=' + this.state.startDate + '&periodEnd=' + this.state.endDate;
+
+    if (this.state.selectedPatient !== '') {
+        Url = Url + '&subject=' + this.state.selectedPatient;
+    }
+
+    let message = 'Calling ' + Url + '...';
+    this.setState({ results: message });
+
+    // Call the FHIR server to collect the data
+    fetch(Url)
+       .then((response) => {
+          if(!response.ok) throw new Error(response.status);
+            else return response.json();
+          })
+       .then((data) => {
+         this.setState({ collectedData: JSON.stringify(data, undefined, 2) });
+         this.setState({ results: JSON.stringify(data, undefined, 2) });
+         this.setState({ loading: false });
+       })
+       .catch((error) => {
+         var message = 'Calling ' + Url + ' caused ' + error;
+         this.setState({ results: message });
+         this.setState({ loading: false });
+       });
+  }
+
+  // Calls the FHIR receiving system to submit the data for the selected measure
+  // This is called by the Submit Data Button being clicked
+  submitData() {
+    // Handle error conditions if they have not selected a server or measure
+    if (this.state.selectedDataRepo === '') {
+        this.logResults('Please select a Receiving System server to use');
+        return;
+    }
+    if (this.state.selectedMeasure === '') {
+        this.logResults('Please select a Measure to submit data for');
+        return;
+    }
+    if (this.state.collectedData === '') {
+        this.logResults('Please collect data from the Data Repository to use for submission');
+        return;
+    }
+
+    // Set loading to true for spinner
+    this.setState({ loading: true });
+
+    // Build the submit data URL based on the options selected
+    let Url = this.state.selectedDataRepo + 'Measure/' + this.state.selectedMeasure + '/$submit-data';
+
+    let message = 'Calling ' + Url + '...';
+    this.setState({ results: message });
+
+    //Set the collected data as the payload
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/fhir+json' },
+        body: JSON.stringify(this.state.collectedData)
+    };
+
+    // Call the FHIR server to submit the data
+    fetch(Url, requestOptions)
+       .then((response) => {
+          if(!response.ok) throw new Error(response.status);
+            else return response.json();
+          })
+       .then((data) => {
+         this.setState({ results: "Data Submitted" });
          this.setState({ loading: false });
        })
        .catch((error) => {
@@ -281,8 +436,18 @@ class App extends Component {
             <div class="card col-md-12">
                 <div class="card-header">
                     Knowledge Repository
+                    {this.state.showKnowledgeRepo ? (
+                        <button class="btn btn-primary btn-lg float-right" onClick={this.toggleShowKnowledgeRepo}>
+                            Hide
+                        </button>
+                    ) : (
+                        <button class="btn btn-primary btn-lg float-right" onClick={this.toggleShowKnowledgeRepo}>
+                            Show
+                        </button>
+                    )}
                 </div>
-                <div class="card-body">
+                {this.state.showKnowledgeRepo ? (
+                <div class="card-body" id="knowledgeRepo">
                     <div class="row">
                         <div class="col-md-6 order-md-1">
                           <label for="server">Knowledge Repository Server</label>
@@ -305,7 +470,7 @@ class App extends Component {
                         <div class="col-md-6 order-md-1">
                             <label for="requirements">&nbsp;</label>
                             {this.state.loading ? (
-                                <button class="w-100 btn btn-primary btn-lg" id="requirements" disabled="true">
+                                <button class="w-100 btn btn-primary btn-lg" id="requirements" disabled>
                                     Loading...
                                 </button>
                             ) : (
@@ -315,12 +480,25 @@ class App extends Component {
                         </div>
                     </div>
                 </div>
+                ) : (
+                <div/>
+                )}
             </div>
             <br/>
             <div class="card col-md-12">
                 <div class="card-header">
                     Data Repository
+                    {this.state.showDataRepo ? (
+                        <button class="btn btn-primary btn-lg float-right" onClick={this.toggleShowDataRepo}>
+                            Hide
+                        </button>
+                    ) : (
+                        <button class="btn btn-primary btn-lg float-right" onClick={this.toggleShowDataRepo}>
+                            Show
+                        </button>
+                    )}
                 </div>
+                {this.state.showDataRepo ? (
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6 order-md-1">
@@ -341,26 +519,81 @@ class App extends Component {
                                 ))}
                             </select>
                         </div>
+                        <div class="col-md-6 order-md-1">
+                            <label for="collect">&nbsp;</label>
+                            {this.state.loading ? (
+                                <button class="w-100 btn btn-primary btn-lg" id="collect" disabled>
+                                    Loading...
+                                </button>
+                            ) : (
+                                <button class="w-100 btn btn-primary btn-lg" id="collect"
+                                    onClick={this.collectData}>Collect Data</button>
+                            )}
+                        </div>
                     </div>
                 </div>
+                ) : (
+                <div/>
+                )}
             </div>
-            <div class="row">
-                <div class="col-md-6 order-md-1">
-                    <label for="evaluate">&nbsp;</label>
-                    {this.state.loading ? (
-                        <button class="w-100 btn btn-primary btn-lg" id="evaluate" disabled="true">
-                            Loading...
+            <br/>
+            <div class="card col-md-12">
+                <div class="card-header">
+                    Receiving System
+                    {this.state.showReceiving ? (
+                        <button class="btn btn-primary btn-lg float-right" onClick={this.toggleShowReceiving}>
+                            Hide
                         </button>
                     ) : (
-                        <button class="w-100 btn btn-primary btn-lg" id="evaluate"
-                            onClick={this.evaluateMeasure}>Evaluate Measure</button>
+                        <button class="btn btn-primary btn-lg float-right" onClick={this.toggleShowReceiving}>
+                            Show
+                        </button>
                     )}
                 </div>
+                {this.state.showReceiving ? (
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 order-md-1">
+                            <label for="server">Receiving System Server</label>
+                            <select class="custom-select d-block w-100" id="server" onChange={this.setReceiving} required>
+                                <option value="">Select a Server...</option>
+                                    {this.state.serverUrls.map((server) => (
+                                        <option>{server}</option>
+                                    ))}
+                            </select>
+                        </div>
+                        <div class="col-md-6 order-md-1">
+                            <label for="submit">&nbsp;</label>
+                            {this.state.loading ? (
+                                <button class="w-100 btn btn-primary btn-lg" id="submit" disabled="true">
+                                    Loading...
+                                </button>
+                            ) : (
+                                <button class="w-100 btn btn-primary btn-lg" id="submit"
+                                    onClick={this.submitData}>Submit Data</button>
+                            )}
+                        </div>
+                        <div class="col-md-6 order-md-1">
+                            <label for="evaluate">&nbsp;</label>
+                            {this.state.loading ? (
+                                <button class="w-100 btn btn-primary btn-lg" id="evaluate" disabled="true">
+                                    Loading...
+                                </button>
+                            ) : (
+                                <button class="w-100 btn btn-primary btn-lg" id="evaluate"
+                                    onClick={this.evaluateMeasure}>Evaluate Measure</button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+                ) : (
+                <div/>
+                )}
             </div>
             <div class="row">
                 <div class="col-md-12 order-md-1">
                     <label for="results">&nbsp;</label>
-                    <Form.Control as="textarea" name="results" rows="20" value={this.state.results}/>
+                    <Form.Control as="textarea" name="results" rows="20" value={this.state.results} readOnly/>
                 </div>
             </div>
             <div class="row">
