@@ -11,7 +11,8 @@ class App extends Component {
       // Setup the state variables that will need to record everything happening
       this.state = {
         measures: [],
-        serverUrls: ['https://cloud.alphora.com/sandbox/r4/cqm/fhir/'],
+        serverUrls: ['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
+		'http://cqf-ruler.ecqm.icfcloud.com/fhir/'],
         patients: [],
         selectedServer: '',
         selectedMeasure: '',
