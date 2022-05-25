@@ -12,7 +12,7 @@ class App extends Component {
       this.state = {
         measures: [],
         serverUrls: ['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
-		'http://cqf-ruler.ecqm.icfcloud.com/fhir/'],
+		'https://cqf-ruler.ecqm.icfcloud.com/fhir/'],
         patients: [],
         selectedServer: '',
         selectedMeasure: '',
