@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {Form} from 'react-bootstrap';
 import logo from './icf_logo.png';
 import './App.css';
 import ReportingPeriod from "./components/ReportingPeriod";
@@ -9,7 +8,6 @@ import Populations from "./components/Populations";
 import {BundleEntry} from './models/BundleEntry';
 import {MeasureReportGroup} from './models/MeasureReportGroup';
 import {Population} from './models/Population';
-import {CodeableConcept} from './models/CodeableConcept';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -104,6 +102,7 @@ const App: React.FC = () => {
 
     // Set the loading state since this call can take a while to return
     setLoading(true);
+    clearPopulationCounts();
 
     // Build the evaluate measure URL based on the options selected
     let Url = '';
@@ -135,15 +134,12 @@ const App: React.FC = () => {
          return group.population;
        });
        let pop = populations[0];
-       console.log("population: " + pop);
        let popNames = pop.map((pop: Population) => {
           return pop.code.coding[0].code;
        });
-       console.log("popNames: " + popNames);
        let counts = pop.map((pop: Population) => {
          return pop.count;
        });
-       console.log("counts: " + counts);
 
        // Iterate through the population names to set the state
        for (var i=0; i< popNames.length; i++) {
@@ -161,14 +157,16 @@ const App: React.FC = () => {
             setNumeratorExclusion(counts[i]);
          }
        }
+
+       // Clear the loading state
+       setLoading(false);
      })
     .catch((error) => {
       let message = 'Calling ' + Url + ' caused ' + error;
       setResults(message);
+      // Clear the loading state
+      setLoading(false);
     })
-
-    // Clear the loading state
-    setLoading(false);
   };
 
   // Function for clearing all population counts

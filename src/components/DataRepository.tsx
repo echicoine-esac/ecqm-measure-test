@@ -1,5 +1,5 @@
 import React from "react";
-import {Form, Button, Spinner} from 'react-bootstrap';
+import {Button, Spinner} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Props for DataRepository
@@ -18,6 +18,7 @@ interface props {
 // DataRepository component displays the test server, measure, patient, and button to evaluate
 const DataRepository: React.FC<props> = ({ serverUrls, setSelectedServer, measures, patients, fetchMeasures,
     setSelectedMeasure, setSelectedPatient, evaluateMeasure, loading }) => {
+
     return (
       <div>
           <div className="row">
@@ -53,7 +54,7 @@ const DataRepository: React.FC<props> = ({ serverUrls, setSelectedServer, measur
             <div className="col-md-6 order-md-2">
               <br/>
               {loading ? (
-                <Button className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={true}>
+                <Button className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={loading}>
                   <Spinner
                     as="span"
                     variant="light"
@@ -63,7 +64,8 @@ const DataRepository: React.FC<props> = ({ serverUrls, setSelectedServer, measur
                     animation="border"/>
                   Loading...</Button>
               ):(
-                <Button className="w-100 btn btn-primary btn-lg" id="evaluate" onClick={(e) => evaluateMeasure()}>
+                <Button className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={loading}
+                    onClick={(e) => evaluateMeasure()}>
                   Evaluate Measure</Button>
               )}
             </div>
