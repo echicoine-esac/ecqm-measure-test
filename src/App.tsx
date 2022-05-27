@@ -2,7 +2,9 @@ import React, {useState} from 'react';
 import logo from './icf_logo.png';
 import './App.css';
 import ReportingPeriod from "./components/ReportingPeriod";
+import KnowledgeRepository from "./components/KnowledgeRepository";
 import DataRepository from "./components/DataRepository";
+import ReceivingSystem from "./components/ReceivingSystem";
 import Results from "./components/Results";
 import Populations from "./components/Populations";
 import {BundleEntry} from './models/BundleEntry';
@@ -18,17 +20,25 @@ const App: React.FC = () => {
   // Then the state for the data repository
   const [serverUrls] = useState<Array<string>>(['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
     'https://cqf-ruler.ecqm.icfcloud.com/fhir/']);
-  const [selectedServer, setSelectedServer] = useState<string>('');
   const [measures, setMeasures] = useState<Array<string>>([]);
   const [patients, setPatients] = useState<Array<string>>([]);
+
+  // Selected States
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
   const [selectedPatient, setSelectedPatient] = useState<string>('');
+  const [selectedKnowledgeRepo, setSelectedKnowledgeRepo] = useState<string>('');
+  const [selectedDataRepo, setSelectedDataRepo] = useState<string>('');
+  const [selectedReceiving, setSelectedReceiving] = useState<string>('');
 
   // Then set the state for the results
   const [results, setResults] = useState<string>('');
 
-  //  set a state for loading
+  // Show states
   const [loading, setLoading] = useState<boolean>(false);
+  const [showKnowledgeRepo, setShowKnowledgeRepo] = useState<boolean>(true);
+  const [showDataRepo, setShowDataRepo] = useState<boolean>(false);
+  const [showReceiving, setShowReceiving] = useState<boolean>(false);
+  const [showPopulations, setShowPopulations] = useState<boolean>(false);
 
   // Population states
   const [initialPopulation, setInitialPopulation] = useState<string>('-');
@@ -38,9 +48,13 @@ const App: React.FC = () => {
   const [numerator, setNumerator] = useState<string>('-');
   const [numeratorExclusion, setNumeratorExclusion] = useState<string>('-');
 
+  // Saved data
+  const [collectedData, setCollectedData] = useState<string>('');
+
   // Function for retrieving the measures from the selected server
   const fetchMeasures = (url: string) => {
-    setSelectedServer(url);
+    setSelectedKnowledgeRepo(url);
+    setShowPopulations(false);
 
     // Fetch all the Measures from the selected server
     fetch(url + 'Measure?_count=200')
@@ -61,12 +75,13 @@ const App: React.FC = () => {
         let message = 'Calling ' + url + 'Measure caused ' + error;
         setResults(message);
       })
-
-      fetchPatients(url);
   };
 
   // Function for retrieving the patients from the selected server
   const fetchPatients = (url: string) => {
+    setSelectedDataRepo(url);
+    setShowPopulations(false);
+
     // Fetch all the Patients from the selected server
     fetch(url + 'Patient?_count=200')
       .then((response) => {
@@ -91,8 +106,8 @@ const App: React.FC = () => {
   // Function for calling the server to perform the measure evaluation
   const evaluateMeasure = async() => {
     // Make sure all required elements are set
-    if (selectedServer === '') {
-      setResults('Please select a Test server to use');
+    if (selectedReceiving === '') {
+      setResults('Please select a Receiving System server to use');
       return;
     }
     if (selectedMeasure === '') {
@@ -107,11 +122,11 @@ const App: React.FC = () => {
     // Build the evaluate measure URL based on the options selected
     let Url = '';
     if (selectedPatient === '') {
-      Url = selectedServer + 'Measure/' + selectedMeasure +
+      Url = selectedReceiving + 'Measure/' + selectedMeasure +
         '/$evaluate-measure?periodStart=' + startDate +
         '&periodEnd=' + endDate + '&reportType=subject-list';
     } else {
-      Url = selectedServer + 'Measure/' + selectedMeasure +
+      Url = selectedReceiving + 'Measure/' + selectedMeasure +
         '/$evaluate-measure?subject=' + selectedPatient + '&periodStart=' +
         startDate + '&periodEnd=' + endDate;
     }
@@ -160,6 +175,9 @@ const App: React.FC = () => {
 
        // Clear the loading state
        setLoading(false);
+
+       // Show the populations
+       setShowPopulations(true);
      })
     .catch((error) => {
       let message = 'Calling ' + Url + ' caused ' + error;
@@ -167,6 +185,146 @@ const App: React.FC = () => {
       // Clear the loading state
       setLoading(false);
     })
+  };
+
+  // Function for calling the server to get the data requirements
+  const getDataRequirements = async() => {
+    setShowPopulations(false);
+
+    // Make sure all required elements are set
+    if (selectedKnowledgeRepo === '') {
+      setResults('Please select a Knowledge Repository server to use');
+      return;
+    }
+    if (selectedMeasure === '') {
+      setResults('Please select a Measure to get the data requirements for');
+      return;
+    }
+
+    // Set the loading state since this call can take a while to return
+    setLoading(true);
+
+    // Build the data requirements URL based on the options selected
+    let Url = selectedKnowledgeRepo + 'Measure/' + selectedMeasure +
+      '/$data-requirements?periodStart=' + startDate + '&periodEnd=' + endDate;
+
+    let message = 'Calling ' + Url + '...';
+    setResults(message);
+
+    // Call the FHIR server to get the data requirements
+    fetch(Url)
+     .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response.json()
+      })
+     .then((data) => {
+       setResults(JSON.stringify(data, undefined, 2));
+       setLoading(false);
+     })
+     .catch((error) => {
+       var message = 'Calling ' + Url + ' caused ' + error;
+       setResults(message);
+       setLoading(false);
+     });
+    };
+
+  // Function for calling the server to collect the data for a measure
+  const collectData = async() => {
+    setShowPopulations(false);
+
+    // Make sure all required elements are set
+    if (selectedDataRepo === '') {
+      setResults('Please select a Data Repository server to use');
+      return;
+    }
+    if (selectedMeasure === '') {
+      setResults('Please select a Measure to collect the data for');
+      return;
+    }
+
+    // Set loading to true for spinner
+    setLoading(true);
+
+    // Build the collect data URL based on the options selected
+    let Url = selectedDataRepo + 'Measure/' + selectedMeasure +
+      '/$collect-data?periodStart=' + startDate + '&periodEnd=' + endDate;
+
+    if (selectedPatient !== '') {
+      Url = Url + '&subject=' + selectedPatient;
+    }
+
+    let message = 'Calling ' + Url + '...';
+    setResults(message);
+
+    // Call the FHIR server to collect the data
+    fetch(Url)
+     .then((response) => {
+       if (!response.ok) {
+         throw Error(response.statusText);
+       }
+       return response.json()
+     })
+     .then((data) => {
+       setCollectedData(JSON.stringify(data, undefined, 2));
+       setResults(JSON.stringify(data, undefined, 2));
+       setLoading(false);
+     })
+    .catch((error) => {
+      var message = 'Calling ' + Url + ' caused ' + error;
+      setResults(message);
+      setLoading(false);
+    });
+  };
+
+  // Function for calling the server to submit the data for a measure
+  const submitData = async() => {
+    setShowPopulations(false);
+    
+    // Make sure all required elements are set
+    if (selectedReceiving === '') {
+      setResults('Please select a Receiving System server to use');
+      return;
+    }
+    if (selectedMeasure === '') {
+      setResults('Please select a Measure to submit the data for');
+      return;
+    }
+
+    // Set loading to true for spinner
+    setLoading(true);
+
+    // Build the submit data URL based on the options selected
+    let Url = selectedReceiving + 'Measure/' + selectedMeasure + '/$submit-data';
+
+    let message = 'Calling ' + Url + '...';
+    setResults(message);
+
+    //Set the collected data as the payload
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify(collectedData)
+    };
+
+    // Call the FHIR server to submit the data
+    fetch(Url, requestOptions)
+     .then((response) => {
+       if (!response.ok) {
+         throw Error(response.statusText);
+       }
+       return response.json()
+       })
+     .then((data) => {
+       setResults("Data Submitted");
+       setLoading(false);
+     })
+     .catch((error) => {
+       var message = 'Calling ' + Url + ' caused ' + error;
+       setResults(message);
+       setLoading(false);
+     });
   };
 
   // Function for clearing all population counts
@@ -191,13 +349,23 @@ const App: React.FC = () => {
         </div>
       </div>
       <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>
-      <DataRepository serverUrls={serverUrls} setSelectedServer={setSelectedServer} measures={measures}
-        patients={patients} fetchMeasures={fetchMeasures} setSelectedMeasure={setSelectedMeasure}
-        setSelectedPatient={setSelectedPatient} evaluateMeasure={evaluateMeasure} loading={loading}/>
+      <br/>
+      <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
+        serverUrls={serverUrls} fetchMeasures={fetchMeasures} measures={measures}
+        setSelectedMeasure={setSelectedMeasure} getDataRequirements={getDataRequirements} loading={loading}/>
+      <br/>
+      <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} serverUrls={serverUrls}
+        setSelectedDataRepo={setSelectedDataRepo} patients={patients}
+        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient} collectData={collectData}
+        loading={loading}/>
+      <br/>
+      <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
+        serverUrls={serverUrls} setSelectedReceiving={setSelectedReceiving} submitData={submitData}
+        evaluateMeasure={evaluateMeasure} loading={loading}/>
       <Results results={results}/>
       <Populations initialPopulation={initialPopulation} denominator={denominator}
         denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
-        numerator={numerator} numeratorExclusion={numeratorExclusion}/>
+        numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}/>
     </div>
   );
 }

@@ -4,45 +4,48 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Props for DataRepository
 interface props {
+  showDataRepo: boolean;
+  setShowDataRepo: React.Dispatch<React.SetStateAction<boolean>>;
   serverUrls: Array<string>;
-  setSelectedServer: React.Dispatch<React.SetStateAction<string>>;
-  measures: Array<string>;
+  setSelectedDataRepo: React.Dispatch<React.SetStateAction<string>>;
   patients: Array<string>;
-  fetchMeasures: (url: string) => void;
-  setSelectedMeasure: React.Dispatch<React.SetStateAction<string>>;
+  fetchPatients: (url: string) => void;
   setSelectedPatient: React.Dispatch<React.SetStateAction<string>>;
-  evaluateMeasure: () => void;
+  collectData: () => void;
   loading: boolean;
 }
 
-// DataRepository component displays the test server, measure, patient, and button to evaluate
-const DataRepository: React.FC<props> = ({ serverUrls, setSelectedServer, measures, patients, fetchMeasures,
-    setSelectedMeasure, setSelectedPatient, evaluateMeasure, loading }) => {
+// DataRepository component displays the test server, patient, and button to collect data
+const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, serverUrls, setSelectedDataRepo, patients,
+    fetchPatients, setSelectedPatient, collectData, loading }) => {
 
     return (
-      <div>
+      <div className="card col-md-12">
+        <div className="card-header">
+          Data Repository
+          {showDataRepo ? (
+            <Button className="btn btn-primary btn-lg float-right" onClick={(e) => setShowDataRepo(false)}>
+              Hide
+            </Button>
+          ) : (
+            <Button className="btn btn-primary btn-lg float-right" onClick={(e) => setShowDataRepo(true)}>
+              Show
+            </Button>
+          )}
+        </div>
+        {showDataRepo ? (
+        <div className="card-body">
           <div className="row">
             <div className="col-md-6 order-md-1">
-              <label>Test Server</label>
-              <select className="custom-select d-block w-100" id="server" onChange={(e) => fetchMeasures(e.target.value)}>
-                <option value="">Select a Test Server...</option>
+              <label>Data Repository Server</label>
+              <select className="custom-select d-block w-100" id="server" onChange={(e) => fetchPatients(e.target.value)}>
+                <option value="">Select a Server...</option>
                   {serverUrls.map((server) => (
                     <option>{server}</option>
                   ))}
               </select>
             </div>
             <div className="col-md-6 order-md-2">
-              <label>Measure</label>
-              <select className="custom-select d-block w-100" id="measure" onChange={(e) => setSelectedMeasure(e.target.value)}>
-                <option value="">Select a Measure...</option>
-                  {measures.map((measure) => (
-                    <option>{measure}</option>
-                  ))}
-              </select>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6 order-md-1">
               <label>Patient (optional)</label>
               <select className="custom-select d-block w-100" id="patient" onChange={(e) => setSelectedPatient(e.target.value)}>
                 <option value="">Select a Patient...</option>
@@ -65,11 +68,15 @@ const DataRepository: React.FC<props> = ({ serverUrls, setSelectedServer, measur
                   Loading...</Button>
               ):(
                 <Button className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={loading}
-                    onClick={(e) => evaluateMeasure()}>
-                  Evaluate Measure</Button>
+                    onClick={(e) => collectData()}>
+                  Collect Data</Button>
               )}
             </div>
           </div>
+        </div>
+        ) : (
+          <div/>
+        )}
       </div>
     );
 };
