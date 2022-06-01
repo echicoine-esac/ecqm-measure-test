@@ -9,7 +9,9 @@ import Results from "./components/Results";
 import Populations from "./components/Populations";
 import {BundleEntry} from './models/BundleEntry';
 import {MeasureReportGroup} from './models/MeasureReportGroup';
+import {MeasureReport} from './models/MeasureReport';
 import {Population} from './models/Population';
+import {Measure} from './models/Measure';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -20,7 +22,7 @@ const App: React.FC = () => {
   // Then the state for the data repository
   const [serverUrls] = useState<Array<string>>(['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
     'https://cqf-ruler.ecqm.icfcloud.com/fhir/']);
-  const [measures, setMeasures] = useState<Array<string>>([]);
+  const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<string>>([]);
 
   // Selected States
@@ -47,6 +49,7 @@ const App: React.FC = () => {
   const [denominatorException, setDenominatorException] = useState<string>('-');
   const [numerator, setNumerator] = useState<string>('-');
   const [numeratorExclusion, setNumeratorExclusion] = useState<string>('-');
+  const [measureScoring, setMeasureScoring] = useState<string>('');
 
   // Saved data
   const [collectedData, setCollectedData] = useState<string>('');
@@ -60,16 +63,19 @@ const App: React.FC = () => {
     fetch(url + 'Measure?_count=200')
       .then((response) => {
         if (!response.ok) {
-          throw Error(response.statusText);
+          throw Error('Server Returned ' + response.status);
         }
         return response.json()
       })
       .then((data) => {
         let entries = data.entry;
-        let measureIds = entries.map((entry: BundleEntry) => {
-          return entry.resource.id
+        let measureList : Measure[] = entries.map((entry: BundleEntry) => {
+          return {
+            "name": entry.resource.id,
+            "scoring": entry.resource.scoring
+          }
         });
-        setMeasures(measureIds);
+        setMeasures(measureList);
       })
       .catch((error) => {
         let message = 'Calling ' + url + 'Measure caused ' + error;
@@ -86,7 +92,7 @@ const App: React.FC = () => {
     fetch(url + 'Patient?_count=200')
       .then((response) => {
         if (!response.ok) {
-          throw Error(response.statusText);
+          throw Error('Server Returned ' + response.status);
         }
         return response.json()
       })
@@ -119,6 +125,13 @@ const App: React.FC = () => {
     setLoading(true);
     clearPopulationCounts();
 
+    // Get the scoring from the selected measure
+    for (var i=0; i<measures.length; i++) {
+      if (measures[i]!.name === selectedMeasure) {
+        setMeasureScoring(measures[i]!.scoring.coding[0].code);
+      }
+    }
+
     // Build the evaluate measure URL based on the options selected
     let Url = '';
     if (selectedPatient === '') {
@@ -138,13 +151,14 @@ const App: React.FC = () => {
     fetch(Url)
       .then((response) => {
         if (!response.ok) {
-          throw Error(response.statusText);
+          throw Error('Server Returned ' + response.status);
         }
         return response.json()
       })
      .then((data) => {
      setResults(JSON.stringify(data, undefined, 2));
-       let groups = data.group;
+       let report : MeasureReport = data;
+       let groups = report.group;
        let populations = groups.map((group: MeasureReportGroup) => {
          return group.population;
        });
@@ -215,7 +229,7 @@ const App: React.FC = () => {
     fetch(Url)
      .then((response) => {
         if (!response.ok) {
-          throw Error(response.statusText);
+          throw Error('Server Returned ' + response.status);
         }
         return response.json()
       })
@@ -262,7 +276,7 @@ const App: React.FC = () => {
     fetch(Url)
      .then((response) => {
        if (!response.ok) {
-         throw Error(response.statusText);
+         throw Error('Server Returned ' + response.status);
        }
        return response.json()
      })
@@ -281,13 +295,13 @@ const App: React.FC = () => {
   // Function for calling the server to submit the data for a measure
   const submitData = async() => {
     setShowPopulations(false);
-    
+
     // Make sure all required elements are set
     if (selectedReceiving === '') {
       setResults('Please select a Receiving System server to use');
       return;
     }
-    if (selectedMeasure === '') {
+    if (!selectedMeasure) {
       setResults('Please select a Measure to submit the data for');
       return;
     }
@@ -351,21 +365,24 @@ const App: React.FC = () => {
       <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>
       <br/>
       <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
-        serverUrls={serverUrls} fetchMeasures={fetchMeasures} measures={measures}
-        setSelectedMeasure={setSelectedMeasure} getDataRequirements={getDataRequirements} loading={loading}/>
+        serverUrls={serverUrls} fetchMeasures={fetchMeasures} selectedKnowledgeRepo={selectedKnowledgeRepo}
+        measures={measures} setSelectedMeasure={setSelectedMeasure} selectedMeasure={selectedMeasure}
+        getDataRequirements={getDataRequirements} loading={loading}/>
       <br/>
       <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} serverUrls={serverUrls}
-        setSelectedDataRepo={setSelectedDataRepo} patients={patients}
-        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient} collectData={collectData}
-        loading={loading}/>
+        setSelectedDataRepo={setSelectedDataRepo} selectedDataRepo={selectedDataRepo} patients={patients}
+        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient} selectedPatient={selectedPatient}
+        collectData={collectData} loading={loading}/>
       <br/>
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
-        serverUrls={serverUrls} setSelectedReceiving={setSelectedReceiving} submitData={submitData}
-        evaluateMeasure={evaluateMeasure} loading={loading}/>
+        serverUrls={serverUrls} setSelectedReceiving={setSelectedReceiving} selectedReceiving={selectedReceiving}
+        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading}/>
       <Results results={results}/>
       <Populations initialPopulation={initialPopulation} denominator={denominator}
         denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
-        numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}/>
+        numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
+        measureScoring={measureScoring}/>
+      <br/>
     </div>
   );
 }

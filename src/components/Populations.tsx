@@ -9,12 +9,31 @@ interface props {
   numerator: string;
   numeratorExclusion: string;
   showPopulations: boolean;
+  measureScoring: string;
 }
 
 // Populations component displays the population cards
 const Populations: React.FC<props> = ({ initialPopulation, denominator, denominatorExclusion, denominatorException,
-    numerator, numeratorExclusion, showPopulations}) => {
+    numerator, numeratorExclusion, showPopulations, measureScoring}) => {
     return (
+      <div>
+        <div className="row">
+          <div className="col-md-2 order-md-1">
+            {showPopulations ? (
+              <div className="card">
+                <div className="card-header">
+                  Scoring Type:
+                </div>
+                <div className="card-body">
+                  {measureScoring}
+                </div>
+              </div>
+            ) : (
+              <div/>
+            )}
+          </div>
+        </div>
+        <br/>
         <div className="row">
           <div className="col-md-2 order-md-1">
             {showPopulations ? (
@@ -101,6 +120,7 @@ const Populations: React.FC<props> = ({ initialPopulation, denominator, denomina
             )}
           </div>
         </div>
+      </div>
     );
 };
 

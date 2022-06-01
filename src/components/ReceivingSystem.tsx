@@ -8,6 +8,7 @@ interface props {
   setShowReceiving: React.Dispatch<React.SetStateAction<boolean>>;
   serverUrls: Array<string>;
   setSelectedReceiving: React.Dispatch<React.SetStateAction<string>>;
+  selectedReceiving: string;
   submitData: () => void;
   evaluateMeasure: () => void;
   loading: boolean;
@@ -15,9 +16,9 @@ interface props {
 
 // ReceivingSystem component displays the fields for selecting and using the receiving system
 const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, serverUrls, setSelectedReceiving,
-    submitData, evaluateMeasure, loading }) => {
+    selectedReceiving, submitData, evaluateMeasure, loading }) => {
     return (
-      <div className="card col-md-12">
+      <div className="card">
         <div className="card-header">
           Receiving System
           {showReceiving ? (
@@ -35,7 +36,7 @@ const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, ser
               <div className="row">
                 <div className="col-md-6 order-md-1">
                   <label>Receiving System Server</label>
-                  <select className="custom-select d-block w-100" id="server"
+                  <select className="custom-select d-block w-100" id="server" value={selectedReceiving}
                     onChange={(e) => setSelectedReceiving(e.target.value)}>
                     <option value="">Select a Server...</option>
                     {serverUrls.map((server) => (
