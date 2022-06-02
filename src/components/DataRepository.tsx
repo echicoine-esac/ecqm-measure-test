@@ -24,19 +24,19 @@ const DataRepository: React.FC<props> = ({ serverUrls, setSelectedServer, measur
           <div className="row">
             <div className="col-md-6 order-md-1">
               <label>Test Server</label>
-              <select className="custom-select d-block w-100" id="server" onChange={(e) => fetchMeasures(e.target.value)}>
+              <select data-testid="server-dropdown" className="custom-select d-block w-100" id="server" onChange={(e) => fetchMeasures(e.target.value)}>
                 <option value="">Select a Test Server...</option>
-                  {serverUrls.map((server) => (
-                    <option>{server}</option>
+                  {serverUrls.map((server, index) => (
+                    <option key={index}>{server}</option>
                   ))}
               </select>
             </div>
             <div className="col-md-6 order-md-2">
               <label>Measure</label>
-              <select className="custom-select d-block w-100" id="measure" onChange={(e) => setSelectedMeasure(e.target.value)}>
+              <select data-testid="measure-dropdown" className="custom-select d-block w-100" id="measure" onChange={(e) => setSelectedMeasure(e.target.value)}>
                 <option value="">Select a Measure...</option>
-                  {measures.map((measure) => (
-                    <option>{measure}</option>
+                  {measures.map((measure, index) => (
+                    <option key={index}>{measure}</option>
                   ))}
               </select>
             </div>
@@ -44,17 +44,17 @@ const DataRepository: React.FC<props> = ({ serverUrls, setSelectedServer, measur
           <div className="row">
             <div className="col-md-6 order-md-1">
               <label>Patient (optional)</label>
-              <select className="custom-select d-block w-100" id="patient" onChange={(e) => setSelectedPatient(e.target.value)}>
+              <select data-testid="patient-dropdown" className="custom-select d-block w-100" id="patient" onChange={(e) => setSelectedPatient(e.target.value)}>
                 <option value="">Select a Patient...</option>
-                  {patients.map((patient) => (
-                    <option>{patient}</option>
+                  {patients.map((patient, index) => (
+                    <option key={index}>{patient}</option>
                   ))}
               </select>
             </div>
             <div className="col-md-6 order-md-2">
               <br/>
               {loading ? (
-                <Button className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={loading}>
+                <Button data-testid="evaluate-button-spinner" className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={loading}>
                   <Spinner
                     as="span"
                     variant="light"
@@ -64,7 +64,7 @@ const DataRepository: React.FC<props> = ({ serverUrls, setSelectedServer, measur
                     animation="border"/>
                   Loading...</Button>
               ):(
-                <Button className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={loading}
+                <Button data-testid="evaluate-button" className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={loading}
                     onClick={(e) => evaluateMeasure()}>
                   Evaluate Measure</Button>
               )}

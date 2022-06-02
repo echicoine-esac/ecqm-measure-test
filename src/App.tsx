@@ -8,16 +8,18 @@ import Populations from "./components/Populations";
 import {BundleEntry} from './models/BundleEntry';
 import {MeasureReportGroup} from './models/MeasureReportGroup';
 import {Population} from './models/Population';
+import { Constants } from './constants/Constants';
+import { StringUtils } from './utils/StringUtils';
 
 const App: React.FC = () => {
   // Define the state variables
   // First define the state for reporting period
-  const [startDate, setStartDate] = useState<string>('2019-01-01');
-  const [endDate, setEndDate] = useState<string>('2019-12-31');
+  const [startDate, setStartDate] = useState<string>(Constants.defaultStartDate);
+  const [endDate, setEndDate] = useState<string>(Constants.defaultEndDate);
 
   // Then the state for the data repository
-  const [serverUrls] = useState<Array<string>>(['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
-    'https://cqf-ruler.ecqm.icfcloud.com/fhir/']);
+  const [serverUrls] = useState<Array<string>>(Constants.getServerUrls());
+
   const [selectedServer, setSelectedServer] = useState<string>('');
   const [measures, setMeasures] = useState<Array<string>>([]);
   const [patients, setPatients] = useState<Array<string>>([]);
@@ -56,13 +58,14 @@ const App: React.FC = () => {
           return entry.resource.id
         });
         setMeasures(measureIds);
+        fetchPatients(url);
       })
       .catch((error) => {
-        let message = 'Calling ' + url + 'Measure caused ' + error;
+        let message = StringUtils.format(Constants.fetchError, url, 'measures', error);
         setResults(message);
+        return;
       })
 
-      fetchPatients(url);
   };
 
   // Function for retrieving the patients from the selected server
@@ -83,7 +86,7 @@ const App: React.FC = () => {
         setPatients(patientIds);
       })
       .catch((error) => {
-        let message = 'Calling ' + url + 'Patient caused ' + error;
+        let message = StringUtils.format(Constants.fetchError, url, 'patients', error);
         setResults(message);
       })
   };
@@ -92,11 +95,11 @@ const App: React.FC = () => {
   const evaluateMeasure = async() => {
     // Make sure all required elements are set
     if (selectedServer === '') {
-      setResults('Please select a Test server to use');
+      setResults(Constants.error_selectTestServer);
       return;
     }
     if (selectedMeasure === '') {
-      setResults('Please select a Measure to evaluate');
+      setResults(Constants.error_selectMeasure);
       return;
     }
 
@@ -105,22 +108,24 @@ const App: React.FC = () => {
     clearPopulationCounts();
 
     // Build the evaluate measure URL based on the options selected
-    let Url = '';
+    let url = '';
     if (selectedPatient === '') {
-      Url = selectedServer + 'Measure/' + selectedMeasure +
+      // url = StringUtils.format(Constants.fetchData, selectedMeasure, selectedMeasure, startDate, endDate);
+      url = selectedServer + 'Measure/' + selectedMeasure +
         '/$evaluate-measure?periodStart=' + startDate +
         '&periodEnd=' + endDate + '&reportType=subject-list';
     } else {
-      Url = selectedServer + 'Measure/' + selectedMeasure +
+      // url = StringUtils.format(Constants.fetchDataWithPatient, selectedServer, selectedMeasure, selectedPatient, startDate, endDate);
+      url = selectedServer + 'Measure/' + selectedMeasure +
         '/$evaluate-measure?subject=' + selectedPatient + '&periodStart=' +
         startDate + '&periodEnd=' + endDate;
     }
 
-    let message = 'Calling ' + Url + '...';
+    let message = 'Calling ' + url + '...';
     setResults(message);
 
     // Fetch the data by calling the API and use callback to reflect state properly
-    fetch(Url)
+    fetch(url)
       .then((response) => {
         if (!response.ok) {
           throw Error(response.statusText);
@@ -162,7 +167,7 @@ const App: React.FC = () => {
        setLoading(false);
      })
     .catch((error) => {
-      let message = 'Calling ' + Url + ' caused ' + error;
+      let message = StringUtils.format(Constants.fetchError, url, 'data', error);
       setResults(message);
       // Clear the loading state
       setLoading(false);
