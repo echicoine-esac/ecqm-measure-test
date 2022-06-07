@@ -29,15 +29,12 @@ export class Constants {
     public static error_selectKnowledgeRepository = 'Please select a Knowledge Repository server to use';
 
     public static dataSubmitted = 'Data Submitted';
+    
+    
     //central location for retrieving server URLS (could be updated with fetch?)
     public static getServerUrls(): string[] {
         return Constants.serverUrls;
     }
-
-    public static addToServerUrls(url: string) {
-        Constants.serverUrls.push(url);
-    }
-
     private static serverUrls: string[] = ['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
         'https://cqf-ruler.ecqm.icfcloud.com/fhir/']
 }
