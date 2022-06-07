@@ -1,13 +1,9 @@
+import {CodeableConcept} from './CodeableConcept';
+
 export type MeasureReportGroup = {
+  code: CodeableConcept;
   population: [{
-    id: string;
-    code: {
-      coding: [{
-        system: string;
-        code: string;
-        display: string;
-      }];
-    };
-    count: number;
+    code: CodeableConcept;
+    count: string;
   }];
 };

@@ -12,7 +12,7 @@ interface props {
 // ReportingPeriod component displays the reporting period card and fields
 const ReportingPeriod: React.FC<props> = ({ startDate, endDate, setStartDate, setEndDate }) => {
     return (
-      <div className="card col-md-12">
+      <div className="card">
         <div className="card-header">
           Reporting Period
         </div>
