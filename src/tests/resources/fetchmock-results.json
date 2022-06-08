@@ -4,6 +4,66 @@
   "contained": [
     {
       "resourceType": "Observation",
+      "id": "sde-observation-B6107A12-4D72-4F7C-B4E8-BA9FC0BE6E9B-coding-2186-5",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-measureInfo",
+          "extension": [
+            {
+              "url": "measure",
+              "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/BreastCancerScreeningsFHIR"
+            },
+            {
+              "url": "populationId",
+              "valueString": "sde-ethnicity"
+            }
+          ]
+        }
+      ],
+      "status": "final",
+      "code": {
+        "text": "sde-ethnicity"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "code": "2186-5"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "sde-observation-38B58267-B0FA-48C6-BAD6-BEB44FDC456F-coding-2106-3",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-measureInfo",
+          "extension": [
+            {
+              "url": "measure",
+              "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/BreastCancerScreeningsFHIR"
+            },
+            {
+              "url": "populationId",
+              "valueString": "sde-race"
+            }
+          ]
+        }
+      ],
+      "status": "final",
+      "code": {
+        "text": "sde-race"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "code": "2106-3"
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "Observation",
       "id": "sde-observation-C91AAEAC-CFE8-49E8-A9A4-C486B886FCE8-code-f",
       "extension": [
         {
@@ -43,9 +103,9 @@
   "type": "individual",
   "measure": "http://ecqi.healthit.gov/ecqms/Measure/BreastCancerScreeningsFHIR",
   "subject": {
-    "reference": "Patient/patientwithcriteriaEtodolac"
+    "reference": "Patient/denom-EXM125"
   },
-  "date": "2022-06-02T16:21:55+00:00",
+  "date": "2022-06-08T20:21:09+00:00",
   "period": {
     "start": "2019-01-01T00:00:00+00:00",
     "end": "2019-12-31T23:59:59+00:00"
@@ -62,7 +122,7 @@
     {
       "population": [
         {
-          "id": "59495760-F805-422E-BA85-243861A8EC6D",
+          "id": "07931086-6B79-4559-917F-9BC0BB55733C",
           "code": {
             "coding": [
               {
@@ -72,10 +132,10 @@
               }
             ]
           },
-          "count": 0
+          "count": 1
         },
         {
-          "id": "03E48A41-2303-4AD9-8869-F7916CADEEBA",
+          "id": "E6C83CB6-4DAB-4391-B645-1770A28FDCA9",
           "code": {
             "coding": [
               {
@@ -85,10 +145,10 @@
               }
             ]
           },
-          "count": 0
+          "count": 1
         },
         {
-          "id": "AAB6C994-F578-43A9-807F-4E2C1F41A0C5",
+          "id": "12B5DBE2-A02B-4859-9C90-78EAAD1868C2",
           "code": {
             "coding": [
               {
@@ -101,7 +161,7 @@
           "count": 0
         },
         {
-          "id": "D4FEA771-F317-48EA-90AB-4B0BEDAA32DC",
+          "id": "C0D5541D-B5FA-4B4D-962A-50CC9F32F311",
           "code": {
             "coding": [
               {
@@ -113,10 +173,19 @@
           },
           "count": 0
         }
-      ]
+      ],
+      "measureScore": {
+        "value": 0
+      }
     }
   ],
   "evaluatedResource": [
+    {
+      "reference": "#sde-observation-B6107A12-4D72-4F7C-B4E8-BA9FC0BE6E9B-coding-2186-5"
+    },
+    {
+      "reference": "#sde-observation-38B58267-B0FA-48C6-BAD6-BEB44FDC456F-coding-2106-3"
+    },
     {
       "reference": "#sde-observation-C91AAEAC-CFE8-49E8-A9A4-C486B886FCE8-code-f"
     },
@@ -125,9 +194,26 @@
         {
           "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-populationReference",
           "valueString": "initial-population"
+        },
+        {
+          "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-populationReference",
+          "valueString": "denominator-exclusion"
         }
       ],
-      "reference": "Patient/patientwithcriteriaEtodolac"
+      "reference": "Patient/denom-EXM125"
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-populationReference",
+          "valueString": "initial-population"
+        },
+        {
+          "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-populationReference",
+          "valueString": "denominator-exclusion"
+        }
+      ],
+      "reference": "Encounter/denom-EXM125-1"
     }
   ]
 }

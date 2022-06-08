@@ -63,7 +63,7 @@ test('expect spinner to show when loading is true', () => {
         loading={loadingFlag}
     />);
 
-    const evaluateButtonWithSpinner: HTMLButtonElement = screen.getByTestId('data-repo-evaluate-button-spinner');
+    const evaluateButtonWithSpinner: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button-spinner');
     expect(evaluateButtonWithSpinner).toBeInTheDocument();
 });
 

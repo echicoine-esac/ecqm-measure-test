@@ -73,7 +73,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
             <div className='col-md-6 order-md-2'>
               <br/>
               {loading ? (
-                <Button data-testid='data-repo-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
+                <Button data-testid='data-repo-collect-data-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
                   <Spinner
                     as='span'
                     variant='light'
@@ -83,7 +83,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                     animation='border'/>
                   Loading...</Button>
               ):(
-                <Button data-testid='data-repo-evaluate-button' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}
+                <Button data-testid='data-repo-collect-data-button' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}
                     onClick={(e) => collectData()}>
                   Collect Data</Button>
               )}

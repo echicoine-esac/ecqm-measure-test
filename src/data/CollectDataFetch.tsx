@@ -14,7 +14,7 @@ export class CollectDataFetch extends AbstractDataFetch {
         selectedMeasure: string,
         startDate: string,
         endDate: string,
-        selectedPatient: string) {
+        selectedPatient?: string) {
 
         super();
         this.type = FetchType.COLLECT_DATA;
@@ -39,7 +39,7 @@ export class CollectDataFetch extends AbstractDataFetch {
         this.selectedMeasure = selectedMeasure;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.selectedPatient = selectedPatient;
+        if (selectedPatient) this.selectedPatient = selectedPatient;
     }
 
     public getUrl(): string {
