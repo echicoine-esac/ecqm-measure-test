@@ -1,8 +1,19 @@
 import fetchMock from 'fetch-mock';
+import { Constants } from '../../constants/Constants';
 import { PatientFetch } from '../../data/PatientFetch';
+import { StringUtils } from '../../utils/StringUtils';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
 
 const url = 'foo/';
+
+test('required properties check', () => {
+    try {
+        new PatientFetch('')
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'url'))
+    }
+
+});
 
 test('get patients mock', async () => {
     const patientFetch = new PatientFetch(url);
@@ -16,13 +27,13 @@ test('get patients mock', async () => {
 
 });
 
-test('get patients mock error', async () => {
+test('get patients mock function error', async () => {
     const errorMsg = 'this is a test'
     let errorCatch = '';
     const patientFetch = new PatientFetch(url);
-    
-    fetchMock.once(patientFetch.getUrl(), { 
-        throws: new Error(errorMsg) 
+
+    fetchMock.once(patientFetch.getUrl(), {
+        throws: new Error(errorMsg)
     });
 
     try {
@@ -32,6 +43,25 @@ test('get patients mock error', async () => {
     }
 
     expect(errorCatch).toEqual('Using foo/Patient?_count=200 to retrieve Patients caused: Error: this is a test');
+
+    fetchMock.restore();
+
+});
+
+test('get patients mock return error', async () => {
+    const errorMsg = 'this is a test'
+    let errorCatch = '';
+    const patientFetch = new PatientFetch(url);
+
+    fetchMock.once(patientFetch.getUrl(), 400);
+
+    try {
+        let patientList: string[] = await patientFetch.fetchData()
+    } catch (error: any) {
+        errorCatch = error.message;
+    }
+
+    expect(errorCatch).toEqual('Using foo/Patient?_count=200 to retrieve Patients caused: Error: Bad Request');
 
     fetchMock.restore();
 

@@ -17,15 +17,15 @@ export class SubmitDataFetch extends AbstractDataFetch {
         this.type = FetchType.SUBMIT_DATA;
 
         if (!selectedReceiving || selectedReceiving === '') {
-            throw new Error(Constants.appDataMissingSelectedServer);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'selectedReceiving'));
         }
 
         if (!selectedMeasure || selectedMeasure === '') {
-            throw new Error(Constants.appDataMissingSelectedMeasure);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'selectedMeasure'));
         }
 
         if (!collectedData || collectedData === '') {
-            throw new Error(Constants.appDataMissingStartDate);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'collectedData'));
         }
 
         this.selectedReceiving = selectedReceiving;
@@ -38,7 +38,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        return '';
+        return Constants.dataSubmitted;
     }
 
     submitData = async (): Promise<string> => {
@@ -53,13 +53,13 @@ export class SubmitDataFetch extends AbstractDataFetch {
         // Call the FHIR server to submit the data
         await fetch(this.getUrl(), requestOptions)
             .then((response) => {
-                if (!response.ok) {
+                if (response.ok === false) {
                     throw Error(response.statusText);
                 }
                 return response.json()
             })
             .then((data) => {
-                ret = Constants.dataSubmitted;
+                ret = this.processReturnedData(data);
             })
             .catch((error) => {
                 let message = StringUtils.format(Constants.fetchError,
@@ -67,6 +67,10 @@ export class SubmitDataFetch extends AbstractDataFetch {
                 throw new Error(message);
             });
         return ret;
+    }
+
+    fetchData = async (): Promise<string> => {
+        return Constants.submitDataFetchDataError;
     }
 }
 

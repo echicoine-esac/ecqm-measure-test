@@ -24,19 +24,19 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         this.type = FetchType.EVALUATE_MEASURE;
 
         if (!selectedServer || selectedServer === '') {
-            throw new Error(Constants.appDataMissingSelectedServer);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'selectedServer'));
         }
 
         if (!selectedMeasure || selectedMeasure === '') {
-            throw new Error(Constants.appDataMissingSelectedMeasure);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'selectedMeasure'));
         }
 
         if (!startDate || startDate === '') {
-            throw new Error(Constants.appDataMissingStartDate);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'startDate'));
         }
 
         if (!endDate || endDate === '') {
-            throw new Error(Constants.appDataMissingEndDate);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'endDate'));
         }
 
         if (selectedServer) this.selectedServer = selectedServer;

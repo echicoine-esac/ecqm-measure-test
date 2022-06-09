@@ -1,10 +1,52 @@
 import fetchMock from 'fetch-mock';
+import { Constants } from '../../constants/Constants';
 import { DataRequirementsFetch } from '../../data/DataRequirementsFetch';
+import { StringUtils } from '../../utils/StringUtils';
 import jsonTestDataRequirementsData from '../resources/fetchmock-knowledge-repo.json';
 
 
+test('required properties check', () => {
+    try {
+        new DataRequirementsFetch('',
+            'selectedMeasure',
+            'startDate',
+            'endDate');
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedKnowledgeRepo'))
+    }
+
+    try {
+        new DataRequirementsFetch('selectedKnowledgeRepo',
+            '',
+            'startDate',
+            'endDate');
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedMeasure'))
+    }
+
+    try {
+        new DataRequirementsFetch('selectedKnowledgeRepo',
+            'selectedMeasure',
+            '',
+            'endDate');
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'startDate'))
+    }
+
+    try {
+        new DataRequirementsFetch('selectedKnowledgeRepo',
+            'selectedMeasure',
+            'startDate',
+            '');
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'endDate'))
+    }
+
+});
+
+
 test('get DataRequirements mock', async () => {
-    const dataRequirementsFetch = new DataRequirementsFetch('selectedDataRepo',
+    const dataRequirementsFetch = new DataRequirementsFetch('selectedKnowledgeRepo',
         'selectedMeasure',
         'startDate',
         'endDate');
@@ -22,7 +64,7 @@ test('get DataRequirements mock', async () => {
 test('get DataRequirements mock error', async () => {
     const errorMsg = 'this is a test'
     let errorCatch = '';
-    const dataRequirementsFetch = new DataRequirementsFetch('selectedDataRepo',
+    const dataRequirementsFetch = new DataRequirementsFetch('selectedKnowledgeRepo',
         'selectedMeasure',
         'startDate',
         'endDate');
@@ -34,18 +76,18 @@ test('get DataRequirements mock error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using selectedDataRepoMeasure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate to retrieve Data Requirements caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using selectedKnowledgeRepoMeasure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate to retrieve Data Requirements caused: Error: this is a test');
 
     fetchMock.restore();
 
 });
 
 test('test urlformat', async () => {
-    let dataRequirementsFetch = await new DataRequirementsFetch('selectedDataRepo',
+    let dataRequirementsFetch = await new DataRequirementsFetch('selectedKnowledgeRepo',
         'selectedMeasure',
         'startDate',
         'endDate');
     expect(dataRequirementsFetch.getUrl())
-        .toEqual('selectedDataRepoMeasure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate');
+        .toEqual('selectedKnowledgeRepoMeasure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate');
 });
 

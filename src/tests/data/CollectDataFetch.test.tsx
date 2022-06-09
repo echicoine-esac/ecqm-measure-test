@@ -1,6 +1,50 @@
 import fetchMock from 'fetch-mock';
+import { Constants } from '../../constants/Constants';
 import { CollectDataFetch } from '../../data/CollectDataFetch';
+import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
+
+test('required properties check', () => {
+    try {
+        new CollectDataFetch('',
+            'selectedMeasure',
+            'startDate',
+            'endDate',
+            'selectedPatient');
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedDataRepo'))
+    }
+
+    try {
+        new CollectDataFetch('selectedDataRepo',
+            '',
+            'startDate',
+            'endDate',
+            'selectedPatient');
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedMeasure'))
+    }
+
+    try {
+        new CollectDataFetch('selectedDataRepo',
+            'selectedMeasure',
+            '',
+            'endDate',
+            'selectedPatient');
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'startDate'))
+    }
+
+    try {
+        new CollectDataFetch('selectedDataRepo',
+            'selectedMeasure',
+            'startDate',
+            '',
+            'selectedPatient');
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'endDate'))
+    }
+});
 
 
 test('get CollectData mock', async () => {

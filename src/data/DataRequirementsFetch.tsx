@@ -1,4 +1,5 @@
 import { Constants } from "../constants/Constants";
+import { StringUtils } from "../utils/StringUtils";
 import { AbstractDataFetch, FetchType } from "./AbstractDataFetch";
 
 export class DataRequirementsFetch extends AbstractDataFetch {
@@ -18,19 +19,19 @@ export class DataRequirementsFetch extends AbstractDataFetch {
         this.type = FetchType.DATA_REQUIREMENTS;
 
         if (!selectedKnowledgeRepo || selectedKnowledgeRepo === '') {
-            throw new Error(Constants.appDataMissingSelectedServer);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'selectedKnowledgeRepo'));
         }
 
         if (!selectedMeasure || selectedMeasure === '') {
-            throw new Error(Constants.appDataMissingSelectedMeasure);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'selectedMeasure'));
         }
 
         if (!startDate || startDate === '') {
-            throw new Error(Constants.appDataMissingStartDate);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'startDate'));
         }
 
         if (!endDate || endDate === '') {
-            throw new Error(Constants.appDataMissingEndDate);
+            throw new Error(StringUtils.format(Constants.missingProperty, 'endDate'));
         }
 
         if (selectedKnowledgeRepo) this.selectedKnowledgeRepo = selectedKnowledgeRepo;

@@ -1,10 +1,5 @@
 export class Constants {
-
-    public static appDataMissingSelectedServer = 'Missing Selected Server';
-    public static appDataMissingSelectedMeasure = 'Missing Selected Measure';
-    public static appDataMissingStartDate = 'Missing Start Date';
-    public static appDataMissingEndDate = 'Missing End Data';
-    public static appDataMissingUrl = 'Missing URL';
+    public static missingProperty = 'Missing required property: {0}';
 
     public static fetchError = 'Using {0} to retrieve {1} caused: {2}';
     public static error_receivingSystemServer = 'Please select a Receiving System server to use';
@@ -29,7 +24,7 @@ export class Constants {
     public static error_selectKnowledgeRepository = 'Please select a Knowledge Repository server to use';
 
     public static dataSubmitted = 'Data Submitted';
-    
+    public static submitDataFetchDataError = 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.'
     
     //central location for retrieving server URLS (could be updated with fetch?)
     public static getServerUrls(): string[] {

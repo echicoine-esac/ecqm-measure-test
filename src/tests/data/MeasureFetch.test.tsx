@@ -1,9 +1,19 @@
 import fetchMock from 'fetch-mock';
+import { Constants } from '../../constants/Constants';
 import { MeasureFetch } from '../../data/MeasureFetch';
 import { Measure } from '../../models/Measure';
+import { StringUtils } from '../../utils/StringUtils';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 
 const url = 'foo/';
+test('required properties check', () => {
+    try {
+        new MeasureFetch('')
+    } catch (error: any) {
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'url'))
+    }
+
+});
 
 test('get measures mock', async () => {
     const measureFetch = new MeasureFetch(url);
