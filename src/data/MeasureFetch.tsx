@@ -1,8 +1,8 @@
-import { Constants } from "../constants/Constants";
-import { BundleEntry } from "../models/BundleEntry";
-import { Measure } from "../models/Measure";
-import { StringUtils } from "../utils/StringUtils";
-import { AbstractDataFetch, FetchType } from "./AbstractDataFetch";
+import { Constants } from '../constants/Constants';
+import { BundleEntry } from '../models/BundleEntry';
+import { Measure } from '../models/Measure';
+import { StringUtils } from '../utils/StringUtils';
+import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
 export class MeasureFetch extends AbstractDataFetch {
 
@@ -28,8 +28,8 @@ export class MeasureFetch extends AbstractDataFetch {
         let entries = data.entry;
         let measureList: Measure[] = entries.map((entry: BundleEntry) => {
             return {
-                "name": entry.resource.id,
-                "scoring": entry.resource.scoring
+                'name': entry.resource.id,
+                'scoring': entry.resource.scoring
             }
         });
         return measureList;

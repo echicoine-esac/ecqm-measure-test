@@ -119,9 +119,9 @@ test('hide/show functionality', () => {
     fireEvent.click(evaluateButton);
     expect(setShowReceiving).toHaveBeenCalledWith(true);
 
-    expect(screen.queryByText("Receiving System Server")).not.toBeInTheDocument();
-    expect(screen.queryByText("Submit Data")).not.toBeInTheDocument();
-    expect(screen.queryByText("Evaluate Measure")).not.toBeInTheDocument();
+    expect(screen.queryByText('Receiving System Server')).not.toBeInTheDocument();
+    expect(screen.queryByText('Submit Data')).not.toBeInTheDocument();
+    expect(screen.queryByText('Evaluate Measure')).not.toBeInTheDocument();
 });
 
  

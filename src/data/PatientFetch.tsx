@@ -1,7 +1,7 @@
-import { Constants } from "../constants/Constants";
-import { BundleEntry } from "../models/BundleEntry";
-import { StringUtils } from "../utils/StringUtils";
-import { AbstractDataFetch, FetchType } from "./AbstractDataFetch";
+import { Constants } from '../constants/Constants';
+import { BundleEntry } from '../models/BundleEntry';
+import { StringUtils } from '../utils/StringUtils';
+import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
 
 export class PatientFetch extends AbstractDataFetch {

@@ -1,6 +1,6 @@
-import { Constants } from "../constants/Constants";
-import { StringUtils } from "../utils/StringUtils";
-import { AbstractDataFetch, FetchType } from "./AbstractDataFetch";
+import { Constants } from '../constants/Constants';
+import { StringUtils } from '../utils/StringUtils';
+import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
 export class DataRequirementsFetch extends AbstractDataFetch {
     type: FetchType;

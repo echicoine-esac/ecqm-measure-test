@@ -5,13 +5,13 @@ import Populations from '../../components/Populations';
 test('population renders and accepts values', () => {
 
   const showPopulations = true;
-  const measureScoringDivText = "text-measure-scoring-div";
-  const initialPopulationDivText = "text-initial-population-div";
-  const denominatorDivText = "text-denominator-div";
-  const denominatorExclusionDivText = "text-denominator-exclusion-div";
-  const denominatorExceptionDivText = "text-denominator-exception-div";
-  const numeratorDivText = "text-numerator-div";
-  const numeratorExclusionDivText = "text-numerator-exclusion-div";
+  const measureScoringDivText = 'text-measure-scoring-div';
+  const initialPopulationDivText = 'text-initial-population-div';
+  const denominatorDivText = 'text-denominator-div';
+  const denominatorExclusionDivText = 'text-denominator-exclusion-div';
+  const denominatorExceptionDivText = 'text-denominator-exception-div';
+  const numeratorDivText = 'text-numerator-div';
+  const numeratorExclusionDivText = 'text-numerator-exclusion-div';
 
   render(<Populations
     measureScoring={measureScoringDivText} 
@@ -23,13 +23,13 @@ test('population renders and accepts values', () => {
     numeratorExclusion={numeratorExclusionDivText} 
     showPopulations={showPopulations} 
     />);
-  const measureScoringDiv: HTMLDivElement = screen.getByTestId("measure-scoring-div");
-  const initialPopulationDiv: HTMLDivElement = screen.getByTestId("initial-population-div");
-  const denominatorDiv: HTMLDivElement = screen.getByTestId("denominator-div");
-  const denominatorExclusionDiv: HTMLDivElement = screen.getByTestId("denominator-exclusion-div");
-  const denominatorExceptionDiv: HTMLDivElement = screen.getByTestId("denominator-exception-div");
-  const numeratorDiv: HTMLDivElement = screen.getByTestId("numerator-div");
-  const numeratorExclusionDiv: HTMLDivElement = screen.getByTestId("numerator-exclusion-div");
+  const measureScoringDiv: HTMLDivElement = screen.getByTestId('measure-scoring-div');
+  const initialPopulationDiv: HTMLDivElement = screen.getByTestId('initial-population-div');
+  const denominatorDiv: HTMLDivElement = screen.getByTestId('denominator-div');
+  const denominatorExclusionDiv: HTMLDivElement = screen.getByTestId('denominator-exclusion-div');
+  const denominatorExceptionDiv: HTMLDivElement = screen.getByTestId('denominator-exception-div');
+  const numeratorDiv: HTMLDivElement = screen.getByTestId('numerator-div');
+  const numeratorExclusionDiv: HTMLDivElement = screen.getByTestId('numerator-exclusion-div');
 
   expect(measureScoringDiv).toBeInTheDocument();
   expect(initialPopulationDiv).toBeInTheDocument();
@@ -52,13 +52,13 @@ test('population renders and accepts values', () => {
 test('showPopulations is false and hides specific divs', () => {
 
   const showPopulations = false;
-  const measureScoringDivText = "text-measure-scoring-div";
-  const initialPopulationDivText = "text-initial-population-div";
-  const denominatorDivText = "text-denominator-div";
-  const denominatorExclusionDivText = "text-denominator-exclusion-div";
-  const denominatorExceptionDivText = "text-denominator-exception-div";
-  const numeratorDivText = "text-numerator-div";
-  const numeratorExclusionDivText = "text-numerator-exclusion-div";
+  const measureScoringDivText = 'text-measure-scoring-div';
+  const initialPopulationDivText = 'text-initial-population-div';
+  const denominatorDivText = 'text-denominator-div';
+  const denominatorExclusionDivText = 'text-denominator-exclusion-div';
+  const denominatorExceptionDivText = 'text-denominator-exception-div';
+  const numeratorDivText = 'text-numerator-div';
+  const numeratorExclusionDivText = 'text-numerator-exclusion-div';
 
   render(<Populations
     measureScoring={measureScoringDivText} 
@@ -71,12 +71,12 @@ test('showPopulations is false and hides specific divs', () => {
     showPopulations={showPopulations} 
     />);
 
-  expect(screen.queryByText("measure-scoring-div")).not.toBeInTheDocument();
-  expect(screen.queryByText("initial-population-div")).not.toBeInTheDocument();
-  expect(screen.queryByText("denominator-div")).not.toBeInTheDocument();
-  expect(screen.queryByText("denominator-exclusion-div")).not.toBeInTheDocument();
-  expect(screen.queryByText("denominator-exception-div")).not.toBeInTheDocument();
-  expect(screen.queryByText("numerator-div")).not.toBeInTheDocument();
-  expect(screen.queryByText("numerator-exclusion-div")).not.toBeInTheDocument();
+  expect(screen.queryByText('measure-scoring-div')).not.toBeInTheDocument();
+  expect(screen.queryByText('initial-population-div')).not.toBeInTheDocument();
+  expect(screen.queryByText('denominator-div')).not.toBeInTheDocument();
+  expect(screen.queryByText('denominator-exclusion-div')).not.toBeInTheDocument();
+  expect(screen.queryByText('denominator-exception-div')).not.toBeInTheDocument();
+  expect(screen.queryByText('numerator-div')).not.toBeInTheDocument();
+  expect(screen.queryByText('numerator-exclusion-div')).not.toBeInTheDocument();
 
 }); 

@@ -20,10 +20,10 @@ test('renders', () => {
     setEndDate={setEndDate}
   />);
 
-  const startDateControl: HTMLInputElement = screen.getByTestId("start-date-control");
+  const startDateControl: HTMLInputElement = screen.getByTestId('start-date-control');
   expect (startDateControl.value).toEqual(startDateText);
 
-  const endDateControl: HTMLInputElement = screen.getByTestId("end-date-control");
+  const endDateControl: HTMLInputElement = screen.getByTestId('end-date-control');
   expect (endDateControl.value).toEqual(endDateText);
   
   fireEvent.change(startDateControl, { target: { value: newStartDateText } });

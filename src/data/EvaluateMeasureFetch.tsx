@@ -1,9 +1,9 @@
-import { Constants } from "../constants/Constants";
-import { MeasureData } from "../models/MeasureData";
-import { MeasureReportGroup } from "../models/MeasureReportGroup";
-import { Population } from "../models/Population";
-import { StringUtils } from "../utils/StringUtils";
-import { AbstractDataFetch, FetchType } from "./AbstractDataFetch";
+import { Constants } from '../constants/Constants';
+import { MeasureData } from '../models/MeasureData';
+import { MeasureReportGroup } from '../models/MeasureReportGroup';
+import { Population } from '../models/Population';
+import { StringUtils } from '../utils/StringUtils';
+import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
 export class EvaluateMeasureFetch extends AbstractDataFetch {
     type: FetchType;

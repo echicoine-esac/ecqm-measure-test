@@ -1,14 +1,14 @@
-import { Constants } from "../constants/Constants";
-import { StringUtils } from "../utils/StringUtils";
+import { Constants } from '../constants/Constants';
+import { StringUtils } from '../utils/StringUtils';
 
 export enum FetchType {
-    DEFAULT = "",
-    PATIENT = "Patients",
-    MEASURE = "Measures",
-    EVALUATE_MEASURE = "Evaluate Measure",
-    DATA_REQUIREMENTS = "Data Requirements",
-    COLLECT_DATA = "Collect Data",
-    SUBMIT_DATA = "Submit Data"
+    DEFAULT = '',
+    PATIENT = 'Patients',
+    MEASURE = 'Measures',
+    EVALUATE_MEASURE = 'Evaluate Measure',
+    DATA_REQUIREMENTS = 'Data Requirements',
+    COLLECT_DATA = 'Collect Data',
+    SUBMIT_DATA = 'Submit Data'
 };
 
 export abstract class AbstractDataFetch {
