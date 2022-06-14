@@ -26,7 +26,6 @@ const App: React.FC = () => {
   // Then the state for the data repository
   const [serverUrls] = useState<Array<string>>(Constants.getServerUrls());
 
-  const [selectedServer, setSelectedServer] = useState<string>('');
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<string>>([]);
 
@@ -99,6 +98,7 @@ const App: React.FC = () => {
     clearPopulationCounts();
 
     // Get the scoring from the selected measure
+
     for (var i = 0; i < measures.length; i++) {
       if (measures[i]!.name === selectedMeasure) {
         setMeasureScoring(measures[i]!.scoring.coding[0].code);
@@ -116,21 +116,25 @@ const App: React.FC = () => {
       // Iterate through the population names to set the state
       const popNames = measureData.popNames;
       const counts = measureData.counts;
-      for (var i = 0; i < popNames.length; i++) {
-        if (popNames[i] === 'initial-population') {
-          setInitialPopulation(counts[i]);
-        } else if (popNames[i] === 'denominator') {
-          setDenominator(counts[i]);
-        } else if (popNames[i] === 'denominator-exclusion') {
-          setDenominatorExclusion(counts[i]);
-        } else if (popNames[i] === 'denominator-exception') {
-          setDenominatorException(counts[i]);
-        } else if (popNames[i] === 'numerator') {
-          setNumerator(counts[i]);
-        } else if (popNames[i] === 'numerator-exclusion') {
-          setNumeratorExclusion(counts[i]);
+      for (var x = 0; x < popNames.length; x++) {
+        if (popNames[x] === 'initial-population') {
+          setInitialPopulation(counts[x]);
+        } else if (popNames[x] === 'denominator') {
+          setDenominator(counts[x]);
+        } else if (popNames[x] === 'denominator-exclusion') {
+          setDenominatorExclusion(counts[x]);
+        } else if (popNames[x] === 'denominator-exception') {
+          setDenominatorException(counts[x]);
+        } else if (popNames[x] === 'numerator') {
+          setNumerator(counts[x]);
+        } else if (popNames[x] === 'numerator-exclusion') {
+          setNumeratorExclusion(counts[x]);
         }
       }
+
+      // Show the populations
+      setShowPopulations(true);
+
       setLoading(false);
     } catch (error: any) {
       setResults(error.message);

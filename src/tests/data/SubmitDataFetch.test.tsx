@@ -39,11 +39,7 @@ test('submit data mock', async () => {
         body: '{"prop1": "val1", "prop2": "val2"}',
     });
 
-    try {
-        expect(await submitDataFetch.submitData()).toEqual(Constants.dataSubmitted);
-    } catch (error: any) {
-        console.log(error.message);
-    }
+    expect(await submitDataFetch.submitData()).toEqual(Constants.dataSubmitted);
 
     fetchMock.reset();
 });

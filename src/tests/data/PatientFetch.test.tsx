@@ -49,14 +49,13 @@ test('get patients mock function error', async () => {
 });
 
 test('get patients mock return error', async () => {
-    const errorMsg = 'this is a test'
     let errorCatch = '';
     const patientFetch = new PatientFetch(url);
 
     fetchMock.once(patientFetch.getUrl(), 400);
 
     try {
-        let patientList: string[] = await patientFetch.fetchData()
+        await patientFetch.fetchData()
     } catch (error: any) {
         errorCatch = error.message;
     }

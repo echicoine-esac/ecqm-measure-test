@@ -1,5 +1,6 @@
 import { Constants } from '../constants/Constants';
 import { MeasureData } from '../models/MeasureData';
+import { MeasureReport } from '../models/MeasureReport';
 import { MeasureReportGroup } from '../models/MeasureReportGroup';
 import { Population } from '../models/Population';
 import { StringUtils } from '../utils/StringUtils';
@@ -62,7 +63,8 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
 
         const jsonData = data;
 
-        let groups = data.group;
+        let report: MeasureReport = data;
+        let groups = report.group;
         let populations = groups.map((group: MeasureReportGroup) => {
             return group.population;
         });
@@ -86,3 +88,4 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     }
 
 }
+ 
