@@ -1,27 +1,31 @@
-import React, {useState} from 'react';
-import logo from './icf_logo.png';
+import React, { useState } from 'react';
 import './App.css';
-import ReportingPeriod from "./components/ReportingPeriod";
-import KnowledgeRepository from "./components/KnowledgeRepository";
 import DataRepository from "./components/DataRepository";
-import ReceivingSystem from "./components/ReceivingSystem";
-import Results from "./components/Results";
+import KnowledgeRepository from './components/KnowledgeRepository';
 import Populations from "./components/Populations";
-import {BundleEntry} from './models/BundleEntry';
-import {MeasureReportGroup} from './models/MeasureReportGroup';
-import {MeasureReport} from './models/MeasureReport';
-import {Population} from './models/Population';
-import {Measure} from './models/Measure';
+import ReceivingSystem from './components/ReceivingSystem';
+import ReportingPeriod from "./components/ReportingPeriod";
+import Results from "./components/Results";
+import { Constants } from './constants/Constants';
+import { CollectDataFetch } from './data/CollectDataFetch';
+import { DataRequirementsFetch } from './data/DataRequirementsFetch';
+import { EvaluateMeasureFetch } from './data/EvaluateMeasureFetch';
+import { MeasureFetch } from './data/MeasureFetch';
+import { PatientFetch } from './data/PatientFetch';
+import { SubmitDataFetch } from './data/SubmitDataFetch';
+import logo from './icf_logo.png';
+import { Measure } from './models/Measure';
+import { MeasureData } from './models/MeasureData';
 
 const App: React.FC = () => {
   // Define the state variables
   // First define the state for reporting period
-  const [startDate, setStartDate] = useState<string>('2019-01-01');
-  const [endDate, setEndDate] = useState<string>('2019-12-31');
+  const [startDate, setStartDate] = useState<string>(Constants.defaultStartDate);
+  const [endDate, setEndDate] = useState<string>(Constants.defaultEndDate);
 
   // Then the state for the data repository
-  const [serverUrls] = useState<Array<string>>(['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
-    'https://cqf-ruler.ecqm.icfcloud.com/fhir/']);
+  const [serverUrls] = useState<Array<string>>(Constants.getServerUrls());
+
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<string>>([]);
 
@@ -54,70 +58,38 @@ const App: React.FC = () => {
   // Saved data
   const [collectedData, setCollectedData] = useState<string>('');
 
-  // Function for retrieving the measures from the selected server
-  const fetchMeasures = (url: string) => {
+  const fetchMeasures = async (url: string) => {
     setSelectedKnowledgeRepo(url);
     setShowPopulations(false);
 
-    // Fetch all the Measures from the selected server
-    fetch(url + 'Measure?_count=200')
-      .then((response) => {
-        if (!response.ok) {
-          throw Error('Server Returned ' + response.status);
-        }
-        return response.json()
-      })
-      .then((data) => {
-        let entries = data.entry;
-        let measureList : Measure[] = entries.map((entry: BundleEntry) => {
-          return {
-            "name": entry.resource.id,
-            "scoring": entry.resource.scoring
-          }
-        });
-        setMeasures(measureList);
-      })
-      .catch((error) => {
-        let message = 'Calling ' + url + 'Measure caused ' + error;
-        setResults(message);
-      })
+    try {
+      setMeasures(await new MeasureFetch(url).fetchData())
+    } catch (error: any) {
+      setResults(error.message);
+    }
   };
 
   // Function for retrieving the patients from the selected server
-  const fetchPatients = (url: string) => {
+  const fetchPatients = async (url: string) => {
     setSelectedDataRepo(url);
     setShowPopulations(false);
 
-    // Fetch all the Patients from the selected server
-    fetch(url + 'Patient?_count=200')
-      .then((response) => {
-        if (!response.ok) {
-          throw Error('Server Returned ' + response.status);
-        }
-        return response.json()
-      })
-      .then((data) => {
-        let entries = data.entry;
-        let patientIds = entries.map((entry: BundleEntry) => {
-          return entry.resource.id
-        });
-        setPatients(patientIds);
-      })
-      .catch((error) => {
-        let message = 'Calling ' + url + 'Patient caused ' + error;
-        setResults(message);
-      })
+    try {
+      setPatients(await new PatientFetch(url).fetchData())
+    } catch (error: any) {
+      setResults(error.message);
+    }
   };
 
   // Function for calling the server to perform the measure evaluation
-  const evaluateMeasure = async() => {
+  const evaluateMeasure = async () => {
     // Make sure all required elements are set
     if (selectedReceiving === '') {
-      setResults('Please select a Receiving System server to use');
+      setResults(Constants.error_receivingSystemServer);
       return;
     }
     if (selectedMeasure === '') {
-      setResults('Please select a Measure to evaluate');
+      setResults(Constants.error_selectMeasure);
       return;
     }
 
@@ -126,92 +98,61 @@ const App: React.FC = () => {
     clearPopulationCounts();
 
     // Get the scoring from the selected measure
-    for (var i=0; i<measures.length; i++) {
+
+    for (var i = 0; i < measures.length; i++) {
       if (measures[i]!.name === selectedMeasure) {
         setMeasureScoring(measures[i]!.scoring.coding[0].code);
       }
     }
 
-    // Build the evaluate measure URL based on the options selected
-    let Url = '';
-    if (selectedPatient === '') {
-      Url = selectedReceiving + 'Measure/' + selectedMeasure +
-        '/$evaluate-measure?periodStart=' + startDate +
-        '&periodEnd=' + endDate + '&reportType=subject-list';
-    } else {
-      Url = selectedReceiving + 'Measure/' + selectedMeasure +
-        '/$evaluate-measure?subject=' + selectedPatient + '&periodStart=' +
-        startDate + '&periodEnd=' + endDate;
-    }
+    const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedReceiving,
+      selectedPatient, selectedMeasure, startDate, endDate)
 
-    let message = 'Calling ' + Url + '...';
-    setResults(message);
+    setResults('Calling ' + evaluateMeasureFetch.getUrl());
 
-    // Fetch the data by calling the API and use callback to reflect state properly
-    fetch(Url)
-      .then((response) => {
-        if (!response.ok) {
-          throw Error('Server Returned ' + response.status);
+    try {
+      let measureData: MeasureData = await evaluateMeasureFetch.fetchData();
+      setResults(JSON.stringify(measureData.jsonBody, undefined, 2));
+      // Iterate through the population names to set the state
+      const popNames = measureData.popNames;
+      const counts = measureData.counts;
+      for (var x = 0; x < popNames.length; x++) {
+        if (popNames[x] === 'initial-population') {
+          setInitialPopulation(counts[x]);
+        } else if (popNames[x] === 'denominator') {
+          setDenominator(counts[x]);
+        } else if (popNames[x] === 'denominator-exclusion') {
+          setDenominatorExclusion(counts[x]);
+        } else if (popNames[x] === 'denominator-exception') {
+          setDenominatorException(counts[x]);
+        } else if (popNames[x] === 'numerator') {
+          setNumerator(counts[x]);
+        } else if (popNames[x] === 'numerator-exclusion') {
+          setNumeratorExclusion(counts[x]);
         }
-        return response.json()
-      })
-     .then((data) => {
-     setResults(JSON.stringify(data, undefined, 2));
-       let report : MeasureReport = data;
-       let groups = report.group;
-       let populations = groups.map((group: MeasureReportGroup) => {
-         return group.population;
-       });
-       let pop = populations[0];
-       let popNames = pop.map((pop: Population) => {
-          return pop.code.coding[0].code;
-       });
-       let counts = pop.map((pop: Population) => {
-         return pop.count;
-       });
+      }
 
-       // Iterate through the population names to set the state
-       for (var i=0; i< popNames.length; i++) {
-         if (popNames[i] === 'initial-population') {
-            setInitialPopulation(counts[i]);
-         } else if (popNames[i] === 'denominator') {
-            setDenominator(counts[i]);
-         } else if (popNames[i] === 'denominator-exclusion') {
-            setDenominatorExclusion(counts[i]);
-         } else if (popNames[i] === 'denominator-exception') {
-            setDenominatorException(counts[i]);
-         } else if (popNames[i] === 'numerator') {
-            setNumerator(counts[i]);
-         } else if (popNames[i] === 'numerator-exclusion') {
-            setNumeratorExclusion(counts[i]);
-         }
-       }
+      // Show the populations
+      setShowPopulations(true);
 
-       // Clear the loading state
-       setLoading(false);
-
-       // Show the populations
-       setShowPopulations(true);
-     })
-    .catch((error) => {
-      let message = 'Calling ' + Url + ' caused ' + error;
-      setResults(message);
-      // Clear the loading state
       setLoading(false);
-    })
+    } catch (error: any) {
+      setResults(error.message);
+      setLoading(false);
+    }
   };
 
   // Function for calling the server to get the data requirements
-  const getDataRequirements = async() => {
+  const getDataRequirements = async () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
     if (selectedKnowledgeRepo === '') {
-      setResults('Please select a Knowledge Repository server to use');
+      setResults(Constants.error_selectKnowledgeRepository);
       return;
     }
     if (selectedMeasure === '') {
-      setResults('Please select a Measure to get the data requirements for');
+      setResults(Constants.error_selectMeasureDR);
       return;
     }
 
@@ -219,126 +160,85 @@ const App: React.FC = () => {
     setLoading(true);
 
     // Build the data requirements URL based on the options selected
-    let Url = selectedKnowledgeRepo + 'Measure/' + selectedMeasure +
-      '/$data-requirements?periodStart=' + startDate + '&periodEnd=' + endDate;
+    const dataRequirementsFetch = new DataRequirementsFetch(selectedKnowledgeRepo,
+      selectedMeasure, startDate, endDate)
 
-    let message = 'Calling ' + Url + '...';
+    let message = 'Calling ' + dataRequirementsFetch.getUrl() + '...';
     setResults(message);
 
-    // Call the FHIR server to get the data requirements
-    fetch(Url)
-     .then((response) => {
-        if (!response.ok) {
-          throw Error('Server Returned ' + response.status);
-        }
-        return response.json()
-      })
-     .then((data) => {
-       setResults(JSON.stringify(data, undefined, 2));
-       setLoading(false);
-     })
-     .catch((error) => {
-       var message = 'Calling ' + Url + ' caused ' + error;
-       setResults(message);
-       setLoading(false);
-     });
-    };
+    try {
+      setResults(await dataRequirementsFetch.fetchData());
+      setLoading(false);
+    } catch (error: any) {
+      setResults(error.message);
+      setLoading(false);
+    }
+
+  };
 
   // Function for calling the server to collect the data for a measure
-  const collectData = async() => {
+  const collectData = async () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
     if (selectedDataRepo === '') {
-      setResults('Please select a Data Repository server to use');
+      setResults(Constants.error_selectDataRepository);
       return;
     }
     if (selectedMeasure === '') {
-      setResults('Please select a Measure to collect the data for');
+      setResults(Constants.error_selectMeasureDataCollection);
       return;
     }
 
     // Set loading to true for spinner
     setLoading(true);
 
-    // Build the collect data URL based on the options selected
-    let Url = selectedDataRepo + 'Measure/' + selectedMeasure +
-      '/$collect-data?periodStart=' + startDate + '&periodEnd=' + endDate;
+    const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
+      startDate, endDate, selectedPatient)
 
-    if (selectedPatient !== '') {
-      Url = Url + '&subject=' + selectedPatient;
-    }
-
-    let message = 'Calling ' + Url + '...';
+    let message = 'Calling ' + collectDataFetch.getUrl() + '...';
     setResults(message);
 
     // Call the FHIR server to collect the data
-    fetch(Url)
-     .then((response) => {
-       if (!response.ok) {
-         throw Error('Server Returned ' + response.status);
-       }
-       return response.json()
-     })
-     .then((data) => {
-       setCollectedData(JSON.stringify(data, undefined, 2));
-       setResults(JSON.stringify(data, undefined, 2));
-       setLoading(false);
-     })
-    .catch((error) => {
-      var message = 'Calling ' + Url + ' caused ' + error;
-      setResults(message);
+    try {
+      const retJSON = await collectDataFetch.fetchData();
+      setCollectedData(retJSON);
+      setResults(retJSON);
       setLoading(false);
-    });
+    } catch (error: any) {
+      setResults(error.message);
+      setLoading(false);
+    }
+
   };
 
   // Function for calling the server to submit the data for a measure
-  const submitData = async() => {
+  const submitData = async () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
     if (selectedReceiving === '') {
-      setResults('Please select a Receiving System server to use');
+      setResults(Constants.error_selectReceivingSystemServer);
       return;
     }
     if (!selectedMeasure) {
-      setResults('Please select a Measure to submit the data for');
+      setResults(Constants.error_selectMeasureToSubmit);
       return;
     }
 
     // Set loading to true for spinner
     setLoading(true);
 
-    // Build the submit data URL based on the options selected
-    let Url = selectedReceiving + 'Measure/' + selectedMeasure + '/$submit-data';
 
-    let message = 'Calling ' + Url + '...';
-    setResults(message);
+    try {
+      setResults(await new SubmitDataFetch(selectedReceiving,
+        selectedMeasure, collectedData).submitData());
+      setLoading(false);
+    } catch (error: any) {
+      setResults(error.message);
+      setLoading(false);
+    }
 
-    //Set the collected data as the payload
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/fhir+json' },
-      body: JSON.stringify(collectedData)
-    };
-
-    // Call the FHIR server to submit the data
-    fetch(Url, requestOptions)
-     .then((response) => {
-       if (!response.ok) {
-         throw Error(response.statusText);
-       }
-       return response.json()
-       })
-     .then((data) => {
-       setResults("Data Submitted");
-       setLoading(false);
-     })
-     .catch((error) => {
-       var message = 'Calling ' + Url + ' caused ' + error;
-       setResults(message);
-       setLoading(false);
-     });
   };
 
   // Function for clearing all population counts
@@ -356,33 +256,33 @@ const App: React.FC = () => {
     <div className="container">
       <div className="row">
         <div className="py-5 text-center col-md-1">
-          <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72"/>
+          <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72" />
         </div>
         <div className="py-5 text-center col-md-11">
           <h2>eCQM Testing Tool</h2>
         </div>
       </div>
-      <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>
-      <br/>
+      <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
+      <br />
       <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
         serverUrls={serverUrls} fetchMeasures={fetchMeasures} selectedKnowledgeRepo={selectedKnowledgeRepo}
         measures={measures} setSelectedMeasure={setSelectedMeasure} selectedMeasure={selectedMeasure}
-        getDataRequirements={getDataRequirements} loading={loading}/>
-      <br/>
+        getDataRequirements={getDataRequirements} loading={loading} />
+      <br />
       <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} serverUrls={serverUrls}
         setSelectedDataRepo={setSelectedDataRepo} selectedDataRepo={selectedDataRepo} patients={patients}
         fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient} selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading}/>
-      <br/>
+        collectData={collectData} loading={loading} />
+      <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         serverUrls={serverUrls} setSelectedReceiving={setSelectedReceiving} selectedReceiving={selectedReceiving}
-        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading}/>
-      <Results results={results}/>
+        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading} />
+      <Results results={results} />
       <Populations initialPopulation={initialPopulation} denominator={denominator}
         denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
         numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
-        measureScoring={measureScoring}/>
-      <br/>
+        measureScoring={measureScoring} />
+      <br />
     </div>
   );
 }
