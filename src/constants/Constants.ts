@@ -32,6 +32,6 @@ export class Constants {
     }
     private static serverUrls: string[] = ['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
         'https://cqf-ruler.ecqm.icfcloud.com/fhir/', 'https://cdr.ipro.vitaminsoftware.com/fhir/',
-	'https://receiving.ipro.vitraminsoftware.com/fhir/']
+	'https://receiving.ipro.vitaminsoftware.com/fhir/']
 }
 
