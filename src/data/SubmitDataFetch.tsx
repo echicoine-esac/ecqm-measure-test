@@ -45,7 +45,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/fhir+json' },
-            body: JSON.stringify(this.collectedData)
+            body: this.collectedData
         };
 
         let ret = '';
