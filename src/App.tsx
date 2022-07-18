@@ -16,7 +16,8 @@ const App: React.FC = () => {
   const [endDate, setEndDate] = useState<string>('2019-12-31');
 
   // Then the state for the data repository
-  const [serverUrls] = useState<Array<string>>(['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
+  const [serverUrls] = useState<Array<string>>(['http://localhost:8080/fhir/',
+    'https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
     'https://cqf-ruler.ecqm.icfcloud.com/fhir/']);
   const [selectedServer, setSelectedServer] = useState<string>('');
   const [measures, setMeasures] = useState<Array<string>>([]);
