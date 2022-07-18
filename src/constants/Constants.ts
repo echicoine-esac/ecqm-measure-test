@@ -30,7 +30,8 @@ export class Constants {
     public static getServerUrls(): string[] {
         return Constants.serverUrls;
     }
-    private static serverUrls: string[] = ['https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
+    private static serverUrls: string[] = ['http://localhost:8080/fhir/',
+	'https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
         'https://cqf-ruler.ecqm.icfcloud.com/fhir/', 'https://cdr.ipro.vitaminsoftware.com/fhir/',
 	'https://receiving.ipro.vitaminsoftware.com/fhir/']
 }
