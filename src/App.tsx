@@ -25,7 +25,6 @@ const App: React.FC = () => {
 
   // Then the state for the data repository
   const [serverUrls] = useState<Array<string>>(Constants.getServerUrls());
-
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<string>>([]);
 
