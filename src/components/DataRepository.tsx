@@ -1,75 +1,98 @@
-import React from "react";
+import React from 'react';
 import {Button, Spinner} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Props for DataRepository
 interface props {
+  showDataRepo: boolean;
+  setShowDataRepo: React.Dispatch<React.SetStateAction<boolean>>;
   serverUrls: Array<string>;
-  setSelectedServer: React.Dispatch<React.SetStateAction<string>>;
-  measures: Array<string>;
+  setSelectedDataRepo: React.Dispatch<React.SetStateAction<string>>;
+  selectedDataRepo: string;
   patients: Array<string>;
-  fetchMeasures: (url: string) => void;
-  setSelectedMeasure: React.Dispatch<React.SetStateAction<string>>;
+  fetchPatients: (url: string) => void;
   setSelectedPatient: React.Dispatch<React.SetStateAction<string>>;
-  evaluateMeasure: () => void;
+  selectedPatient: string;
+  collectData: () => void;
   loading: boolean;
 }
 
-// DataRepository component displays the test server, measure, patient, and button to evaluate
-const DataRepository: React.FC<props> = ({ serverUrls, setSelectedServer, measures, patients, fetchMeasures,
-    setSelectedMeasure, setSelectedPatient, evaluateMeasure, loading }) => {
+// DataRepository component displays the test server, patient, and button to collect data
+const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, serverUrls, setSelectedDataRepo,
+    selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient, collectData, loading }) => {
 
     return (
-      <div>
-          <div className="row">
-            <div className="col-md-6 order-md-1">
-              <label>Test Server</label>
-              <select className="custom-select d-block w-100" id="server" onChange={(e) => fetchMeasures(e.target.value)}>
-                <option value="">Select a Test Server...</option>
-                  {serverUrls.map((server) => (
-                    <option>{server}</option>
-                  ))}
-              </select>
-            </div>
-            <div className="col-md-6 order-md-2">
-              <label>Measure</label>
-              <select className="custom-select d-block w-100" id="measure" onChange={(e) => setSelectedMeasure(e.target.value)}>
-                <option value="">Select a Measure...</option>
-                  {measures.map((measure) => (
-                    <option>{measure}</option>
-                  ))}
-              </select>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6 order-md-1">
-              <label>Patient (optional)</label>
-              <select className="custom-select d-block w-100" id="patient" onChange={(e) => setSelectedPatient(e.target.value)}>
-                <option value="">Select a Patient...</option>
-                  {patients.map((patient) => (
-                    <option>{patient}</option>
-                  ))}
-              </select>
-            </div>
-            <div className="col-md-6 order-md-2">
-              <br/>
-              {loading ? (
-                <Button className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={loading}>
-                  <Spinner
-                    as="span"
-                    variant="light"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                    animation="border"/>
-                  Loading...</Button>
-              ):(
-                <Button className="w-100 btn btn-primary btn-lg" id="evaluate" disabled={loading}
-                    onClick={(e) => evaluateMeasure()}>
-                  Evaluate Measure</Button>
+      <div className='card'>
+        <div className='card-header'>
+          <div className='row'>
+            <div className='col-md-3 order-md-1'>Data Repository</div>
+            {showDataRepo ? (
+              <div className='col-md-8 order-md-2 text-muted'/>
+            ) : (
+              <div className='col-md-8 order-md-2 text-muted'>
+                Selected Patient: {selectedPatient}
+              </div>
+            )}
+            <div className='col-md-1 order-md-3'>{showDataRepo ? (
+                <Button data-testid='data-repo-hide-section-button' className='btn btn-primary btn-lg float-right' 
+                onClick={(e) => setShowDataRepo(false)}>
+                  Hide
+                </Button>
+              ) : (
+                <Button data-testid='data-repo-show-section-button' className='btn btn-primary btn-lg float-right' 
+                onClick={(e) => setShowDataRepo(true)}>
+                  Show
+                </Button>
               )}
             </div>
           </div>
+        </div>
+        {showDataRepo ? (
+        <div className='card-body'>
+          <div className='row'>
+            <div className='col-md-6 order-md-1'>
+              <label>Data Repository Server</label>
+              <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo}
+                onChange={(e) => fetchPatients(e.target.value)}>
+                <option value=''>Select a Server...</option>
+                  {serverUrls.map((server, index) => (
+                    <option key={index}>{server}</option>
+                  ))}
+              </select>
+            </div>
+            <div className='col-md-6 order-md-2'>
+              <label>Patient (optional)</label>
+              <select data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient}
+                onChange={(e) => setSelectedPatient(e.target.value)}>
+                <option value=''>Select a Patient...</option>
+                  {patients.map((patient, index) => (
+                    <option key={index}>{patient}</option>
+                  ))}
+              </select>
+            </div>
+            <div className='col-md-6 order-md-2'>
+              <br/>
+              {loading ? (
+                <Button data-testid='data-repo-collect-data-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
+                  <Spinner
+                    as='span'
+                    variant='light'
+                    size='sm'
+                    role='status'
+                    aria-hidden='true'
+                    animation='border'/>
+                  Loading...</Button>
+              ):(
+                <Button data-testid='data-repo-collect-data-button' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}
+                    onClick={(e) => collectData()}>
+                  Collect Data</Button>
+              )}
+            </div>
+          </div>
+        </div>
+        ) : (
+          <div/>
+        )}
       </div>
     );
 };
