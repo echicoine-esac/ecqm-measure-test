@@ -1,22 +1,23 @@
 import { Constants } from '../constants/Constants';
 import { StringUtils } from '../utils/StringUtils';
-import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
+import {Server} from "../models/Server";
+import {AbstractDataFetch, FetchType} from "./AbstractDataFetch";
 
 export class SubmitDataFetch extends AbstractDataFetch {
     type: FetchType;
 
-    selectedReceiving: string = '';
+    selectedReceiving: Server | undefined;
     selectedMeasure: string = '';
     collectedData: string = '';
 
-    constructor(selectedReceiving: string,
+    constructor(selectedReceiving: Server | undefined,
         selectedMeasure: string,
         collectedData: string) {
 
         super();
         this.type = FetchType.SUBMIT_DATA;
 
-        if (!selectedReceiving || selectedReceiving === '') {
+        if (!selectedReceiving || selectedReceiving.baseUrl === '') {
             throw new Error(StringUtils.format(Constants.missingProperty, 'selectedReceiving'));
         }
 
@@ -34,7 +35,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        return this.selectedReceiving + 'Measure/' + this.selectedMeasure + '/$submit-data';
+        return this.selectedReceiving?.baseUrl + 'Measure/' + this.selectedMeasure + '/$submit-data';
     }
 
     protected processReturnedData(data: any) {

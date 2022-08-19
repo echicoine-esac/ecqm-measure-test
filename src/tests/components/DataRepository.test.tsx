@@ -20,7 +20,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
         setShowDataRepo={jest.fn()}
         servers={servers}
         setSelectedDataRepo={jest.fn()}
-        selectedDataRepo={servers[1].baseUrl}
+        selectedDataRepo={servers[1]}
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
@@ -56,7 +56,7 @@ test('expect spinner to show when loading is true', () => {
         setShowDataRepo={jest.fn()}
         servers={servers}
         setSelectedDataRepo={jest.fn()}
-        selectedDataRepo={servers[1].baseUrl}
+        selectedDataRepo={servers[1]}
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
@@ -88,7 +88,7 @@ test('hide section', () => {
         setShowDataRepo={setShowDataRepo}
         servers={servers}
         setSelectedDataRepo={setSelectedDataRepo}
-        selectedDataRepo={''}
+        selectedDataRepo={undefined}
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
@@ -120,7 +120,7 @@ test('show section', () => {
         setShowDataRepo={setShowDataRepo}
         servers={servers}
         setSelectedDataRepo={setSelectedDataRepo}
-        selectedDataRepo={''}
+        selectedDataRepo={undefined}
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
@@ -141,6 +141,12 @@ function buildServerData(): Server[] {
 function buildAServer(count: string): Server {
     return {
         id: 'ec2345-' + count,
-        baseUrl: 'http://localhost:8080-' + count
+        baseUrl: 'http://localhost:8080-' + count,
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
     }
 }

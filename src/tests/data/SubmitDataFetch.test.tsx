@@ -2,23 +2,26 @@ import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
 import { SubmitDataFetch } from '../../data/SubmitDataFetch';
 import { StringUtils } from '../../utils/StringUtils';
+import {Server} from "../../models/Server";
 
 
 test('required properties check', () => {
+    const dataServer: Server = buildAServer();
+
     try {
-        new SubmitDataFetch('', 'selectedMeasure', 'collectedData');
+        new SubmitDataFetch(undefined, 'selectedMeasure', 'collectedData');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedReceiving'))
     }
 
     try {
-        new SubmitDataFetch('selectedReceiving', '', 'collectedData');
+        new SubmitDataFetch(dataServer, '', 'collectedData');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedMeasure'))
     }
 
     try {
-        new SubmitDataFetch('selectedReceiving', 'selectedMeasure', '');
+        new SubmitDataFetch(dataServer, 'selectedMeasure', '');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'collectedData'))
     }
@@ -26,13 +29,17 @@ test('required properties check', () => {
 });
 
 test('fetchData and processData override', async () => {
-    expect(await new SubmitDataFetch('selectedReceiving',
+    const dataServer: Server = buildAServer();
+
+    expect(await new SubmitDataFetch(dataServer,
         'selectedMeasure', 'collectedData').fetchData())
         .toEqual(Constants.submitDataFetchDataError);
 });
 
 test('submit data mock', async () => {
-    const submitDataFetch = new SubmitDataFetch('selectedReceiving', 'selectedMeasure', 'collectedData');
+    const dataServer: Server = buildAServer();
+
+    const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -45,7 +52,9 @@ test('submit data mock', async () => {
 });
 
 test('submit data mock error 400', async () => {
-    const submitDataFetch = new SubmitDataFetch('selectedReceiving', 'selectedMeasure', 'collectedData');
+    const dataServer: Server = buildAServer();
+
+    const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), 400, { method: 'POST' });
 
     let errorCatch = '';
@@ -62,7 +71,9 @@ test('submit data mock error 400', async () => {
 });
 
 test('submit data mock error 500', async () => {
-    const submitDataFetch = new SubmitDataFetch('selectedReceiving', 'selectedMeasure', 'collectedData');
+    const dataServer: Server = buildAServer();
+
+    const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), 500, { method: 'POST' });
 
     let errorCatch = '';
@@ -80,10 +91,24 @@ test('submit data mock error 500', async () => {
 
 
 test('test urlformat', async () => {
-    const submitDataFetch = new SubmitDataFetch('selectedReceiving',
+    const dataServer: Server = buildAServer();
+
+    const submitDataFetch = new SubmitDataFetch(dataServer,
         'selectedMeasure',
         'collectedData');
     expect(submitDataFetch.getUrl())
         .toEqual('selectedReceivingMeasure/selectedMeasure/$submit-data');
 });
 
+function buildAServer(): Server {
+    return {
+        id: '1',
+        baseUrl: 'http://localhost:8080',
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
+    }
+}

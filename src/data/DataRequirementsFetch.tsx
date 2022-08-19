@@ -1,16 +1,17 @@
 import { Constants } from '../constants/Constants';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
+import {Server} from "../models/Server";
 
 export class DataRequirementsFetch extends AbstractDataFetch {
     type: FetchType;
 
-    selectedKnowledgeRepo: string = '';
+    selectedKnowledgeRepo: Server | undefined;
     selectedMeasure: string = '';
     startDate: string = '';
     endDate: string = '';
 
-    constructor(selectedKnowledgeRepo: string,
+    constructor(selectedKnowledgeRepo: Server | undefined,
         selectedMeasure: string,
         startDate: string,
         endDate: string) {
@@ -18,7 +19,7 @@ export class DataRequirementsFetch extends AbstractDataFetch {
         super();
         this.type = FetchType.DATA_REQUIREMENTS;
 
-        if (!selectedKnowledgeRepo || selectedKnowledgeRepo === '') {
+        if (!selectedKnowledgeRepo) {
             throw new Error(StringUtils.format(Constants.missingProperty, 'selectedKnowledgeRepo'));
         }
 
@@ -41,7 +42,7 @@ export class DataRequirementsFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        return this.selectedKnowledgeRepo + 'Measure/' + this.selectedMeasure +
+        return this.selectedKnowledgeRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
         '/$data-requirements?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
     }
 

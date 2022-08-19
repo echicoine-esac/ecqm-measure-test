@@ -3,11 +3,14 @@ import { Constants } from '../../constants/Constants';
 import { DataRequirementsFetch } from '../../data/DataRequirementsFetch';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestDataRequirementsData from '../resources/fetchmock-knowledge-repo.json';
+import {Server} from "../../models/Server";
 
 
 test('required properties check', () => {
+    const dataServer: Server = buildAServer();
+
     try {
-        new DataRequirementsFetch('',
+        new DataRequirementsFetch(undefined,
             'selectedMeasure',
             'startDate',
             'endDate');
@@ -16,7 +19,7 @@ test('required properties check', () => {
     }
 
     try {
-        new DataRequirementsFetch('selectedKnowledgeRepo',
+        new DataRequirementsFetch(dataServer,
             '',
             'startDate',
             'endDate');
@@ -25,7 +28,7 @@ test('required properties check', () => {
     }
 
     try {
-        new DataRequirementsFetch('selectedKnowledgeRepo',
+        new DataRequirementsFetch(dataServer,
             'selectedMeasure',
             '',
             'endDate');
@@ -34,7 +37,7 @@ test('required properties check', () => {
     }
 
     try {
-        new DataRequirementsFetch('selectedKnowledgeRepo',
+        new DataRequirementsFetch(dataServer,
             'selectedMeasure',
             'startDate',
             '');
@@ -46,7 +49,9 @@ test('required properties check', () => {
 
 
 test('get DataRequirements mock', async () => {
-    const dataRequirementsFetch = new DataRequirementsFetch('selectedKnowledgeRepo',
+    const dataServer: Server = buildAServer();
+
+    const dataRequirementsFetch = new DataRequirementsFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate');
@@ -62,9 +67,11 @@ test('get DataRequirements mock', async () => {
 });
 
 test('get DataRequirements mock error', async () => {
+    const dataServer: Server = buildAServer();
+
     const errorMsg = 'this is a test'
     let errorCatch = '';
-    const dataRequirementsFetch = new DataRequirementsFetch('selectedKnowledgeRepo',
+    const dataRequirementsFetch = new DataRequirementsFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate');
@@ -83,7 +90,9 @@ test('get DataRequirements mock error', async () => {
 });
 
 test('test urlformat', async () => {
-    let dataRequirementsFetch = await new DataRequirementsFetch('selectedKnowledgeRepo',
+    const dataServer: Server = buildAServer();
+
+    let dataRequirementsFetch = await new DataRequirementsFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate');
@@ -91,3 +100,15 @@ test('test urlformat', async () => {
         .toEqual('selectedKnowledgeRepoMeasure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate');
 });
 
+function buildAServer(): Server {
+    return {
+        id: '1',
+        baseUrl: 'http://localhost:8080',
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
+    }
+}

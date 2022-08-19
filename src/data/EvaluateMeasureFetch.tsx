@@ -5,17 +5,18 @@ import { MeasureReportGroup } from '../models/MeasureReportGroup';
 import { Population } from '../models/Population';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
+import {Server} from "../models/Server";
 
 export class EvaluateMeasureFetch extends AbstractDataFetch {
     type: FetchType;
 
-    selectedServer: string = '';
+    selectedServer: Server | undefined;
     selectedPatient: string = '';
     selectedMeasure: string = '';
     startDate: string = '';
     endDate: string = '';
 
-    constructor(selectedServer: string,
+    constructor(selectedServer: Server | undefined,
         selectedPatient: string,
         selectedMeasure: string,
         startDate: string,
@@ -24,11 +25,11 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         super();
         this.type = FetchType.EVALUATE_MEASURE;
 
-        if (!selectedServer || selectedServer === '') {
+        if (!selectedServer || selectedServer.baseUrl === '') {
             throw new Error(StringUtils.format(Constants.missingProperty, 'selectedServer'));
         }
 
-        if (!selectedMeasure || selectedMeasure === '') {
+        if (selectedMeasure === '') {
             throw new Error(StringUtils.format(Constants.missingProperty, 'selectedMeasure'));
         }
 
@@ -50,11 +51,11 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     public getUrl(): string {
         if (this.selectedPatient === '') {
             return StringUtils.format(Constants.evaluateMeasureFetchURL,
-                this.selectedMeasure, this.selectedMeasure,
+                this.selectedServer?.baseUrl, this.selectedMeasure,
                 this.startDate, this.endDate);
         } else {
             return StringUtils.format(Constants.evaluateMeasureWithPatientFetchURL,
-                this.selectedServer, this.selectedMeasure,
+                this.selectedServer?.baseUrl, this.selectedMeasure,
                 this.selectedPatient, this.startDate, this.endDate);
         }
     }

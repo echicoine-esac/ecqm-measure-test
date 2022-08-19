@@ -8,6 +8,7 @@ export const onCreateServers = /* GraphQL */ `
       id
       baseUrl
       authUrl
+      tokenUrl
       callbackUrl
       clientID
       clientSecret
@@ -23,6 +24,7 @@ export const onUpdateServers = /* GraphQL */ `
       id
       baseUrl
       authUrl
+      tokenUrl
       callbackUrl
       clientID
       clientSecret
@@ -38,6 +40,7 @@ export const onDeleteServers = /* GraphQL */ `
       id
       baseUrl
       authUrl
+      tokenUrl
       callbackUrl
       clientID
       clientSecret

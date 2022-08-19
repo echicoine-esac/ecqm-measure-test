@@ -4,31 +4,34 @@ import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
 import { MeasureData } from '../../models/MeasureData';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestResultsData from '../resources/fetchmock-results.json';
+import {Server} from "../../models/Server";
 
 test('required properties check', () => {
+    const dataServer: Server =  buildAServer();
+
     try {
-        new EvaluateMeasureFetch('', 'selectedPatient',
+        new EvaluateMeasureFetch(undefined, 'selectedPatient',
         'selectedMeasure', 'startDate', 'endDate');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedServer'))
     }
 
     try {
-        new EvaluateMeasureFetch('selectedServer', 'selectedPatient',
+        new EvaluateMeasureFetch(dataServer, 'selectedPatient',
         '', 'startDate', 'endDate');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedMeasure'))
     }
 
     try {
-        new EvaluateMeasureFetch('selectedServer', 'selectedPatient',
+        new EvaluateMeasureFetch(dataServer, 'selectedPatient',
         'selectedMeasure', '', 'endDate');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'startDate'))
     }
 
     try {
-        new EvaluateMeasureFetch('selectedServer', 'selectedPatient',
+        new EvaluateMeasureFetch(dataServer, 'selectedPatient',
         'selectedMeasure', 'startDate', '');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'endDate'))
@@ -37,8 +40,9 @@ test('required properties check', () => {
 });
 
 test('get evaluate measures mock', async () => {
+    const dataServer: Server =  buildAServer();
 
-    const evaluateMeasuresFetch = new EvaluateMeasureFetch('selectedServer', 'selectedPatient',
+    const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, 'selectedPatient',
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
@@ -56,7 +60,9 @@ test('get evaluate measures mock', async () => {
 
 
 test('test urlformat', async () => {
-    const evaluateMeasuresFetch = new EvaluateMeasureFetch('selectedServer', 'selectedPatient',
+    const dataServer: Server =  buildAServer();
+
+    const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, 'selectedPatient',
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
@@ -65,10 +71,25 @@ test('test urlformat', async () => {
 });
 
 test('test urlformat, no patient', async () => {
-    const evaluateMeasuresFetch = new EvaluateMeasureFetch('selectedServer', '',
+    const dataServer: Server =  buildAServer();
+
+    const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, '',
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
         .toEqual('selectedMeasureMeasure/selectedMeasure/$evaluate-measure?periodStart=startDate&periodEnd=endDate&reportType=subject-list');
         
 });
+
+function buildAServer(): Server {
+    return {
+        id: '1',
+        baseUrl: 'http://localhost:8080',
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
+    }
+}

@@ -6,6 +6,7 @@ type Servers @model @auth(rules: [{allow: public}]) {
   id: ID!
   baseUrl: String!
   authUrl: String
+  tokenUrl: String
   callbackUrl: String
   clientID: String
   clientSecret: String

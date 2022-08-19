@@ -20,7 +20,7 @@ test('expect functions to be called properly', () => {
         setShowReceiving={setShowReceiving}
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
-        selectedReceiving={''} 
+        selectedReceiving={undefined}
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
@@ -52,7 +52,7 @@ test('expect spinner to show with loading set to true', () => {
         setShowReceiving={setShowReceiving}
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
-        selectedReceiving={''} 
+        selectedReceiving={undefined}
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
@@ -82,7 +82,7 @@ test('hide/show functionality', () => {
         setShowReceiving={setShowReceiving}
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
-        selectedReceiving={''} 
+        selectedReceiving={undefined}
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
@@ -110,7 +110,7 @@ test('hide/show functionality', () => {
         setShowReceiving={setShowReceiving}
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
-        selectedReceiving={''} 
+        selectedReceiving={undefined}
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
@@ -132,6 +132,12 @@ function buildServerData(): Server[] {
 function buildAServer(count: string): Server {
     return {
         id: 'ec2345-' + count,
-        baseUrl: 'http://localhost:8080-' + count
+        baseUrl: 'http://localhost:8080-' + count,
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
     }
 }

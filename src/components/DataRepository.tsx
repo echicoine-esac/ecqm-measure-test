@@ -8,10 +8,10 @@ interface props {
   showDataRepo: boolean;
   setShowDataRepo: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
-  setSelectedDataRepo: React.Dispatch<React.SetStateAction<string>>;
-  selectedDataRepo: string;
+  setSelectedDataRepo: React.Dispatch<React.SetStateAction<Server>>;
+  selectedDataRepo: Server | undefined;
   patients: Array<string>;
-  fetchPatients: (url: string) => void;
+  fetchPatients: (dataRepo: Server) => void;
   setSelectedPatient: React.Dispatch<React.SetStateAction<string>>;
   selectedPatient: string;
   collectData: () => void;
@@ -53,8 +53,8 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
           <div className='row'>
             <div className='col-md-6 order-md-1'>
               <label>Data Repository Server</label>
-              <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo}
-                onChange={(e) => fetchPatients(e.target.value)}>
+              <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo!.baseUrl}
+                onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                   {servers.map((server, index) => (
                     <option key={index}>{server!.baseUrl}</option>

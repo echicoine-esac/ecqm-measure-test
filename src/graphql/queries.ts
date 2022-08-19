@@ -8,6 +8,7 @@ export const getServers = /* GraphQL */ `
       id
       baseUrl
       authUrl
+      tokenUrl
       callbackUrl
       clientID
       clientSecret
@@ -28,6 +29,7 @@ export const listServers = /* GraphQL */ `
         id
         baseUrl
         authUrl
+        tokenUrl
         callbackUrl
         clientID
         clientSecret

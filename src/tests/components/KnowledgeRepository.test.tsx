@@ -24,7 +24,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
         setShowKnowledgeRepo={jest.fn()}
         servers={servers}
         fetchMeasures={fetchMeasures}
-        selectedKnowledgeRepo={''}
+        selectedKnowledgeRepo={undefined}
         measures={measures}
         setSelectedMeasure={setSelectedMeasure}
         selectedMeasure={measureDivText} 
@@ -65,7 +65,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
         setShowKnowledgeRepo={jest.fn()}
         servers={servers}
         fetchMeasures={fetchMeasures}
-        selectedKnowledgeRepo={''}
+        selectedKnowledgeRepo={undefined}
         measures={measures}
         setSelectedMeasure={setSelectedMeasure}
         selectedMeasure={measureDivText} 
@@ -105,7 +105,13 @@ function buildAMeasure(count: string): Measure {
 function buildAServer(count: string): Server {
     return {
         id: 'ec2345-' + count,
-        baseUrl: 'http://localhost:8080-' + count
+        baseUrl: 'http://localhost:8080-' + count,
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
     }
 }
 

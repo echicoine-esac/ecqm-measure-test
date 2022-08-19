@@ -17,14 +17,12 @@ import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
 import { MeasureData } from './models/MeasureData';
 import { Server } from "./models/Server";
-import { Amplify, API, graphqlOperation } from 'aws-amplify';
+import { Amplify, API } from 'aws-amplify';
 import { listServers } from './graphql/queries';
 import { createServers, deleteServers } from "./graphql/mutations";
 import awsExports from "./aws-exports";
 import {CreateServersInput} from "./API";
-import {BundleEntry} from "./models/BundleEntry";
 import ServerModal from "./components/ServerModal";
-import {Modal} from "react-bootstrap";
 
 Amplify.configure(awsExports);
 
@@ -42,9 +40,36 @@ const App: React.FC = () => {
   // Selected States
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
   const [selectedPatient, setSelectedPatient] = useState<string>('');
-  const [selectedKnowledgeRepo, setSelectedKnowledgeRepo] = useState<string>('');
-  const [selectedDataRepo, setSelectedDataRepo] = useState<string>('');
-  const [selectedReceiving, setSelectedReceiving] = useState<string>('');
+  const [selectedKnowledgeRepo, setSelectedKnowledgeRepo] = useState<Server>({
+    id: '',
+    baseUrl: '',
+    authUrl: '',
+    tokenUrl: '',
+    callbackUrl: '',
+    clientID: '',
+    clientSecret: '',
+    scope: ''
+  });
+  const [selectedDataRepo, setSelectedDataRepo] = useState<Server>({
+    id: '',
+    baseUrl: '',
+    authUrl: '',
+    tokenUrl: '',
+    callbackUrl: '',
+    clientID: '',
+    clientSecret: '',
+    scope: ''
+  });
+  const [selectedReceiving, setSelectedReceiving] = useState<Server>({
+    id: '',
+    baseUrl: '',
+    authUrl: '',
+    tokenUrl: '',
+    callbackUrl: '',
+    clientID: '',
+    clientSecret: '',
+    scope: ''
+  });
 
   // Then set the state for the results
   const [results, setResults] = useState<string>('');
@@ -87,11 +112,28 @@ const App: React.FC = () => {
   }
 
   // Uses the GraphQL API to create a server
-  const createServer = async (url: string) => {
+  const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
+                              clientSecret: string, scope: string) => {
     try {
       let serverInput: CreateServersInput = {
-        baseUrl: url
+        baseUrl: baseUrl
       };
+      if (authUrl !== '') {
+        serverInput.authUrl = authUrl;
+        serverInput.callbackUrl = 'http://localhost/callback';
+      }
+      if (tokenUrl !== '') {
+        serverInput.tokenUrl = tokenUrl;
+      }
+      if (clientId !== '') {
+        serverInput.clientID = clientId;
+      }
+      if (clientSecret !== '') {
+        serverInput.clientSecret = clientSecret;
+      }
+      if (scope !== '') {
+        serverInput.scope = scope;
+      }
       await API.graphql({query: createServers, authMode: "API_KEY", variables: {input: serverInput}})
     } catch (err) { console.log('error creating server', err) }
 
@@ -99,24 +141,24 @@ const App: React.FC = () => {
     await fetchServers();
   }
 
-  const fetchMeasures = async (url: string) => {
-    setSelectedKnowledgeRepo(url);
+  const fetchMeasures = async (knowledgeRepo: Server) => {
+    setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
 
     try {
-      setMeasures(await new MeasureFetch(url).fetchData())
+      setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData())
     } catch (error: any) {
       setResults(error.message);
     }
   };
 
   // Function for retrieving the patients from the selected server
-  const fetchPatients = async (url: string) => {
-    setSelectedDataRepo(url);
+  const fetchPatients = async (dataRepo: Server) => {
+    setSelectedDataRepo(dataRepo);
     setShowPopulations(false);
 
     try {
-      setPatients(await new PatientFetch(url).fetchData())
+      setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData())
     } catch (error: any) {
       setResults(error.message);
     }
@@ -125,7 +167,7 @@ const App: React.FC = () => {
   // Function for calling the server to perform the measure evaluation
   const evaluateMeasure = async () => {
     // Make sure all required elements are set
-    if (selectedReceiving === '') {
+    if (!selectedReceiving || selectedReceiving.baseUrl === '') {
       setResults(Constants.error_receivingSystemServer);
       return;
     }
@@ -188,7 +230,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (selectedKnowledgeRepo === '') {
+    if (!selectedKnowledgeRepo || selectedKnowledgeRepo.baseUrl === '') {
       setResults(Constants.error_selectKnowledgeRepository);
       return;
     }
@@ -222,7 +264,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (selectedDataRepo === '') {
+    if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
       setResults(Constants.error_selectDataRepository);
       return;
     }
@@ -258,7 +300,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (selectedReceiving === '') {
+    if (!selectedReceiving) {
       setResults(Constants.error_selectReceivingSystemServer);
       return;
     }

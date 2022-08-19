@@ -1,17 +1,18 @@
 import { Constants } from '../constants/Constants';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
+import {Server} from "../models/Server";
 
 export class CollectDataFetch extends AbstractDataFetch {
     type: FetchType;
 
-    selectedDataRepo: string = '';
+    selectedDataRepo: Server | undefined;
     selectedMeasure: string = '';
     startDate: string = '';
     endDate: string = '';
     selectedPatient: string = '';
 
-    constructor(selectedDataRepo: string,
+    constructor(selectedDataRepo: Server | undefined,
         selectedMeasure: string,
         startDate: string,
         endDate: string,
@@ -20,7 +21,7 @@ export class CollectDataFetch extends AbstractDataFetch {
         super();
         this.type = FetchType.COLLECT_DATA;
 
-        if (!selectedDataRepo || selectedDataRepo === '') {
+        if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
             throw new Error(StringUtils.format(Constants.missingProperty, 'selectedDataRepo'));
         }
 
@@ -44,7 +45,7 @@ export class CollectDataFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        let ret = this.selectedDataRepo + 'Measure/' + this.selectedMeasure +
+        let ret = this.selectedDataRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
             '/$collect-data?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
 
         if (this.selectedPatient !== '') {

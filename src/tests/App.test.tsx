@@ -18,10 +18,13 @@ import { EvaluateMeasureFetch } from '../data/EvaluateMeasureFetch';
 import { StringUtils } from '../utils/StringUtils';
 import { FetchType } from '../data/AbstractDataFetch';
 import { SubmitDataFetch } from '../data/SubmitDataFetch';
+import {Server} from "../models/Server";
 
 //JSON FETCH:
 test('success scenarios: knowledge repository', async () => {
-  const mockMeasureList: Measure[] = await buildMeasureData(Constants.getServerUrls()[0]);
+  const dataServer: Server = buildAServer();
+
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServer.baseUrl);
 
   render(<App />);
 
@@ -54,7 +57,7 @@ test('success scenarios: knowledge repository', async () => {
   });
 
   //mock knowledge repo json data:
-  const dataRequirementsFetch = new DataRequirementsFetch(Constants.getServerUrls()[0],
+  const dataRequirementsFetch = new DataRequirementsFetch(dataServer,
     mockMeasureList[0].name,
     startDate,
     endDate);
@@ -73,7 +76,9 @@ test('success scenarios: knowledge repository', async () => {
 });
 
 test('fail scenarios: knowledge repository', async () => {
-  const mockMeasureList: Measure[] = await buildMeasureData(Constants.getServerUrls()[0]);
+  const dataServer: Server = buildAServer();
+
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServer.baseUrl);
 
   render(<App />);
 
@@ -106,7 +111,7 @@ test('fail scenarios: knowledge repository', async () => {
   });
 
   //mock knowledge repo json data:
-  const dataRequirementsFetch = new DataRequirementsFetch(Constants.getServerUrls()[0],
+  const dataRequirementsFetch = new DataRequirementsFetch(dataServer,
     mockMeasureList[0].name,
     startDate,
     endDate);
@@ -123,8 +128,10 @@ test('fail scenarios: knowledge repository', async () => {
 });
 
 test('success scenario: data repository', async () => {
-  const mockMeasureList: Measure[] = await buildMeasureData(Constants.getServerUrls()[0]);
-  const mockPatientList: string[] = await buildPatientData(Constants.getServerUrls()[0]);
+  const dataServer: Server = buildAServer();
+
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServer.baseUrl);
+  const mockPatientList: string[] = await buildPatientData(dataServer.baseUrl);
 
   render(<App />);
 
@@ -174,7 +181,7 @@ test('success scenario: data repository', async () => {
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
 
   //mock returned data repo data
-  const collectDataFetch = new CollectDataFetch(Constants.getServerUrls()[0],
+  const collectDataFetch = new CollectDataFetch(dataServer,
     mockMeasureList[0].name,
     startDate,
     endDate,
@@ -196,8 +203,10 @@ test('success scenario: data repository', async () => {
 });
 
 test('fail scenario: data repository', async () => {
-  const mockMeasureList: Measure[] = await buildMeasureData(Constants.getServerUrls()[0]);
-  const mockPatientList: string[] = await buildPatientData(Constants.getServerUrls()[0]);
+  const dataServer: Server = buildAServer();
+
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServer.baseUrl);
+  const mockPatientList: string[] = await buildPatientData(dataServer.baseUrl);
 
   render(<App />);
 
@@ -247,7 +256,7 @@ test('fail scenario: data repository', async () => {
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
 
   //mock returned data repo data
-  const collectDataFetch = new CollectDataFetch(Constants.getServerUrls()[0],
+  const collectDataFetch = new CollectDataFetch(dataServer,
     mockMeasureList[0].name,
     startDate,
     endDate,
@@ -267,8 +276,10 @@ test('fail scenario: data repository', async () => {
 });
 
 test('success scenarios: receiving system', async () => {
-  const mockMeasureList: Measure[] = await buildMeasureData(Constants.getServerUrls()[0]);
-  const mockPatientList: string[] = await buildPatientData(Constants.getServerUrls()[0]);
+  const dataServer: Server = buildAServer();
+
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServer.baseUrl);
+  const mockPatientList: string[] = await buildPatientData(dataServer.baseUrl);
 
   render(<App />);
 
@@ -277,8 +288,6 @@ test('success scenarios: receiving system', async () => {
 
   const endDateControl: HTMLInputElement = screen.getByTestId('end-date-control');
   const endDate = endDateControl.value;
-
-
 
   //unhide data repo
   const dataRepoShowButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
@@ -297,7 +306,6 @@ test('success scenarios: receiving system', async () => {
   await act(async () => {
     await userEvent.selectOptions(serverDropdown, Constants.getServerUrls()[0]);
   });
-
 
   //mock measure list server selection will return 
   const measureFetch = new MeasureFetch(Constants.getServerUrls()[0]);
@@ -328,9 +336,8 @@ test('success scenarios: receiving system', async () => {
   const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
 
-
   //mock returned data repo data
-  const evaluateDataFetch = new EvaluateMeasureFetch(Constants.getServerUrls()[0],
+  const evaluateDataFetch = new EvaluateMeasureFetch(dataServer,
     mockPatientList[0],
     mockMeasureList[0].name,
     startDate,
@@ -377,8 +384,10 @@ test('success scenarios: receiving system', async () => {
 });
 
 test('success scenarios: receiving system - submit data', async () => {
-  const mockMeasureList: Measure[] = await buildMeasureData(Constants.getServerUrls()[0]);
-  const mockPatientList: string[] = await buildPatientData(Constants.getServerUrls()[0]);
+  const dataServer: Server = buildAServer();
+
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServer.baseUrl);
+  const mockPatientList: string[] = await buildPatientData(dataServer.baseUrl);
 
   render(<App />);
 
@@ -405,7 +414,6 @@ test('success scenarios: receiving system - submit data', async () => {
   await act(async () => {
     await userEvent.selectOptions(serverDropdown, Constants.getServerUrls()[0]);
   });
-
 
   //mock measure list server selection will return 
   const measureFetch = new MeasureFetch(Constants.getServerUrls()[0]);
@@ -439,7 +447,7 @@ test('success scenarios: receiving system - submit data', async () => {
   //collect data first:
   const mockJsonCollectDataData = jsonTestCollectDataData;
   await act(async () => {
-    const collectDataFetch = new CollectDataFetch(Constants.getServerUrls()[0],
+    const collectDataFetch = new CollectDataFetch(dataServer,
       mockMeasureList[0].name,
       startDate,
       endDate,
@@ -452,7 +460,7 @@ test('success scenarios: receiving system - submit data', async () => {
     fetchMock.restore();
   });
 
-  const submitDataFetch = new SubmitDataFetch(Constants.getServerUrls()[0], mockMeasureList[0].name, JSON.stringify(mockJsonCollectDataData, undefined, 2));
+  const submitDataFetch = new SubmitDataFetch(dataServer, mockMeasureList[0].name, JSON.stringify(mockJsonCollectDataData, undefined, 2));
   await act(async () => {
     fetchMock.once(submitDataFetch.getUrl(), {
       method: 'POST',
@@ -472,8 +480,10 @@ test('success scenarios: receiving system - submit data', async () => {
 
 
 test('fail scenarios: receiving system - submit data', async () => {
-  const mockMeasureList: Measure[] = await buildMeasureData(Constants.getServerUrls()[0]);
-  const mockPatientList: string[] = await buildPatientData(Constants.getServerUrls()[0]);
+  const dataServer: Server = buildAServer();
+
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServer.baseUrl);
+  const mockPatientList: string[] = await buildPatientData(dataServer.baseUrl);
 
   render(<App />);
 
@@ -500,7 +510,6 @@ test('fail scenarios: receiving system - submit data', async () => {
   await act(async () => {
     await userEvent.selectOptions(serverDropdown, Constants.getServerUrls()[0]);
   });
-
 
   //mock measure list server selection will return 
   const measureFetch = new MeasureFetch(Constants.getServerUrls()[0]);
@@ -531,11 +540,10 @@ test('fail scenarios: receiving system - submit data', async () => {
   const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
 
-
   //collect data first:
   const mockJsonCollectDataData = jsonTestCollectDataData;
   await act(async () => {
-    const collectDataFetch = new CollectDataFetch(Constants.getServerUrls()[0],
+    const collectDataFetch = new CollectDataFetch(dataServer,
       mockMeasureList[0].name,
       startDate,
       endDate,
@@ -549,7 +557,7 @@ test('fail scenarios: receiving system - submit data', async () => {
     fetchMock.restore();
   });
 
-  const submitDataFetch = new SubmitDataFetch(Constants.getServerUrls()[0], mockMeasureList[0].name, JSON.stringify(mockJsonCollectDataData, undefined, 2));
+  const submitDataFetch = new SubmitDataFetch(dataServer, mockMeasureList[0].name, JSON.stringify(mockJsonCollectDataData, undefined, 2));
 
   await act(async () => {
     fetchMock.once(submitDataFetch.getUrl(), 400);
@@ -567,8 +575,10 @@ test('fail scenarios: receiving system - submit data', async () => {
 });
 
 test('fail scenario: receiving system', async () => {
-  const mockMeasureList: Measure[] = await buildMeasureData(Constants.getServerUrls()[0]);
-  const mockPatientList: string[] = await buildPatientData(Constants.getServerUrls()[0]);
+  const dataServer: Server = buildAServer();
+
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServer.baseUrl);
+  const mockPatientList: string[] = await buildPatientData(dataServer.baseUrl);
 
   render(<App />);
 
@@ -628,7 +638,7 @@ test('fail scenario: receiving system', async () => {
 
 
   //mock returned data repo data
-  const evaluateDataFetch = new EvaluateMeasureFetch(Constants.getServerUrls()[0],
+  const evaluateDataFetch = new EvaluateMeasureFetch(dataServer,
     mockPatientList[0],
     mockMeasureList[0].name,
     startDate,
@@ -1002,4 +1012,17 @@ async function buildPatientData(url: string): Promise<string[]> {
   let patientList: string[] = await patientFetch.fetchData();
   fetchMock.restore();
   return patientList;
+}
+
+function buildAServer(): Server {
+  return {
+    id: '1',
+    baseUrl: 'http://localhost:8080',
+    authUrl: '',
+    tokenUrl: '',
+    callbackUrl: '',
+    clientID: '',
+    clientSecret: '',
+    scope: ''
+  }
 }

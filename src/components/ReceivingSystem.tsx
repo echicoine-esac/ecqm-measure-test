@@ -8,8 +8,8 @@ interface props {
   showReceiving: boolean;
   setShowReceiving: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
-  setSelectedReceiving: React.Dispatch<React.SetStateAction<string>>;
-  selectedReceiving: string;
+  setSelectedReceiving: React.Dispatch<React.SetStateAction<Server>>;
+  selectedReceiving: Server | undefined;
   submitData: () => void;
   evaluateMeasure: () => void;
   loading: boolean;
@@ -39,8 +39,8 @@ const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, ser
               <div className='row'>
                 <div className='col-md-6 order-md-1'>
                   <label>Receiving System Server</label>
-                  <select data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedReceiving}
-                    onChange={(e) => setSelectedReceiving(e.target.value)}>
+                  <select data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedReceiving!.baseUrl}
+                    onChange={(e) => setSelectedReceiving(servers[e.target.selectedIndex - 1]!)}>
                     <option value=''>Select a Server...</option>
                     {servers.map((server, index) => (
                       <option key={index}>{server!.baseUrl}</option>

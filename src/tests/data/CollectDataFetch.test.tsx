@@ -3,10 +3,13 @@ import { Constants } from '../../constants/Constants';
 import { CollectDataFetch } from '../../data/CollectDataFetch';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
+import {Server} from "../../models/Server";
 
 test('required properties check', () => {
+    const dataServer: Server = buildAServer();
+
     try {
-        new CollectDataFetch('',
+        new CollectDataFetch(undefined,
             'selectedMeasure',
             'startDate',
             'endDate',
@@ -16,7 +19,7 @@ test('required properties check', () => {
     }
 
     try {
-        new CollectDataFetch('selectedDataRepo',
+        new CollectDataFetch(dataServer,
             '',
             'startDate',
             'endDate',
@@ -26,7 +29,7 @@ test('required properties check', () => {
     }
 
     try {
-        new CollectDataFetch('selectedDataRepo',
+        new CollectDataFetch(dataServer,
             'selectedMeasure',
             '',
             'endDate',
@@ -36,7 +39,7 @@ test('required properties check', () => {
     }
 
     try {
-        new CollectDataFetch('selectedDataRepo',
+        new CollectDataFetch(dataServer,
             'selectedMeasure',
             'startDate',
             '',
@@ -48,7 +51,9 @@ test('required properties check', () => {
 
 
 test('get CollectData mock', async () => {
-    const collectDataFetch = new CollectDataFetch('selectedDataRepo',
+    const dataServer: Server = buildAServer();
+
+    const collectDataFetch = new CollectDataFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate',
@@ -65,9 +70,10 @@ test('get CollectData mock', async () => {
 });
 
 test('get CollectData mock error', async () => {
+    const dataServer: Server = buildAServer();
     const errorMsg = 'this is a test'
     let errorCatch = '';
-    const collectDataFetch = new CollectDataFetch('selectedDataRepo',
+    const collectDataFetch = new CollectDataFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate',
@@ -87,7 +93,8 @@ test('get CollectData mock error', async () => {
 });
 
 test('test urlformat', async () => {
-    let collectDataFetch = await new CollectDataFetch('selectedDataRepo',
+    const dataServer: Server = buildAServer();
+    let collectDataFetch = await new CollectDataFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate',
@@ -97,7 +104,8 @@ test('test urlformat', async () => {
 });
 
 test('test urlformat without patient', async () => {
-    let collectDataFetch = await new CollectDataFetch('selectedDataRepo',
+    const dataServer: Server = buildAServer();
+    let collectDataFetch = await new CollectDataFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate',
@@ -106,3 +114,15 @@ test('test urlformat without patient', async () => {
         .toEqual('selectedDataRepoMeasure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate');
 });
 
+function buildAServer(): Server {
+    return {
+        id: '1',
+        baseUrl: 'http://localhost:8080',
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
+    }
+}

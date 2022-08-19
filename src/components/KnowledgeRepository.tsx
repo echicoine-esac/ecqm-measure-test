@@ -10,8 +10,8 @@ interface props {
   showKnowledgeRepo: boolean;
   setShowKnowledgeRepo: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
-  fetchMeasures: (url: string) => void;
-  selectedKnowledgeRepo: string;
+  fetchMeasures: (knowledgeRepo: Server) => void;
+  selectedKnowledgeRepo: Server | undefined;
   measures: Array<Measure | undefined>;
   setSelectedMeasure: React.Dispatch<React.SetStateAction<string>>;
   selectedMeasure: string;
@@ -62,8 +62,8 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                 </div>
                 <div className='row'>
                     <div className='col-md-5 order-md-1'>
-                      <select data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo}
-                              onChange={(e) => fetchMeasures(e.target.value)}>
+                      <select data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo!.baseUrl}
+                              onChange={(e) => fetchMeasures(servers[e.target.selectedIndex - 1]!)}>
                           <option value=''>Select a Server...</option>
                           {servers.map((server, index) => (
                               <option key={index}>{server!.baseUrl}</option>
