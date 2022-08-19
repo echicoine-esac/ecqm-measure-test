@@ -2,9 +2,10 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import ReceivingSystem from '../../components/ReceivingSystem';
+import {Server} from "../../models/Server";
 
 test('expect functions to be called properly', () => {
-    const serverUrls = ['test-server-1', 'test-server-2'];
+    const servers = buildServerData();
 
     const loadingFlag: boolean = false;
     const showReceiving: boolean = true;
@@ -17,7 +18,7 @@ test('expect functions to be called properly', () => {
     render(<ReceivingSystem
         showReceiving={showReceiving}
         setShowReceiving={setShowReceiving}
-        serverUrls={serverUrls}
+        servers={servers}
         setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={''} 
         submitData={submitData}
@@ -36,7 +37,7 @@ test('expect functions to be called properly', () => {
 });
 
 test('expect spinner to show with loading set to true', () => {
-    const serverUrls = ['test-server-1', 'test-server-2'];
+    const servers = buildServerData();
 
     const loadingFlag: boolean = true;
     const showReceiving: boolean = true;
@@ -49,7 +50,7 @@ test('expect spinner to show with loading set to true', () => {
     render(<ReceivingSystem
         showReceiving={showReceiving}
         setShowReceiving={setShowReceiving}
-        serverUrls={serverUrls}
+        servers={servers}
         setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={''} 
         submitData={submitData}
@@ -66,7 +67,7 @@ test('expect spinner to show with loading set to true', () => {
 });
  
 test('hide/show functionality', () => {
-    const serverUrls = ['test-server-1', 'test-server-2'];
+    const servers = buildServerData();
 
     const loadingFlag: boolean = false;
     const showReceiving: boolean = true;
@@ -79,7 +80,7 @@ test('hide/show functionality', () => {
     render(<ReceivingSystem
         showReceiving={showReceiving}
         setShowReceiving={setShowReceiving}
-        serverUrls={serverUrls}
+        servers={servers}
         setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={''} 
         submitData={submitData}
@@ -94,7 +95,7 @@ test('hide/show functionality', () => {
 });
 
 test('hide/show functionality', () => {
-    const serverUrls = ['test-server-1', 'test-server-2'];
+    const servers = buildServerData();
 
     const loadingFlag: boolean = false;
     const showReceiving: boolean = false;
@@ -107,7 +108,7 @@ test('hide/show functionality', () => {
     render(<ReceivingSystem
         showReceiving={showReceiving}
         setShowReceiving={setShowReceiving}
-        serverUrls={serverUrls}
+        servers={servers}
         setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={''} 
         submitData={submitData}
@@ -124,5 +125,13 @@ test('hide/show functionality', () => {
     expect(screen.queryByText('Evaluate Measure')).not.toBeInTheDocument();
 });
 
- 
+function buildServerData(): Server[] {
+    return [buildAServer('1'), buildAServer('2'), buildAServer('3')]
+}
 
+function buildAServer(count: string): Server {
+    return {
+        id: 'ec2345-' + count,
+        baseUrl: 'http://localhost:8080-' + count
+    }
+}

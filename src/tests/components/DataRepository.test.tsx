@@ -2,10 +2,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import DataRepository from '../../components/DataRepository';
+import {Server} from "../../models/Server";
+import {Measure} from "../../models/Measure";
 
 test('expect functions to be called when selecting items in dropdown', () => {
     const patients = ['test-patient-1', 'test-patient-2'];
-    const serverUrls = ['test-server-1', 'test-server-2'];
+    const servers = buildServerData();
 
     const loadingFlag: boolean = false;
     const showDataRepo: boolean = true;
@@ -16,9 +18,9 @@ test('expect functions to be called when selecting items in dropdown', () => {
     render(<DataRepository
         showDataRepo={showDataRepo}
         setShowDataRepo={jest.fn()}
-        serverUrls={serverUrls}
+        servers={servers}
         setSelectedDataRepo={jest.fn()}
-        selectedDataRepo={serverUrls[1]}
+        selectedDataRepo={servers[1].baseUrl}
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
@@ -41,7 +43,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
 
 test('expect spinner to show when loading is true', () => {
     const patients = ['test-patient-1', 'test-patient-2'];
-    const serverUrls = ['test-server-1', 'test-server-2'];
+    const servers = buildServerData();
 
     const loadingFlag: boolean = true;
     const showDataRepo: boolean = true;
@@ -52,9 +54,9 @@ test('expect spinner to show when loading is true', () => {
     render(<DataRepository
         showDataRepo={showDataRepo}
         setShowDataRepo={jest.fn()}
-        serverUrls={serverUrls}
+        servers={servers}
         setSelectedDataRepo={jest.fn()}
-        selectedDataRepo={serverUrls[1]}
+        selectedDataRepo={servers[1].baseUrl}
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
@@ -69,7 +71,7 @@ test('expect spinner to show when loading is true', () => {
 
 test('hide section', () => {
     const patients = ['test-patient-1', 'test-patient-2'];
-    const serverUrls = ['test-server-1', 'test-server-2'];
+    const servers = buildServerData();
 
     const loadingFlag: boolean = false;
     const showDataRepo: boolean = false;
@@ -84,7 +86,7 @@ test('hide section', () => {
     render(<DataRepository
         showDataRepo={showDataRepo}
         setShowDataRepo={setShowDataRepo}
-        serverUrls={serverUrls}
+        servers={servers}
         setSelectedDataRepo={setSelectedDataRepo}
         selectedDataRepo={''}
         patients={patients}
@@ -102,7 +104,7 @@ test('hide section', () => {
 
 test('show section', () => {
     const patients = ['test-patient-1', 'test-patient-2'];
-    const serverUrls = ['test-server-1', 'test-server-2'];
+    const servers = buildServerData();
 
     const loadingFlag: boolean = false;
     const showDataRepo: boolean = true;
@@ -116,7 +118,7 @@ test('show section', () => {
     render(<DataRepository
         showDataRepo={showDataRepo}
         setShowDataRepo={setShowDataRepo}
-        serverUrls={serverUrls}
+        servers={servers}
         setSelectedDataRepo={setSelectedDataRepo}
         selectedDataRepo={''}
         patients={patients}
@@ -132,4 +134,13 @@ test('show section', () => {
     expect(setShowDataRepo).toHaveBeenCalledWith(false);
 });
 
- 
+function buildServerData(): Server[] {
+    return [buildAServer('1'), buildAServer('2'), buildAServer('3')]
+}
+
+function buildAServer(count: string): Server {
+    return {
+        id: 'ec2345-' + count,
+        baseUrl: 'http://localhost:8080-' + count
+    }
+}

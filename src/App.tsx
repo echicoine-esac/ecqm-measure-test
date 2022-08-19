@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import DataRepository from "./components/DataRepository";
 import KnowledgeRepository from './components/KnowledgeRepository';
@@ -16,6 +16,17 @@ import { SubmitDataFetch } from './data/SubmitDataFetch';
 import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
 import { MeasureData } from './models/MeasureData';
+import { Server } from "./models/Server";
+import { Amplify, API, graphqlOperation } from 'aws-amplify';
+import { listServers } from './graphql/queries';
+import { createServers, deleteServers } from "./graphql/mutations";
+import awsExports from "./aws-exports";
+import {CreateServersInput} from "./API";
+import {BundleEntry} from "./models/BundleEntry";
+import ServerModal from "./components/ServerModal";
+import {Modal} from "react-bootstrap";
+
+Amplify.configure(awsExports);
 
 const App: React.FC = () => {
   // Define the state variables
@@ -24,7 +35,7 @@ const App: React.FC = () => {
   const [endDate, setEndDate] = useState<string>(Constants.defaultEndDate);
 
   // Then the state for the data repository
-  const [serverUrls] = useState<Array<string>>(Constants.getServerUrls());
+  const [servers, setServers] = useState<Array<Server | undefined>>([]);
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<string>>([]);
 
@@ -44,6 +55,7 @@ const App: React.FC = () => {
   const [showDataRepo, setShowDataRepo] = useState<boolean>(false);
   const [showReceiving, setShowReceiving] = useState<boolean>(false);
   const [showPopulations, setShowPopulations] = useState<boolean>(false);
+  const [modalShow, setModalShow] = useState<boolean>(false);
 
   // Population states
   const [initialPopulation, setInitialPopulation] = useState<string>('-');
@@ -56,6 +68,36 @@ const App: React.FC = () => {
 
   // Saved data
   const [collectedData, setCollectedData] = useState<string>('');
+
+  useEffect(() => {
+    fetchServers().then(res => {
+      setServers(res!);
+    });
+  }, []);
+
+  // Handle server queries and mutations
+  // Fetches the list of stored servers
+  const fetchServers = async () => {
+   try {
+      const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY'});
+      const servers: Array<Server> = apiData.data.listServers.items;
+      console.log(servers);
+      return servers;
+    } catch (err) { console.log('error fetching servers', err) }
+  }
+
+  // Uses the GraphQL API to create a server
+  const createServer = async (url: string) => {
+    try {
+      let serverInput: CreateServersInput = {
+        baseUrl: url
+      };
+      await API.graphql({query: createServers, authMode: "API_KEY", variables: {input: serverInput}})
+    } catch (err) { console.log('error creating server', err) }
+
+    // If we added a server then we should fetch the list again
+    await fetchServers();
+  }
 
   const fetchMeasures = async (url: string) => {
     setSelectedKnowledgeRepo(url);
@@ -264,17 +306,17 @@ const App: React.FC = () => {
       <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
       <br />
       <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
-        serverUrls={serverUrls} fetchMeasures={fetchMeasures} selectedKnowledgeRepo={selectedKnowledgeRepo}
+        servers={servers} fetchMeasures={fetchMeasures} selectedKnowledgeRepo={selectedKnowledgeRepo}
         measures={measures} setSelectedMeasure={setSelectedMeasure} selectedMeasure={selectedMeasure}
-        getDataRequirements={getDataRequirements} loading={loading} />
+        getDataRequirements={getDataRequirements} loading={loading} setModalShow={setModalShow}/>
       <br />
-      <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} serverUrls={serverUrls}
+      <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
         setSelectedDataRepo={setSelectedDataRepo} selectedDataRepo={selectedDataRepo} patients={patients}
         fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient} selectedPatient={selectedPatient}
         collectData={collectData} loading={loading} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
-        serverUrls={serverUrls} setSelectedReceiving={setSelectedReceiving} selectedReceiving={selectedReceiving}
+        servers={servers} setSelectedReceiving={setSelectedReceiving} selectedReceiving={selectedReceiving}
         submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading} />
       <Results results={results} />
       <Populations initialPopulation={initialPopulation} denominator={denominator}
@@ -282,6 +324,7 @@ const App: React.FC = () => {
         numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
         measureScoring={measureScoring} />
       <br />
+      <ServerModal modalShow={modalShow} setModalShow={setModalShow} createServer={createServer}/>
     </div>
   );
 }

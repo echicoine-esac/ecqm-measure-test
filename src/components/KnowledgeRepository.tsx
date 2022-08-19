@@ -1,13 +1,15 @@
-import React from 'react';
-import {Button, Spinner} from 'react-bootstrap';
+import React, {useState} from 'react';
+import { Button, Spinner } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Measure} from '../models/Measure';
+import { Measure } from '../models/Measure';
+import { Server } from "../models/Server";
+import ServerModal from "./ServerModal";
 
 // Props for KnowledgeRepository
 interface props {
   showKnowledgeRepo: boolean;
   setShowKnowledgeRepo: React.Dispatch<React.SetStateAction<boolean>>;
-  serverUrls: Array<string>;
+  servers: Array<Server | undefined>;
   fetchMeasures: (url: string) => void;
   selectedKnowledgeRepo: string;
   measures: Array<Measure | undefined>;
@@ -15,11 +17,14 @@ interface props {
   selectedMeasure: string;
   getDataRequirements: () => void;
   loading: boolean;
+  setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // KnowledgeRepository component displays the fields for selecting and using the Knowledge Repository
-const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowledgeRepo, serverUrls, fetchMeasures,
-    selectedKnowledgeRepo, measures, setSelectedMeasure, selectedMeasure, getDataRequirements, loading }) => {
+const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowledgeRepo, servers,
+    fetchMeasures, selectedKnowledgeRepo, measures, setSelectedMeasure,
+    selectedMeasure, getDataRequirements, loading, setModalShow }) => {
+
     return (
       <div className='card'>
         <div className='card-header'>
@@ -47,28 +52,37 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
         </div>
           {showKnowledgeRepo ? (
             <div className='card-body'>
-              <div className='row'>
-                <div className='col-md-6 order-md-1'>
-                  <label>Knowledge Repository Server</label>
-                  <select data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo}
-                    onChange={(e) => fetchMeasures(e.target.value)}>
-                    <option value=''>Select a Server...</option>
-                    {serverUrls.map((server, index) => (
-                      <option key={index}>{server}</option>
-                    ))}
-                  </select>
+                 <div className='row'>
+                     <div className='col-md-6 order-md-1'>
+                            <label>Knowledge Repository Server</label>
+                       </div>
+                      <div className='col-md-6 order-md-1'>
+                          <label>Measure</label>
+                      </div>
                 </div>
-                <div className='col-md-6 order-md-2'>
-                  <label>Measure</label>
-                  <select data-testid='knowledge-repo-measure-dropdown' className='custom-select d-block w-100' id='measure' value={selectedMeasure}
-                    onChange={(e) => setSelectedMeasure(e.target.value)}>
-                  <option value=''>Select a Measure...</option>
-                    {measures.map((measure, index) => (
-                      <option key={index}>{measure!.name}</option>
-                    ))}
-                  </select>
+                <div className='row'>
+                    <div className='col-md-5 order-md-1'>
+                      <select data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo}
+                              onChange={(e) => fetchMeasures(e.target.value)}>
+                          <option value=''>Select a Server...</option>
+                          {servers.map((server, index) => (
+                              <option key={index}>{server!.baseUrl}</option>
+                          ))}
+                      </select>
+                    </div>
+                    <div className='col-md-1 order-md-2'>
+                          <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
+                    </div>
+                    <div className='col-md-6 order-md-3'>
+                      <select data-testid='knowledge-repo-measure-dropdown' className='custom-select d-block w-100' id='measure' value={selectedMeasure}
+                        onChange={(e) => setSelectedMeasure(e.target.value)}>
+                      <option value=''>Select a Measure...</option>
+                        {measures.map((measure, index) => (
+                          <option key={index}>{measure!.name}</option>
+                        ))}
+                      </select>
+                    </div>
                 </div>
-              </div>
               <div className='row'>
                 <div className='col-md-6 order-md-2'>
                   <br/>

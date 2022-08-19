@@ -1,12 +1,13 @@
 import React from 'react';
 import {Button, Spinner} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {Server} from "../models/Server";
 
 // Props for DataRepository
 interface props {
   showDataRepo: boolean;
   setShowDataRepo: React.Dispatch<React.SetStateAction<boolean>>;
-  serverUrls: Array<string>;
+  servers: Array<Server | undefined>;
   setSelectedDataRepo: React.Dispatch<React.SetStateAction<string>>;
   selectedDataRepo: string;
   patients: Array<string>;
@@ -18,7 +19,7 @@ interface props {
 }
 
 // DataRepository component displays the test server, patient, and button to collect data
-const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, serverUrls, setSelectedDataRepo,
+const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers, setSelectedDataRepo,
     selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient, collectData, loading }) => {
 
     return (
@@ -55,8 +56,8 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
               <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo}
                 onChange={(e) => fetchPatients(e.target.value)}>
                 <option value=''>Select a Server...</option>
-                  {serverUrls.map((server, index) => (
-                    <option key={index}>{server}</option>
+                  {servers.map((server, index) => (
+                    <option key={index}>{server!.baseUrl}</option>
                   ))}
               </select>
             </div>

@@ -1,12 +1,13 @@
 import React from 'react';
 import {Button, Spinner} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {Server} from "../models/Server";
 
 // Props for ReceivingSystem
 interface props {
   showReceiving: boolean;
   setShowReceiving: React.Dispatch<React.SetStateAction<boolean>>;
-  serverUrls: Array<string>;
+  servers: Array<Server | undefined>;
   setSelectedReceiving: React.Dispatch<React.SetStateAction<string>>;
   selectedReceiving: string;
   submitData: () => void;
@@ -15,7 +16,7 @@ interface props {
 }
 
 // ReceivingSystem component displays the fields for selecting and using the receiving system
-const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, serverUrls, setSelectedReceiving,
+const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, servers, setSelectedReceiving,
     selectedReceiving, submitData, evaluateMeasure, loading }) => {
     return (
       <div className='card'>
@@ -41,8 +42,8 @@ const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, ser
                   <select data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedReceiving}
                     onChange={(e) => setSelectedReceiving(e.target.value)}>
                     <option value=''>Select a Server...</option>
-                    {serverUrls.map((server, index) => (
-                      <option key={index}>{server}</option>
+                    {servers.map((server, index) => (
+                      <option key={index}>{server!.baseUrl}</option>
                     ))}
                   </select>
                 </div>

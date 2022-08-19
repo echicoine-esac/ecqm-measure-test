@@ -4,10 +4,12 @@ import React from 'react';
 import DataRepository from '../../components/DataRepository';
 import KnowledgeRepository from '../../components/KnowledgeRepository';
 import { Measure } from '../../models/Measure';
+import { Server } from "../../models/Server";
 
 test('expect functions to be called when selecting items in dropdown', () => {
     const serverUrls = ['test-server-1', 'test-server-2'];
     const measures = buildMeasureData();
+    const servers = buildServerData();
     const loadingFlag: boolean = false;
     const showKnowledgeRepo: boolean = true;
 
@@ -20,7 +22,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
     render(<KnowledgeRepository
         showKnowledgeRepo={showKnowledgeRepo}
         setShowKnowledgeRepo={jest.fn()}
-        serverUrls={serverUrls}
+        servers={servers}
         fetchMeasures={fetchMeasures}
         selectedKnowledgeRepo={''}
         measures={measures}
@@ -28,6 +30,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
         selectedMeasure={measureDivText} 
         getDataRequirements={getDataRequirements}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     //Selected Measure should hide if showKnowledgeRepo is true
@@ -47,6 +50,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
 test('expect functions to be called when selecting items in dropdown', () => {
     const serverUrls = ['test-server-1', 'test-server-2'];
     const measures = buildMeasureData();
+    const servers = buildServerData();
     const loadingFlag: boolean = false;
     const showKnowledgeRepo: boolean = false;
 
@@ -59,7 +63,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
     render(<KnowledgeRepository
         showKnowledgeRepo={showKnowledgeRepo}
         setShowKnowledgeRepo={jest.fn()}
-        serverUrls={serverUrls}
+        servers={servers}
         fetchMeasures={fetchMeasures}
         selectedKnowledgeRepo={''}
         measures={measures}
@@ -67,6 +71,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
         selectedMeasure={measureDivText} 
         getDataRequirements={getDataRequirements}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     //Selected Measure should hide if showKnowledgeRepo is true
@@ -77,6 +82,10 @@ test('expect functions to be called when selecting items in dropdown', () => {
 
 function buildMeasureData(): Measure[] {
     return [buildAMeasure('1'), buildAMeasure('2'), buildAMeasure('3')]
+}
+
+function buildServerData(): Server[] {
+    return [buildAServer('1'), buildAServer('2'), buildAServer('3')]
 }
 
 function buildAMeasure(count: string): Measure {
@@ -90,6 +99,13 @@ function buildAMeasure(count: string): Measure {
                 }
             ]
         }
+    }
+}
+
+function buildAServer(count: string): Server {
+    return {
+        id: 'ec2345-' + count,
+        baseUrl: 'http://localhost:8080-' + count
     }
 }
 
