@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Spinner} from 'react-bootstrap';
+import {Button, OverlayTrigger, Spinner, Tooltip} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Server} from "../models/Server";
 
@@ -13,11 +13,12 @@ interface props {
   submitData: () => void;
   evaluateMeasure: () => void;
   loading: boolean;
+  setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // ReceivingSystem component displays the fields for selecting and using the receiving system
 const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, servers, setSelectedReceiving,
-    selectedReceiving, submitData, evaluateMeasure, loading }) => {
+    selectedReceiving, submitData, evaluateMeasure, loading, setModalShow }) => {
     return (
       <div className='card'>
         <div className='card-header'>
@@ -39,6 +40,10 @@ const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, ser
               <div className='row'>
                 <div className='col-md-6 order-md-1'>
                   <label>Receiving System Server</label>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='col-md-5 order-md-1'>
                   <select data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedReceiving!.baseUrl}
                     onChange={(e) => setSelectedReceiving(servers[e.target.selectedIndex - 1]!)}>
                     <option value=''>Select a Server...</option>
@@ -47,7 +52,16 @@ const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, ser
                     ))}
                   </select>
                 </div>
-                <div className='col-md-6 order-md-2'>
+                  <div className='col-md-1 order-md-2'>
+                      <OverlayTrigger placement={'top'} overlay={
+                          <Tooltip>Add an Endpoint</Tooltip>
+                      }>
+                          <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
+                      </OverlayTrigger>
+                  </div>
+              </div>
+              <div className='row'>
+                <div className='col-md-5 order-md-2'>
                   <br/>
                   {loading ? (
                     <Button data-testid='rec-sys-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
@@ -67,9 +81,7 @@ const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, ser
                     </Button>
                   )}
                 </div>
-              </div>
-              <div className='row'>
-                <div className='col-md-6 order-md-2'>
+                <div className='col-md-5 order-md-2'>
                   <br/>
                   {loading ? (
                     <Button data-testid='rec-sys-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>

@@ -19,7 +19,6 @@ test('expect functions to be called when selecting items in dropdown', () => {
         showDataRepo={showDataRepo}
         setShowDataRepo={jest.fn()}
         servers={servers}
-        setSelectedDataRepo={jest.fn()}
         selectedDataRepo={servers[1]}
         patients={patients}
         fetchPatients={fetchPatients}
@@ -27,6 +26,7 @@ test('expect functions to be called when selecting items in dropdown', () => {
         selectedPatient={patients[0]}
         collectData={jest.fn()}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     //select first server
@@ -55,7 +55,6 @@ test('expect spinner to show when loading is true', () => {
         showDataRepo={showDataRepo}
         setShowDataRepo={jest.fn()}
         servers={servers}
-        setSelectedDataRepo={jest.fn()}
         selectedDataRepo={servers[1]}
         patients={patients}
         fetchPatients={fetchPatients}
@@ -63,6 +62,7 @@ test('expect spinner to show when loading is true', () => {
         selectedPatient={patients[0]}
         collectData={jest.fn()}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     const evaluateButtonWithSpinner: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button-spinner');
@@ -87,7 +87,6 @@ test('hide section', () => {
         showDataRepo={showDataRepo}
         setShowDataRepo={setShowDataRepo}
         servers={servers}
-        setSelectedDataRepo={setSelectedDataRepo}
         selectedDataRepo={undefined}
         patients={patients}
         fetchPatients={fetchPatients}
@@ -95,6 +94,7 @@ test('hide section', () => {
         selectedPatient={''}
         collectData={collectData}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     const hideShowButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
@@ -119,7 +119,6 @@ test('show section', () => {
         showDataRepo={showDataRepo}
         setShowDataRepo={setShowDataRepo}
         servers={servers}
-        setSelectedDataRepo={setSelectedDataRepo}
         selectedDataRepo={undefined}
         patients={patients}
         fetchPatients={fetchPatients}
@@ -127,6 +126,7 @@ test('show section', () => {
         selectedPatient={''}
         collectData={collectData}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     const evaluateButton: HTMLButtonElement = screen.getByTestId('data-repo-hide-section-button');

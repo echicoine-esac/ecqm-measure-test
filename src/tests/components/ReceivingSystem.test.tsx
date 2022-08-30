@@ -24,6 +24,7 @@ test('expect functions to be called properly', () => {
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     const serverDropdown: HTMLSelectElement = screen.getByTestId('rec-sys-server-dropdown');
@@ -56,6 +57,7 @@ test('expect spinner to show with loading set to true', () => {
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     const submitButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button-spinner');
@@ -86,6 +88,7 @@ test('hide/show functionality', () => {
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     const evaluateButton: HTMLButtonElement = screen.getByTestId('rec-sys-hide-section-button');
@@ -114,6 +117,7 @@ test('hide/show functionality', () => {
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
+        setModalShow={jest.fn()}
     />);
 
     const evaluateButton: HTMLButtonElement = screen.getByTestId('rec-sys-show-section-button');
