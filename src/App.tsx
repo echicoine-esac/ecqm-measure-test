@@ -23,6 +23,7 @@ import { createServers, deleteServers } from "./graphql/mutations";
 import awsExports from "./aws-exports";
 import {CreateServersInput} from "./API";
 import ServerModal from "./components/ServerModal";
+import { ServerUtils } from './utils/ServerUtils';
 
 Amplify.configure(awsExports);
 
@@ -95,21 +96,21 @@ const App: React.FC = () => {
   const [collectedData, setCollectedData] = useState<string>('');
 
   useEffect(() => {
-    fetchServers().then(res => {
+    ServerUtils.getServerList().then(res => {
       setServers(res!);
     });
   }, []);
 
-  // Handle server queries and mutations
-  // Fetches the list of stored servers
-  const fetchServers = async () => {
-   try {
-      const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY'});
-      const servers: Array<Server> = apiData.data.listServers.items;
-      console.log(servers);
-      return servers;
-    } catch (err) { console.log('error fetching servers', err) }
-  }
+  // // Handle server queries and mutations
+  // // Fetches the list of stored servers
+  // const fetchServers = async () => {
+  //  try {
+  //     const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY'});
+  //     const servers: Array<Server> = apiData.data.listServers.items;
+  //     console.log(servers);
+  //     return servers;
+  //   } catch (err) { console.log('error fetching servers', err) }
+  // }
 
   // Uses the GraphQL API to create a server
   const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
@@ -138,7 +139,7 @@ const App: React.FC = () => {
     } catch (err) { console.log('error creating server', err) }
 
     // If we added a server then we should fetch the list again
-    await fetchServers();
+    await ServerUtils.getServerList();
   }
 
   const fetchMeasures = async (knowledgeRepo: Server) => {

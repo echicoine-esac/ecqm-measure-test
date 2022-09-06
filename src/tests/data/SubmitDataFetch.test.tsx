@@ -1,12 +1,17 @@
 import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
 import { SubmitDataFetch } from '../../data/SubmitDataFetch';
+import { Server } from "../../models/Server";
+import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
-import {Server} from "../../models/Server";
 
+beforeAll(() => {
+    //cache the server list with test data
+    ServerUtils.setMockData();
+  });
 
-test('required properties check', () => {
-    const dataServer: Server = buildAServer();
+test('required properties check', async () => {
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     try {
         new SubmitDataFetch(undefined, 'selectedMeasure', 'collectedData');
@@ -29,7 +34,7 @@ test('required properties check', () => {
 });
 
 test('fetchData and processData override', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     expect(await new SubmitDataFetch(dataServer,
         'selectedMeasure', 'collectedData').fetchData())
@@ -37,7 +42,7 @@ test('fetchData and processData override', async () => {
 });
 
 test('submit data mock', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), {
@@ -52,7 +57,7 @@ test('submit data mock', async () => {
 });
 
 test('submit data mock error 400', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), 400, { method: 'POST' });
@@ -66,12 +71,12 @@ test('submit data mock error 400', async () => {
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using selectedReceivingMeasure/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Bad Request');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Bad Request');
 
 });
 
 test('submit data mock error 500', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), 500, { method: 'POST' });
@@ -85,30 +90,17 @@ test('submit data mock error 500', async () => {
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using selectedReceivingMeasure/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Internal Server Error');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Internal Server Error');
 
 });
 
 
 test('test urlformat', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer,
         'selectedMeasure',
         'collectedData');
     expect(submitDataFetch.getUrl())
-        .toEqual('selectedReceivingMeasure/selectedMeasure/$submit-data');
+        .toEqual('http://localhost:8080/1/selectedMeasure/$submit-data');
 });
-
-function buildAServer(): Server {
-    return {
-        id: '1',
-        baseUrl: 'http://localhost:8080',
-        authUrl: '',
-        tokenUrl: '',
-        callbackUrl: '',
-        clientID: '',
-        clientSecret: '',
-        scope: ''
-    }
-}

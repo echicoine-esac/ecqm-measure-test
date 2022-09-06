@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import React from 'react';
 import Populations from '../../components/Populations';
 
 test('population renders and accepts values', () => {
@@ -14,15 +13,15 @@ test('population renders and accepts values', () => {
   const numeratorExclusionDivText = 'text-numerator-exclusion-div';
 
   render(<Populations
-    measureScoring={measureScoringDivText} 
+    measureScoring={measureScoringDivText}
     initialPopulation={initialPopulationDivText}
     denominator={denominatorDivText}
     denominatorExclusion={denominatorExclusionDivText}
     denominatorException={denominatorExceptionDivText}
     numerator={numeratorDivText}
-    numeratorExclusion={numeratorExclusionDivText} 
-    showPopulations={showPopulations} 
-    />);
+    numeratorExclusion={numeratorExclusionDivText}
+    showPopulations={showPopulations}
+  />);
   const measureScoringDiv: HTMLDivElement = screen.getByTestId('measure-scoring-div');
   const initialPopulationDiv: HTMLDivElement = screen.getByTestId('initial-population-div');
   const denominatorDiv: HTMLDivElement = screen.getByTestId('denominator-div');
@@ -47,7 +46,7 @@ test('population renders and accepts values', () => {
   expect(numeratorDiv.innerHTML).toEqual(numeratorDivText);
   expect(numeratorExclusionDiv.innerHTML).toEqual(numeratorExclusionDivText);
 
-}); 
+});
 
 test('showPopulations is false and hides specific divs', () => {
 
@@ -61,15 +60,15 @@ test('showPopulations is false and hides specific divs', () => {
   const numeratorExclusionDivText = 'text-numerator-exclusion-div';
 
   render(<Populations
-    measureScoring={measureScoringDivText} 
+    measureScoring={measureScoringDivText}
     initialPopulation={initialPopulationDivText}
     denominator={denominatorDivText}
     denominatorExclusion={denominatorExclusionDivText}
     denominatorException={denominatorExceptionDivText}
     numerator={numeratorDivText}
-    numeratorExclusion={numeratorExclusionDivText} 
-    showPopulations={showPopulations} 
-    />);
+    numeratorExclusion={numeratorExclusionDivText}
+    showPopulations={showPopulations}
+  />);
 
   expect(screen.queryByText('measure-scoring-div')).not.toBeInTheDocument();
   expect(screen.queryByText('initial-population-div')).not.toBeInTheDocument();

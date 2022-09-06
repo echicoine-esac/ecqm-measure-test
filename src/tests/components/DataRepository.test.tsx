@@ -1,13 +1,17 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 import DataRepository from '../../components/DataRepository';
-import {Server} from "../../models/Server";
-import {Measure} from "../../models/Measure";
+import { ServerUtils } from '../../utils/ServerUtils';
 
-test('expect functions to be called when selecting items in dropdown', () => {
+
+beforeAll(() => {
+    //cache the server list with test data
+    ServerUtils.setMockData();
+  });
+
+test('expect functions to be called when selecting items in dropdown', async () => {
     const patients = ['test-patient-1', 'test-patient-2'];
-    const servers = buildServerData();
+    const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
     const showDataRepo: boolean = true;
@@ -31,8 +35,8 @@ test('expect functions to be called when selecting items in dropdown', () => {
 
     //select first server
     const serverDropdown: HTMLSelectElement = screen.getByTestId('data-repo-server-dropdown');
-    userEvent.selectOptions(serverDropdown, 'test-server-2');
-    expect(fetchPatients).toBeCalledWith('test-server-2')
+    userEvent.selectOptions(serverDropdown, servers[0].baseUrl);
+    expect(fetchPatients).toBeCalledWith(servers[0])
 
     //select first patient
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
@@ -41,9 +45,9 @@ test('expect functions to be called when selecting items in dropdown', () => {
 
 });
 
-test('expect spinner to show when loading is true', () => {
+test('expect spinner to show when loading is true', async () => {
     const patients = ['test-patient-1', 'test-patient-2'];
-    const servers = buildServerData();
+    const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = true;
     const showDataRepo: boolean = true;
@@ -69,9 +73,9 @@ test('expect spinner to show when loading is true', () => {
     expect(evaluateButtonWithSpinner).toBeInTheDocument();
 });
 
-test('hide section', () => {
+test('hide section', async () => {
     const patients = ['test-patient-1', 'test-patient-2'];
-    const servers = buildServerData();
+    const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
     const showDataRepo: boolean = false;
@@ -88,7 +92,7 @@ test('hide section', () => {
         setShowDataRepo={setShowDataRepo}
         servers={servers}
         setSelectedDataRepo={setSelectedDataRepo}
-        selectedDataRepo={undefined}
+        selectedDataRepo={servers[0]}
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
@@ -102,9 +106,9 @@ test('hide section', () => {
     expect(setShowDataRepo).toHaveBeenCalledWith(true);
 });
 
-test('show section', () => {
+test('show section', async () => {
     const patients = ['test-patient-1', 'test-patient-2'];
-    const servers = buildServerData();
+    const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
     const showDataRepo: boolean = true;
@@ -120,7 +124,7 @@ test('show section', () => {
         setShowDataRepo={setShowDataRepo}
         servers={servers}
         setSelectedDataRepo={setSelectedDataRepo}
-        selectedDataRepo={undefined}
+        selectedDataRepo={servers[0]}
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
@@ -134,19 +138,4 @@ test('show section', () => {
     expect(setShowDataRepo).toHaveBeenCalledWith(false);
 });
 
-function buildServerData(): Server[] {
-    return [buildAServer('1'), buildAServer('2'), buildAServer('3')]
-}
-
-function buildAServer(count: string): Server {
-    return {
-        id: 'ec2345-' + count,
-        baseUrl: 'http://localhost:8080-' + count,
-        authUrl: '',
-        tokenUrl: '',
-        callbackUrl: '',
-        clientID: '',
-        clientSecret: '',
-        scope: ''
-    }
-}
+ 

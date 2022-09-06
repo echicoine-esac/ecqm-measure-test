@@ -1,15 +1,17 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
-import DataRepository from '../../components/DataRepository';
 import KnowledgeRepository from '../../components/KnowledgeRepository';
 import { Measure } from '../../models/Measure';
-import { Server } from "../../models/Server";
+import { ServerUtils } from '../../utils/ServerUtils';
 
-test('expect functions to be called when selecting items in dropdown', () => {
-    const serverUrls = ['test-server-1', 'test-server-2'];
+beforeAll(() => {
+    //cache the server list with test data
+    ServerUtils.setMockData();
+});
+
+test('expect functions to be called when selecting items in dropdown', async () => {
+    const servers = await ServerUtils.getServerList();
     const measures = buildMeasureData();
-    const servers = buildServerData();
     const loadingFlag: boolean = false;
     const showKnowledgeRepo: boolean = true;
 
@@ -24,10 +26,10 @@ test('expect functions to be called when selecting items in dropdown', () => {
         setShowKnowledgeRepo={jest.fn()}
         servers={servers}
         fetchMeasures={fetchMeasures}
-        selectedKnowledgeRepo={undefined}
+        selectedKnowledgeRepo={servers[0]}
         measures={measures}
         setSelectedMeasure={setSelectedMeasure}
-        selectedMeasure={measureDivText} 
+        selectedMeasure={measureDivText}
         getDataRequirements={getDataRequirements}
         loading={loadingFlag}
         setModalShow={jest.fn()}
@@ -35,22 +37,21 @@ test('expect functions to be called when selecting items in dropdown', () => {
 
     //Selected Measure should hide if showKnowledgeRepo is true
     expect(screen.queryByText('Selected Measure:')).not.toBeInTheDocument();
-    
+
     //select first server
     const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
-    userEvent.selectOptions(serverDropdown, 'test-server-2');
-    expect(fetchMeasures).toBeCalledWith('test-server-2')
+    userEvent.selectOptions(serverDropdown, servers[0].baseUrl);
+    expect(fetchMeasures).toBeCalledWith(servers[0])
 
     const measureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
     userEvent.selectOptions(measureDropdown, measures[1].name);
     expect(setSelectedMeasure).toBeCalledWith(measures[1].name)
 
 });
- 
-test('expect functions to be called when selecting items in dropdown', () => {
-    const serverUrls = ['test-server-1', 'test-server-2'];
+
+test('expect functions to be called when selecting items in dropdown', async () => {
+    const servers = await ServerUtils.getServerList();
     const measures = buildMeasureData();
-    const servers = buildServerData();
     const loadingFlag: boolean = false;
     const showKnowledgeRepo: boolean = false;
 
@@ -65,10 +66,10 @@ test('expect functions to be called when selecting items in dropdown', () => {
         setShowKnowledgeRepo={jest.fn()}
         servers={servers}
         fetchMeasures={fetchMeasures}
-        selectedKnowledgeRepo={undefined}
+        selectedKnowledgeRepo={servers[0]}
         measures={measures}
         setSelectedMeasure={setSelectedMeasure}
-        selectedMeasure={measureDivText} 
+        selectedMeasure={measureDivText}
         getDataRequirements={getDataRequirements}
         loading={loadingFlag}
         setModalShow={jest.fn()}
@@ -82,10 +83,6 @@ test('expect functions to be called when selecting items in dropdown', () => {
 
 function buildMeasureData(): Measure[] {
     return [buildAMeasure('1'), buildAMeasure('2'), buildAMeasure('3')]
-}
-
-function buildServerData(): Server[] {
-    return [buildAServer('1'), buildAServer('2'), buildAServer('3')]
 }
 
 function buildAMeasure(count: string): Measure {
@@ -102,16 +99,4 @@ function buildAMeasure(count: string): Measure {
     }
 }
 
-function buildAServer(count: string): Server {
-    return {
-        id: 'ec2345-' + count,
-        baseUrl: 'http://localhost:8080-' + count,
-        authUrl: '',
-        tokenUrl: '',
-        callbackUrl: '',
-        clientID: '',
-        clientSecret: '',
-        scope: ''
-    }
-}
 

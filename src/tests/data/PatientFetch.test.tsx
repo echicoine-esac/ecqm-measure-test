@@ -4,7 +4,7 @@ import { PatientFetch } from '../../data/PatientFetch';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
 
-const url = 'foo/';
+const url = 'foo';
 
 test('required properties check', () => {
     try {
