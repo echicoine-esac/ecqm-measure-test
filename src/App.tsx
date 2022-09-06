@@ -114,16 +114,6 @@ const App: React.FC = () => {
     });
   }, []);
 
-  // // Handle server queries and mutations
-  // // Fetches the list of stored servers
-  // const fetchServers = async () => {
-  //  try {
-  //     const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY'});
-  //     const servers: Array<Server> = apiData.data.listServers.items;
-  //     console.log(servers);
-  //     return servers;
-  //   } catch (err) { console.log('error fetching servers', err) }
-  // }
 
   // Uses the GraphQL API to create a server
   const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
