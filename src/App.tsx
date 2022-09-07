@@ -1,4 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import { API } from 'aws-amplify';
+import React, { useEffect, useState } from 'react';
+import { CreateServersInput } from "./API";
 import './App.css';
 import DataRepository from "./components/DataRepository";
 import KnowledgeRepository from './components/KnowledgeRepository';
@@ -6,6 +8,7 @@ import Populations from "./components/Populations";
 import ReceivingSystem from './components/ReceivingSystem';
 import ReportingPeriod from "./components/ReportingPeriod";
 import Results from "./components/Results";
+import ServerModal from "./components/ServerModal";
 import { Constants } from './constants/Constants';
 import { CollectDataFetch } from './data/CollectDataFetch';
 import { DataRequirementsFetch } from './data/DataRequirementsFetch';
@@ -13,19 +16,13 @@ import { EvaluateMeasureFetch } from './data/EvaluateMeasureFetch';
 import { MeasureFetch } from './data/MeasureFetch';
 import { PatientFetch } from './data/PatientFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
+import { createServers } from "./graphql/mutations";
 import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
 import { MeasureData } from './models/MeasureData';
 import { Server } from "./models/Server";
-import { Amplify, API } from 'aws-amplify';
-import { listServers } from './graphql/queries';
-import { createServers, deleteServers } from "./graphql/mutations";
-import awsExports from "./aws-exports";
-import {CreateServersInput} from "./API";
-import ServerModal from "./components/ServerModal";
 import { ServerUtils } from './utils/ServerUtils';
 
-Amplify.configure(awsExports);
 
 const App: React.FC = () => {
   // Define the state variables
@@ -96,11 +93,12 @@ const App: React.FC = () => {
   const [collectedData, setCollectedData] = useState<string>('');
 
   useEffect(() => {
-    ServerUtils.getServerList().then(res => {
-      setServers(res!);
-    });
+    initializeServers();
   }, []);
 
+ const initializeServers = async () => {
+    setServers(await ServerUtils.getServerList());
+  }
 
   // Uses the GraphQL API to create a server
   const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
@@ -129,7 +127,7 @@ const App: React.FC = () => {
     } catch (err) { console.log('error creating server', err) }
 
     // If we added a server then we should fetch the list again
-    await ServerUtils.getServerList();
+    await ServerUtils.refreshServerList();
   }
 
   const fetchMeasures = async (knowledgeRepo: Server) => {
