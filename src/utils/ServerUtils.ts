@@ -1,7 +1,7 @@
 import { Amplify, API } from 'aws-amplify';
+import awsExports from "../aws-exports";
 import { listServers } from "../graphql/queries";
 import { Server } from "../models/Server";
-import awsExports from "../aws-exports";
 
 Amplify.configure(awsExports);
 
@@ -20,11 +20,12 @@ export class ServerUtils {
             const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY' });
             ServerUtils.listOfServers = apiData.data.listServers.items;
         } catch (err) {
-            console.log('error fetching servers', err)
+            ServerUtils.listOfServers = [];
+            const aErr = err as any;
+            if (aErr?.errors) {
+                throw new Error('Error fetching servers: \n' + aErr?.errors);
+            }
         }
-
-
-        console.log(ServerUtils.listOfServers);
 
         return ServerUtils.listOfServers;
     };

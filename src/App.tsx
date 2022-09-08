@@ -1,5 +1,6 @@
-import { API } from 'aws-amplify';
+import { Amplify, API } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
+import awsExports from "./aws-exports";
 import { CreateServersInput } from "./API";
 import './App.css';
 import DataRepository from "./components/DataRepository";
@@ -23,6 +24,7 @@ import { MeasureData } from './models/MeasureData';
 import { Server } from "./models/Server";
 import { ServerUtils } from './utils/ServerUtils';
 
+Amplify.configure(awsExports);
 
 const App: React.FC = () => {
   // Define the state variables
@@ -93,12 +95,12 @@ const App: React.FC = () => {
   const [collectedData, setCollectedData] = useState<string>('');
 
   useEffect(() => {
-    initializeServers();
+    ServerUtils.getServerList().then(res => {
+      setServers(res!);
+    }).catch((error) => {
+      setResults(error.message);
+    })
   }, []);
-
- const initializeServers = async () => {
-    setServers(await ServerUtils.getServerList());
-  }
 
   // Uses the GraphQL API to create a server
   const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,

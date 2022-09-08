@@ -9,7 +9,7 @@ import ServerModal from "./ServerModal";
 interface props {
   showKnowledgeRepo: boolean;
   setShowKnowledgeRepo: React.Dispatch<React.SetStateAction<boolean>>;
-  servers: Array<Server | undefined>;
+  servers: any;
   fetchMeasures: (knowledgeRepo: Server) => void;
   selectedKnowledgeRepo: Server | undefined;
   measures: Array<Measure | undefined>;
@@ -65,7 +65,7 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                       <select data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo!.baseUrl}
                               onChange={(e) => fetchMeasures(servers[e.target.selectedIndex - 1]!)}>
                           <option value=''>Select a Server...</option>
-                          {servers.map((server, index) => (
+                          {servers.map((server: any, index: React.Key | null | undefined) => (
                               <option key={index}>{server!.baseUrl}</option>
                           ))}
                       </select>

@@ -53,7 +53,7 @@ const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) =
 
     return (
         <Modal size='lg' centered show={modalShow}>
-            <Form onSubmit={submitServer}>
+            <Form data-testid='server-model-form' onSubmit={submitServer}>
                 <Modal.Header><h2>Add server endpoint</h2></Modal.Header>
                 <Modal.Body>
                     <div className='row'>
@@ -65,43 +65,43 @@ const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) =
                     </div>
                     <Form.Group controlId='form.baseUrl'>
                         <Form.Label>Base URL (required)</Form.Label>
-                        <Form.Control type='text' value={baseUrl} placeholder='https://example.com/fhir/'
+                        <Form.Control data-testid='server-model-baseurl-text' type='text' value={baseUrl} placeholder='https://example.com/fhir/'
                                       onChange={baseUrlHandler} required/>
-                        <Form.Control.Feedback type='invalid'>Please provide a valid URL</Form.Control.Feedback>
+                        <Form.Control.Feedback data-testid='server-model-baseurl-feedback' type='invalid'>Please provide a valid URL</Form.Control.Feedback>
                     </Form.Group>
                     <hr/>
                     If your server requires OAuth authentication then please provide the additional values
                     <Form.Group controlId='form.authUrl'>
                         <Form.Label>Authentication URL</Form.Label>
-                        <Form.Control type='text' value={authUrl} placeholder='https://example.com/auth/'
+                        <Form.Control data-testid='server-model-authurl-text' type='text' value={authUrl} placeholder='https://example.com/auth/'
                                       onChange={authUrlHandler}/>
-                        <Form.Control.Feedback type='invalid'>Please provide a valid URL</Form.Control.Feedback>
+                        <Form.Control.Feedback data-testid='server-model-authurl-feedback' type='invalid'>Please provide a valid URL</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId='form.tokenUrl'>
                         <Form.Label>Token Access URL</Form.Label>
-                        <Form.Control type='text' value={tokenUrl} placeholder='https://example.com/token/'
+                        <Form.Control data-testid='server-model-accessurl-text' type='text' value={tokenUrl} placeholder='https://example.com/token/'
                                       onChange={tokenUrlHandler}/>
-                        <Form.Control.Feedback type='invalid'>Please provide a valid URL</Form.Control.Feedback>
+                        <Form.Control.Feedback data-testid='server-model-accessurl-feedback' type='invalid'>Please provide a valid URL</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId='form.clientId'>
                         <Form.Label>Client ID</Form.Label>
-                        <Form.Control type='text' value={clientId} placeholder='AC3487FB-8743-BC24-F309857698'
+                        <Form.Control data-testid='server-model-clientid-text' type='text' value={clientId} placeholder='AC3487FB-8743-BC24-F309857698'
                                       onChange={clientIdHandler}/>
                     </Form.Group>
                     <Form.Group controlId='form.clientSecret'>
                         <Form.Label>Client Secret</Form.Label>
-                        <Form.Control type='text' value={clientSecret} placeholder='32838A84B90'
+                        <Form.Control data-testid='server-model-clientsecret-text' type='text' value={clientSecret} placeholder='32838A84B90'
                                       onChange={clientSecretHandler}/>
                     </Form.Group>
                     <Form.Group controlId='form.scope'>
                         <Form.Label>Scope</Form.Label>
-                        <Form.Control type='text' value={scope} placeholder='user/*.read'
+                        <Form.Control data-testid='server-model-scope-text' type='text' value={scope} placeholder='user/*.read'
                                       onChange={scopeHandler}/>
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => setModalShow(false)}>Cancel</Button>
-                    <Button type='submit'>Save</Button>
+                    <Button data-testid='server-model-cancel-button' onClick={() => setModalShow(false)}>Cancel</Button>
+                    <Button data-testid='server-model-submit-button' type='submit'>Save</Button>
                 </Modal.Footer>
             </Form>
         </Modal>
