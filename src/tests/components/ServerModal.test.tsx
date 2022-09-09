@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ServerModal from '../../components/ServerModal';
-import { ServerUtils } from '../../utils/ServerUtils';
 
 test('ServerModel form validation - base url, auth url, access url', async () => {
     const modalShow = true;

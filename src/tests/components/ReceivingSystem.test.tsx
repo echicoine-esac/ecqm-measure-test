@@ -3,10 +3,11 @@ import userEvent from '@testing-library/user-event';
 import ReceivingSystem from '../../components/ReceivingSystem';
 import { ServerUtils } from '../../utils/ServerUtils';
 
-beforeAll(() => {
-    //cache the server list with test data
-    ServerUtils.setMockData();
-});
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+      return await ServerUtils.buildServerTestData();
+    });
+  });
 
 test('expect functions to be called properly', async () => {
     const servers = await ServerUtils.getServerList();

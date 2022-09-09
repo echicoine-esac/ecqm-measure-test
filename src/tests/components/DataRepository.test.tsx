@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event';
 import DataRepository from '../../components/DataRepository';
 import { ServerUtils } from '../../utils/ServerUtils';
 
-
-beforeAll(() => {
-    //cache the server list with test data
-    ServerUtils.setMockData();
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+      return await ServerUtils.buildServerTestData();
+    });
   });
 
 test('expect functions to be called when selecting items in dropdown', async () => {

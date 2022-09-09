@@ -1,8 +1,8 @@
 import { Amplify, API } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
-import awsExports from "./aws-exports";
 import { CreateServersInput } from "./API";
 import './App.css';
+import awsExports from "./aws-exports";
 import DataRepository from "./components/DataRepository";
 import KnowledgeRepository from './components/KnowledgeRepository';
 import Populations from "./components/Populations";

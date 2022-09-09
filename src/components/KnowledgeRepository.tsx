@@ -71,7 +71,7 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                       </select>
                     </div>
                     <div className='col-md-1 order-md-2'>
-                          <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
+                          <Button variant='outline-primary' data-testid='knowledge-repo-server-add-button'  onClick={() => setModalShow(true)}>+</Button>
                     </div>
                     <div className='col-md-6 order-md-3'>
                       <select data-testid='knowledge-repo-measure-dropdown' className='custom-select d-block w-100' id='measure' value={selectedMeasure}

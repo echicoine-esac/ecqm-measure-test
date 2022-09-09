@@ -12,7 +12,6 @@ export class ServerUtils {
     // Handle server queries and mutations
     // Fetches the list of stored servers
     public static getServerList = async (): Promise<Array<Server>> => {
-
         //returned cached version if populated
         if (ServerUtils.listOfServers && ServerUtils.listOfServers.length > 0) return ServerUtils.listOfServers;
 
@@ -35,11 +34,7 @@ export class ServerUtils {
         return await ServerUtils.getServerList();
     }
 
-    public static setMockData() {
-        this.listOfServers = ServerUtils.buildServerTestData();
-    };
-
-    private static buildServerTestData(): Server[] {
+    public static buildServerTestData(): Server[] {
         return [ServerUtils.buildAServer('1'), ServerUtils.buildAServer('2'), ServerUtils.buildAServer('3')]
     }
 

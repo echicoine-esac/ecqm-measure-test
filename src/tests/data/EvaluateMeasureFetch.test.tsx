@@ -7,9 +7,10 @@ import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestResultsData from '../resources/fetchmock-results.json';
 
-beforeAll(() => {
-    //cache the server list with test data
-    ServerUtils.setMockData();
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+      return await ServerUtils.buildServerTestData();
+    });
   });
 
 test('required properties check', async () => {

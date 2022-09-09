@@ -21,12 +21,57 @@ import { ServerUtils } from '../utils/ServerUtils';
 import { StringUtils } from '../utils/StringUtils';
 
 
-beforeAll(() => {
-  //cache the server list with test data
-  ServerUtils.setMockData();
+beforeEach(() => {
+  jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+    return await ServerUtils.buildServerTestData();
+  });
 });
 
 //JSON FETCH:
+test('success scenarios: create new server button opens modal', async () => {
+
+  const form = 'server-model-form';
+  const baseUrlText = 'server-model-baseurl-text';
+  const authUrlText = 'server-model-authurl-text';
+  const accessUrlText = 'server-model-accessurl-text';
+  const clientIdText = 'server-model-clientid-text';
+  const clientSecretText = 'server-model-clientsecret-text';
+  const scopeText = 'server-model-scope-text';
+  const cancelButton = 'server-model-cancel-button';
+  const submitButton = 'server-model-submit-button';
+
+  await act(async () => {
+    await render(<App />);
+  });
+
+  await act(async () => {
+    const addServerButton: HTMLButtonElement = screen.getByTestId('knowledge-repo-server-add-button');
+    fireEvent.click(addServerButton);
+  });
+
+  const formField: HTMLFormElement = screen.getByTestId(form);
+  const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
+  const authUrlTextField: HTMLInputElement = screen.getByTestId(authUrlText);
+  const accessUrlTextField: HTMLInputElement = screen.getByTestId(accessUrlText);
+  const clientIdTextField: HTMLInputElement = screen.getByTestId(clientIdText);
+  const clientSecretTextField: HTMLInputElement = screen.getByTestId(clientSecretText);
+  const scopeTextField: HTMLInputElement = screen.getByTestId(scopeText);
+  const cancelButtonField: HTMLButtonElement = screen.getByTestId(cancelButton);
+  const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
+
+  expect(formField).toBeInTheDocument();
+  expect(baseUrlTextField).toBeInTheDocument();
+  expect(authUrlTextField).toBeInTheDocument();
+  expect(accessUrlTextField).toBeInTheDocument();
+  expect(clientIdTextField).toBeInTheDocument();
+  expect(clientSecretTextField).toBeInTheDocument();
+  expect(scopeTextField).toBeInTheDocument();
+  expect(cancelButtonField).toBeInTheDocument();
+  expect(submitButtonField).toBeInTheDocument();
+
+});
+
+
 //mock server data must match user experience
 test('success scenarios: knowledge repository', async () => {
 
