@@ -1,6 +1,5 @@
-import { Amplify, API } from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
-import { CreateServersInput } from "./API";
 import './App.css';
 import awsExports from "./aws-exports";
 import DataRepository from "./components/DataRepository";
@@ -17,7 +16,6 @@ import { EvaluateMeasureFetch } from './data/EvaluateMeasureFetch';
 import { MeasureFetch } from './data/MeasureFetch';
 import { PatientFetch } from './data/PatientFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
-import { createServers } from "./graphql/mutations";
 import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
 import { MeasureData } from './models/MeasureData';
@@ -105,7 +103,11 @@ const App: React.FC = () => {
   // Uses the GraphQL API to create a server
   const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
                               clientSecret: string, scope: string) => {
-     await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
+    try {
+      await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
+    } catch (error: any) {
+      setResults(error.message);
+    }
   }
 
   const fetchMeasures = async (knowledgeRepo: Server) => {
