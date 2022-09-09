@@ -21,13 +21,22 @@ import { ServerUtils } from '../utils/ServerUtils';
 import { StringUtils } from '../utils/StringUtils';
 
 
+const mockCreateServerFn = jest.fn();
+
 beforeEach(() => {
   jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
     return await ServerUtils.buildServerTestData();
   });
+  
+  jest.spyOn(ServerUtils, 'createServer').mockImplementation(async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
+    clientSecret: string, scope: string) => {
+    return await mockCreateServerFn(baseUrl, authUrl, tokenUrl, clientId,
+      clientSecret, scope);
+  });
 });
 
-//JSON FETCH:
+
+//SERVER MODAL
 test('success scenarios: create new server button opens modal', async () => {
 
   const form = 'server-model-form';
@@ -71,6 +80,50 @@ test('success scenarios: create new server button opens modal', async () => {
 
 });
 
+
+test('success scenarios: create new server button opens modal', async () => {
+
+  const baseUrlText = 'server-model-baseurl-text';
+  const authUrlText = 'server-model-authurl-text';
+  const accessUrlText = 'server-model-accessurl-text';
+  const clientIdText = 'server-model-clientid-text';
+  const scopeText = 'server-model-scope-text';
+  const submitButton = 'server-model-submit-button';
+
+  await act(async () => {
+    await render(<App />);
+  });
+
+  await act(async () => {
+    const addServerButton: HTMLButtonElement = screen.getByTestId('knowledge-repo-server-add-button');
+    fireEvent.click(addServerButton);
+  });
+
+  const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
+  const authUrlTextField: HTMLInputElement = screen.getByTestId(authUrlText);
+  const accessUrlTextField: HTMLInputElement = screen.getByTestId(accessUrlText);
+  const clientIdTextField: HTMLInputElement = screen.getByTestId(clientIdText);
+  const scopeTextField: HTMLInputElement = screen.getByTestId(scopeText);
+  const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
+
+
+  await userEvent.type(baseUrlTextField, 'http://localhost:8080/baseUrl');
+  await userEvent.type(authUrlTextField, 'http://localhost:8080/authUrl');
+  await userEvent.type(accessUrlTextField, 'http://localhost:8080/accessUrl');
+  await userEvent.type(clientIdTextField, 'clientId');
+  await userEvent.type(scopeTextField, 'Scope');
+
+  fireEvent.click(submitButtonField);
+
+  expect(mockCreateServerFn).toHaveBeenCalledWith(
+      'http://localhost:8080/baseUrl',
+      'http://localhost:8080/authUrl',
+      'http://localhost:8080/accessUrl',
+      'clientId',
+      '',
+      'user/*.readScope');
+
+});
 
 //mock server data must match user experience
 test('success scenarios: knowledge repository', async () => {

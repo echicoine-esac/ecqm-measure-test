@@ -105,31 +105,7 @@ const App: React.FC = () => {
   // Uses the GraphQL API to create a server
   const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
                               clientSecret: string, scope: string) => {
-    try {
-      let serverInput: CreateServersInput = {
-        baseUrl: baseUrl
-      };
-      if (authUrl !== '') {
-        serverInput.authUrl = authUrl;
-        serverInput.callbackUrl = 'http://localhost/callback';
-      }
-      if (tokenUrl !== '') {
-        serverInput.tokenUrl = tokenUrl;
-      }
-      if (clientId !== '') {
-        serverInput.clientID = clientId;
-      }
-      if (clientSecret !== '') {
-        serverInput.clientSecret = clientSecret;
-      }
-      if (scope !== '') {
-        serverInput.scope = scope;
-      }
-      await API.graphql({query: createServers, authMode: "API_KEY", variables: {input: serverInput}})
-    } catch (err) { console.log('error creating server', err) }
-
-    // If we added a server then we should fetch the list again
-    await ServerUtils.refreshServerList();
+     await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
   }
 
   const fetchMeasures = async (knowledgeRepo: Server) => {
