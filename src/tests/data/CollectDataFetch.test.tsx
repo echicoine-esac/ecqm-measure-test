@@ -6,11 +6,12 @@ import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
 
+
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
-      return await ServerUtils.buildServerTestData();
+        return Constants.serverTestData;
     });
-  });
+});
 
 test('required properties check', async () => {
     const dataServer: Server = (await ServerUtils.getServerList())[0];

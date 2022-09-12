@@ -20,12 +20,13 @@ import jsonTestResultsData from '../tests/resources/fetchmock-results.json';
 import { ServerUtils } from '../utils/ServerUtils';
 import { StringUtils } from '../utils/StringUtils';
 
-
 const mockCreateServerFn = jest.fn();
 
+
+//mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {
   jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
-    return await ServerUtils.buildServerTestData();
+    return Constants.serverTestData;
   });
   
   jest.spyOn(ServerUtils, 'createServer').mockImplementation(async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
@@ -34,7 +35,6 @@ beforeEach(() => {
       clientSecret, scope);
   });
 });
-
 
 //SERVER MODAL
 test('success scenarios: create new server button opens modal', async () => {
@@ -122,7 +122,6 @@ test('success scenarios: create new server button opens modal', async () => {
       'clientId',
       '',
       'user/*.readScope');
-
 });
 
 //mock server data must match user experience

@@ -1,14 +1,15 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import KnowledgeRepository from '../../components/KnowledgeRepository';
+import { Constants } from '../../constants/Constants';
 import { Measure } from '../../models/Measure';
 import { ServerUtils } from '../../utils/ServerUtils';
 
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
-      return await ServerUtils.buildServerTestData();
+        return Constants.serverTestData;
     });
-  });
+});
 
 test('expect setModal called with true when add server button selected', async () => {
     const servers = await ServerUtils.getServerList();

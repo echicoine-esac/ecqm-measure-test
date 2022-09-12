@@ -19,7 +19,9 @@ export class ServerUtils {
 
         try {
             const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY' });
+
             ServerUtils.listOfServers = apiData.data.listServers.items;
+
         } catch (err) {
             ServerUtils.listOfServers = [];
             const aErr = err as any;
@@ -68,22 +70,5 @@ export class ServerUtils {
         await ServerUtils.getServerList();
     }
 
-    //testing purposes:
-    public static buildServerTestData(): Server[] {
-        return [ServerUtils.buildAServer('1'), ServerUtils.buildAServer('2'), ServerUtils.buildAServer('3')]
-    }
-
-    private static buildAServer(count: string): Server {
-        return {
-            id: 'ec2345-' + count,
-            baseUrl: 'http://localhost:8080/' + count,
-            authUrl: '',
-            tokenUrl: '',
-            callbackUrl: '',
-            clientID: '',
-            clientSecret: '',
-            scope: ''
-        }
-    }
 }
 

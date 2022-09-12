@@ -1,16 +1,17 @@
 import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
 import { DataRequirementsFetch } from '../../data/DataRequirementsFetch';
-import { StringUtils } from '../../utils/StringUtils';
-import jsonTestDataRequirementsData from '../resources/fetchmock-knowledge-repo.json';
 import { Server } from "../../models/Server";
 import { ServerUtils } from '../../utils/ServerUtils';
+import { StringUtils } from '../../utils/StringUtils';
+import jsonTestDataRequirementsData from '../resources/fetchmock-knowledge-repo.json';
+
 
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
-      return await ServerUtils.buildServerTestData();
+        return Constants.serverTestData;
     });
-  });
+});
 
 test('required properties check', async () => {
     const dataServer: Server = (await ServerUtils.getServerList())[0];

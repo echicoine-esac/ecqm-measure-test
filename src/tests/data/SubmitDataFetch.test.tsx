@@ -7,9 +7,9 @@ import { StringUtils } from '../../utils/StringUtils';
 
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
-      return await ServerUtils.buildServerTestData();
+        return Constants.serverTestData;
     });
-  });
+});
 
 test('required properties check', async () => {
     const dataServer: Server = (await ServerUtils.getServerList())[0];
