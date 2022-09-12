@@ -5,10 +5,11 @@ import { Server } from "../../models/Server";
 import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 
-beforeAll(() => {
-    //cache the server list with test data
-    ServerUtils.setMockData();
-  });
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+        return Constants.serverTestData;
+    });
+});
 
 test('required properties check', async () => {
     const dataServer: Server = (await ServerUtils.getServerList())[0];

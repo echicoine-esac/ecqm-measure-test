@@ -1,3 +1,6 @@
+import { GraphQLResult } from '@aws-amplify/api';
+import { GraphQLOptions } from '@aws-amplify/api-graphql/lib-esm/types/index';
+
 export class Constants {
     public static missingProperty = 'Missing required property: {0}';
 
@@ -25,6 +28,40 @@ export class Constants {
 
     public static dataSubmitted = 'Data Submitted';
     public static submitDataFetchDataError = 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.'
-    
+
+    //testing purposes:
+    public static serverTestData = [
+        {
+            id: 'ec2345-1',
+            baseUrl: 'http://localhost:8080/1',
+            authUrl: '',
+            tokenUrl: '',
+            callbackUrl: '',
+            clientID: '',
+            clientSecret: '',
+            scope: ''
+        },
+        {
+            id: 'ec2345-2',
+            baseUrl: 'http://localhost:8080/2',
+            authUrl: '',
+            tokenUrl: '',
+            callbackUrl: '',
+            clientID: '',
+            clientSecret: '',
+            scope: ''
+        },
+        {
+            id: 'ec2345-3',
+            baseUrl: 'http://localhost:8080/3',
+            authUrl: '',
+            tokenUrl: '',
+            callbackUrl: '',
+            clientID: '',
+            clientSecret: '',
+            scope: ''
+        }
+    ];
+ 
 }
 

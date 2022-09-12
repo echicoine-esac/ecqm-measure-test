@@ -2,10 +2,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ReceivingSystem from '../../components/ReceivingSystem';
 import { ServerUtils } from '../../utils/ServerUtils';
+import { Constants } from '../../constants/Constants';
 
-beforeAll(() => {
-    //cache the server list with test data
-    ServerUtils.setMockData();
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+        return Constants.serverTestData;
+    });
 });
 
 test('expect functions to be called properly', async () => {

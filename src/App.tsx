@@ -1,6 +1,4 @@
-import { API } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
-import { CreateServersInput } from "./API";
 import './App.css';
 import DataRepository from "./components/DataRepository";
 import KnowledgeRepository from './components/KnowledgeRepository';
@@ -17,7 +15,6 @@ import { EvaluateMeasureFetch } from './data/EvaluateMeasureFetch';
 import { MeasureFetch } from './data/MeasureFetch';
 import { PatientFetch } from './data/PatientFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
-import { createServers } from "./graphql/mutations";
 import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
 import { MeasureData } from './models/MeasureData';
@@ -113,6 +110,15 @@ const App: React.FC = () => {
     setServers(await ServerUtils.getServerList());
   }
 
+  // Uses the GraphQL API to create a server
+  const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
+                              clientSecret: string, scope: string) => {
+    try {
+      await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
+    } catch (error: any) {
+      setResults(error.message);
+    }
+  }
 
   // Quires the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
@@ -354,7 +360,7 @@ const App: React.FC = () => {
         numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
         measureScoring={measureScoring} />
       <br />
-      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={ServerUtils.createServer}/>
+      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer}/>
       <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
         setUsername={setUsername} password={password} setPassword={setPassword}/>
     </div>

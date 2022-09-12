@@ -1,12 +1,48 @@
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import KnowledgeRepository from '../../components/KnowledgeRepository';
+import { Constants } from '../../constants/Constants';
 import { Measure } from '../../models/Measure';
 import { ServerUtils } from '../../utils/ServerUtils';
 
-beforeAll(() => {
-    //cache the server list with test data
-    ServerUtils.setMockData();
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+        return Constants.serverTestData;
+    });
+});
+
+test('expect setModal called with true when add server button selected', async () => {
+    const servers = await ServerUtils.getServerList();
+    const measures = buildMeasureData();
+
+    const setModalShow = jest.fn();
+
+    const measureDivText = 'text-measure-div';
+
+    render(<KnowledgeRepository
+        showKnowledgeRepo={true}
+        setShowKnowledgeRepo={jest.fn()}
+        servers={servers}
+        fetchMeasures={jest.fn()}
+        selectedKnowledgeRepo={servers[0]}
+        measures={measures}
+        setSelectedMeasure={jest.fn()}
+        selectedMeasure={measureDivText}
+        getDataRequirements={jest.fn()}
+        loading={false}
+        setModalShow={setModalShow}
+    />);
+    const addButton = 'knowledge-repo-server-add-button';
+    const addButtonField: HTMLButtonElement = screen.getByTestId(addButton);
+
+
+    await act(async () => {
+        fireEvent.click(addButtonField);
+    });
+
+
+    expect(setModalShow).toBeCalledWith(true)
+
 });
 
 test('expect functions to be called when selecting items in dropdown', async () => {
