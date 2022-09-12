@@ -23,6 +23,8 @@ import { createServers, deleteServers } from "./graphql/mutations";
 import awsExports from "./aws-exports";
 import {CreateServersInput} from "./API";
 import ServerModal from "./components/ServerModal";
+import LoginModal from "./components/LoginModal";
+import {getHashParams, removeHashParamsFromUrl} from "./utils/hashUtils";
 import { ServerUtils } from './utils/ServerUtils';
 
 Amplify.configure(awsExports);
@@ -81,7 +83,12 @@ const App: React.FC = () => {
   const [showDataRepo, setShowDataRepo] = useState<boolean>(false);
   const [showReceiving, setShowReceiving] = useState<boolean>(false);
   const [showPopulations, setShowPopulations] = useState<boolean>(false);
-  const [modalShow, setModalShow] = useState<boolean>(false);
+  const [serverModalShow, setServerModalShow] = useState<boolean>(false);
+
+  // Handle authentication when required
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [loginModalShow, setLoginModalShow] = useState<boolean>(false);
 
   // Population states
   const [initialPopulation, setInitialPopulation] = useState<string>('-');
@@ -94,6 +101,12 @@ const App: React.FC = () => {
 
   // Saved data
   const [collectedData, setCollectedData] = useState<string>('');
+
+  // Handle OAuth redirect
+  const hashParams = getHashParams();
+  const access_token = hashParams.access_token;
+  const expires_in = hashParams.expires_in;
+  removeHashParamsFromUrl();
 
   useEffect(() => {
     ServerUtils.getServerList().then(res => {
@@ -142,9 +155,24 @@ const App: React.FC = () => {
     await ServerUtils.getServerList();
   }
 
+  // Quires the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
+
+    console.log(knowledgeRepo);
+    console.log('AuthURL is ' + knowledgeRepo.authUrl);
+
+    // If the selected server requires OAuth then prompt for credentials
+    if (knowledgeRepo.authUrl !== null && knowledgeRepo.authUrl !== '') {
+      //setUsername('');
+      //setPassword('');
+      //setLoginModalShow(true);
+      // Open a window to the authentication URL to allow them to login and allow scopes
+      const authenticationUrl: string = knowledgeRepo.authUrl + '?client_id=' + knowledgeRepo.clientID +
+          '&redirect_uri=http://localhost:3000&scope=' + knowledgeRepo.scope + '&response_type=token';
+      window.open(authenticationUrl, '_self');
+    }
 
     try {
       setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData())
@@ -351,23 +379,25 @@ const App: React.FC = () => {
       <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
         servers={servers} fetchMeasures={fetchMeasures} selectedKnowledgeRepo={selectedKnowledgeRepo}
         measures={measures} setSelectedMeasure={setSelectedMeasure} selectedMeasure={selectedMeasure}
-        getDataRequirements={getDataRequirements} loading={loading} setModalShow={setModalShow}/>
+        getDataRequirements={getDataRequirements} loading={loading} setModalShow={setServerModalShow}/>
       <br />
       <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
-        setSelectedDataRepo={setSelectedDataRepo} selectedDataRepo={selectedDataRepo} patients={patients}
+        selectedDataRepo={selectedDataRepo} patients={patients}
         fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient} selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading} />
+        collectData={collectData} loading={loading} setModalShow={setServerModalShow}/>
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving} selectedReceiving={selectedReceiving}
-        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading} />
+        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}/>
       <Results results={results} />
       <Populations initialPopulation={initialPopulation} denominator={denominator}
         denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
         numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
         measureScoring={measureScoring} />
       <br />
-      <ServerModal modalShow={modalShow} setModalShow={setModalShow} createServer={createServer}/>
+      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer}/>
+      <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
+        setUsername={setUsername} password={password} setPassword={setPassword}/>
     </div>
   );
 }

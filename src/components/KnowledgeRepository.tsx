@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
-import { Button, Spinner } from 'react-bootstrap';
+import React from 'react';
+import {Button, OverlayTrigger, Spinner, Tooltip} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Measure } from '../models/Measure';
 import { Server } from "../models/Server";
-import ServerModal from "./ServerModal";
 
 // Props for KnowledgeRepository
 interface props {
@@ -71,7 +70,11 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                       </select>
                     </div>
                     <div className='col-md-1 order-md-2'>
+                        <OverlayTrigger placement={'top'} overlay={
+                            <Tooltip>Add an Endpoint</Tooltip>
+                            }>
                           <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
+                        </OverlayTrigger>
                     </div>
                     <div className='col-md-6 order-md-3'>
                       <select data-testid='knowledge-repo-measure-dropdown' className='custom-select d-block w-100' id='measure' value={selectedMeasure}
@@ -84,7 +87,7 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                     </div>
                 </div>
               <div className='row'>
-                <div className='col-md-6 order-md-2'>
+                <div className='col-md-5 order-md-2'>
                   <br/>
                   {loading ? (
                     <Button data-testid='get-data-requirements-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
