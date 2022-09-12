@@ -1,11 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import { API } from 'aws-amplify';
+import React, { useEffect, useState } from 'react';
+import { CreateServersInput } from "./API";
 import './App.css';
 import DataRepository from "./components/DataRepository";
 import KnowledgeRepository from './components/KnowledgeRepository';
+import LoginModal from "./components/LoginModal";
 import Populations from "./components/Populations";
 import ReceivingSystem from './components/ReceivingSystem';
 import ReportingPeriod from "./components/ReportingPeriod";
 import Results from "./components/Results";
+import ServerModal from "./components/ServerModal";
 import { Constants } from './constants/Constants';
 import { CollectDataFetch } from './data/CollectDataFetch';
 import { DataRequirementsFetch } from './data/DataRequirementsFetch';
@@ -13,21 +17,14 @@ import { EvaluateMeasureFetch } from './data/EvaluateMeasureFetch';
 import { MeasureFetch } from './data/MeasureFetch';
 import { PatientFetch } from './data/PatientFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
+import { createServers } from "./graphql/mutations";
 import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
 import { MeasureData } from './models/MeasureData';
 import { Server } from "./models/Server";
-import { Amplify, API } from 'aws-amplify';
-import { listServers } from './graphql/queries';
-import { createServers, deleteServers } from "./graphql/mutations";
-import awsExports from "./aws-exports";
-import {CreateServersInput} from "./API";
-import ServerModal from "./components/ServerModal";
-import LoginModal from "./components/LoginModal";
-import {getHashParams, removeHashParamsFromUrl} from "./utils/hashUtils";
+import { getHashParams, removeHashParamsFromUrl } from "./utils/hashUtils";
 import { ServerUtils } from './utils/ServerUtils';
 
-Amplify.configure(awsExports);
 
 const App: React.FC = () => {
   // Define the state variables
@@ -109,41 +106,13 @@ const App: React.FC = () => {
   removeHashParamsFromUrl();
 
   useEffect(() => {
-    ServerUtils.getServerList().then(res => {
-      setServers(res!);
-    });
+    initializeServers();
   }, []);
 
-
-  // Uses the GraphQL API to create a server
-  const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
-                              clientSecret: string, scope: string) => {
-    try {
-      let serverInput: CreateServersInput = {
-        baseUrl: baseUrl
-      };
-      if (authUrl !== '') {
-        serverInput.authUrl = authUrl;
-        serverInput.callbackUrl = 'http://localhost/callback';
-      }
-      if (tokenUrl !== '') {
-        serverInput.tokenUrl = tokenUrl;
-      }
-      if (clientId !== '') {
-        serverInput.clientID = clientId;
-      }
-      if (clientSecret !== '') {
-        serverInput.clientSecret = clientSecret;
-      }
-      if (scope !== '') {
-        serverInput.scope = scope;
-      }
-      await API.graphql({query: createServers, authMode: "API_KEY", variables: {input: serverInput}})
-    } catch (err) { console.log('error creating server', err) }
-
-    // If we added a server then we should fetch the list again
-    await ServerUtils.getServerList();
+ const initializeServers = async () => {
+    setServers(await ServerUtils.getServerList());
   }
+
 
   // Quires the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
@@ -385,7 +354,7 @@ const App: React.FC = () => {
         numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
         measureScoring={measureScoring} />
       <br />
-      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer}/>
+      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={ServerUtils.createServer}/>
       <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
         setUsername={setUsername} password={password} setPassword={setPassword}/>
     </div>

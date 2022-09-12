@@ -1,6 +1,9 @@
-import { API } from "aws-amplify";
+import { Amplify, API } from 'aws-amplify';
 import { listServers } from "../graphql/queries";
 import { Server } from "../models/Server";
+import awsExports from "../aws-exports";
+
+Amplify.configure(awsExports);
 
 export class ServerUtils {
 
@@ -19,6 +22,9 @@ export class ServerUtils {
         } catch (err) {
             console.log('error fetching servers', err)
         }
+
+
+        console.log(ServerUtils.listOfServers);
 
         return ServerUtils.listOfServers;
     };
