@@ -120,26 +120,30 @@ const App: React.FC = () => {
     }
   }
 
-  // Quires the selected server for the list of measures it has
+  // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
-    setSelectedKnowledgeRepo(knowledgeRepo);
-    setShowPopulations(false);
 
-    console.log(knowledgeRepo);
-    console.log('AuthURL is ' + knowledgeRepo.authUrl);
-
-    // If the selected server requires OAuth then prompt for credentials
-    if (knowledgeRepo.authUrl !== null && knowledgeRepo.authUrl !== '') {
-      //setUsername('');
-      //setPassword('');
-      //setLoginModalShow(true);
-      // Open a window to the authentication URL to allow them to login and allow scopes
-      const authenticationUrl: string = knowledgeRepo.authUrl + '?client_id=' + knowledgeRepo.clientID +
-          '&redirect_uri=http://localhost:3000&scope=' + knowledgeRepo.scope + '&response_type=token';
-      window.open(authenticationUrl, '_self');
-    }
+    console.log("TEST!");
 
     try {
+      setSelectedKnowledgeRepo(knowledgeRepo);
+      setShowPopulations(false);
+
+      console.log(knowledgeRepo);
+      console.log('AuthURL is ' + knowledgeRepo.authUrl);
+
+      // If the selected server requires OAuth then prompt for credentials
+      if (knowledgeRepo.authUrl !== null && knowledgeRepo.authUrl !== '') {
+        //setUsername('');
+        //setPassword('');
+        //setLoginModalShow(true);
+        // Open a window to the authentication URL to allow them to login and allow scopes
+        const authenticationUrl: string = knowledgeRepo.authUrl + '?client_id=' + knowledgeRepo.clientID +
+          '&redirect_uri=http://localhost:3000&scope=' + knowledgeRepo.scope + '&response_type=token';
+        window.open(authenticationUrl, '_self');
+      }
+
+
       setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData())
     } catch (error: any) {
       setResults(error.message);

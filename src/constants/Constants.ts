@@ -1,5 +1,3 @@
-import { GraphQLResult } from '@aws-amplify/api';
-import { GraphQLOptions } from '@aws-amplify/api-graphql/lib-esm/types/index';
 
 export class Constants {
     public static missingProperty = 'Missing required property: {0}';
