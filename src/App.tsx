@@ -123,8 +123,6 @@ const App: React.FC = () => {
   // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
 
-    console.log("TEST!");
-
     try {
       setSelectedKnowledgeRepo(knowledgeRepo);
       setShowPopulations(false);
