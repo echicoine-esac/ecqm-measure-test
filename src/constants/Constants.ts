@@ -13,8 +13,8 @@ export class Constants {
     public static error_selectReceivingSystemServer = 'Please select a Data Repository server to use';
     public static error_selectMeasureToSubmit = 'Please select a Measure to collect the data for';
 
-    public static evaluateMeasureFetchURL = '{0}/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&reportType=subject-list';
-    public static evaluateMeasureWithPatientFetchURL = '{0}/{1}/$evaluate-measure?subject={2}&periodStart={3}&periodEnd={4}';
+    public static evaluateMeasureFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&reportType=subject-list';
+    public static evaluateMeasureWithPatientFetchURL = '{0}Measure/{1}/$evaluate-measure?subject={2}&periodStart={3}&periodEnd={4}';
 
     public static defaultStartDate = '2019-01-01';
     public static defaultEndDate = '2019-12-31';
@@ -31,7 +31,7 @@ export class Constants {
     public static serverTestData = [
         {
             id: 'ec2345-1',
-            baseUrl: 'http://localhost:8080/1',
+            baseUrl: 'http://localhost:8080/1/',
             authUrl: '',
             tokenUrl: '',
             callbackUrl: '',
@@ -41,7 +41,7 @@ export class Constants {
         },
         {
             id: 'ec2345-2',
-            baseUrl: 'http://localhost:8080/2',
+            baseUrl: 'http://localhost:8080/2/',
             authUrl: '',
             tokenUrl: '',
             callbackUrl: '',
@@ -51,7 +51,7 @@ export class Constants {
         },
         {
             id: 'ec2345-3',
-            baseUrl: 'http://localhost:8080/3',
+            baseUrl: 'http://localhost:8080/3/',
             authUrl: '',
             tokenUrl: '',
             callbackUrl: '',

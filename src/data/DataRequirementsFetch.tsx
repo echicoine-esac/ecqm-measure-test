@@ -42,7 +42,7 @@ export class DataRequirementsFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        return this.selectedKnowledgeRepo?.baseUrl + '/' + this.selectedMeasure +
+        return this.selectedKnowledgeRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
         '/$data-requirements?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
     }
 

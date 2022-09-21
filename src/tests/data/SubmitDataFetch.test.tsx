@@ -72,7 +72,7 @@ test('submit data mock error 400', async () => {
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Bad Request');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Bad Request');
 
 });
 
@@ -91,7 +91,7 @@ test('submit data mock error 500', async () => {
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Internal Server Error');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Internal Server Error');
 
 });
 
@@ -103,5 +103,5 @@ test('test urlformat', async () => {
         'selectedMeasure',
         'collectedData');
     expect(submitDataFetch.getUrl())
-        .toEqual('http://localhost:8080/1/selectedMeasure/$submit-data');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$submit-data');
 });

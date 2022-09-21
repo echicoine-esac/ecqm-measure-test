@@ -95,7 +95,7 @@ test('get CollectData mock error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient to retrieve Collect Data caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient to retrieve Collect Data caused: Error: this is a test');
 
     fetchMock.restore();
 
@@ -110,7 +110,7 @@ test('test urlformat', async () => {
         'endDate',
         'selectedPatient');
     expect(collectDataFetch.getUrl())
-        .toEqual('http://localhost:8080/1/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient');
 });
 
 test('test urlformat without patient', async () => {
@@ -122,6 +122,6 @@ test('test urlformat without patient', async () => {
         'endDate',
         '');
     expect(collectDataFetch.getUrl())
-        .toEqual('http://localhost:8080/1/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate');
 });
  

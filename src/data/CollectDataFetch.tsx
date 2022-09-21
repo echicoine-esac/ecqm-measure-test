@@ -45,7 +45,7 @@ export class CollectDataFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        let ret = this.selectedDataRepo?.baseUrl + '/' + this.selectedMeasure +
+        let ret = this.selectedDataRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
             '/$collect-data?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
 
         if (this.selectedPatient !== '') {
