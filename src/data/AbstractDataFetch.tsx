@@ -17,9 +17,15 @@ export abstract class AbstractDataFetch {
     abstract getUrl(): string;
     protected abstract processReturnedData(data: any): any;
 
-    fetchData = async (): Promise<any> => {
+    fetchData = async (token: string): Promise<any> => {
         let ret: any;
-        await fetch(this.getUrl())
+
+        // Add any token provided to the header
+        const requestOptions = {
+            headers: {"Authorization": `Bearer ${token}`}
+        };
+
+        await fetch(this.getUrl(), requestOptions)
             .then((response) => {
                 if (!response.ok) {
                     throw Error(response.statusText);

@@ -21,7 +21,7 @@ test('get patients mock', async () => {
     fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientsData)
         , { method: 'GET' });
-    let patientList: string[] = await patientFetch.fetchData()
+    let patientList: string[] = await patientFetch.fetchData('')
     expect(patientList.length).toEqual(18);
     fetchMock.restore();
 
@@ -37,7 +37,7 @@ test('get patients mock function error', async () => {
     });
 
     try {
-        let patientList: string[] = await patientFetch.fetchData()
+        let patientList: string[] = await patientFetch.fetchData('')
     } catch (error: any) {
         errorCatch = error.message;
     }
@@ -55,7 +55,7 @@ test('get patients mock return error', async () => {
     fetchMock.once(patientFetch.getUrl(), 400);
 
     try {
-        await patientFetch.fetchData()
+        await patientFetch.fetchData('')
     } catch (error: any) {
         errorCatch = error.message;
     }

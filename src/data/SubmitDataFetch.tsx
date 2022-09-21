@@ -42,10 +42,11 @@ export class SubmitDataFetch extends AbstractDataFetch {
         return Constants.dataSubmitted;
     }
 
-    submitData = async (): Promise<string> => {
+    submitData = async (token: string): Promise<string> => {
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/fhir+json' },
+            headers: { 'Content-Type': 'application/fhir+json',
+                "Authorization": `Bearer ${token}`},
             body: this.collectedData
         };
 
