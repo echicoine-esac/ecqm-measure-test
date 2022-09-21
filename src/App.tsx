@@ -25,6 +25,7 @@ import {CreateServersInput} from "./API";
 import ServerModal from "./components/ServerModal";
 import LoginModal from "./components/LoginModal";
 import {getHashParams, removeHashParamsFromUrl} from "./utils/hashUtils";
+import {StringUtils} from "./utils/StringUtils";
 
 Amplify.configure(awsExports);
 
@@ -103,8 +104,8 @@ const App: React.FC = () => {
 
   // Handle OAuth redirect
   const hashParams = getHashParams();
-  const access_token = hashParams.access_token;
-  const expires_in = hashParams.expires_in;
+  const [accessToken, setAccessToken] = useState<string>('');
+  const accessCode = hashParams.code;
   removeHashParamsFromUrl();
 
   useEffect(() => {
@@ -162,19 +163,48 @@ const App: React.FC = () => {
     console.log(knowledgeRepo);
     console.log('AuthURL is ' + knowledgeRepo.authUrl);
 
-    // If the selected server requires OAuth then prompt for credentials
+    // If the selected server requires OAuth then call the Auth URL to get the code
     if (knowledgeRepo.authUrl !== null && knowledgeRepo.authUrl !== '') {
-      //setUsername('');
-      //setPassword('');
-      //setLoginModalShow(true);
       // Open a window to the authentication URL to allow them to login and allow scopes
       const authenticationUrl: string = knowledgeRepo.authUrl + '?client_id=' + knowledgeRepo.clientID +
-          '&redirect_uri=http://localhost:3000&scope=' + knowledgeRepo.scope + '&response_type=token';
-      window.open(authenticationUrl, '_self');
+          '&redirect_uri=' + knowledgeRepo.callbackUrl + '&scope=' + knowledgeRepo.scope + '&response_type=code';
+      console.log('Opening window with ' + authenticationUrl);
+      await window.open(authenticationUrl, '_self');
+    }
+
+    // If the selected server requires OAuth, and we have the code then request the token
+    console.log('Access code is ' + accessCode);
+    if (accessCode !== '') {
+      const tokenUrl: string = knowledgeRepo.tokenUrl + '?client_id=' + knowledgeRepo.clientID +
+          '&client_secret=' + knowledgeRepo.clientSecret + '&redirect_uri=' + knowledgeRepo.callbackUrl +
+          'code=' + accessCode;
+      console.log('Requesting token with ' + tokenUrl);
+
+      // POST to token URL
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      };
+
+      await fetch(tokenUrl, requestOptions)
+          .then((response) => {
+            if (response.ok === false) {
+              throw Error(response.statusText);
+            }
+            return response.json()
+          })
+          .then((data) => {
+            setAccessToken(data.access_token);
+          })
+          .catch((error) => {
+            let message = StringUtils.format(Constants.fetchError,
+                tokenUrl, error);
+            throw new Error(message);
+          });
     }
 
     try {
-      setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData())
+      setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken))
     } catch (error: any) {
       setResults(error.message);
     }
@@ -186,7 +216,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     try {
-      setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData())
+      setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken))
     } catch (error: any) {
       setResults(error.message);
     }
@@ -222,7 +252,7 @@ const App: React.FC = () => {
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
 
     try {
-      let measureData: MeasureData = await evaluateMeasureFetch.fetchData();
+      let measureData: MeasureData = await evaluateMeasureFetch.fetchData(accessToken);
       setResults(JSON.stringify(measureData.jsonBody, undefined, 2));
       // Iterate through the population names to set the state
       const popNames = measureData.popNames;
@@ -278,7 +308,7 @@ const App: React.FC = () => {
     setResults(message);
 
     try {
-      setResults(await dataRequirementsFetch.fetchData());
+      setResults(await dataRequirementsFetch.fetchData(accessToken));
       setLoading(false);
     } catch (error: any) {
       setResults(error.message);
@@ -312,7 +342,7 @@ const App: React.FC = () => {
 
     // Call the FHIR server to collect the data
     try {
-      const retJSON = await collectDataFetch.fetchData();
+      const retJSON = await collectDataFetch.fetchData(accessToken);
       setCollectedData(retJSON);
       setResults(retJSON);
       setLoading(false);
@@ -343,7 +373,7 @@ const App: React.FC = () => {
 
     try {
       setResults(await new SubmitDataFetch(selectedReceiving,
-        selectedMeasure, collectedData).submitData());
+        selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
       setResults(error.message);

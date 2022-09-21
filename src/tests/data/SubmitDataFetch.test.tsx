@@ -46,7 +46,7 @@ test('submit data mock', async () => {
         body: '{"prop1": "val1", "prop2": "val2"}',
     });
 
-    expect(await submitDataFetch.submitData()).toEqual(Constants.dataSubmitted);
+    expect(await submitDataFetch.submitData('')).toEqual(Constants.dataSubmitted);
 
     fetchMock.reset();
 });
@@ -59,7 +59,7 @@ test('submit data mock error 400', async () => {
 
     let errorCatch = '';
     try {
-        await submitDataFetch.submitData()
+        await submitDataFetch.submitData('')
     } catch (error: any) {
         errorCatch = error.message;
     }
@@ -78,7 +78,7 @@ test('submit data mock error 500', async () => {
 
     let errorCatch = '';
     try {
-        await submitDataFetch.submitData()
+        await submitDataFetch.submitData('')
     } catch (error: any) {
         errorCatch = error.message;
     }

@@ -998,7 +998,7 @@ async function buildMeasureData(url: string): Promise<Measure[]> {
   fetchMock.once(measureFetch.getUrl(),
     JSON.stringify(mockJsonMeasureData)
     , { method: 'GET' });
-  let measureList: Measure[] = await measureFetch.fetchData();
+  let measureList: Measure[] = await measureFetch.fetchData('');
   fetchMock.restore();
   return measureList;
 }
@@ -1009,7 +1009,7 @@ async function buildPatientData(url: string): Promise<string[]> {
   fetchMock.once(patientFetch.getUrl(),
     JSON.stringify(mockJsonPatientData)
     , { method: 'GET' });
-  let patientList: string[] = await patientFetch.fetchData();
+  let patientList: string[] = await patientFetch.fetchData('');
   fetchMock.restore();
   return patientList;
 }
