@@ -1,12 +1,20 @@
 import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
 import { CollectDataFetch } from '../../data/CollectDataFetch';
+import { Server } from "../../models/Server";
+import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
-import {Server} from "../../models/Server";
 
-test('required properties check', () => {
-    const dataServer: Server = buildAServer();
+
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+        return Constants.serverTestData;
+    });
+});
+
+test('required properties check', async () => {
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     try {
         new CollectDataFetch(undefined,
@@ -51,7 +59,7 @@ test('required properties check', () => {
 
 
 test('get CollectData mock', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const collectDataFetch = new CollectDataFetch(dataServer,
         'selectedMeasure',
@@ -70,7 +78,8 @@ test('get CollectData mock', async () => {
 });
 
 test('get CollectData mock error', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    
     const errorMsg = 'this is a test'
     let errorCatch = '';
     const collectDataFetch = new CollectDataFetch(dataServer,
@@ -86,43 +95,33 @@ test('get CollectData mock error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using selectedDataRepoMeasure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient to retrieve Collect Data caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient to retrieve Collect Data caused: Error: this is a test');
 
     fetchMock.restore();
 
 });
 
 test('test urlformat', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
+
     let collectDataFetch = await new CollectDataFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate',
         'selectedPatient');
     expect(collectDataFetch.getUrl())
-        .toEqual('selectedDataRepoMeasure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient');
 });
 
 test('test urlformat without patient', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    
     let collectDataFetch = await new CollectDataFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate',
         '');
     expect(collectDataFetch.getUrl())
-        .toEqual('selectedDataRepoMeasure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate');
 });
-
-function buildAServer(): Server {
-    return {
-        id: '1',
-        baseUrl: 'http://localhost:8080',
-        authUrl: '',
-        tokenUrl: '',
-        callbackUrl: '',
-        clientID: '',
-        clientSecret: '',
-        scope: ''
-    }
-}
+ 

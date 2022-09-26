@@ -5,7 +5,7 @@ import { Measure } from '../../models/Measure';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 
-const url = 'foo/';
+const url = 'foo';
 test('required properties check', () => {
     try {
         new MeasureFetch('')

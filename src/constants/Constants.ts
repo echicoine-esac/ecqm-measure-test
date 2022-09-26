@@ -1,3 +1,4 @@
+
 export class Constants {
     public static missingProperty = 'Missing required property: {0}';
 
@@ -18,21 +19,47 @@ export class Constants {
     public static defaultStartDate = '2019-01-01';
     public static defaultEndDate = '2019-12-31';
 
-    public static patientUrlEnding = 'Patient?_count=200';
-    public static measureUrlEnding = 'Measure?_count=200';
+    public static patientUrlEnding = '/Patient?_count=200';
+    public static measureUrlEnding = '/Measure?_count=200';
 
     public static error_selectKnowledgeRepository = 'Please select a Knowledge Repository server to use';
 
     public static dataSubmitted = 'Data Submitted';
     public static submitDataFetchDataError = 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.'
-    
-    //central location for retrieving server URLS (could be updated with fetch?)
-    public static getServerUrls(): string[] {
-        return Constants.serverUrls;
-    }
-    private static serverUrls: string[] = ['http://localhost:8080/fhir/',
-	'https://cloud.alphora.com/sandbox/r4/cqm/fhir/',
-        'https://cqf-ruler.ecqm.icfcloud.com/fhir/', 'https://cdr.ipro.vitaminsoftware.com/fhir/',
-	'https://receiving.ipro.vitaminsoftware.com/fhir/']
+
+    //testing purposes:
+    public static serverTestData = [
+        {
+            id: 'ec2345-1',
+            baseUrl: 'http://localhost:8080/1/',
+            authUrl: '',
+            tokenUrl: '',
+            callbackUrl: '',
+            clientID: '',
+            clientSecret: '',
+            scope: ''
+        },
+        {
+            id: 'ec2345-2',
+            baseUrl: 'http://localhost:8080/2/',
+            authUrl: '',
+            tokenUrl: '',
+            callbackUrl: '',
+            clientID: '',
+            clientSecret: '',
+            scope: ''
+        },
+        {
+            id: 'ec2345-3',
+            baseUrl: 'http://localhost:8080/3/',
+            authUrl: '',
+            tokenUrl: '',
+            callbackUrl: '',
+            clientID: '',
+            clientSecret: '',
+            scope: ''
+        }
+    ];
+ 
 }
 

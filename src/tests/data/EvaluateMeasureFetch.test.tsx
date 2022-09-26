@@ -2,12 +2,19 @@ import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
 import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
 import { MeasureData } from '../../models/MeasureData';
+import { Server } from "../../models/Server";
+import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestResultsData from '../resources/fetchmock-results.json';
-import {Server} from "../../models/Server";
 
-test('required properties check', () => {
-    const dataServer: Server =  buildAServer();
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+        return Constants.serverTestData;
+    });
+});
+
+test('required properties check', async () => {
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     try {
         new EvaluateMeasureFetch(undefined, 'selectedPatient',
@@ -40,13 +47,13 @@ test('required properties check', () => {
 });
 
 test('get evaluate measures mock', async () => {
-    const dataServer: Server =  buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, 'selectedPatient',
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
-        .toEqual('selectedServerMeasure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
 
     const mockJsonResultsData = jsonTestResultsData;
     fetchMock.once(evaluateMeasuresFetch.getUrl(),
@@ -60,36 +67,25 @@ test('get evaluate measures mock', async () => {
 
 
 test('test urlformat', async () => {
-    const dataServer: Server =  buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, 'selectedPatient',
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
-        .toEqual('selectedServerMeasure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
         
 });
 
 test('test urlformat, no patient', async () => {
-    const dataServer: Server =  buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, '',
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
-        .toEqual('selectedMeasureMeasure/selectedMeasure/$evaluate-measure?periodStart=startDate&periodEnd=endDate&reportType=subject-list');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?periodStart=startDate&periodEnd=endDate&reportType=subject-list');
         
 });
 
-function buildAServer(): Server {
-    return {
-        id: '1',
-        baseUrl: 'http://localhost:8080',
-        authUrl: '',
-        tokenUrl: '',
-        callbackUrl: '',
-        clientID: '',
-        clientSecret: '',
-        scope: ''
-    }
-}
+ 

@@ -1,11 +1,17 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 import ReceivingSystem from '../../components/ReceivingSystem';
-import {Server} from "../../models/Server";
+import { ServerUtils } from '../../utils/ServerUtils';
+import { Constants } from '../../constants/Constants';
 
-test('expect functions to be called properly', () => {
-    const servers = buildServerData();
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+        return Constants.serverTestData;
+    });
+});
+
+test('expect functions to be called properly', async () => {
+    const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
     const showReceiving: boolean = true;
@@ -20,7 +26,7 @@ test('expect functions to be called properly', () => {
         setShowReceiving={setShowReceiving}
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
-        selectedReceiving={undefined}
+        selectedReceiving={servers[0]}
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
@@ -28,8 +34,8 @@ test('expect functions to be called properly', () => {
     />);
 
     const serverDropdown: HTMLSelectElement = screen.getByTestId('rec-sys-server-dropdown');
-    userEvent.selectOptions(serverDropdown, 'test-server-2');
-    expect(setSelectedReceiving).toBeCalledWith('test-server-2')
+    userEvent.selectOptions(serverDropdown, servers[0].baseUrl);
+    expect(setSelectedReceiving).toBeCalledWith(servers[0])
 
     const submitButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
     fireEvent.click(submitButton);
@@ -37,8 +43,8 @@ test('expect functions to be called properly', () => {
 
 });
 
-test('expect spinner to show with loading set to true', () => {
-    const servers = buildServerData();
+test('expect spinner to show with loading set to true', async () => {
+    const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = true;
     const showReceiving: boolean = true;
@@ -53,7 +59,7 @@ test('expect spinner to show with loading set to true', () => {
         setShowReceiving={setShowReceiving}
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
-        selectedReceiving={undefined}
+        selectedReceiving={servers[0]}
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
@@ -67,9 +73,9 @@ test('expect spinner to show with loading set to true', () => {
     expect(evalButton).toBeInTheDocument();
 
 });
- 
-test('hide/show functionality', () => {
-    const servers = buildServerData();
+
+test('hide/show functionality', async () => {
+    const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
     const showReceiving: boolean = true;
@@ -84,7 +90,7 @@ test('hide/show functionality', () => {
         setShowReceiving={setShowReceiving}
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
-        selectedReceiving={undefined}
+        selectedReceiving={servers[0]}
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
@@ -97,8 +103,8 @@ test('hide/show functionality', () => {
 
 });
 
-test('hide/show functionality', () => {
-    const servers = buildServerData();
+test('hide/show functionality', async () => {
+    const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
     const showReceiving: boolean = false;
@@ -113,7 +119,7 @@ test('hide/show functionality', () => {
         setShowReceiving={setShowReceiving}
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
-        selectedReceiving={undefined}
+        selectedReceiving={servers[0]}
         submitData={submitData}
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
@@ -129,19 +135,3 @@ test('hide/show functionality', () => {
     expect(screen.queryByText('Evaluate Measure')).not.toBeInTheDocument();
 });
 
-function buildServerData(): Server[] {
-    return [buildAServer('1'), buildAServer('2'), buildAServer('3')]
-}
-
-function buildAServer(count: string): Server {
-    return {
-        id: 'ec2345-' + count,
-        baseUrl: 'http://localhost:8080-' + count,
-        authUrl: '',
-        tokenUrl: '',
-        callbackUrl: '',
-        clientID: '',
-        clientSecret: '',
-        scope: ''
-    }
-}

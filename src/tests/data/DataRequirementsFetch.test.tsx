@@ -1,13 +1,20 @@
 import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
 import { DataRequirementsFetch } from '../../data/DataRequirementsFetch';
+import { Server } from "../../models/Server";
+import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestDataRequirementsData from '../resources/fetchmock-knowledge-repo.json';
-import {Server} from "../../models/Server";
 
 
-test('required properties check', () => {
-    const dataServer: Server = buildAServer();
+beforeEach(() => {
+    jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
+        return Constants.serverTestData;
+    });
+});
+
+test('required properties check', async () => {
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     try {
         new DataRequirementsFetch(undefined,
@@ -49,7 +56,7 @@ test('required properties check', () => {
 
 
 test('get DataRequirements mock', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const dataRequirementsFetch = new DataRequirementsFetch(dataServer,
         'selectedMeasure',
@@ -67,7 +74,7 @@ test('get DataRequirements mock', async () => {
 });
 
 test('get DataRequirements mock error', async () => {
-    const dataServer: Server = buildAServer();
+    const dataServer: Server = (await ServerUtils.getServerList())[0];
 
     const errorMsg = 'this is a test'
     let errorCatch = '';
@@ -83,32 +90,8 @@ test('get DataRequirements mock error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using selectedKnowledgeRepoMeasure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate to retrieve Data Requirements caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate to retrieve Data Requirements caused: Error: this is a test');
 
     fetchMock.restore();
 
 });
-
-test('test urlformat', async () => {
-    const dataServer: Server = buildAServer();
-
-    let dataRequirementsFetch = await new DataRequirementsFetch(dataServer,
-        'selectedMeasure',
-        'startDate',
-        'endDate');
-    expect(dataRequirementsFetch.getUrl())
-        .toEqual('selectedKnowledgeRepoMeasure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate');
-});
-
-function buildAServer(): Server {
-    return {
-        id: '1',
-        baseUrl: 'http://localhost:8080',
-        authUrl: '',
-        tokenUrl: '',
-        callbackUrl: '',
-        clientID: '',
-        clientSecret: '',
-        scope: ''
-    }
-}

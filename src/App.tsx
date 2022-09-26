@@ -1,11 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import DataRepository from "./components/DataRepository";
 import KnowledgeRepository from './components/KnowledgeRepository';
+import LoginModal from "./components/LoginModal";
 import Populations from "./components/Populations";
 import ReceivingSystem from './components/ReceivingSystem';
 import ReportingPeriod from "./components/ReportingPeriod";
 import Results from "./components/Results";
+import ServerModal from "./components/ServerModal";
 import { Constants } from './constants/Constants';
 import { CollectDataFetch } from './data/CollectDataFetch';
 import { DataRequirementsFetch } from './data/DataRequirementsFetch';
@@ -17,17 +19,10 @@ import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
 import { MeasureData } from './models/MeasureData';
 import { Server } from "./models/Server";
-import { Amplify, API } from 'aws-amplify';
-import { listServers } from './graphql/queries';
-import { createServers, deleteServers } from "./graphql/mutations";
-import awsExports from "./aws-exports";
-import {CreateServersInput} from "./API";
-import ServerModal from "./components/ServerModal";
-import LoginModal from "./components/LoginModal";
-import {getHashParams, removeHashParamsFromUrl} from "./utils/hashUtils";
-import {StringUtils} from "./utils/StringUtils";
+import { getHashParams, removeHashParamsFromUrl } from "./utils/hashUtils";
+import { ServerUtils } from './utils/ServerUtils';
+import { StringUtils } from "./utils/StringUtils";
 
-Amplify.configure(awsExports);
 
 const App: React.FC = () => {
   // Define the state variables
@@ -109,59 +104,25 @@ const App: React.FC = () => {
   removeHashParamsFromUrl();
 
   useEffect(() => {
-    fetchServers().then(res => {
-      setServers(res!);
-    });
+    initializeServers();
   }, []);
 
-  // Handle server queries and mutations
-  // Fetches the list of stored servers
-  const fetchServers = async () => {
-   try {
-      const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY'});
-      const servers: Array<Server> = apiData.data.listServers.items;
-      console.log(servers);
-      return servers;
-    } catch (err) { console.log('error fetching servers', err) }
+ const initializeServers = async () => {
+    setServers(await ServerUtils.getServerList());
   }
 
   // Uses the GraphQL API to create a server
   const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
                               clientSecret: string, scope: string) => {
     try {
-      let serverInput: CreateServersInput = {
-        baseUrl: baseUrl
-      };
-      if (authUrl !== '') {
-        serverInput.authUrl = authUrl;
-        serverInput.callbackUrl = 'http://localhost/callback';
-      }
-      if (tokenUrl !== '') {
-        serverInput.tokenUrl = tokenUrl;
-      }
-      if (clientId !== '') {
-        serverInput.clientID = clientId;
-      }
-      if (clientSecret !== '') {
-        serverInput.clientSecret = clientSecret;
-      }
-      if (scope !== '') {
-        serverInput.scope = scope;
-      }
-      await API.graphql({query: createServers, authMode: "API_KEY", variables: {input: serverInput}})
-    } catch (err) { console.log('error creating server', err) }
-
-    // If we added a server then we should fetch the list again
-    await fetchServers();
+      await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
+    } catch (error: any) {
+      setResults(error.message);
+    }
   }
 
-  // Quires the selected server for the list of measures it has
+  // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
-    setSelectedKnowledgeRepo(knowledgeRepo);
-    setShowPopulations(false);
-
-    console.log(knowledgeRepo);
-    console.log('AuthURL is ' + knowledgeRepo.authUrl);
 
     // If the selected server requires OAuth then call the Auth URL to get the code
     if (knowledgeRepo.authUrl !== null && knowledgeRepo.authUrl !== '') {
