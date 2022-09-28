@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 test('required properties check', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     try {
         new DataRequirementsFetch(undefined,
@@ -56,7 +56,7 @@ test('required properties check', async () => {
 
 
 test('get DataRequirements mock', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const dataRequirementsFetch = new DataRequirementsFetch(dataServer,
         'selectedMeasure',
@@ -74,7 +74,7 @@ test('get DataRequirements mock', async () => {
 });
 
 test('get DataRequirements mock error', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const errorMsg = 'this is a test'
     let errorCatch = '';

@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 test('required properties check', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     try {
         new CollectDataFetch(undefined,
@@ -59,7 +59,7 @@ test('required properties check', async () => {
 
 
 test('get CollectData mock', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const collectDataFetch = new CollectDataFetch(dataServer,
         'selectedMeasure',
@@ -78,7 +78,7 @@ test('get CollectData mock', async () => {
 });
 
 test('get CollectData mock error', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
     
     const errorMsg = 'this is a test'
     let errorCatch = '';
@@ -102,7 +102,7 @@ test('get CollectData mock error', async () => {
 });
 
 test('test urlformat', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     let collectDataFetch = await new CollectDataFetch(dataServer,
         'selectedMeasure',
@@ -114,7 +114,7 @@ test('test urlformat', async () => {
 });
 
 test('test urlformat without patient', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
     
     let collectDataFetch = await new CollectDataFetch(dataServer,
         'selectedMeasure',

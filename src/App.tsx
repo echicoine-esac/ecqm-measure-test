@@ -1,5 +1,7 @@
+import { Amplify } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import awsExports from './aws-exports';
 import DataRepository from "./components/DataRepository";
 import KnowledgeRepository from './components/KnowledgeRepository';
 import LoginModal from "./components/LoginModal";
@@ -23,6 +25,7 @@ import { getHashParams, removeHashParamsFromUrl } from "./utils/hashUtils";
 import { ServerUtils } from './utils/ServerUtils';
 import { StringUtils } from "./utils/StringUtils";
 
+Amplify.configure(awsExports);
 
 const App: React.FC = () => {
   // Define the state variables
@@ -123,6 +126,11 @@ const App: React.FC = () => {
 
   // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
+    setSelectedKnowledgeRepo(knowledgeRepo);
+    setShowPopulations(false);
+
+    console.log(knowledgeRepo);
+    console.log('AuthURL is ' + knowledgeRepo.authUrl);
 
     // If the selected server requires OAuth then call the Auth URL to get the code
     if (knowledgeRepo.authUrl !== null && knowledgeRepo.authUrl !== '') {

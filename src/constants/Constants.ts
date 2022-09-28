@@ -1,3 +1,4 @@
+import { Server } from "../models/Server";
 
 export class Constants {
     public static missingProperty = 'Missing required property: {0}';
@@ -28,7 +29,7 @@ export class Constants {
     public static submitDataFetchDataError = 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.'
 
     //testing purposes:
-    public static serverTestData = [
+    public static serverTestData: Server[] = [
         {
             id: 'ec2345-1',
             baseUrl: 'http://localhost:8080/1/',

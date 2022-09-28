@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 test('required properties check', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     try {
         new EvaluateMeasureFetch(undefined, 'selectedPatient',
@@ -47,7 +47,7 @@ test('required properties check', async () => {
 });
 
 test('get evaluate measures mock', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, 'selectedPatient',
         'selectedMeasure', 'startDate', 'endDate');
@@ -67,7 +67,7 @@ test('get evaluate measures mock', async () => {
 
 
 test('test urlformat', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, 'selectedPatient',
         'selectedMeasure', 'startDate', 'endDate');
@@ -78,7 +78,7 @@ test('test urlformat', async () => {
 });
 
 test('test urlformat, no patient', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, '',
         'selectedMeasure', 'startDate', 'endDate');
