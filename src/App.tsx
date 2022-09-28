@@ -133,7 +133,7 @@ const App: React.FC = () => {
     console.log('AuthURL is ' + knowledgeRepo.authUrl);
 
     // If the selected server requires OAuth then call the Auth URL to get the code
-    if (knowledgeRepo.authUrl !== null && knowledgeRepo.authUrl !== '') {
+    if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== '') {
       // Open a window to the authentication URL to allow them to login and allow scopes
       const authenticationUrl: string = knowledgeRepo.authUrl + '?client_id=' + knowledgeRepo.clientID +
           '&redirect_uri=' + knowledgeRepo.callbackUrl + '&scope=' + knowledgeRepo.scope + '&response_type=code';
@@ -143,7 +143,7 @@ const App: React.FC = () => {
 
     // If the selected server requires OAuth, and we have the code then request the token
     console.log('Access code is ' + accessCode);
-    if (accessCode !== '') {
+    if (accessCode && accessCode !== '') {
       const tokenUrl: string = knowledgeRepo.tokenUrl + '?client_id=' + knowledgeRepo.clientID +
           '&client_secret=' + knowledgeRepo.clientSecret + '&redirect_uri=' + knowledgeRepo.callbackUrl +
           'code=' + accessCode;
@@ -163,6 +163,9 @@ const App: React.FC = () => {
             return response.json()
           })
           .then((data) => {
+
+            console.log ("data.access_token is set to ", data.access_token);
+
             setAccessToken(data.access_token);
           })
           .catch((error) => {
