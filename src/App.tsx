@@ -1,7 +1,5 @@
-import { Amplify } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import awsExports from './aws-exports';
 import DataRepository from "./components/DataRepository";
 import KnowledgeRepository from './components/KnowledgeRepository';
 import LoginModal from "./components/LoginModal";
@@ -24,8 +22,6 @@ import { Server } from "./models/Server";
 import { getHashParams, removeHashParamsFromUrl } from "./utils/hashUtils";
 import { ServerUtils } from './utils/ServerUtils';
 import { StringUtils } from "./utils/StringUtils";
-
-Amplify.configure(awsExports);
 
 const App: React.FC = () => {
   // Define the state variables
@@ -163,9 +159,6 @@ const App: React.FC = () => {
             return response.json()
           })
           .then((data) => {
-
-            console.log ("data.access_token is set to ", data.access_token);
-
             setAccessToken(data.access_token);
           })
           .catch((error) => {
