@@ -27,9 +27,6 @@ export abstract class AbstractDataFetch {
 
         await fetch(this.getUrl(), requestOptions)
             .then((response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                }
                 return response.json()
             })
             .then((data) => {

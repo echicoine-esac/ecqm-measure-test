@@ -61,8 +61,12 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-
         const jsonData = data;
+
+        // Handle the error condition where we get an OperationOutcome response
+        if (jsonData.resourceType == 'OperationOutcome') {
+            return jsonData;
+        }
 
         let report: MeasureReport = data;
         let groups = report.group;

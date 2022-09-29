@@ -204,7 +204,6 @@ const App: React.FC = () => {
     clearPopulationCounts();
 
     // Get the scoring from the selected measure
-
     for (var i = 0; i < measures.length; i++) {
       if (measures[i]!.name === selectedMeasure) {
         setMeasureScoring(measures[i]!.scoring.coding[0].code);
@@ -217,24 +216,31 @@ const App: React.FC = () => {
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
 
     try {
-      let measureData: MeasureData = await evaluateMeasureFetch.fetchData(accessToken);
-      setResults(JSON.stringify(measureData.jsonBody, undefined, 2));
-      // Iterate through the population names to set the state
-      const popNames = measureData.popNames;
-      const counts = measureData.counts;
-      for (var x = 0; x < popNames.length; x++) {
-        if (popNames[x] === 'initial-population') {
-          setInitialPopulation(counts[x]);
-        } else if (popNames[x] === 'denominator') {
-          setDenominator(counts[x]);
-        } else if (popNames[x] === 'denominator-exclusion') {
-          setDenominatorExclusion(counts[x]);
-        } else if (popNames[x] === 'denominator-exception') {
-          setDenominatorException(counts[x]);
-        } else if (popNames[x] === 'numerator') {
-          setNumerator(counts[x]);
-        } else if (popNames[x] === 'numerator-exclusion') {
-          setNumeratorExclusion(counts[x]);
+      let measureData = await evaluateMeasureFetch.fetchData(accessToken);
+
+      // Handle the error case where an OperationOutcome was returned instead of a MeasureReport
+      if (measureData.resourceType == 'OperationOutcome') {
+        setResults(JSON.stringify(measureData, undefined, 2));
+      }
+      else {
+        setResults(JSON.stringify(measureData.jsonBody, undefined, 2));
+        // Iterate through the population names to set the state
+        const popNames = measureData.popNames;
+        const counts = measureData.counts;
+        for (var x = 0; x < popNames.length; x++) {
+          if (popNames[x] === 'initial-population') {
+            setInitialPopulation(counts[x]);
+          } else if (popNames[x] === 'denominator') {
+            setDenominator(counts[x]);
+          } else if (popNames[x] === 'denominator-exclusion') {
+            setDenominatorExclusion(counts[x]);
+          } else if (popNames[x] === 'denominator-exception') {
+            setDenominatorException(counts[x]);
+          } else if (popNames[x] === 'numerator') {
+            setNumerator(counts[x]);
+          } else if (popNames[x] === 'numerator-exclusion') {
+            setNumeratorExclusion(counts[x]);
+          }
         }
       }
 
