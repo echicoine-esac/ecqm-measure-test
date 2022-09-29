@@ -12,7 +12,7 @@ beforeEach(() => {
 });
 
 test('required properties check', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     try {
         new SubmitDataFetch(undefined, 'selectedMeasure', 'collectedData');
@@ -35,7 +35,7 @@ test('required properties check', async () => {
 });
 
 test('fetchData and processData override', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     expect(await new SubmitDataFetch(dataServer,
         'selectedMeasure', 'collectedData').fetchData())
@@ -43,7 +43,7 @@ test('fetchData and processData override', async () => {
 });
 
 test('submit data mock', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), {
@@ -58,7 +58,7 @@ test('submit data mock', async () => {
 });
 
 test('submit data mock error 400', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), 400, { method: 'POST' });
@@ -77,7 +77,7 @@ test('submit data mock error 400', async () => {
 });
 
 test('submit data mock error 500', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), 500, { method: 'POST' });
@@ -97,7 +97,7 @@ test('submit data mock error 500', async () => {
 
 
 test('test urlformat', async () => {
-    const dataServer: Server = (await ServerUtils.getServerList())[0];
+    const dataServer: Server = Constants.serverTestData[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer,
         'selectedMeasure',

@@ -23,7 +23,6 @@ import { getHashParams, removeHashParamsFromUrl } from "./utils/hashUtils";
 import { ServerUtils } from './utils/ServerUtils';
 import { StringUtils } from "./utils/StringUtils";
 
-
 const App: React.FC = () => {
   // Define the state variables
   // First define the state for reporting period
@@ -123,9 +122,14 @@ const App: React.FC = () => {
 
   // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
+    setSelectedKnowledgeRepo(knowledgeRepo);
+    setShowPopulations(false);
+
+    console.log(knowledgeRepo);
+    console.log('AuthURL is ' + knowledgeRepo.authUrl);
 
     // If the selected server requires OAuth then call the Auth URL to get the code
-    if (knowledgeRepo.authUrl !== null && knowledgeRepo.authUrl !== '') {
+    if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== '') {
       // Open a window to the authentication URL to allow them to login and allow scopes
       const authenticationUrl: string = knowledgeRepo.authUrl + '?client_id=' + knowledgeRepo.clientID +
           '&redirect_uri=' + knowledgeRepo.callbackUrl + '&scope=' + knowledgeRepo.scope + '&response_type=code';
@@ -135,7 +139,7 @@ const App: React.FC = () => {
 
     // If the selected server requires OAuth, and we have the code then request the token
     console.log('Access code is ' + accessCode);
-    if (accessCode !== '') {
+    if (accessCode && accessCode !== '') {
       const tokenUrl: string = knowledgeRepo.tokenUrl + '?client_id=' + knowledgeRepo.clientID +
           '&client_secret=' + knowledgeRepo.clientSecret + '&redirect_uri=' + knowledgeRepo.callbackUrl +
           'code=' + accessCode;
