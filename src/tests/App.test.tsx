@@ -21,18 +21,10 @@ import { ServerUtils } from '../utils/ServerUtils';
 import { StringUtils } from '../utils/StringUtils';
 
 const mockCreateServerFn = jest.fn();
-
-
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {
   jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
     return Constants.serverTestData;
-  });
-  
-  jest.spyOn(ServerUtils, 'createServer').mockImplementation(async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
-    clientSecret: string, scope: string) => {
-    return await mockCreateServerFn(baseUrl, authUrl, tokenUrl, clientId,
-      clientSecret, scope);
   });
 });
 
@@ -82,6 +74,12 @@ test('success scenarios: create new server button opens modal', async () => {
 
 
 test('success scenarios: create new server button opens modal', async () => {
+ 
+  jest.spyOn(ServerUtils, 'createServer').mockImplementation(async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
+    clientSecret: string, scope: string) => {
+    return await mockCreateServerFn(baseUrl, authUrl, tokenUrl, clientId,
+      clientSecret, scope);
+  });
 
   const baseUrlText = 'server-model-baseurl-text';
   const authUrlText = 'server-model-authurl-text';
@@ -127,7 +125,7 @@ test('success scenarios: create new server button opens modal', async () => {
 //mock server data must match user experience
 test('success scenarios: knowledge repository', async () => {
 
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
 
@@ -184,7 +182,7 @@ test('success scenarios: knowledge repository', async () => {
 });
 
 test('fail scenarios: knowledge repository', async () => {
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
 
@@ -233,12 +231,12 @@ test('fail scenarios: knowledge repository', async () => {
   });
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    dataRequirementsFetch.getUrl(), FetchType.DATA_REQUIREMENTS, 'Error: Bad Request'));
+    dataRequirementsFetch.getUrl(), FetchType.DATA_REQUIREMENTS, 'FetchError: invalid json response body at http://localhost:8080/1/Measure/BreastCancerScreeningsFHIR/$data-requirements?periodStart=2019-01-01&periodEnd=2019-12-31 reason: Unexpected end of JSON input'));
 
 });
 
 test('success scenario: data repository', async () => {
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
   const mockPatientList: string[] = await buildPatientData(dataServers[0].baseUrl);
@@ -315,7 +313,7 @@ test('success scenario: data repository', async () => {
 });
 
 test('fail scenario: data repository', async () => {
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
   const mockPatientList: string[] = await buildPatientData(dataServers[0].baseUrl);
@@ -385,12 +383,12 @@ test('fail scenario: data repository', async () => {
   });
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    collectDataFetch.getUrl(), FetchType.COLLECT_DATA, 'Error: Bad Request'));
+    collectDataFetch.getUrl(), FetchType.COLLECT_DATA, 'FetchError: invalid json response body at http://localhost:8080/1/Measure/BreastCancerScreeningsFHIR/$collect-data?periodStart=2019-01-01&periodEnd=2019-12-31&subject=BreastCancerScreeningsFHIR reason: Unexpected end of JSON input'));
 
 });
 
 test('success scenarios: receiving system', async () => {
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
   const mockPatientList: string[] = await buildPatientData(dataServers[0].baseUrl);
@@ -500,7 +498,7 @@ test('success scenarios: receiving system', async () => {
 });
 
 test('success scenarios: receiving system - submit data', async () => {
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
   const mockPatientList: string[] = await buildPatientData(dataServers[0].baseUrl);
@@ -597,7 +595,7 @@ test('success scenarios: receiving system - submit data', async () => {
 });
 
 test('fail scenarios: receiving system - submit data', async () => {
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
   const mockPatientList: string[] = await buildPatientData(dataServers[0].baseUrl);
@@ -694,7 +692,7 @@ test('fail scenarios: receiving system - submit data', async () => {
 });
 
 test('fail scenario: receiving system', async () => {
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
@@ -776,7 +774,7 @@ test('fail scenario: receiving system', async () => {
 
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    evaluateDataFetch.getUrl(), FetchType.EVALUATE_MEASURE, 'Error: Bad Request'));
+    evaluateDataFetch.getUrl(), FetchType.EVALUATE_MEASURE, 'FetchError: invalid json response body at http://localhost:8080/1/Measure/BreastCancerScreeningsFHIR/$evaluate-measure?subject=BreastCancerScreeningsFHIR&periodStart=2019-01-01&periodEnd=2019-12-31 reason: Unexpected end of JSON input'));
 
 
 
@@ -786,7 +784,7 @@ test('fail scenarios: fetchMeasure', async () => {
   await act(async () => {
     await render(<App />);
   });
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = await Constants.serverTestData;
 
 
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
@@ -804,7 +802,7 @@ test('fail scenarios: fetchMeasure', async () => {
   });
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    measureFetch.getUrl(), FetchType.MEASURE, 'Error: Bad Request'));
+    measureFetch.getUrl(), FetchType.MEASURE, 'FetchError: invalid json response body at http://localhost:8080/1//Measure?_count=200 reason: Unexpected end of JSON input'));
 
 });
 
@@ -812,7 +810,7 @@ test('fail scenarios: fetchPatient', async () => {
   await act(async () => {
     await render(<App />);
   });
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   //unhide data repo
   const dataRepoShowButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
@@ -853,7 +851,7 @@ test('fail scenarios: fetchPatient', async () => {
   fetchMock.restore();
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    patientFetch.getUrl(), FetchType.PATIENT, 'Error: Bad Request'));
+    patientFetch.getUrl(), FetchType.PATIENT, 'FetchError: invalid json response body at http://localhost:8080/1//Patient?_count=200 reason: Unexpected end of JSON input'));
 });
 
 
@@ -862,7 +860,7 @@ test('error scenarios: knowledge repository', async () => {
   await act(async () => {
     await render(<App />);
   });
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   //click get data requirements, 
   const getDataRequirementsButton: HTMLButtonElement = screen.getByTestId('get-data-requirements-button');
@@ -898,7 +896,7 @@ test('error scenario: data repository', async () => {
   await act(async () => {
     await render(<App />);
   });
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   //unhide data repository section:
   const showButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
@@ -937,7 +935,7 @@ test('error scenarios: receiving system', async () => {
   await act(async () => {
     await render(<App />);
   });
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   //unhide recieving system:
   const showButton: HTMLButtonElement = screen.getByTestId('rec-sys-show-section-button');
@@ -968,7 +966,7 @@ test('error scenario: Please select a Receiving System server to use', async () 
   await act(async () => {
     await render(<App />);
   });
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   //unhide recieving system:
   const showButton: HTMLButtonElement = screen.getByTestId('rec-sys-show-section-button');
@@ -997,7 +995,7 @@ test('error scenario: Please select a Receiving System server to use', async () 
 
 //RENDERING:
 test('renders knowledge repo properly', async () => {
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
 
@@ -1055,7 +1053,7 @@ test('renders knowledge repo properly', async () => {
 });
 
 test('renders data repo properly', async () => {
-  const dataServers: Server[] = await ServerUtils.getServerList();
+  const dataServers: Server[] = Constants.serverTestData;
 
   const url = dataServers[0].baseUrl;
   const mockPatientList: string[] = await buildPatientData(url);
@@ -1097,7 +1095,7 @@ test('renders data repo properly', async () => {
 });
 
 test('renders recieving system properly', async () => {
-  const dataServer: Server = (await ServerUtils.getServerList())[0];
+  const dataServer: Server = (Constants.serverTestData)[0];
 
   await act(async () => {
     await render(<App />);
@@ -1121,7 +1119,7 @@ test('renders recieving system properly', async () => {
 });
 
 test('renders recieving system properly', async () => {
-  const dataServer: Server = (await ServerUtils.getServerList())[0];
+  const dataServer: Server = (Constants.serverTestData)[0];
 
   await act(async () => {
     await render(<App />);
