@@ -56,7 +56,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
         await fetch(this.getUrl(), requestOptions)
             .then((response) => {
                 if (response.ok === false) {
-                    throw Error(response.statusText);
+                    throw new Error(response.statusText);
                 }
                 return response.json()
             })

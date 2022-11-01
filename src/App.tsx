@@ -19,7 +19,8 @@ import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
 import { MeasureData } from './models/MeasureData';
 import { Server } from "./models/Server";
-import { getHashParams, removeHashParamsFromUrl } from "./utils/hashUtils";
+import { OAuthHandler } from './oauth/OAuthHandler';
+import { HashParamUtils } from './utils/HashParamUtils';
 import { ServerUtils } from './utils/ServerUtils';
 import { StringUtils } from "./utils/StringUtils";
 
@@ -97,13 +98,25 @@ const App: React.FC = () => {
   const [collectedData, setCollectedData] = useState<string>('');
 
   // Handle OAuth redirect
-  const hashParams = getHashParams();
   const [accessToken, setAccessToken] = useState<string>('');
-  const accessCode = hashParams.code;
-  removeHashParamsFromUrl();
+  
+  
+  let accessCode:string;
+  let modifyingUrl: boolean = false;
 
   useEffect(() => {
+    
     initializeServers();
+    if (!modifyingUrl) {
+      accessCode = HashParamUtils.getHashParams().code;
+    }else{
+      //avoid useEffect from stripping our access code after we modify url
+      modifyingUrl = true;
+      HashParamUtils.removeHashParamsFromUrl();
+      modifyingUrl = false;
+    }
+    console.log ('accessCode is ' + accessCode);
+    
   }, []);
 
  const initializeServers = async () => {
@@ -122,52 +135,19 @@ const App: React.FC = () => {
 
   // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
+    //selected the same repo already in memory, no action needed
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
 
-    console.log(knowledgeRepo);
-    console.log('AuthURL is ' + knowledgeRepo.authUrl);
-
-    // If the selected server requires OAuth then call the Auth URL to get the code
-    if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== '') {
-      // Open a window to the authentication URL to allow them to login and allow scopes
-      const authenticationUrl: string = knowledgeRepo.authUrl + '?client_id=' + knowledgeRepo.clientID +
-          '&redirect_uri=' + knowledgeRepo.callbackUrl + '&scope=' + knowledgeRepo.scope + '&response_type=code';
-      console.log('Opening window with ' + authenticationUrl);
-      await window.open(authenticationUrl, '_self');
+    if (accessCode && accessCode != null){
+      setAccessToken(await new OAuthHandler().getAccessToken(accessCode));
+    }else{
+      if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== ''){
+        //initiate authentication sequence 
+        await new OAuthHandler().getAccessCode(knowledgeRepo);
+      }
     }
-
-    // If the selected server requires OAuth, and we have the code then request the token
-    console.log('Access code is ' + accessCode);
-    if (accessCode && accessCode !== '') {
-      const tokenUrl: string = knowledgeRepo.tokenUrl + '?client_id=' + knowledgeRepo.clientID +
-          '&client_secret=' + knowledgeRepo.clientSecret + '&redirect_uri=' + knowledgeRepo.callbackUrl +
-          'code=' + accessCode;
-      console.log('Requesting token with ' + tokenUrl);
-
-      // POST to token URL
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      };
-
-      await fetch(tokenUrl, requestOptions)
-          .then((response) => {
-            if (response.ok === false) {
-              throw Error(response.statusText);
-            }
-            return response.json()
-          })
-          .then((data) => {
-            setAccessToken(data.access_token);
-          })
-          .catch((error) => {
-            let message = StringUtils.format(Constants.fetchError,
-                tokenUrl, error);
-            throw new Error(message);
-          });
-    }
-
+   
     try {
       setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken))
     } catch (error: any) {

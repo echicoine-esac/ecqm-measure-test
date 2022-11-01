@@ -15,20 +15,43 @@ export class ServerUtils {
     // Fetches the list of stored servers
     public static getServerList = async (): Promise<Array<Server>> => {
 
-        //returned cached version if populated
-        if (ServerUtils.listOfServers && ServerUtils.listOfServers.length > 0) return ServerUtils.listOfServers;
+        // //returned cached version if populated
+        // if (ServerUtils.listOfServers && ServerUtils.listOfServers.length > 0) return ServerUtils.listOfServers;
 
-        try {
-            const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY' });
-            ServerUtils.listOfServers = apiData.data.listServers.items;
-        } catch (err) {
-            const error = err as any;
-            if (error?.errors) {
-                throw new Error ("Error fetching servers: \n" + error.errors);
-            }
+        // try {
+        //     const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY' });
+        //     ServerUtils.listOfServers = apiData.data.listServers.items;
+        // } catch (err) {
+        //     const error = err as any;
+        //     if (error?.errors) {
+        //         throw new Error ("Error fetching servers: \n" + error.errors);
+        //     }
+        // }
+
+
+        let s = {
+            id: '1',
+            baseUrl: 'https://authorization-server.com/',
+            authUrl: 'https://authorization-server.com/authorize/',
+            tokenUrl: 'https://authorization-server.com/token/',
+            callbackUrl: 'https://www.oauth.com/playground/authorization-code.html',
+            clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
+            clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
+            scope: 'photo+offline_access'
         }
+        /**
+        
+        https://www.oauth.com/playground/auth-dialog.html?
+        response_type=code
+        &client_id=SKeK4PfHWPFSFzmy0CeD-pe8
+        &redirect_uri=https://www.oauth.com/playground/authorization-code.html
+        &scope=photo+offline_access
+        &state=ay7UtloU3T3zPxEQ
+        
+        **/
+        let sList = [s];
 
-        return ServerUtils.listOfServers;
+        return sList;
     };
 
     private static refreshServerList = async (): Promise<Array<Server>> => {

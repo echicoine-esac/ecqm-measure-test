@@ -64,7 +64,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         const jsonData = data;
 
         // Handle the error condition where we get an OperationOutcome response
-        if (jsonData.resourceType == 'OperationOutcome') {
+        if (jsonData.resourceType === 'OperationOutcome') {
             return jsonData;
         }
 
