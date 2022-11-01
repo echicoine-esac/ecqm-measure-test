@@ -101,7 +101,6 @@ const App: React.FC = () => {
   const [accessToken, setAccessToken] = useState<string>('');
   
   
-  let accessCode:string;
   let modifyingUrl: boolean = false;
 
   useEffect(() => {
@@ -111,14 +110,13 @@ const App: React.FC = () => {
     if (modifyingUrl) {
       modifyingUrl = false;
     }else{
-      accessCode = HashParamUtils.getHashParams().code;
+      HashParamUtils.getHashParams();
       //avoid useEffect from stripping our access code after we modify url
       modifyingUrl = true;
       HashParamUtils.removeHashParamsFromUrl();
     }
-    
 
-    console.log ('accessCode is ' + accessCode);
+    console.log ('accessCode is ' + HashParamUtils.getAccessCode());
 
   }, []);
 
@@ -136,14 +134,26 @@ const App: React.FC = () => {
     }
   }
 
+  
+
+
   // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
+    //user has selected a new server, clear out old accessCode val;
+    if (selectedKnowledgeRepo !== knowledgeRepo){
+      HashParamUtils.clear();
+    }
+
+    console.log('fetchMeasures, accessCode: ' + HashParamUtils.getAccessCode());
     //selected the same repo already in memory, no action needed
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
+    
+    await new Promise( resolve => setTimeout(resolve, 2500));
 
-    if (accessCode && accessCode != null){
-      setAccessToken(await new OAuthHandler().getAccessToken(accessCode));
+    if (HashParamUtils.getAccessCode().length > 0){
+      
+      setAccessToken(await new OAuthHandler().getAccessToken(HashParamUtils.getAccessCode()));
     }else{
       if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== ''){
         //initiate authentication sequence 
