@@ -107,16 +107,19 @@ const App: React.FC = () => {
   useEffect(() => {
     
     initializeServers();
-    if (!modifyingUrl) {
-      accessCode = HashParamUtils.getHashParams().code;
+
+    if (modifyingUrl) {
+      modifyingUrl = false;
     }else{
+      accessCode = HashParamUtils.getHashParams().code;
       //avoid useEffect from stripping our access code after we modify url
       modifyingUrl = true;
       HashParamUtils.removeHashParamsFromUrl();
-      modifyingUrl = false;
     }
-    console.log ('accessCode is ' + accessCode);
     
+
+    console.log ('accessCode is ' + accessCode);
+
   }, []);
 
  const initializeServers = async () => {
