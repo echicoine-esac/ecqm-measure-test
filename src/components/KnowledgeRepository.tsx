@@ -3,6 +3,7 @@ import {Button, OverlayTrigger, Spinner, Tooltip} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Measure } from '../models/Measure';
 import { Server } from "../models/Server";
+import { Constants } from '../constants/Constants';
 
 // Props for KnowledgeRepository
 interface props {
@@ -61,9 +62,10 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                 </div>
                 <div className='row'>
                     <div className='col-md-5 order-md-1'>
-                      <select data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo!.baseUrl}
+                      <select data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo?.baseUrl}
                               onChange={(e) => fetchMeasures(servers[e.target.selectedIndex - 1]!)}>
-                          <option value=''>Select a Server...</option>
+                          <option value={'Select a Server...'}>
+                          Select a Server...</option>
                           {servers.map((server: any, index: React.Key | null | undefined) => (
                               <option key={index}>{server!.baseUrl}</option>
                           ))}

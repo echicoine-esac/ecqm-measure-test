@@ -8,50 +8,39 @@ import { createServers } from '../graphql/mutations';
 Amplify.configure(awsExports);
 
 export class ServerUtils {
-
+    private static selectedServerId: string = '';
     private static listOfServers: Array<Server>;
 
     // Handle server queries and mutations
     // Fetches the list of stored servers
     public static getServerList = async (): Promise<Array<Server>> => {
 
-        // //returned cached version if populated
-        // if (ServerUtils.listOfServers && ServerUtils.listOfServers.length > 0) return ServerUtils.listOfServers;
+        //returned cached version if populated
+        if (ServerUtils.listOfServers && ServerUtils.listOfServers.length > 0) return ServerUtils.listOfServers;
 
-        // try {
-        //     const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY' });
-        //     ServerUtils.listOfServers = apiData.data.listServers.items;
-        // } catch (err) {
-        //     const error = err as any;
-        //     if (error?.errors) {
-        //         throw new Error ("Error fetching servers: \n" + error.errors);
-        //     }
-        // }
-
-
-        let s = {
-            id: '1',
-            baseUrl: 'https://authorization-server.com/',
-            authUrl: 'https://authorization-server.com/authorize/',
-            tokenUrl: 'https://authorization-server.com/token/',
-            callbackUrl: 'https://www.oauth.com/playground/authorization-code.html',
-            clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
-            clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
-            scope: 'photo+offline_access'
+        try {
+            const apiData: any = await API.graphql({ query: listServers, authMode: 'API_KEY' });
+            ServerUtils.listOfServers = apiData.data.listServers.items;
+        } catch (err) {
+            const error = err as any;
+            if (error?.errors) {
+                throw new Error ("Error fetching servers: \n" + error.errors);
+            }
         }
-        /**
-        
-        https://www.oauth.com/playground/auth-dialog.html?
-        response_type=code
-        &client_id=SKeK4PfHWPFSFzmy0CeD-pe8
-        &redirect_uri=https://www.oauth.com/playground/authorization-code.html
-        &scope=photo+offline_access
-        &state=ay7UtloU3T3zPxEQ
-        
-        **/
-        let sList = [s];
 
-        return sList;
+        // let s = {
+        //     id: '1',
+        //     baseUrl: 'https://authorization-server.com/',
+        //     authUrl: 'https://authorization-server.com/authorize/',
+        //     tokenUrl: 'https://authorization-server.com/token/',
+        //     callbackUrl: 'https://www.oauth.com/playground/authorization-code.html',
+        //     clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
+        //     clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
+        //     scope: 'photo+offline_access'
+        // }
+        // let sList = [s];
+
+        return ServerUtils.listOfServers;
     };
 
     private static refreshServerList = async (): Promise<Array<Server>> => {
@@ -83,16 +72,34 @@ export class ServerUtils {
                 serverInput.scope = scope;
             }
             await API.graphql({ query: createServers, authMode: "API_KEY", variables: { input: serverInput } })
-        } catch (err) { 
+        } catch (err) {
             const error = err as any;
             if (error?.errors) {
-                throw new Error ("Error creating server: \n" + error.errors);
+                throw new Error("Error creating server: \n" + error.errors);
             }
 
         }
 
         // If we added a server then we should fetch the list again
         await ServerUtils.refreshServerList();
+    }
+
+    public static clearSelectedServer () {
+        ServerUtils.selectedServerId = '';
+    }
+    /**
+     * Stores selectedServer for accessCode workflow
+     * @param server 
+     */
+    public static storeSelectedServer(server: Server) {
+        ServerUtils.selectedServerId = server.id;
+    }
+
+    /**
+     * returns selectedServer for accessCode workflow
+     */
+    public static getSelectedServer(): string {
+        return ServerUtils.selectedServerId;
     }
 }
 

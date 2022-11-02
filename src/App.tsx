@@ -17,12 +17,10 @@ import { PatientFetch } from './data/PatientFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
 import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
-import { MeasureData } from './models/MeasureData';
 import { Server } from "./models/Server";
 import { OAuthHandler } from './oauth/OAuthHandler';
-import { HashParamUtils } from './utils/HashParamUtils';
+import { HashParamUtils, SessionCodes } from './utils/HashParamUtils';
 import { ServerUtils } from './utils/ServerUtils';
-import { StringUtils } from "./utils/StringUtils";
 
 const App: React.FC = () => {
   // Define the state variables
@@ -99,34 +97,39 @@ const App: React.FC = () => {
 
   // Handle OAuth redirect
   const [accessToken, setAccessToken] = useState<string>('');
-  
-  
+
+  //session based server authentication info
+  const [sessionData, setSessionData] = useState<any>();
+
   let modifyingUrl: boolean = false;
 
   useEffect(() => {
-    
     initializeServers();
 
     if (modifyingUrl) {
       modifyingUrl = false;
-    }else{
-      HashParamUtils.getHashParams();
-      //avoid useEffect from stripping our access code after we modify url
+    } else {
+      setSessionData(HashParamUtils.buildHashParams());
+      //avoid useEffect stripping our access code after we modify url
       modifyingUrl = true;
       HashParamUtils.removeHashParamsFromUrl();
     }
 
-    console.log ('accessCode is ' + HashParamUtils.getAccessCode());
+    // if (sessionData) {
+    //   console.log('accessCode is ' + sessionData.accessCode);
+    //   console.log('state code is ' + sessionData.stateCode);
+    //   console.log('generated state code is ' + sessionData.generatedStateCode);
+    // }
 
   }, []);
 
- const initializeServers = async () => {
+  const initializeServers = async () => {
     setServers(await ServerUtils.getServerList());
   }
 
   // Uses the GraphQL API to create a server
   const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
-                              clientSecret: string, scope: string) => {
+    clientSecret: string, scope: string) => {
     try {
       await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
     } catch (error: any) {
@@ -134,33 +137,44 @@ const App: React.FC = () => {
     }
   }
 
-  
-
 
   // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
-    //user has selected a new server, clear out old accessCode val;
-    if (selectedKnowledgeRepo !== knowledgeRepo){
-      HashParamUtils.clear();
-    }
 
-    console.log('fetchMeasures, accessCode: ' + HashParamUtils.getAccessCode());
-    //selected the same repo already in memory, no action needed
+    if (!knowledgeRepo || !knowledgeRepo.hasOwnProperty('id')) {
+      setSelectedKnowledgeRepo(knowledgeRepo);
+      setShowPopulations(false);
+      ServerUtils.clearSelectedServer();
+      HashParamUtils.clearCachedValues();
+      return;
+    }
+    const oauthHandler = new OAuthHandler(knowledgeRepo);
+    // console.log('fetchMeasures, accessCode: ' + sessionData.accessCode);
+
+    ServerUtils.storeSelectedServer(knowledgeRepo);
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
-    
-    await new Promise( resolve => setTimeout(resolve, 2500));
 
-    if (HashParamUtils.getAccessCode().length > 0){
-      
-      setAccessToken(await new OAuthHandler().getAccessToken(HashParamUtils.getAccessCode()));
-    }else{
-      if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== ''){
+    // await new Promise(resolve => setTimeout(resolve, 2500));
+
+    if (sessionData.accessCode.length > 0) {
+      try {
+        setAccessToken(await oauthHandler.getAccessToken(sessionData.accessCode));
+      } catch (error: any) {
+        // console.log(error.message, error);
+      }
+
+    } else {
+      if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== '') {
         //initiate authentication sequence 
-        await new OAuthHandler().getAccessCode(knowledgeRepo);
+        try {
+          await oauthHandler.getAccessCode();
+        } catch (error: any) {
+          // console.log(error.message, error);
+        }
       }
     }
-   
+
     try {
       setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken))
     } catch (error: any) {
@@ -212,7 +226,7 @@ const App: React.FC = () => {
       let measureData = await evaluateMeasureFetch.fetchData(accessToken);
 
       // Handle the error case where an OperationOutcome was returned instead of a MeasureReport
-      if (measureData.resourceType == 'OperationOutcome') {
+      if (measureData.resourceType === 'OperationOutcome') {
         setResults(JSON.stringify(measureData, undefined, 2));
       }
       else {
@@ -372,25 +386,25 @@ const App: React.FC = () => {
       <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
         servers={servers} fetchMeasures={fetchMeasures} selectedKnowledgeRepo={selectedKnowledgeRepo}
         measures={measures} setSelectedMeasure={setSelectedMeasure} selectedMeasure={selectedMeasure}
-        getDataRequirements={getDataRequirements} loading={loading} setModalShow={setServerModalShow}/>
+        getDataRequirements={getDataRequirements} loading={loading} setModalShow={setServerModalShow} />
       <br />
       <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
         selectedDataRepo={selectedDataRepo} patients={patients}
         fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient} selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading} setModalShow={setServerModalShow}/>
+        collectData={collectData} loading={loading} setModalShow={setServerModalShow} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving} selectedReceiving={selectedReceiving}
-        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}/>
+        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow} />
       <Results results={results} />
       <Populations initialPopulation={initialPopulation} denominator={denominator}
         denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
         numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
         measureScoring={measureScoring} />
       <br />
-      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer}/>
+      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
       <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
-        setUsername={setUsername} password={password} setPassword={setPassword}/>
+        setUsername={setUsername} password={password} setPassword={setPassword} />
     </div>
   );
 }

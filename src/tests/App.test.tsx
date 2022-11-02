@@ -802,7 +802,7 @@ test('fail scenarios: fetchMeasure', async () => {
   });
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    measureFetch.getUrl(), FetchType.MEASURE, 'FetchError: invalid json response body at http://localhost:8080/1//Measure?_count=200 reason: Unexpected end of JSON input'));
+    measureFetch.getUrl(), FetchType.MEASURE, 'FetchError: invalid json response body at http://localhost:8080/1/Measure?_count=200 reason: Unexpected end of JSON input'));
 
 });
 
@@ -851,7 +851,7 @@ test('fail scenarios: fetchPatient', async () => {
   fetchMock.restore();
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    patientFetch.getUrl(), FetchType.PATIENT, 'FetchError: invalid json response body at http://localhost:8080/1//Patient?_count=200 reason: Unexpected end of JSON input'));
+    patientFetch.getUrl(), FetchType.PATIENT, 'FetchError: invalid json response body at http://localhost:8080/1/Patient?_count=200 reason: Unexpected end of JSON input'));
 });
 
 

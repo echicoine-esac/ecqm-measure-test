@@ -28,7 +28,7 @@ export class Constants {
     public static dataSubmitted = 'Data Submitted';
     public static submitDataFetchDataError = 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.'
     
-    static accessCodeMissing = 'Access code is a required parameter.';
+    
 
     //testing purposes:
     public static serverTestData: Server[] = [
@@ -64,6 +64,16 @@ export class Constants {
         }
     ];
 
-
+    //used to avoid errors with "Select a Server..." option in dropdown:
+    static selectServerHolder = {
+        id: 'foo',
+        baseUrl: '',
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
+    };
 }
 

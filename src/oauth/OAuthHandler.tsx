@@ -1,83 +1,70 @@
-import { Constants } from "../constants/Constants";
-import { Server } from "../models/Server";
-import { StringUtils } from "../utils/StringUtils";
+import { Constants } from '../constants/Constants';
+import { Server } from '../models/Server';
+import { HashParamUtils } from '../utils/HashParamUtils';
+import { StringUtils } from '../utils/StringUtils';
 
 export class OAuthHandler {
-    getAccessCode = async (knowledgeRepo: Server) => {
-        console.log(knowledgeRepo);
-        console.log('AuthURL is ' + knowledgeRepo.authUrl);
+    private knowledgeRepo: Server;
 
-        // If the selected server requires OAuth then call the Auth URL to get the code
-        // Open a window to the authentication URL to allow them to login and allow scopes
-
-        //  = knowledgeRepo.authUrl
-        //     + '?client_id=' + knowledgeRepo.clientID
-        //     + '&redirect_uri=' + knowledgeRepo.callbackUrl
-        //     + '&scope=' + knowledgeRepo.scope
-        //     + '&response_type=code';
-
-        const authenticationUrl =
-            'https://www.oauth.com/playground/auth-dialog.html?'
-            + 'response_type=code'
-            + '&client_id=H6_uhN1hqAIORwuvp96bx_jo'
-            + '&redirect_uri=http://localhost:3000'
-            + '&scope=photo+offline_access'
-            + '&state=ay7UtloU3T3zPxEQ'
-
-        console.log('Opening window with ' + authenticationUrl);
-
-        const win = window as any;
-
-        await win.open(authenticationUrl, '_self').focus();
-
+    constructor(kr: Server) {
+        this.knowledgeRepo = kr;
     }
 
+    getAccessCode = async () => {
+        // console.log(this.knowledgeRepo);
+        // console.log('AuthURL is ' + this.knowledgeRepo.authUrl);
+        const authenticationUrl = HashParamUtils.buildAuthenticationUrl(this.knowledgeRepo);
+
+        // console.log('Opening window with ' + authenticationUrl);
+        const win = window as any;
+        await win.open(authenticationUrl, '_self').focus();
+    }
+
+    /**
+     * Gets the access token used for further queries by building a tokenUrl and passing in accessCode
+     * 
+     * example:
+     * const tokenUrl: string = 'https://authorization-server.com/token/'
+     * + '?grant_type=authorization_code'
+     * + '&client_id=H6_uhN1hqAIORwuvp96bx_jo'
+     * + '&client_secret=oAC1w-XC9UDMi0xlR4rYtplYybC8bSrkf9gJdbuDw4o4HDYq'
+     * + '&redirect_uri=http://localhost:3000/'
+     * + '&code=' + accessCode; 
+     * 
+     * @param accessCode 
+     * @returns 
+     */
     getAccessToken = async (accessCode: string): Promise<string> => {
         let accessToken = '';
-
         // If the selected server requires OAuth, and we have the code then request the token
-        console.log('Access code is ' + accessCode);
-
-        // const tokenUrl: string = knowledgeRepo.tokenUrl
-        //     + '?grant_type=authorization_code'
-        //     + '?client_id=' + knowledgeRepo.clientID
-        //     + '&client_secret=' + knowledgeRepo.clientSecret
-        //     + '&redirect_uri=' + knowledgeRepo.callbackUrl
-        //     + 'code=' + accessCode;
-
-        const tokenUrl: string = 'POST https://authorization-server.com/token/'
+        // console.log('Access code is ' + accessCode);
+        const tokenUrl: string = this.knowledgeRepo?.tokenUrl
             + '?grant_type=authorization_code'
-            + '&client_id=H6_uhN1hqAIORwuvp96bx_jo'
-            + '&client_secret=oAC1w-XC9UDMi0xlR4rYtplYybC8bSrkf9gJdbuDw4o4HDYq'
-            + '&redirect_uri=https://www.oauth.com/playground/authorization-code.html'
-            + 'code=' + accessCode;
+            + '&client_id=' + this.knowledgeRepo?.clientID
+            + '&client_secret=' + this.knowledgeRepo?.clientSecret
+            + '&redirect_uri=' + this.knowledgeRepo?.callbackUrl
+            + '&code=' + accessCode;
 
-        console.log('Requesting token with ' + tokenUrl);
+        // console.log('tokenurl: ' + tokenUrl);
 
         // POST to token URL
-        const requestOptions = {
+        await fetch(tokenUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        };
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).then((response) => {
+            if (response.ok === false) {
+                throw Error(response.statusText);
+            }
+            return response.json()
+        }).then((data) => {
+            accessToken = data.access_token;
+        }).catch((error) => {
+            let message = StringUtils.format(Constants.fetchError, tokenUrl, error);
+            // console.log('Error: ' + message);
+            throw new Error(message);
+        });
 
-        await fetch(tokenUrl, requestOptions)
-            .then((response) => {
-                if (response.ok === false) {
-                    throw Error(response.statusText);
-                }
-                return response.json()
-            })
-            .then((data) => {
-                accessToken = data.access_token;
-            })
-            .catch((error) => {
-                let message = StringUtils.format(Constants.fetchError,
-                    tokenUrl, error);
-                throw new Error(message);
-            });
-        console.log('accessToken is ' + accessCode);
+        // console.log('accessToken is ' + accessToken);
         return accessToken;
     }
-
-
 }
