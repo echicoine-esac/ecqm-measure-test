@@ -63,17 +63,5 @@ export class Constants {
             scope: ''
         }
     ];
-
-    //used to avoid errors with "Select a Server..." option in dropdown:
-    static selectServerHolder = {
-        id: 'foo',
-        baseUrl: '',
-        authUrl: '',
-        tokenUrl: '',
-        callbackUrl: '',
-        clientID: '',
-        clientSecret: '',
-        scope: ''
-    };
 }
 
