@@ -4,20 +4,13 @@ import { HashParamUtils } from '../utils/HashParamUtils';
 import { StringUtils } from '../utils/StringUtils';
 
 export class OAuthHandler {
-    private knowledgeRepo: Server;
-
-    constructor(kr: Server) {
-        this.knowledgeRepo = kr;
-    }
-
-    getAccessCode = async () => {
+   public static getAccessCode = async (server: Server) => {
         // console.log(this.knowledgeRepo);
         // console.log('AuthURL is ' + this.knowledgeRepo.authUrl);
-        const authenticationUrl = HashParamUtils.buildAuthenticationUrl(this.knowledgeRepo);
+        const authenticationUrl = HashParamUtils.buildAuthenticationUrl(server);
 
         // console.log('Opening window with ' + authenticationUrl);
-        const win = window as any;
-        await win.open(authenticationUrl, '_self').focus();
+        window.open(authenticationUrl, '_self');
     }
 
     /**
@@ -34,15 +27,15 @@ export class OAuthHandler {
      * @param accessCode 
      * @returns 
      */
-    getAccessToken = async (accessCode: string): Promise<string> => {
+    public static getAccessToken = async (accessCode: string, server: Server): Promise<string> => {
         let accessToken = '';
         // If the selected server requires OAuth, and we have the code then request the token
         // console.log('Access code is ' + accessCode);
-        const tokenUrl: string = this.knowledgeRepo?.tokenUrl
+        const tokenUrl: string = server?.tokenUrl
             + '?grant_type=authorization_code'
-            + '&client_id=' + this.knowledgeRepo?.clientID
-            + '&client_secret=' + this.knowledgeRepo?.clientSecret
-            + '&redirect_uri=' + this.knowledgeRepo?.callbackUrl
+            + '&client_id=' + server?.clientID
+            + '&client_secret=' + server?.clientSecret
+            + '&redirect_uri=' + server?.callbackUrl
             + '&code=' + accessCode;
 
         // console.log('tokenurl: ' + tokenUrl);
@@ -67,4 +60,5 @@ export class OAuthHandler {
         // console.log('accessToken is ' + accessToken);
         return accessToken;
     }
+
 }

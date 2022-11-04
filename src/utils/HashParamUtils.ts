@@ -47,7 +47,7 @@ export class HashParamUtils {
         return ret.toString();
     }
 
-    static buildHashParams(): SessionCodes {
+    static buildHashParams() {
         //console.log('HashParamUtils.buildHashParams generatedStateCode:' + HashParamUtils.codes.generatedStateCode)
 
         const params: string[] = new URLSearchParams(window.location.search).toString().split('&');
@@ -79,8 +79,6 @@ export class HashParamUtils {
                 //console.log('HashParamUtils generated state code matches returned state code: ' + HashParamUtils.codes.generatedStateCode);
             }
         }
-
-        return HashParamUtils.codes;
     }
 
     //do not add '/' to end of url, will break application:
@@ -88,7 +86,7 @@ export class HashParamUtils {
         window.history.pushState('', document.title, window.location.pathname);
     }
 
-    static getSessionData() {
+    static getSessionData(): SessionCodes {
         return HashParamUtils.codes;
     }
 

@@ -27,8 +27,6 @@ export class Constants {
 
     public static dataSubmitted = 'Data Submitted';
     public static submitDataFetchDataError = 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.'
-    
-    
 
     //testing purposes:
     public static serverTestData: Server[] = [
@@ -61,7 +59,19 @@ export class Constants {
             clientID: '',
             clientSecret: '',
             scope: ''
+        },
+        {
+            id: 'ec2345-4',
+            baseUrl: 'https://authorization-server.com/',
+            authUrl: 'https://authorization-server.com/authorize/',
+            tokenUrl: 'https://authorization-server.com/token/',
+            callbackUrl: 'https://www.oauth.com/playground/authorization-code.html',
+            clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
+            clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
+            scope: 'photo+offline_access'
         }
     ];
+
+    public static testOauthServer = Constants.serverTestData[3];
 }
 

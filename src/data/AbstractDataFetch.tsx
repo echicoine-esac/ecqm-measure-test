@@ -22,7 +22,7 @@ export abstract class AbstractDataFetch {
 
         // Add any token provided to the header
         const requestOptions = token ? {
-            headers: {"Authorization": `Bearer ${token}`}
+            headers: {'Authorization': 'Bearer ' + token}
         } : {};
 
         await fetch(this.getUrl(), requestOptions)

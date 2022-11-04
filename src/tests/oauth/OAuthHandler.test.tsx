@@ -24,17 +24,17 @@ beforeEach(() => {
 });
 
 test('OAuthHandler: calls window.open with expected input', () => {
-      const oauthHandler = new OAuthHandler(testServer);
-
       //call getAccessCode to trigger process of opening window with speficially crafted authentication url
-      oauthHandler.getAccessCode();
+      OAuthHandler.getAccessCode(testServer);
 
-      expect(mockWindowOpen).toHaveBeenCalledWith('https://authorization-server.com/authorize/?client_id=SKeK4PfHWPFSFzmy0CeD-pe8&redirect_uri=https://www.oauth.com/playground/authorization-code.html&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getSessionData().generatedStateCode, '_self', undefined);
+      expect(mockWindowOpen).toHaveBeenCalledWith('https://authorization-server.com/authorize/'
+            + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
+            + '&redirect_uri=https://www.oauth.com/playground/authorization-code.html'
+            + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getSessionData().generatedStateCode, '_self', undefined);
 });
 
 test('OAuthHandler: expect POST call structure', async () => {
       const accessCode = 'foo';
-      const oauthHandler = new OAuthHandler(testServer);
 
       const tokenUrl: string = testServer?.tokenUrl
             + '?grant_type=authorization_code'
@@ -50,7 +50,7 @@ test('OAuthHandler: expect POST call structure', async () => {
             }
       });
 
-      expect(await oauthHandler.getAccessToken(accessCode)).toEqual('access_token_string');
+      expect(await OAuthHandler.getAccessToken(accessCode, testServer)).toEqual('access_token_string');
 
       fetchMock.restore();
 
@@ -58,7 +58,6 @@ test('OAuthHandler: expect POST call structure', async () => {
 
 test('OAuthHandler: fail scenario', async () => {
       const accessCode = 'foo';
-      const oauthHandler = new OAuthHandler(testServer);
 
       const tokenUrl: string = testServer?.tokenUrl
             + '?grant_type=authorization_code'
@@ -75,11 +74,15 @@ test('OAuthHandler: fail scenario', async () => {
       });
 
       try {
-            await oauthHandler.getAccessToken(accessCode);
+            await OAuthHandler.getAccessToken(accessCode, testServer);
       } catch (error: any) {
-            expect(error.message).toEqual('Using https://authorization-server.com/token/?grant_type=authorization_code&client_id=SKeK4PfHWPFSFzmy0CeD-pe8&client_secret=Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW&redirect_uri=https://www.oauth.com/playground/authorization-code.html&code=foo to retrieve Error: Not Found caused: {2}');
+            expect(error.message).toEqual('Using https://authorization-server.com/token/'
+                  + '?grant_type=authorization_code'
+                  + '&client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
+                  + '&client_secret=Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW'
+                  + '&redirect_uri=https://www.oauth.com/playground/authorization-code.html'
+                  + '&code=foo to retrieve Error: Not Found caused: {2}');
       }
 
       fetchMock.restore();
-
 });

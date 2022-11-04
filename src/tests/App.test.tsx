@@ -12,15 +12,16 @@ import { PatientFetch } from '../data/PatientFetch';
 import { SubmitDataFetch } from '../data/SubmitDataFetch';
 import { Measure } from '../models/Measure';
 import { Server } from "../models/Server";
+import { OAuthHandler } from '../oauth/OAuthHandler';
 import jsonTestCollectDataData from '../tests/resources/fetchmock-data-repo.json';
 import jsonTestDataRequirementsData from '../tests/resources/fetchmock-knowledge-repo.json';
 import jsonTestMeasureData from '../tests/resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../tests/resources/fetchmock-patients.json';
 import jsonTestResultsData from '../tests/resources/fetchmock-results.json';
+import { HashParamUtils, SessionCodes } from '../utils/HashParamUtils';
 import { ServerUtils } from '../utils/ServerUtils';
 import { StringUtils } from '../utils/StringUtils';
 
-const mockCreateServerFn = jest.fn();
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {
   jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
@@ -74,8 +75,8 @@ test('success scenarios: create new server button opens modal', async () => {
 
 
 test('success scenarios: create new server button opens modal', async () => {
- 
-  jest.spyOn(ServerUtils, 'createServer').mockImplementation(async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
+  const mockCreateServerFn = jest.fn();
+  const createServerJest = jest.spyOn(ServerUtils, 'createServer').mockImplementation(async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
     clientSecret: string, scope: string) => {
     return await mockCreateServerFn(baseUrl, authUrl, tokenUrl, clientId,
       clientSecret, scope);
@@ -114,19 +115,106 @@ test('success scenarios: create new server button opens modal', async () => {
   fireEvent.click(submitButtonField);
 
   expect(mockCreateServerFn).toHaveBeenCalledWith(
-      'http://localhost:8080/baseUrl/',
-      'http://localhost:8080/authUrl/',
-      'http://localhost:8080/accessUrl/',
-      'clientId',
-      '',
-      'user/*.readScope');
+    'http://localhost:8080/baseUrl/',
+    'http://localhost:8080/authUrl/',
+    'http://localhost:8080/accessUrl/',
+    'clientId',
+    '',
+    'user/*.readScope');
+
+  createServerJest.mockRestore();
 });
 
-//mock server data must match user experience
+
+test('success scenarios: knowledge repository: server with auth url navigates outward', async () => {
+  const mockWindowOpen = jest.fn((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
+    return new Window();
+  });
+
+  jest.spyOn(window, 'open').mockImplementation((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
+    return mockWindowOpen(url, target, features);
+  });
+
+  await act(async () => {
+    await render(<App />);
+  });
+
+  const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
+
+  //Constants.testOauthServer.baseUrl refers to a specific server in the serverTestData array which has an auth url
+  //Selecting this server should trigger navigation outward to the auth url
+  const measureFetch = new MeasureFetch(Constants.testOauthServer.baseUrl);
+  const mockJsonMeasureData = jsonTestMeasureData;
+
+  fetchMock.once(measureFetch.getUrl(),
+    JSON.stringify(mockJsonMeasureData)
+    , { method: 'GET' });
+  await act(async () => {
+    //select server, mock list should return:
+    await userEvent.selectOptions(serverDropdown, Constants.testOauthServer.baseUrl);
+    fetchMock.restore();
+  });
+
+  expect(mockWindowOpen).toHaveBeenCalledWith('https://authorization-server.com/authorize/'
+    + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
+    + '&redirect_uri=https://www.oauth.com/playground/authorization-code.html'
+    + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getSessionData().generatedStateCode, "_self", undefined);
+
+});
+
+
+test('success scenarios: knowledge repository: simulate successful access code returned to redirect uri', async () => {
+  const mockGetAccessToken = jest.fn(async (accessCode: string, server: Server): Promise<string> => {
+    return '12345';
+  });
+
+  //override the HashParamUtils.buildHashParams call to manually establish the session data
+  jest.spyOn(HashParamUtils, 'getSessionData').mockImplementation((): SessionCodes => {
+    return {
+      accessCode: '1234567890123456',
+      stateCode: '0987654321',
+      generatedStateCode: '0987654321'
+    };
+  });
+
+  //override the HashParamUtils.buildHashParams call to manually establish the session data
+  jest.spyOn(OAuthHandler, 'getAccessToken').mockImplementation(async (accessCode: string, server: Server): Promise<string> => {
+    return mockGetAccessToken(accessCode, server);
+  });
+
+
+  //App should render and see an accessCode in the url, extract it, then assign it locally and erase it from the url bar.
+  await act(async () => {
+    await render(<App />);
+  });
+
+  //get knowledge server dropdown
+  const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
+
+  //mock measure list server selection will return 
+  const measureFetch = new MeasureFetch(Constants.testOauthServer.baseUrl);
+  const mockJsonMeasureData = jsonTestMeasureData;
+
+  fetchMock.once(measureFetch.getUrl(),
+    JSON.stringify(mockJsonMeasureData)
+    , {
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + '12345' }
+    });
+
+  await act(async () => {
+    //select server with mock authurl
+    await userEvent.selectOptions(serverDropdown, Constants.testOauthServer.baseUrl);
+    
+    expect(mockGetAccessToken).toHaveBeenCalledWith('1234567890123456', Constants.testOauthServer);
+    
+    fetchMock.restore();
+  });
+
+});
+
 test('success scenarios: knowledge repository', async () => {
-
   const dataServers: Server[] = Constants.serverTestData;
-
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
 
   await act(async () => {

@@ -109,7 +109,8 @@ const App: React.FC = () => {
     if (modifyingUrl) {
       modifyingUrl = false;
     } else {
-      setSessionData(HashParamUtils.buildHashParams());
+      HashParamUtils.buildHashParams();
+      setSessionData(HashParamUtils.getSessionData());
       //avoid useEffect stripping our access code after we modify url
       modifyingUrl = true;
       HashParamUtils.removeHashParamsFromUrl();
@@ -148,7 +149,7 @@ const App: React.FC = () => {
       HashParamUtils.clearCachedValues();
       return;
     }
-    const oauthHandler = new OAuthHandler(knowledgeRepo);
+    
     // console.log('fetchMeasures, accessCode: ' + sessionData.accessCode);
 
     ServerUtils.storeSelectedServer(knowledgeRepo);
@@ -157,20 +158,22 @@ const App: React.FC = () => {
 
     // await new Promise(resolve => setTimeout(resolve, 2500));
 
-    if (sessionData.accessCode.length > 0) {
+    if (sessionData?.accessCode.length > 0) {
       try {
-        setAccessToken(await oauthHandler.getAccessToken(sessionData.accessCode));
+        setAccessToken(await OAuthHandler.getAccessToken(sessionData.accessCode, knowledgeRepo));
       } catch (error: any) {
         // console.log(error.message, error);
+        setResults(error.message);
       }
 
     } else {
       if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== '') {
         //initiate authentication sequence 
         try {
-          await oauthHandler.getAccessCode();
+          await OAuthHandler.getAccessCode(knowledgeRepo);
         } catch (error: any) {
           // console.log(error.message, error);
+          setResults(error.message);
         }
       }
     }
