@@ -15,25 +15,29 @@ beforeEach(() => {
       });
 });
 
-test('OAuthHandler: calls window.open with expected input', () => {
+test('OAuthHandler: calls window.open with expected input', async () => {
+      //disable bad url check 
+      fetchMock.head(Constants.testOauthServer.baseUrl, true);
       //call getAccessCode to trigger process of opening window with speficially crafted authentication url
-      OAuthHandler.getAccessCode(testServer);
+      await OAuthHandler.getAccessCode(testServer);
 
       expect(mockWindowOpen).toHaveBeenCalledWith('http://localhost:8080/4/authorize/'
             + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
             + '&redirect_uri=http://localhost:8080/4/'
             + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getGeneratedStateCode(), '_self', undefined);
+
+      fetchMock.restore();
 });
 
 test('OAuthHandler: expect POST call structure', async () => {
       const accessCode = 'foo';
 
       const tokenUrl: string = testServer?.tokenUrl
-      + '?grant_type=authorization_code'
-      + '&client_id=' + testServer?.clientID
-      + '&client_secret=' + testServer?.clientSecret
-      + '&redirect_uri=' + testServer?.callbackUrl
-      + '&code=' + accessCode;
+            + '?grant_type=authorization_code'
+            + '&client_id=' + testServer?.clientID
+            + '&client_secret=' + testServer?.clientSecret
+            + '&redirect_uri=' + testServer?.callbackUrl
+            + '&code=' + accessCode;
 
       fetchMock.post(tokenUrl, { access_token: 'access_token_string' });
 

@@ -24,27 +24,26 @@ import { StringUtils } from '../utils/StringUtils';
 
 const RESPONSE_ERROR_BAD_REQUEST = 'Error: Bad Request';
 
-const mockWindowOpen = jest.fn((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
-  return new Window();
-});
-
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {
+  //clean up any missed mocks
   jest.restoreAllMocks();
-
   fetchMock.restore();
 
+  //override getServerList to return test data
   jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
     return Constants.serverTestData;
   });
 
-  jest.spyOn(window, 'open').mockImplementation((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
-    return mockWindowOpen(url, target, features);
-  });
-
+  //clear out old accessCode, generateStateCode, and stateCode values
   HashParamUtils.clearCachedValues();
 
+  //reset the selected knowledge repo stored in sessionStorage
   sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
+
+  //override any calls directly to 127.0.0.1:8080, simply return result.ok set to true;
+  fetchMock.mock('begin:http://127.0.0.1:8080', true);
+
 });
 
 
@@ -146,6 +145,16 @@ test('success scenarios: create new server button opens modal', async () => {
 
 
 test('success scenarios: knowledge repository: server with auth url navigates outward, selected server is stored in session storage', async () => {
+
+  const mockWindowOpen = jest.fn((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
+    return new Window();
+  });
+
+  //override window navigation since testing has no pages
+  jest.spyOn(window, 'open').mockImplementation((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
+    return mockWindowOpen(url, target, features);
+  });
+
   await act(async () => {
     await render(<App />);
   });
@@ -164,10 +173,11 @@ test('success scenarios: knowledge repository: server with auth url navigates ou
 
   await act(async () => {
     fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), requestOptions);
+    fetchMock.head(Constants.testOauthServer.baseUrl, true);
     //select server, mock list should return:
     await userEvent.selectOptions(serverDropdown, Constants.testOauthServer.baseUrl);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   expect(mockWindowOpen).toHaveBeenCalledWith('http://localhost:8080/4/authorize/'
     + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
@@ -188,41 +198,48 @@ test('success scenarios: knowledge repository: server with auth url navigates ou
   let selectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
   if (selectedKnowledgeRepo) {
     expect(JSON.parse(selectedKnowledgeRepo)).toEqual(expectedStoredServer);
-  }else{
+  } else {
     fail('selectedKnowledgeRepo not stored in sessionStorage as expected!');
   }
-  
+
   let generatedStateCode = sessionStorage.getItem('generatedStateCode');
   if (generatedStateCode) {
     expect(JSON.parse(generatedStateCode)).toEqual(HashParamUtils.getGeneratedStateCode());
-  }else{
+  } else {
     fail('generatedStateCode not stored in sessionStorage as expected!');
   }
-
+  mockWindowOpen.mockRestore();
 });
 
 
 test('success scenarios: knowledge repository: simulate successful access code returned to redirect uri', async () => {
+
+
+
+  const accessCode = '1234567890123456';
+  const stateCode = '0987654321';
+  const generatedStateCode = '0987654321';
+  const accessToken = '12345';
+
   const mockGetAccessToken = jest.fn(async (accessCode: string, server: Server): Promise<string> => {
-    return '12345';
+    return accessToken;
   });
 
   //override the HashParamUtils.buildHashParams call to manually establish the session data
   jest.spyOn(HashParamUtils, 'getAccessCode').mockImplementation((): string => {
-    return '1234567890123456';
+    return accessCode;
   });
   jest.spyOn(HashParamUtils, 'getStateCode').mockImplementation((): string => {
-    return '0987654321';
+    return stateCode;
   });
   jest.spyOn(HashParamUtils, 'getGeneratedStateCode').mockImplementation((): string => {
-    return '0987654321';
+    return generatedStateCode;
   });
 
   //override the HashParamUtils.buildHashParams call to manually establish the session data
   jest.spyOn(OAuthHandler, 'getAccessToken').mockImplementation(async (accessCode: string, server: Server): Promise<string> => {
     return mockGetAccessToken(accessCode, server);
   });
-
 
   //App should render and see an accessCode in the url, extract it, then assign it locally and erase it from the url bar.
   await act(async () => {
@@ -232,27 +249,17 @@ test('success scenarios: knowledge repository: simulate successful access code r
   //get knowledge server dropdown
   const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
 
-
-
   await act(async () => {
     //mock measure list server selection will return 
     const measureFetch = new MeasureFetch(Constants.testOauthServer.baseUrl);
     const mockJsonMeasureData = jsonTestMeasureData;
-
-    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData),
-      {
-        method: 'GET',
-        headers: { 'Authorization': 'Bearer ' + '12345' }
-      });
-
+    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData));
     //select server with mock authurl
     await userEvent.selectOptions(serverDropdown, Constants.testOauthServer.baseUrl);
-
-    expect(mockGetAccessToken).toHaveBeenCalledWith('1234567890123456', Constants.testOauthServer);
-
-    fetchMock.restore();
+    expect(mockGetAccessToken).toHaveBeenCalledWith(accessCode, Constants.testOauthServer);
   });
-
+  
+  fetchMock.restore();
 });
 
 test('success scenarios: knowledge repository', async () => {
@@ -275,9 +282,6 @@ test('success scenarios: knowledge repository', async () => {
   const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
   const measureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
 
-
-
-
   await act(async () => {
     //mock measure list server selection will return 
     const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
@@ -286,8 +290,8 @@ test('success scenarios: knowledge repository', async () => {
     fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
     //select server, mock list should return:
     await userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   await act(async () => {
     await userEvent.selectOptions(measureDropdown, mockMeasureList[0].name);
@@ -305,8 +309,8 @@ test('success scenarios: knowledge repository', async () => {
   await act(async () => {
     const getDataRequirementsButton: HTMLButtonElement = screen.getByTestId('get-data-requirements-button');
     await fireEvent.click(getDataRequirementsButton);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonDataRequirementsData, undefined, 2));
 
@@ -357,8 +361,8 @@ test('fail scenarios: knowledge repository', async () => {
   await act(async () => {
     const getDataRequirementsButton: HTMLButtonElement = screen.getByTestId('get-data-requirements-button');
     await fireEvent.click(getDataRequirementsButton);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
     dataRequirementsFetch.getUrl(), FetchType.DATA_REQUIREMENTS,
@@ -412,8 +416,8 @@ test('success scenario: data repository', async () => {
   await act(async () => {
     //select server, mock list should return:
     await userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
   userEvent.selectOptions(patientDropdown, mockPatientList[0]);
@@ -436,8 +440,8 @@ test('success scenario: data repository', async () => {
     //select server, mock list should return:
     const collectDataButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
     fireEvent.click(collectDataButton);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonCollectDataData, undefined, 2));
 
@@ -489,8 +493,8 @@ test('fail scenario: data repository', async () => {
   await act(async () => {
     //select server, mock list should return:
     await userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
   userEvent.selectOptions(patientDropdown, mockPatientList[0]);
@@ -510,8 +514,8 @@ test('fail scenario: data repository', async () => {
     //select server, mock list should return:
     const collectDataButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
     fireEvent.click(collectDataButton);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
     collectDataFetch.getUrl(), FetchType.COLLECT_DATA,
@@ -560,8 +564,8 @@ test('success scenarios: receiving system', async () => {
     fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
     //select server, mock list should return:
     await userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   //select server, mock list should return:
   await act(async () => {
@@ -594,9 +598,8 @@ test('success scenarios: receiving system', async () => {
   await act(async () => {
     const evaluateButton: HTMLButtonElement = screen.getByTestId('rec-sys-evaluate-button');
     await fireEvent.click(evaluateButton);
-
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
@@ -670,8 +673,8 @@ test('success scenarios: receiving system - submit data', async () => {
   await act(async () => {
     //select server, mock list should return:
     await userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   //select server, mock list should return:
   await act(async () => {
@@ -703,8 +706,8 @@ test('success scenarios: receiving system - submit data', async () => {
       , { method: 'GET' });
     const collectDataButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
     await fireEvent.click(collectDataButton);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   const submitDataFetch = new SubmitDataFetch(dataServers[0], mockMeasureList[0].name, JSON.stringify(mockJsonCollectDataData, undefined, 2));
   await act(async () => {
@@ -715,9 +718,8 @@ test('success scenarios: receiving system - submit data', async () => {
     });
     const submitButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
     await fireEvent.click(submitButton);
-
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(Constants.dataSubmitted);
@@ -767,8 +769,8 @@ test('fail scenarios: receiving system - submit data', async () => {
   await act(async () => {
     //select server, mock list should return:
     await userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   //select server, mock list should return:
   await act(async () => {
@@ -801,9 +803,8 @@ test('fail scenarios: receiving system - submit data', async () => {
       , { method: 'GET' });
     const collectDataButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
     await fireEvent.click(collectDataButton);
-
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   const submitDataFetch = new SubmitDataFetch(dataServers[0], mockMeasureList[0].name, JSON.stringify(mockJsonCollectDataData, undefined, 2));
 
@@ -811,13 +812,12 @@ test('fail scenarios: receiving system - submit data', async () => {
     fetchMock.once(submitDataFetch.getUrl(), 400);
     const submitButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
     await fireEvent.click(submitButton);
-
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    submitDataFetch.getUrl(), FetchType.SUBMIT_DATA, 'Error: Bad Request'));
+    submitDataFetch.getUrl(), FetchType.SUBMIT_DATA, RESPONSE_ERROR_BAD_REQUEST));
 
 
 });
@@ -877,11 +877,9 @@ test('fail scenario: receiving system', async () => {
     fetchMock.once(patientFetch.getUrl(), JSON.stringify(mockJsonPatientData), { method: 'GET' });
 
     await userEvent.selectOptions(dataRepoServerDropdown, dataServers[0].baseUrl);
-
-    fetchMock.restore();
   });
-
-
+  fetchMock.restore();
+  
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
   userEvent.selectOptions(patientDropdown, mockPatientList[0]);
 
@@ -900,9 +898,8 @@ test('fail scenario: receiving system', async () => {
   await act(async () => {
     const evaluateButton: HTMLButtonElement = screen.getByTestId('rec-sys-evaluate-button');
     await fireEvent.click(evaluateButton);
-
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
@@ -927,8 +924,8 @@ test('fail scenarios: fetchMeasure', async () => {
   await act(async () => {
     //select server, mock list should return:
     await userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
     measureFetch.getUrl(), FetchType.MEASURE, RESPONSE_ERROR_BAD_REQUEST));
@@ -968,8 +965,8 @@ test('fail scenarios: fetchPatient', async () => {
   await act(async () => {
     //select server, mock list should return:
     await userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
-    fetchMock.restore();
   });
+  fetchMock.restore();
 
   //select server, mock list should return:
   const patientFetch = new PatientFetch(dataServers[0].baseUrl);
@@ -978,6 +975,7 @@ test('fail scenarios: fetchPatient', async () => {
     await userEvent.selectOptions(dataRepoServerDropdown, dataServers[0].baseUrl);
   });
   fetchMock.restore();
+
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
     patientFetch.getUrl(), FetchType.PATIENT, RESPONSE_ERROR_BAD_REQUEST));
@@ -1011,10 +1009,9 @@ test('error scenarios: knowledge repository', async () => {
     fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
     //select server, mock list should return:
     await userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
-
-    fetchMock.restore();
   });
-
+  fetchMock.restore();
+  
   //check results for error:
   fireEvent.click(getDataRequirementsButton);
 
