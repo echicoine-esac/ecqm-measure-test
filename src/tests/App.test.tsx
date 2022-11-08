@@ -173,7 +173,8 @@ test('success scenarios: knowledge repository: server with auth url navigates ou
 
   await act(async () => {
     fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), requestOptions);
-    fetchMock.head(Constants.testOauthServer.baseUrl, true);
+    fetchMock.head('begin:' + Constants.testOauthServer.authUrl, true);
+
     //select server, mock list should return:
     await userEvent.selectOptions(serverDropdown, Constants.testOauthServer.baseUrl);
   });
@@ -183,7 +184,7 @@ test('success scenarios: knowledge repository: server with auth url navigates ou
     + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
     + '&redirect_uri=http://localhost:8080/4/'
     + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getGeneratedStateCode(), '_self', undefined);
-
+ 
   const expectedStoredServer = {
     id: 'ec2345-4',
     baseUrl: 'http://localhost:8080/4/',

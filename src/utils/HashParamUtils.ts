@@ -11,7 +11,7 @@ export class HashParamUtils {
      *    example:
           return 'https://www.oauth.com/playground/auth-dialog.html?'
               + 'response_type=code'
-              + '&client_id=1X1BcC9ZbfjPm--_vF5O9hfk'
+              + '&client_id=GFMxUDilucynHYW25BbGgNAI'
               + '&redirect_uri=http://localhost:3000/'
               + '&scope=photo+offline_access'
               + '&state=' + HashParamUtils.getGeneratedStateCode();
@@ -19,7 +19,6 @@ export class HashParamUtils {
      * @returns 
      */
     static buildAuthenticationUrl(knowledgeRepo: Server) {
-        //TODO: Ensure stateCode matches generatedStateCode to protect against CSRF attacks.
         HashParamUtils.generatedStateCode = HashParamUtils.generateRandomStateCode();
         //console.log('HashParamUtils generated state code: ' + HashParamUtils.codes.generatedStateCode);
 

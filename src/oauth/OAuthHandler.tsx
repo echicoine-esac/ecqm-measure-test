@@ -25,7 +25,7 @@ export class OAuthHandler {
         const unreachable = 'The target URL is unreachable: ';
 
         try {
-            const res = (await fetch(server.baseUrl, { method: 'HEAD' })).ok;
+            const res = (await fetch(authenticationUrl, { method: 'HEAD' })).ok;
             if (res) {
                 // console.log('Opening window with ' + authenticationUrl);
                 window.open(authenticationUrl, '_self');
@@ -43,8 +43,8 @@ export class OAuthHandler {
      * example:
       const tokenUrl: string = 'https://authorization-server.com/token/'
       + '?grant_type=authorization_code'
-      + '&client_id=1X1BcC9ZbfjPm--_vF5O9hfk'
-      + '&client_secret=j49EZy77p1S1-UZ3zH79NMFi2rTfQt7dTcaA8blfTSeBHwYh'
+      + '&client_id=GFMxUDilucynHYW25BbGgNAI'
+      + '&client_secret=niQMHhsBbIbIa_M2iot9rfEeVsDn3DXMKZ5PYqMcq1JSEX4w'
       + '&redirect_uri=http://localhost:3000/'
       + '&code=' + accessCode; 
      * 
@@ -54,12 +54,7 @@ export class OAuthHandler {
     public static getAccessToken = async (accessCode: string, server: Server): Promise<string> => {
         let accessToken = '';
 
-        const tokenUrl: string = server?.tokenUrl
-            + '?grant_type=authorization_code'
-            + '&client_id=' + server?.clientID
-            + '&client_secret=' + server?.clientSecret
-            + '&redirect_uri=' + server?.callbackUrl
-            + '&code=' + accessCode;
+        const tokenUrl: string = server?.tokenUrl;
 
         // console.log('Requesting token with ' + server.tokenUrl);
         const formData = OAuthHandler.buildFormData(accessCode, server);

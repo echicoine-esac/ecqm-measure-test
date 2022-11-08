@@ -135,7 +135,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // When a server is selected store it in the session
-    if (selectedKnowledgeRepo.baseUrl !== '') {
+    if (selectedKnowledgeRepo?.baseUrl !== '') {
       sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(selectedKnowledgeRepo));
       //console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
     }
@@ -166,14 +166,12 @@ const App: React.FC = () => {
       setLoading(false);
       return;
     }
-
     // console.log('fetchMeasures, accessCode: ' + HashParamUtils.getAccessCode());
 
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
 
     // await new Promise(resolve => setTimeout(resolve, 2500));
-
     if (HashParamUtils.getAccessCode() && HashParamUtils.getAccessCode() !== '') {
       try {
         setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));
@@ -185,10 +183,12 @@ const App: React.FC = () => {
 
     } else {
       if (knowledgeRepo?.authUrl && knowledgeRepo?.authUrl !== '') {
+
         //initiate authentication sequence 
         try {
           await OAuthHandler.getAccessCode(knowledgeRepo);
         } catch (error: any) {
+
           setLoading(false);
           // console.log(error.message, error);
           reportErrorToUser('await OAuthHandler.getAccessCode(knowledgeRepo)', error);
@@ -196,7 +196,6 @@ const App: React.FC = () => {
         }
       }
     }
-
     try {
       setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken));
     } catch (error: any) {

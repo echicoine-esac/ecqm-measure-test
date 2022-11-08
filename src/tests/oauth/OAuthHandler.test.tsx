@@ -17,7 +17,7 @@ beforeEach(() => {
 
 test('OAuthHandler: calls window.open with expected input', async () => {
       //disable bad url check 
-      fetchMock.head(Constants.testOauthServer.baseUrl, true);
+      fetchMock.head('begin:' + Constants.testOauthServer.authUrl, true);
       //call getAccessCode to trigger process of opening window with speficially crafted authentication url
       await OAuthHandler.getAccessCode(testServer);
 
@@ -30,45 +30,17 @@ test('OAuthHandler: calls window.open with expected input', async () => {
 });
 
 test('OAuthHandler: expect POST call structure', async () => {
-      const accessCode = 'foo';
-
-      const tokenUrl: string = testServer?.tokenUrl
-            + '?grant_type=authorization_code'
-            + '&client_id=' + testServer?.clientID
-            + '&client_secret=' + testServer?.clientSecret
-            + '&redirect_uri=' + testServer?.callbackUrl
-            + '&code=' + accessCode;
-
-      fetchMock.post(tokenUrl, { access_token: 'access_token_string' });
-
-      expect(await OAuthHandler.getAccessToken(accessCode, testServer)).toEqual('access_token_string');
-
+      fetchMock.post(testServer?.tokenUrl, { access_token: 'access_token_string' });
+      expect(await OAuthHandler.getAccessToken('accessCode', testServer)).toEqual('access_token_string');
       fetchMock.restore();
-
 });
 
 test('OAuthHandler: fail scenario', async () => {
-      const accessCode = 'foo';
-
-      const tokenUrl: string = testServer?.tokenUrl
-            + '?grant_type=authorization_code'
-            + '&client_id=' + testServer?.clientID
-            + '&client_secret=' + testServer?.clientSecret
-            + '&redirect_uri=' + testServer?.callbackUrl
-            + '&code=' + accessCode;
-
-      fetchMock.post(tokenUrl, 404);
-
+      fetchMock.post(testServer?.tokenUrl, 404);
       try {
-            await OAuthHandler.getAccessToken(accessCode, testServer);
+            await OAuthHandler.getAccessToken('accessCode', testServer);
       } catch (error: any) {
-            expect(error.message).toEqual('Using http://localhost:8080/4/token/'
-                  + '?grant_type=authorization_code'
-                  + '&client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
-                  + '&client_secret=Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW'
-                  + '&redirect_uri=http://localhost:8080/4/'
-                  + '&code=foo to retrieve Error: Not Found caused: {2}');
+            expect(error.message).toEqual('Using http://localhost:8080/4/token/ to retrieve Error: Not Found caused: {2}');
       }
-
       fetchMock.restore();
 });
