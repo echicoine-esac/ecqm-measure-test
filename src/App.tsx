@@ -17,11 +17,10 @@ import { PatientFetch } from './data/PatientFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
 import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
-import { MeasureData } from './models/MeasureData';
 import { Server } from "./models/Server";
-import { getHashParams, removeHashParamsFromUrl } from "./utils/hashUtils";
+import { getCodeParam, removeCodeParam } from "./utils/hashUtils";
 import { ServerUtils } from './utils/ServerUtils';
-import { StringUtils } from "./utils/StringUtils";
+import { StringUtils } from './utils/StringUtils';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -97,16 +96,37 @@ const App: React.FC = () => {
   const [collectedData, setCollectedData] = useState<string>('');
 
   // Handle OAuth redirect
-  const hashParams = getHashParams();
   const [accessToken, setAccessToken] = useState<string>('');
-  const accessCode = hashParams.code;
-  removeHashParamsFromUrl();
+  const [accessCode] = useState<string>(getCodeParam());
 
   useEffect(() => {
-    initializeServers();
+    // Get selected server from session since we will be redirected back to here
+    let selectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
+    if (selectedKnowledgeRepo) {
+      setSelectedKnowledgeRepo(JSON.parse(selectedKnowledgeRepo));
+      // If we got access Code but not token then call fetchMeasures again to finish the workflow
+      fetchMeasures(JSON.parse(selectedKnowledgeRepo));
+    }
+
+    // Only call to get the servers when the list is empty
+    if (servers.length === 0) {
+      initializeServers().then(r => {
+      });
+    }
+
+    // Remove the code from the URL
+    removeCodeParam();
   }, []);
 
- const initializeServers = async () => {
+  useEffect(() => {
+    // When a server is selected store it in the session
+    if (selectedKnowledgeRepo.baseUrl !== '') {
+      sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(selectedKnowledgeRepo));
+      console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
+    }
+  }, [selectedKnowledgeRepo]);
+
+  const initializeServers = async () => {
     setServers(await ServerUtils.getServerList());
   }
 
@@ -125,45 +145,53 @@ const App: React.FC = () => {
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
 
-    console.log(knowledgeRepo);
-    console.log('AuthURL is ' + knowledgeRepo.authUrl);
-
-    // If the selected server requires OAuth then call the Auth URL to get the code
-    if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== '') {
+    // If the selected server requires OAuth then call the Auth URL to get the code if we do not have it
+    if (accessCode === '' && knowledgeRepo.authUrl && knowledgeRepo.authUrl !== '') {
       // Open a window to the authentication URL to allow them to login and allow scopes
       const authenticationUrl: string = knowledgeRepo.authUrl + '?client_id=' + knowledgeRepo.clientID +
           '&redirect_uri=' + knowledgeRepo.callbackUrl + '&scope=' + knowledgeRepo.scope + '&response_type=code';
-      console.log('Opening window with ' + authenticationUrl);
       await window.open(authenticationUrl, '_self');
     }
 
     // If the selected server requires OAuth, and we have the code then request the token
     console.log('Access code is ' + accessCode);
     if (accessCode && accessCode !== '') {
-      const tokenUrl: string = knowledgeRepo.tokenUrl + '?client_id=' + knowledgeRepo.clientID +
-          '&client_secret=' + knowledgeRepo.clientSecret + '&redirect_uri=' + knowledgeRepo.callbackUrl +
-          'code=' + accessCode;
-      console.log('Requesting token with ' + tokenUrl);
+      console.log('Requesting token with ' + knowledgeRepo.tokenUrl);
+
+      const formData = new FormData();
+      formData.append('code', accessCode);
+      formData.append('client_id', knowledgeRepo.clientID);
+      formData.append('client_secret', knowledgeRepo.clientSecret);
+      formData.append('redirect_uri', knowledgeRepo.callbackUrl);
+      formData.append('grant_type', 'authorization_code');
 
       // POST to token URL
       const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: formData
       };
 
-      await fetch(tokenUrl, requestOptions)
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ',' + pair[1]);
+      }
+
+      await fetch(knowledgeRepo.tokenUrl, requestOptions)
           .then((response) => {
             if (response.ok === false) {
+              console.log(response.json());
               throw Error(response.statusText);
             }
             return response.json()
           })
           .then((data) => {
+            console.log('Got token response');
             setAccessToken(data.access_token);
+            console.log('access token is ' + accessToken);
           })
           .catch((error) => {
             let message = StringUtils.format(Constants.fetchError,
-                tokenUrl, error);
+                knowledgeRepo.tokenUrl, error);
             throw new Error(message);
           });
     }
@@ -211,7 +239,7 @@ const App: React.FC = () => {
     }
 
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedReceiving,
-      selectedPatient, selectedMeasure, startDate, endDate)
+        selectedPatient, selectedMeasure, startDate, endDate)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
 
@@ -219,10 +247,9 @@ const App: React.FC = () => {
       let measureData = await evaluateMeasureFetch.fetchData(accessToken);
 
       // Handle the error case where an OperationOutcome was returned instead of a MeasureReport
-      if (measureData.resourceType == 'OperationOutcome') {
+      if (measureData.resourceType === 'OperationOutcome') {
         setResults(JSON.stringify(measureData, undefined, 2));
-      }
-      else {
+      } else {
         setResults(JSON.stringify(measureData.jsonBody, undefined, 2));
         // Iterate through the population names to set the state
         const popNames = measureData.popNames;
@@ -273,7 +300,7 @@ const App: React.FC = () => {
 
     // Build the data requirements URL based on the options selected
     const dataRequirementsFetch = new DataRequirementsFetch(selectedKnowledgeRepo,
-      selectedMeasure, startDate, endDate)
+        selectedMeasure, startDate, endDate)
 
     let message = 'Calling ' + dataRequirementsFetch.getUrl() + '...';
     setResults(message);
@@ -306,7 +333,7 @@ const App: React.FC = () => {
     setLoading(true);
 
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
-      startDate, endDate, selectedPatient)
+        startDate, endDate, selectedPatient)
 
     let message = 'Calling ' + collectDataFetch.getUrl() + '...';
     setResults(message);
@@ -344,7 +371,7 @@ const App: React.FC = () => {
 
     try {
       setResults(await new SubmitDataFetch(selectedReceiving,
-        selectedMeasure, collectedData).submitData(accessToken));
+          selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
       setResults(error.message);
@@ -365,40 +392,46 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="py-5 text-center col-md-1">
-          <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72" />
+      <div className="container">
+        <div className="row">
+          <div className="py-5 text-center col-md-1">
+            <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72"/>
+          </div>
+          <div className="py-5 text-center col-md-11">
+            <h2>eCQM Testing Tool</h2>
+          </div>
         </div>
-        <div className="py-5 text-center col-md-11">
-          <h2>eCQM Testing Tool</h2>
-        </div>
+        <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>
+        <br/>
+        <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
+                             servers={servers} fetchMeasures={fetchMeasures}
+                             selectedKnowledgeRepo={selectedKnowledgeRepo}
+                             measures={measures} setSelectedMeasure={setSelectedMeasure}
+                             selectedMeasure={selectedMeasure}
+                             getDataRequirements={getDataRequirements} loading={loading}
+                             setModalShow={setServerModalShow}/>
+        <br/>
+        <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
+                        selectedDataRepo={selectedDataRepo} patients={patients}
+                        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient}
+                        selectedPatient={selectedPatient}
+                        collectData={collectData} loading={loading} setModalShow={setServerModalShow}/>
+        <br/>
+        <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
+                         servers={servers} setSelectedReceiving={setSelectedReceiving}
+                         selectedReceiving={selectedReceiving}
+                         submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading}
+                         setModalShow={setServerModalShow}/>
+        <Results results={results}/>
+        <Populations initialPopulation={initialPopulation} denominator={denominator}
+                     denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
+                     numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
+                     measureScoring={measureScoring}/>
+        <br/>
+        <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer}/>
+        <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
+                    setUsername={setUsername} password={password} setPassword={setPassword}/>
       </div>
-      <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
-      <br />
-      <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
-        servers={servers} fetchMeasures={fetchMeasures} selectedKnowledgeRepo={selectedKnowledgeRepo}
-        measures={measures} setSelectedMeasure={setSelectedMeasure} selectedMeasure={selectedMeasure}
-        getDataRequirements={getDataRequirements} loading={loading} setModalShow={setServerModalShow}/>
-      <br />
-      <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
-        selectedDataRepo={selectedDataRepo} patients={patients}
-        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient} selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading} setModalShow={setServerModalShow}/>
-      <br />
-      <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
-        servers={servers} setSelectedReceiving={setSelectedReceiving} selectedReceiving={selectedReceiving}
-        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}/>
-      <Results results={results} />
-      <Populations initialPopulation={initialPopulation} denominator={denominator}
-        denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
-        numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
-        measureScoring={measureScoring} />
-      <br />
-      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer}/>
-      <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
-        setUsername={setUsername} password={password} setPassword={setPassword}/>
-    </div>
   );
 }
 
