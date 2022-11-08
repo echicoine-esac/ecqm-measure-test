@@ -105,50 +105,7 @@ const App: React.FC = () => {
     //console.log(source, err);
     setResults(message);
   });
-
-  // useEffect(() => {
-
-
-
-
-    
-
-  //     // Only call to get the servers when the list is empty
-  //     if (servers.length === 0) {
-  //       initializeServers().then(r => {
-  //       });
-  //     }
-  //     //retrieve any codes in the url 
-  //     HashParamUtils.buildHashParams();
-
-  //     // Get selected server from session since we will be redirected back to here
-  //     let selectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
-  //     if (selectedKnowledgeRepo && selectedKnowledgeRepo !== '') {
-  //       setSelectedKnowledgeRepo(JSON.parse(selectedKnowledgeRepo));
-
-  //       sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
-
-  //       // If we got access Code but not token then call fetchMeasures again to finish the workflow
-  //       if (HashParamUtils.getAccessCode() !== '') {
-  //         fetchMeasures(JSON.parse(selectedKnowledgeRepo));
-  //       }
-
-  //       HashParamUtils.removeCodeParam();
-  //     }
-
-  //   console.log('HashParamUtils.getAccessCode' + ': ' + HashParamUtils.getAccessCode());
-  //   console.log('HashParamUtils.getGeneratedStateCode' + ': ' + HashParamUtils.getGeneratedStateCode());
-  //   console.log('HashParamUtils.getStateCode' + ': ' + HashParamUtils.getStateCode());
-
-  // });
-
-  // useEffect(() => {
-  //   // When a server is selected store it in the session
-  //   if (selectedKnowledgeRepo?.baseUrl && selectedKnowledgeRepo?.baseUrl !== '') {
-  //     sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(selectedKnowledgeRepo));
-  //     //console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
-  //   }
-  // }, [selectedKnowledgeRepo]);
+ 
 
   useEffect(() => {
     HashParamUtils.buildHashParams();
@@ -183,7 +140,6 @@ const App: React.FC = () => {
       console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
     }
   }, [selectedKnowledgeRepo]);
-
 
   const initializeServers = async () => {
     setServers(await ServerUtils.getServerList());
@@ -281,7 +237,7 @@ const App: React.FC = () => {
     }
 
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedReceiving,
-      selectedPatient, selectedMeasure, startDate, endDate)
+        selectedPatient, selectedMeasure, startDate, endDate)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
 
@@ -291,8 +247,7 @@ const App: React.FC = () => {
       // Handle the error case where an OperationOutcome was returned instead of a MeasureReport
       if (measureData.resourceType === 'OperationOutcome') {
         setResults(JSON.stringify(measureData, undefined, 2));
-      }
-      else {
+      } else {
         setResults(JSON.stringify(measureData.jsonBody, undefined, 2));
         // Iterate through the population names to set the state
         const popNames = measureData.popNames;
@@ -343,7 +298,7 @@ const App: React.FC = () => {
 
     // Build the data requirements URL based on the options selected
     const dataRequirementsFetch = new DataRequirementsFetch(selectedKnowledgeRepo,
-      selectedMeasure, startDate, endDate)
+        selectedMeasure, startDate, endDate)
 
     let message = 'Calling ' + dataRequirementsFetch.getUrl() + '...';
     setResults(message);
@@ -376,7 +331,7 @@ const App: React.FC = () => {
     setLoading(true);
 
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
-      startDate, endDate, selectedPatient)
+        startDate, endDate, selectedPatient)
 
     let message = 'Calling ' + collectDataFetch.getUrl() + '...';
     setResults(message);
@@ -414,7 +369,7 @@ const App: React.FC = () => {
 
     try {
       setResults(await new SubmitDataFetch(selectedReceiving,
-        selectedMeasure, collectedData).submitData(accessToken));
+          selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
       reportErrorToUser('setResults(await new SubmitDataFetch(selectedReceiving,', error);
@@ -435,40 +390,46 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className='container'>
-      <div className='row'>
-        <div className='py-5 text-center col-md-1'>
-          <img className='d-block mx-auto mb-4' src={logo} alt='ICF Logo' width='72' height='72' />
+      <div className="container">
+        <div className="row">
+          <div className="py-5 text-center col-md-1">
+            <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72"/>
+          </div>
+          <div className="py-5 text-center col-md-11">
+            <h2>eCQM Testing Tool</h2>
+          </div>
         </div>
-        <div className='py-5 text-center col-md-11'>
-          <h2>eCQM Testing Tool</h2>
-        </div>
+        <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate}/>
+        <br/>
+        <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
+                             servers={servers} fetchMeasures={fetchMeasures}
+                             selectedKnowledgeRepo={selectedKnowledgeRepo}
+                             measures={measures} setSelectedMeasure={setSelectedMeasure}
+                             selectedMeasure={selectedMeasure}
+                             getDataRequirements={getDataRequirements} loading={loading}
+                             setModalShow={setServerModalShow}/>
+        <br/>
+        <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
+                        selectedDataRepo={selectedDataRepo} patients={patients}
+                        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient}
+                        selectedPatient={selectedPatient}
+                        collectData={collectData} loading={loading} setModalShow={setServerModalShow}/>
+        <br/>
+        <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
+                         servers={servers} setSelectedReceiving={setSelectedReceiving}
+                         selectedReceiving={selectedReceiving}
+                         submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading}
+                         setModalShow={setServerModalShow}/>
+        <Results results={results}/>
+        <Populations initialPopulation={initialPopulation} denominator={denominator}
+                     denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
+                     numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
+                     measureScoring={measureScoring}/>
+        <br/>
+        <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer}/>
+        <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
+                    setUsername={setUsername} password={password} setPassword={setPassword}/>
       </div>
-      <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
-      <br />
-      <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
-        servers={servers} fetchMeasures={fetchMeasures} selectedKnowledgeRepo={selectedKnowledgeRepo}
-        measures={measures} setSelectedMeasure={setSelectedMeasure} selectedMeasure={selectedMeasure}
-        getDataRequirements={getDataRequirements} loading={loading} setModalShow={setServerModalShow} />
-      <br />
-      <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
-        selectedDataRepo={selectedDataRepo} patients={patients}
-        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient} selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading} setModalShow={setServerModalShow} />
-      <br />
-      <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
-        servers={servers} setSelectedReceiving={setSelectedReceiving} selectedReceiving={selectedReceiving}
-        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow} />
-      <Results results={results} />
-      <Populations initialPopulation={initialPopulation} denominator={denominator}
-        denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
-        numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
-        measureScoring={measureScoring} />
-      <br />
-      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
-      <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
-        setUsername={setUsername} password={password} setPassword={setPassword} />
-    </div>
   );
 }
 
