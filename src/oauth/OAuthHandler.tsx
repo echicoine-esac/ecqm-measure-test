@@ -4,7 +4,18 @@ import { HashParamUtils } from '../utils/HashParamUtils';
 import { StringUtils } from '../utils/StringUtils';
 
 export class OAuthHandler {
-   public static getAccessCode = async (server: Server) => {
+
+    static buildFormData(accessCode: string, server: Server): FormData {
+        const formData = new FormData();
+        formData.append('code', accessCode);
+        formData.append('client_id', server.clientID);
+        formData.append('client_secret', server.clientSecret);
+        formData.append('redirect_uri', server.callbackUrl);
+        formData.append('grant_type', 'authorization_code');
+
+        return formData;
+    }
+    public static getAccessCode = async (server: Server) => {
         // console.log(this.knowledgeRepo);
         // console.log('AuthURL is ' + this.knowledgeRepo.authUrl);
         const authenticationUrl = HashParamUtils.buildAuthenticationUrl(server);
@@ -30,34 +41,42 @@ export class OAuthHandler {
     public static getAccessToken = async (accessCode: string, server: Server): Promise<string> => {
         let accessToken = '';
 
-        // If the selected server requires OAuth, and we have the code then request the token
-        //console.log('Access code is ' + accessCode);
         const tokenUrl: string = server?.tokenUrl
-            + '?grant_type=authorization_code'
-            + '&client_id=' + server?.clientID
-            + '&client_secret=' + server?.clientSecret
-            + '&redirect_uri=' + server?.callbackUrl
-            + '&code=' + accessCode;
+        + '?grant_type=authorization_code'
+        + '&client_id=' + server?.clientID
+        + '&client_secret=' + server?.clientSecret
+        + '&redirect_uri=' + server?.callbackUrl
+        + '&code=' + accessCode;
 
-        // console.log('tokenurl: ' + tokenUrl);
+        // console.log('Requesting token with ' + server.tokenUrl);
+        const formData = OAuthHandler.buildFormData(accessCode, server);
+
         // POST to token URL
-        await fetch(tokenUrl, {
+        const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        }).then((response) => {
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-            return response.json()
-        }).then((data) => {
-            accessToken = data.access_token;
-        }).catch((error) => {
-            let message = StringUtils.format(Constants.fetchError, tokenUrl, error);
-            // console.log('OAuthHandler: ' + message, error);
-            throw new Error(message);
-        });
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData
+        };
 
-        // console.log('accessToken is ' + accessToken);
+        // for (let pair of formData.entries()) {
+        //     console.log(pair[0] + ',' + pair[1]);
+        // }
+
+        await fetch(tokenUrl, requestOptions)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(response.statusText);
+                }
+                return response.json()
+            })
+            .then((data) => {
+                accessToken = data.access_token;
+            })
+            .catch((error) => {
+                let message = StringUtils.format(Constants.fetchError, tokenUrl, error);
+                throw new Error(message);
+            });
+
         return accessToken;
     }
 

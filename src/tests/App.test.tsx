@@ -25,7 +25,6 @@ import { StringUtils } from '../utils/StringUtils';
 const RESPONSE_ERROR_BAD_REQUEST = 'Error: Bad Request';
 
 const mockWindowOpen = jest.fn((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
-  console.log('mockWindowOpen: ' + url + ', ' + target + ', ' + features);
   return new Window();
 });
 

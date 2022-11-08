@@ -29,18 +29,13 @@ test('OAuthHandler: expect POST call structure', async () => {
       const accessCode = 'foo';
 
       const tokenUrl: string = testServer?.tokenUrl
-            + '?grant_type=authorization_code'
-            + '&client_id=' + testServer?.clientID
-            + '&client_secret=' + testServer?.clientSecret
-            + '&redirect_uri=' + testServer?.callbackUrl
-            + '&code=' + accessCode;
+      + '?grant_type=authorization_code'
+      + '&client_id=' + testServer?.clientID
+      + '&client_secret=' + testServer?.clientSecret
+      + '&redirect_uri=' + testServer?.callbackUrl
+      + '&code=' + accessCode;
 
-      fetchMock.post(tokenUrl, { access_token: 'access_token_string' }, {
-            method: 'POST',
-            headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-            }
-      });
+      fetchMock.post(tokenUrl, { access_token: 'access_token_string' });
 
       expect(await OAuthHandler.getAccessToken(accessCode, testServer)).toEqual('access_token_string');
 
@@ -58,12 +53,7 @@ test('OAuthHandler: fail scenario', async () => {
             + '&redirect_uri=' + testServer?.callbackUrl
             + '&code=' + accessCode;
 
-      fetchMock.post(tokenUrl, 404, {
-            method: 'POST',
-            headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-            }
-      });
+      fetchMock.post(tokenUrl, 404);
 
       try {
             await OAuthHandler.getAccessToken(accessCode, testServer);

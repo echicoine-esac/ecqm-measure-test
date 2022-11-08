@@ -127,9 +127,9 @@ const App: React.FC = () => {
     // Remove the code from the URL
     HashParamUtils.removeCodeParam();
 
-    console.log('HashParamUtils.getAccessCode' + ': ' + HashParamUtils.getAccessCode());
-    console.log('HashParamUtils.getGeneratedStateCode' + ': ' + HashParamUtils.getGeneratedStateCode());
-    console.log('HashParamUtils.getStateCode' + ': ' + HashParamUtils.getStateCode());
+    // console.log('HashParamUtils.getAccessCode' + ': ' + HashParamUtils.getAccessCode());
+    // console.log('HashParamUtils.getGeneratedStateCode' + ': ' + HashParamUtils.getGeneratedStateCode());
+    // console.log('HashParamUtils.getStateCode' + ': ' + HashParamUtils.getStateCode());
     
   }, []);
 
@@ -137,7 +137,7 @@ const App: React.FC = () => {
     // When a server is selected store it in the session
     if (selectedKnowledgeRepo.baseUrl !== '') {
       sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(selectedKnowledgeRepo));
-      console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
+      //console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
     }
   }, [selectedKnowledgeRepo]);
 
