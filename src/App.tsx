@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import DataRepository from "./components/DataRepository";
+import DataRepository from './components/DataRepository';
 import KnowledgeRepository from './components/KnowledgeRepository';
-import LoginModal from "./components/LoginModal";
-import Populations from "./components/Populations";
+import LoginModal from './components/LoginModal';
+import Populations from './components/Populations';
 import ReceivingSystem from './components/ReceivingSystem';
-import ReportingPeriod from "./components/ReportingPeriod";
-import Results from "./components/Results";
-import ServerModal from "./components/ServerModal";
+import ReportingPeriod from './components/ReportingPeriod';
+import Results from './components/Results';
+import ServerModal from './components/ServerModal';
 import { Constants } from './constants/Constants';
 import { CollectDataFetch } from './data/CollectDataFetch';
 import { DataRequirementsFetch } from './data/DataRequirementsFetch';
@@ -17,9 +17,9 @@ import { PatientFetch } from './data/PatientFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
 import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
-import { Server } from "./models/Server";
+import { Server } from './models/Server';
 import { OAuthHandler } from './oauth/OAuthHandler';
-import { HashParamUtils, SessionCodes } from './utils/HashParamUtils';
+import { HashParamUtils } from './utils/HashParamUtils';
 import { ServerUtils } from './utils/ServerUtils';
 
 const App: React.FC = () => {
@@ -98,31 +98,92 @@ const App: React.FC = () => {
   // Handle OAuth redirect
   const [accessToken, setAccessToken] = useState<string>('');
 
-  //session based server authentication info
-  const [sessionData, setSessionData] = useState<any>();
+  //tells us when app is busy loading and not to disrupt variable assignment
 
-  let modifyingUrl: boolean = false;
+  const reportErrorToUser = ((source: string, err: any) => {
+    const message = err.message;
+    //console.log(source, err);
+    setResults(message);
+  });
+
+  // useEffect(() => {
+
+
+
+
+    
+
+  //     // Only call to get the servers when the list is empty
+  //     if (servers.length === 0) {
+  //       initializeServers().then(r => {
+  //       });
+  //     }
+  //     //retrieve any codes in the url 
+  //     HashParamUtils.buildHashParams();
+
+  //     // Get selected server from session since we will be redirected back to here
+  //     let selectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
+  //     if (selectedKnowledgeRepo && selectedKnowledgeRepo !== '') {
+  //       setSelectedKnowledgeRepo(JSON.parse(selectedKnowledgeRepo));
+
+  //       sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
+
+  //       // If we got access Code but not token then call fetchMeasures again to finish the workflow
+  //       if (HashParamUtils.getAccessCode() !== '') {
+  //         fetchMeasures(JSON.parse(selectedKnowledgeRepo));
+  //       }
+
+  //       HashParamUtils.removeCodeParam();
+  //     }
+
+  //   console.log('HashParamUtils.getAccessCode' + ': ' + HashParamUtils.getAccessCode());
+  //   console.log('HashParamUtils.getGeneratedStateCode' + ': ' + HashParamUtils.getGeneratedStateCode());
+  //   console.log('HashParamUtils.getStateCode' + ': ' + HashParamUtils.getStateCode());
+
+  // });
+
+  // useEffect(() => {
+  //   // When a server is selected store it in the session
+  //   if (selectedKnowledgeRepo?.baseUrl && selectedKnowledgeRepo?.baseUrl !== '') {
+  //     sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(selectedKnowledgeRepo));
+  //     //console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
+  //   }
+  // }, [selectedKnowledgeRepo]);
 
   useEffect(() => {
-    initializeServers();
+    HashParamUtils.buildHashParams();
 
-    if (modifyingUrl) {
-      modifyingUrl = false;
-    } else {
-      HashParamUtils.buildHashParams();
-      setSessionData(HashParamUtils.getSessionData());
-      //avoid useEffect stripping our access code after we modify url
-      modifyingUrl = true;
-      HashParamUtils.removeHashParamsFromUrl();
+    // Get selected server from session since we will be redirected back to here
+    let selectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
+    if (selectedKnowledgeRepo) {
+      setSelectedKnowledgeRepo(JSON.parse(selectedKnowledgeRepo));
+      // If we got access Code but not token then call fetchMeasures again to finish the workflow
+      fetchMeasures(JSON.parse(selectedKnowledgeRepo));
     }
 
-    // if (sessionData) {
-    //   console.log('accessCode is ' + sessionData.accessCode);
-    //   console.log('state code is ' + sessionData.stateCode);
-    //   console.log('generated state code is ' + sessionData.generatedStateCode);
-    // }
+    // Only call to get the servers when the list is empty
+    if (servers.length === 0) {
+      initializeServers().then(r => {
+      });
+    }
 
+    // Remove the code from the URL
+    HashParamUtils.removeCodeParam();
+
+    console.log('HashParamUtils.getAccessCode' + ': ' + HashParamUtils.getAccessCode());
+    console.log('HashParamUtils.getGeneratedStateCode' + ': ' + HashParamUtils.getGeneratedStateCode());
+    console.log('HashParamUtils.getStateCode' + ': ' + HashParamUtils.getStateCode());
+    
   }, []);
+
+  useEffect(() => {
+    // When a server is selected store it in the session
+    if (selectedKnowledgeRepo.baseUrl !== '') {
+      sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(selectedKnowledgeRepo));
+      console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
+    }
+  }, [selectedKnowledgeRepo]);
+
 
   const initializeServers = async () => {
     setServers(await ServerUtils.getServerList());
@@ -134,7 +195,7 @@ const App: React.FC = () => {
     try {
       await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('createServer', error);
     }
   }
 
@@ -149,39 +210,38 @@ const App: React.FC = () => {
       HashParamUtils.clearCachedValues();
       return;
     }
-    
-    // console.log('fetchMeasures, accessCode: ' + sessionData.accessCode);
 
-    ServerUtils.storeSelectedServer(knowledgeRepo);
+    // console.log('fetchMeasures, accessCode: ' + HashParamUtils.getAccessCode());
+
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
 
     // await new Promise(resolve => setTimeout(resolve, 2500));
 
-    if (sessionData?.accessCode.length > 0) {
+    if (HashParamUtils.getAccessCode() && HashParamUtils.getAccessCode() !== '') {
       try {
-        setAccessToken(await OAuthHandler.getAccessToken(sessionData.accessCode, knowledgeRepo));
+        setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));
       } catch (error: any) {
         // console.log(error.message, error);
-        setResults(error.message);
+        reportErrorToUser('setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));', error);
       }
 
     } else {
-      if (knowledgeRepo.authUrl && knowledgeRepo.authUrl !== '') {
+      if (knowledgeRepo?.authUrl && knowledgeRepo?.authUrl !== '') {
         //initiate authentication sequence 
         try {
           await OAuthHandler.getAccessCode(knowledgeRepo);
         } catch (error: any) {
           // console.log(error.message, error);
-          setResults(error.message);
+          reportErrorToUser('await OAuthHandler.getAccessCode(knowledgeRepo)', error);
         }
       }
     }
 
     try {
-      setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken))
+      setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken));
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken))', error);
     }
   };
 
@@ -191,9 +251,9 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     try {
-      setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken))
+      setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken));
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken))', error);
     }
   };
 
@@ -259,7 +319,7 @@ const App: React.FC = () => {
 
       setLoading(false);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('evaluateMeasure', error);
       setLoading(false);
     }
   };
@@ -292,7 +352,7 @@ const App: React.FC = () => {
       setResults(await dataRequirementsFetch.fetchData(accessToken));
       setLoading(false);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('setResults(await dataRequirementsFetch.fetchData(accessToken));', error);
       setLoading(false);
     }
 
@@ -328,7 +388,7 @@ const App: React.FC = () => {
       setResults(retJSON);
       setLoading(false);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('const retJSON = await collectDataFetch.fetchData(accessToken);', error);
       setLoading(false);
     }
 
@@ -357,7 +417,7 @@ const App: React.FC = () => {
         selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('setResults(await new SubmitDataFetch(selectedReceiving,', error);
       setLoading(false);
     }
 
@@ -375,12 +435,12 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="py-5 text-center col-md-1">
-          <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72" />
+    <div className='container'>
+      <div className='row'>
+        <div className='py-5 text-center col-md-1'>
+          <img className='d-block mx-auto mb-4' src={logo} alt='ICF Logo' width='72' height='72' />
         </div>
-        <div className="py-5 text-center col-md-11">
+        <div className='py-5 text-center col-md-11'>
           <h2>eCQM Testing Tool</h2>
         </div>
       </div>

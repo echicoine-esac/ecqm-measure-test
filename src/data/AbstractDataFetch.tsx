@@ -21,20 +21,23 @@ export abstract class AbstractDataFetch {
         let ret: any;
 
         // Add any token provided to the header
-        const requestOptions = token ? {
-            headers: {'Authorization': 'Bearer ' + token}
-        } : {};
+        const requestOptions = token && token !== '' ? {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token }
+        } : { method: 'GET' };
 
         await fetch(this.getUrl(), requestOptions)
             .then((response) => {
+                if (!response?.ok){
+                    throw new Error (response.statusText);
+                }
                 return response.json()
             })
             .then((data) => {
                 ret = this.processReturnedData(data);
             })
             .catch((error) => {
-                let message = StringUtils.format(Constants.fetchError,
-                    this.getUrl(), this.type, error);
+                let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
                 throw new Error(message);
             })
         return ret;

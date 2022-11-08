@@ -15,10 +15,12 @@ test('given path, should return valid url', () => {
       jest.spyOn(window, 'location', 'get').mockReturnValue(mockedLocation)
 
       HashParamUtils.buildHashParams();
-      expect(HashParamUtils.getSessionData()).toEqual({ stateCode: STATE, generatedStateCode: '', accessCode: CODE })
+      expect(HashParamUtils.getStateCode()).toEqual(STATE)
+      expect(HashParamUtils.getAccessCode()).toEqual(CODE)
 
       HashParamUtils.clearCachedValues()
-      expect(HashParamUtils.getSessionData()).toEqual({ stateCode: '', generatedStateCode: '', accessCode: '' })
+      expect(HashParamUtils.getStateCode()).toEqual('')
+      expect(HashParamUtils.getAccessCode()).toEqual('')
 
       HashParamUtils.removeHashParamsFromUrl();
       jest.spyOn(window, 'location', 'get').mockRestore()
@@ -27,12 +29,12 @@ test('given path, should return valid url', () => {
 
 test('HashParamUtils: build authentication url ', async () => {
       const authenticationUrl = HashParamUtils.buildAuthenticationUrl(testServer);
-      expect(authenticationUrl).toEqual('https://authorization-server.com/authorize/'
+      expect(authenticationUrl).toEqual('http://localhost:8080/4/authorize/'
             + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
-            + '&redirect_uri=https://www.oauth.com/playground/authorization-code.html'
+            + '&redirect_uri=http://localhost:8080/4/'
             + '&scope=photo+offline_access'
             + '&response_type=code'
-            + '&state=' + HashParamUtils.getSessionData().generatedStateCode);
+            + '&state=' + HashParamUtils.getGeneratedStateCode());
 });
 
 test('HashParamUtils: build random string 16 characters in length ', async () => {

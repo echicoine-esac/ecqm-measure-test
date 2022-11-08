@@ -1,4 +1,4 @@
-import { Server } from "../models/Server";
+import { Server } from '../models/Server';
 
 export class Constants {
     public static missingProperty = 'Missing required property: {0}';
@@ -62,10 +62,10 @@ export class Constants {
         },
         {
             id: 'ec2345-4',
-            baseUrl: 'https://authorization-server.com/',
-            authUrl: 'https://authorization-server.com/authorize/',
-            tokenUrl: 'https://authorization-server.com/token/',
-            callbackUrl: 'https://www.oauth.com/playground/authorization-code.html',
+            baseUrl: 'http://localhost:8080/4/',
+            authUrl: 'http://localhost:8080/4/authorize/',
+            tokenUrl: 'http://localhost:8080/4/token/',
+            callbackUrl: 'http://localhost:8080/4/',
             clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
             clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
             scope: 'photo+offline_access'
@@ -73,5 +73,5 @@ export class Constants {
     ];
 
     public static testOauthServer = Constants.serverTestData[3];
+    static submitPostTestBody = `{'prop1': 'val1', 'prop2': 'val2'}`
 }
-

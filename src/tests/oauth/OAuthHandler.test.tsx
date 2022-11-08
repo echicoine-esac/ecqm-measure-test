@@ -1,4 +1,5 @@
 import fetchMock from 'fetch-mock';
+import { Constants } from '../../constants/Constants';
 import { OAuthHandler } from '../../oauth/OAuthHandler';
 import { HashParamUtils } from '../../utils/HashParamUtils';
 
@@ -6,16 +7,7 @@ const mockWindowOpen = jest.fn((url?: string | URL | undefined, target?: string 
       return new Window();
 });
 
-const testServer = {
-      id: '1',
-      baseUrl: 'https://authorization-server.com/',
-      authUrl: 'https://authorization-server.com/authorize/',
-      tokenUrl: 'https://authorization-server.com/token/',
-      callbackUrl: 'https://www.oauth.com/playground/authorization-code.html',
-      clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
-      clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
-      scope: 'photo+offline_access'
-}
+const testServer = Constants.testOauthServer;
 
 beforeEach(() => {
       jest.spyOn(window, 'open').mockImplementation((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
@@ -27,10 +19,10 @@ test('OAuthHandler: calls window.open with expected input', () => {
       //call getAccessCode to trigger process of opening window with speficially crafted authentication url
       OAuthHandler.getAccessCode(testServer);
 
-      expect(mockWindowOpen).toHaveBeenCalledWith('https://authorization-server.com/authorize/'
+      expect(mockWindowOpen).toHaveBeenCalledWith('http://localhost:8080/4/authorize/'
             + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
-            + '&redirect_uri=https://www.oauth.com/playground/authorization-code.html'
-            + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getSessionData().generatedStateCode, '_self', undefined);
+            + '&redirect_uri=http://localhost:8080/4/'
+            + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getGeneratedStateCode(), '_self', undefined);
 });
 
 test('OAuthHandler: expect POST call structure', async () => {
@@ -76,11 +68,11 @@ test('OAuthHandler: fail scenario', async () => {
       try {
             await OAuthHandler.getAccessToken(accessCode, testServer);
       } catch (error: any) {
-            expect(error.message).toEqual('Using https://authorization-server.com/token/'
+            expect(error.message).toEqual('Using http://localhost:8080/4/token/'
                   + '?grant_type=authorization_code'
                   + '&client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
                   + '&client_secret=Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW'
-                  + '&redirect_uri=https://www.oauth.com/playground/authorization-code.html'
+                  + '&redirect_uri=http://localhost:8080/4/'
                   + '&code=foo to retrieve Error: Not Found caused: {2}');
       }
 

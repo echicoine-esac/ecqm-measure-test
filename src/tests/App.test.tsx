@@ -11,23 +11,43 @@ import { MeasureFetch } from '../data/MeasureFetch';
 import { PatientFetch } from '../data/PatientFetch';
 import { SubmitDataFetch } from '../data/SubmitDataFetch';
 import { Measure } from '../models/Measure';
-import { Server } from "../models/Server";
+import { Server } from '../models/Server';
 import { OAuthHandler } from '../oauth/OAuthHandler';
 import jsonTestCollectDataData from '../tests/resources/fetchmock-data-repo.json';
 import jsonTestDataRequirementsData from '../tests/resources/fetchmock-knowledge-repo.json';
 import jsonTestMeasureData from '../tests/resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../tests/resources/fetchmock-patients.json';
 import jsonTestResultsData from '../tests/resources/fetchmock-results.json';
-import { HashParamUtils, SessionCodes } from '../utils/HashParamUtils';
+import { HashParamUtils } from '../utils/HashParamUtils';
 import { ServerUtils } from '../utils/ServerUtils';
 import { StringUtils } from '../utils/StringUtils';
 
+const RESPONSE_ERROR_BAD_REQUEST = 'Error: Bad Request';
+
+const mockWindowOpen = jest.fn((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
+  console.log('mockWindowOpen: ' + url + ', ' + target + ', ' + features);
+  return new Window();
+});
+
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {
+  jest.restoreAllMocks();
+
+  fetchMock.restore();
+
   jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
     return Constants.serverTestData;
   });
+
+  jest.spyOn(window, 'open').mockImplementation((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
+    return mockWindowOpen(url, target, features);
+  });
+
+  HashParamUtils.clearCachedValues();
+
+  sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
 });
+
 
 //SERVER MODAL
 test('success scenarios: create new server button opens modal', async () => {
@@ -127,14 +147,6 @@ test('success scenarios: create new server button opens modal', async () => {
 
 
 test('success scenarios: knowledge repository: server with auth url navigates outward', async () => {
-  const mockWindowOpen = jest.fn((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
-    return new Window();
-  });
-
-  jest.spyOn(window, 'open').mockImplementation((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
-    return mockWindowOpen(url, target, features);
-  });
-
   await act(async () => {
     await render(<App />);
   });
@@ -146,19 +158,22 @@ test('success scenarios: knowledge repository: server with auth url navigates ou
   const measureFetch = new MeasureFetch(Constants.testOauthServer.baseUrl);
   const mockJsonMeasureData = jsonTestMeasureData;
 
-  fetchMock.once(measureFetch.getUrl(),
-    JSON.stringify(mockJsonMeasureData)
-    , { method: 'GET' });
+  const requestOptions = HashParamUtils.getAccessCode() && HashParamUtils.getAccessCode() !== '' ? {
+    headers: { 'Authorization': 'Bearer ' + HashParamUtils.getAccessCode() }
+  } : {};
+
+
   await act(async () => {
+    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), requestOptions);
     //select server, mock list should return:
     await userEvent.selectOptions(serverDropdown, Constants.testOauthServer.baseUrl);
     fetchMock.restore();
   });
 
-  expect(mockWindowOpen).toHaveBeenCalledWith('https://authorization-server.com/authorize/'
+  expect(mockWindowOpen).toHaveBeenCalledWith('http://localhost:8080/4/authorize/'
     + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
-    + '&redirect_uri=https://www.oauth.com/playground/authorization-code.html'
-    + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getSessionData().generatedStateCode, "_self", undefined);
+    + '&redirect_uri=http://localhost:8080/4/'
+    + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getGeneratedStateCode(), '_self', undefined);
 
 });
 
@@ -169,12 +184,14 @@ test('success scenarios: knowledge repository: simulate successful access code r
   });
 
   //override the HashParamUtils.buildHashParams call to manually establish the session data
-  jest.spyOn(HashParamUtils, 'getSessionData').mockImplementation((): SessionCodes => {
-    return {
-      accessCode: '1234567890123456',
-      stateCode: '0987654321',
-      generatedStateCode: '0987654321'
-    };
+  jest.spyOn(HashParamUtils, 'getAccessCode').mockImplementation((): string => {
+    return '1234567890123456';
+  });
+  jest.spyOn(HashParamUtils, 'getStateCode').mockImplementation((): string => {
+    return '0987654321';
+  });
+  jest.spyOn(HashParamUtils, 'getGeneratedStateCode').mockImplementation((): string => {
+    return '0987654321';
   });
 
   //override the HashParamUtils.buildHashParams call to manually establish the session data
@@ -191,23 +208,24 @@ test('success scenarios: knowledge repository: simulate successful access code r
   //get knowledge server dropdown
   const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
 
-  //mock measure list server selection will return 
-  const measureFetch = new MeasureFetch(Constants.testOauthServer.baseUrl);
-  const mockJsonMeasureData = jsonTestMeasureData;
 
-  fetchMock.once(measureFetch.getUrl(),
-    JSON.stringify(mockJsonMeasureData)
-    , {
-      method: 'GET',
-      headers: { 'Authorization': 'Bearer ' + '12345' }
-    });
 
   await act(async () => {
+    //mock measure list server selection will return 
+    const measureFetch = new MeasureFetch(Constants.testOauthServer.baseUrl);
+    const mockJsonMeasureData = jsonTestMeasureData;
+
+    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData),
+      {
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + '12345' }
+      });
+
     //select server with mock authurl
     await userEvent.selectOptions(serverDropdown, Constants.testOauthServer.baseUrl);
-    
+
     expect(mockGetAccessToken).toHaveBeenCalledWith('1234567890123456', Constants.testOauthServer);
-    
+
     fetchMock.restore();
   });
 
@@ -233,14 +251,15 @@ test('success scenarios: knowledge repository', async () => {
   const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
   const measureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
 
-  //mock measure list server selection will return 
-  const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
-  const mockJsonMeasureData = jsonTestMeasureData;
 
-  fetchMock.once(measureFetch.getUrl(),
-    JSON.stringify(mockJsonMeasureData)
-    , { method: 'GET' });
+
+
   await act(async () => {
+    //mock measure list server selection will return 
+    const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+    const mockJsonMeasureData = jsonTestMeasureData;
+
+    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
     //select server, mock list should return:
     await userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
     fetchMock.restore();
@@ -290,13 +309,12 @@ test('fail scenarios: knowledge repository', async () => {
   const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
   const measureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
 
-  //mock measure list server selection will return 
-  const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
-  const mockJsonMeasureData = jsonTestMeasureData;
-  fetchMock.once(measureFetch.getUrl(),
-    JSON.stringify(mockJsonMeasureData)
-    , { method: 'GET' });
+
   await act(async () => {
+    //mock measure list server selection will return 
+    const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+    const mockJsonMeasureData = jsonTestMeasureData;
+    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
     //select server, mock list should return:
     await userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
     fetchMock.restore();
@@ -319,7 +337,8 @@ test('fail scenarios: knowledge repository', async () => {
   });
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    dataRequirementsFetch.getUrl(), FetchType.DATA_REQUIREMENTS, 'FetchError: invalid json response body at http://localhost:8080/1/Measure/BreastCancerScreeningsFHIR/$data-requirements?periodStart=2019-01-01&periodEnd=2019-12-31 reason: Unexpected end of JSON input'));
+    dataRequirementsFetch.getUrl(), FetchType.DATA_REQUIREMENTS,
+    RESPONSE_ERROR_BAD_REQUEST));
 
 });
 
@@ -471,7 +490,8 @@ test('fail scenario: data repository', async () => {
   });
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    collectDataFetch.getUrl(), FetchType.COLLECT_DATA, 'FetchError: invalid json response body at http://localhost:8080/1/Measure/BreastCancerScreeningsFHIR/$collect-data?periodStart=2019-01-01&periodEnd=2019-12-31&subject=BreastCancerScreeningsFHIR reason: Unexpected end of JSON input'));
+    collectDataFetch.getUrl(), FetchType.COLLECT_DATA,
+    RESPONSE_ERROR_BAD_REQUEST));
 
 });
 
@@ -509,13 +529,11 @@ test('success scenarios: receiving system', async () => {
     await userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
   });
 
-  //mock measure list server selection will return 
-  const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
-  const mockJsonMeasureData = jsonTestMeasureData;
-  fetchMock.once(measureFetch.getUrl(),
-    JSON.stringify(mockJsonMeasureData)
-    , { method: 'GET' });
   await act(async () => {
+    //mock measure list server selection will return 
+    const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+    const mockJsonMeasureData = jsonTestMeasureData;
+    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
     //select server, mock list should return:
     await userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
     fetchMock.restore();
@@ -669,7 +687,7 @@ test('success scenarios: receiving system - submit data', async () => {
     fetchMock.once(submitDataFetch.getUrl(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: '{"prop1": "val1", "prop2": "val2"}',
+      body: Constants.submitPostTestBody,
     });
     const submitButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
     await fireEvent.click(submitButton);
@@ -753,6 +771,7 @@ test('fail scenarios: receiving system - submit data', async () => {
       startDate,
       endDate,
       mockPatientList[0]);
+
     fetchMock.once(collectDataFetch.getUrl(),
       JSON.stringify(mockJsonCollectDataData)
       , { method: 'GET' });
@@ -781,7 +800,6 @@ test('fail scenarios: receiving system - submit data', async () => {
 
 test('fail scenario: receiving system', async () => {
   const dataServers: Server[] = Constants.serverTestData;
-
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
   const mockPatientList: string[] = await buildPatientData(dataServers[0].baseUrl);
@@ -814,16 +832,16 @@ test('fail scenario: receiving system', async () => {
     await userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
   });
 
-
-  //mock measure list server selection will return 
-  const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
-  const mockJsonMeasureData = jsonTestMeasureData;
-  fetchMock.once(measureFetch.getUrl(),
-    JSON.stringify(mockJsonMeasureData)
-    , { method: 'GET' });
   await act(async () => {
+    //mock measure list server selection will return 
+    const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+    const mockJsonMeasureData = jsonTestMeasureData;
+
+    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
+
     //select server, mock list should return:
     await userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
+
     fetchMock.restore();
   });
 
@@ -831,12 +849,14 @@ test('fail scenario: receiving system', async () => {
   await act(async () => {
     const patientFetch = new PatientFetch(dataServers[0].baseUrl);
     const mockJsonPatientData = jsonTestPatientsData;
-    fetchMock.once(patientFetch.getUrl(),
-      JSON.stringify(mockJsonPatientData)
-      , { method: 'GET' });
+
+    fetchMock.once(patientFetch.getUrl(), JSON.stringify(mockJsonPatientData), { method: 'GET' });
+
     await userEvent.selectOptions(dataRepoServerDropdown, dataServers[0].baseUrl);
+
+    fetchMock.restore();
   });
-  fetchMock.restore();
+
 
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
   userEvent.selectOptions(patientDropdown, mockPatientList[0]);
@@ -862,10 +882,7 @@ test('fail scenario: receiving system', async () => {
 
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    evaluateDataFetch.getUrl(), FetchType.EVALUATE_MEASURE, 'FetchError: invalid json response body at http://localhost:8080/1/Measure/BreastCancerScreeningsFHIR/$evaluate-measure?subject=BreastCancerScreeningsFHIR&periodStart=2019-01-01&periodEnd=2019-12-31 reason: Unexpected end of JSON input'));
-
-
-
+    evaluateDataFetch.getUrl(), FetchType.EVALUATE_MEASURE, RESPONSE_ERROR_BAD_REQUEST));
 });
 
 test('fail scenarios: fetchMeasure', async () => {
@@ -890,7 +907,7 @@ test('fail scenarios: fetchMeasure', async () => {
   });
 
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    measureFetch.getUrl(), FetchType.MEASURE, 'FetchError: invalid json response body at http://localhost:8080/1/Measure?_count=200 reason: Unexpected end of JSON input'));
+    measureFetch.getUrl(), FetchType.MEASURE, RESPONSE_ERROR_BAD_REQUEST));
 
 });
 
@@ -939,7 +956,7 @@ test('fail scenarios: fetchPatient', async () => {
   fetchMock.restore();
   const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
   expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
-    patientFetch.getUrl(), FetchType.PATIENT, 'FetchError: invalid json response body at http://localhost:8080/1/Patient?_count=200 reason: Unexpected end of JSON input'));
+    patientFetch.getUrl(), FetchType.PATIENT, RESPONSE_ERROR_BAD_REQUEST));
 });
 
 
@@ -962,20 +979,21 @@ test('error scenarios: knowledge repository', async () => {
   //get knowledge server dropdown
   const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
 
-  //mock measure list server selection will return 
-  const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
-  const mockJsonMeasureData = jsonTestMeasureData;
-  fetchMock.once(measureFetch.getUrl(),
-    JSON.stringify(mockJsonMeasureData)
-    , { method: 'GET' });
-  //select server, mock list should return:
   await act(async () => {
+    //mock measure list server selection will return 
+    const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+    const mockJsonMeasureData = jsonTestMeasureData;
+
+    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
+    //select server, mock list should return:
     await userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
+
+    fetchMock.restore();
   });
-  fetchMock.restore();
 
   //check results for error:
   fireEvent.click(getDataRequirementsButton);
+
   expect(resultsTextField.value).toEqual(Constants.error_selectMeasureDR);
 
 });

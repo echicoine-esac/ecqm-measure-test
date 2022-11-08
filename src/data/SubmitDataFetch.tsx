@@ -1,7 +1,7 @@
 import { Constants } from '../constants/Constants';
 import { StringUtils } from '../utils/StringUtils';
-import {Server} from "../models/Server";
-import {AbstractDataFetch, FetchType} from "./AbstractDataFetch";
+import { Server } from '../models/Server';
+import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
 export class SubmitDataFetch extends AbstractDataFetch {
     type: FetchType;
@@ -43,19 +43,27 @@ export class SubmitDataFetch extends AbstractDataFetch {
     }
 
     submitData = async (token: string): Promise<string> => {
+        const requestOptionsWithToken = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/fhir+json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: this.collectedData
+        };
+        
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/fhir+json',
-                "Authorization": `Bearer ${token}`},
+            headers: { 'Content-Type': 'application/fhir+json' },
             body: this.collectedData
         };
 
         let ret = '';
 
         // Call the FHIR server to submit the data
-        await fetch(this.getUrl(), requestOptions)
+        await fetch(this.getUrl(), (token && token !== '' ? requestOptionsWithToken : requestOptions))
             .then((response) => {
-                if (response.ok === false) {
+                if (!response.ok) {
                     throw new Error(response.statusText);
                 }
                 return response.json()
@@ -64,8 +72,8 @@ export class SubmitDataFetch extends AbstractDataFetch {
                 ret = this.processReturnedData(data);
             })
             .catch((error) => {
-                let message = StringUtils.format(Constants.fetchError,
-                    this.getUrl(), this.type, error);
+                let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
+                // console.log('OAuthHandler: ' + message, error);
                 throw new Error(message);
             });
         return ret;

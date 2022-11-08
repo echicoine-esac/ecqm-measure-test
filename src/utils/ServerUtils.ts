@@ -1,7 +1,7 @@
 import { Amplify, API } from 'aws-amplify';
-import { listServers } from "../graphql/queries";
-import { Server } from "../models/Server";
-import awsExports from "../aws-exports";
+import { listServers } from '../graphql/queries';
+import { Server } from '../models/Server';
+import awsExports from '../aws-exports';
 import { CreateServersInput } from '../API';
 import { createServers } from '../graphql/mutations';
 
@@ -24,10 +24,13 @@ export class ServerUtils {
         } catch (err) {
             const error = err as any;
             if (error?.errors) {
-                throw new Error ("Error fetching servers: \n" + error.errors);
+                throw new Error ('Error fetching servers: \n' + error.errors);
             }
         }
 
+
+        return ServerUtils.listOfServers;
+        
         // let s = {
         //     id: '1',
         //     baseUrl: 'https://authorization-server.com/',
@@ -40,7 +43,7 @@ export class ServerUtils {
         // }
         // let sList = [s];
 
-        return ServerUtils.listOfServers;
+        // return sList;
     };
 
     private static refreshServerList = async (): Promise<Array<Server>> => {
@@ -71,11 +74,11 @@ export class ServerUtils {
             if (scope !== '') {
                 serverInput.scope = scope;
             }
-            await API.graphql({ query: createServers, authMode: "API_KEY", variables: { input: serverInput } })
+            await API.graphql({ query: createServers, authMode: 'API_KEY', variables: { input: serverInput } })
         } catch (err) {
             const error = err as any;
             if (error?.errors) {
-                throw new Error("Error creating server: \n" + error.errors);
+                throw new Error('Error creating server: \n' + error.errors);
             }
 
         }
@@ -86,13 +89,6 @@ export class ServerUtils {
 
     public static clearSelectedServer () {
         ServerUtils.selectedServerId = '';
-    }
-    /**
-     * Stores selectedServer for accessCode workflow
-     * @param server 
-     */
-    public static storeSelectedServer(server: Server) {
-        ServerUtils.selectedServerId = server.id;
     }
 
     /**

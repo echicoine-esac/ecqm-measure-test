@@ -1,9 +1,8 @@
-import React from 'react';
-import {Button, OverlayTrigger, Spinner, Tooltip} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
+import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { Measure } from '../models/Measure';
-import { Server } from "../models/Server";
-import { Constants } from '../constants/Constants';
+import { Server } from '../models/Server';
 
 // Props for KnowledgeRepository
 interface props {
@@ -75,7 +74,7 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                         <OverlayTrigger placement={'top'} overlay={
                             <Tooltip>Add an Endpoint</Tooltip>
                             }>
-                          <Button data-testid="knowledge-repo-server-add-button" variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
+                          <Button data-testid='knowledge-repo-server-add-button' variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
                         </OverlayTrigger>
                     </div>
                     <div className='col-md-6 order-md-3'>

@@ -2,7 +2,7 @@ import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
 import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
 import { MeasureData } from '../../models/MeasureData';
-import { Server } from "../../models/Server";
+import { Server } from '../../models/Server';
 import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestResultsData from '../resources/fetchmock-results.json';
