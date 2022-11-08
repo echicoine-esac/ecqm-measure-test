@@ -45,9 +45,10 @@ export class HashParamUtils {
     }
 
     static buildHashParams() {
-        let generatedStateCode = sessionStorage.getItem('generatedStateCode')?.toString().replace(/\"/g, '');
+        //get generateStateCode from sessionStorage, set it locally, erase it from session storage to avoid overwrite
+        let generatedStateCode = sessionStorage.getItem('generatedStateCode');
         if (generatedStateCode) {
-            HashParamUtils.generatedStateCode = generatedStateCode;
+            HashParamUtils.generatedStateCode = JSON.parse(generatedStateCode);
             sessionStorage.setItem('generatedStateCode', JSON.stringify(''));
         }
         const params: string[] = new URLSearchParams(window.location.search).toString().split('&');

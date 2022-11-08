@@ -145,7 +145,7 @@ test('success scenarios: create new server button opens modal', async () => {
 });
 
 
-test('success scenarios: knowledge repository: server with auth url navigates outward', async () => {
+test('success scenarios: knowledge repository: server with auth url navigates outward, selected server is stored in session storage', async () => {
   await act(async () => {
     await render(<App />);
   });
@@ -173,6 +173,31 @@ test('success scenarios: knowledge repository: server with auth url navigates ou
     + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
     + '&redirect_uri=http://localhost:8080/4/'
     + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getGeneratedStateCode(), '_self', undefined);
+
+  const expectedStoredServer = {
+    id: 'ec2345-4',
+    baseUrl: 'http://localhost:8080/4/',
+    authUrl: 'http://localhost:8080/4/authorize/',
+    tokenUrl: 'http://localhost:8080/4/token/',
+    callbackUrl: 'http://localhost:8080/4/',
+    clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
+    clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
+    scope: 'photo+offline_access'
+  } as Server;
+
+  let selectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
+  if (selectedKnowledgeRepo) {
+    expect(JSON.parse(selectedKnowledgeRepo)).toEqual(expectedStoredServer);
+  }else{
+    fail('selectedKnowledgeRepo not stored in sessionStorage as expected!');
+  }
+  
+  let generatedStateCode = sessionStorage.getItem('generatedStateCode');
+  if (generatedStateCode) {
+    expect(JSON.parse(generatedStateCode)).toEqual(HashParamUtils.getGeneratedStateCode());
+  }else{
+    fail('generatedStateCode not stored in sessionStorage as expected!');
+  }
 
 });
 
