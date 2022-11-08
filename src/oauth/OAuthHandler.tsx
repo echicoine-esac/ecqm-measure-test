@@ -20,8 +20,21 @@ export class OAuthHandler {
         // console.log('AuthURL is ' + this.knowledgeRepo.authUrl);
         const authenticationUrl = HashParamUtils.buildAuthenticationUrl(server);
 
-        // console.log('Opening window with ' + authenticationUrl);
-        window.open(authenticationUrl, '_self');
+        //check if url is even reachable:
+
+        const unreachable = 'The target URL is unreachable: ';
+
+        try {
+            const res = (await fetch(server.baseUrl, { method: 'HEAD' })).ok;
+            if (res) {
+                // console.log('Opening window with ' + authenticationUrl);
+                window.open(authenticationUrl, '_self');
+            } else {
+               throw new Error();
+            }
+        } catch (error: any) {
+            throw new Error(unreachable + server.baseUrl);
+        }
     }
 
     /**
@@ -42,11 +55,11 @@ export class OAuthHandler {
         let accessToken = '';
 
         const tokenUrl: string = server?.tokenUrl
-        + '?grant_type=authorization_code'
-        + '&client_id=' + server?.clientID
-        + '&client_secret=' + server?.clientSecret
-        + '&redirect_uri=' + server?.callbackUrl
-        + '&code=' + accessCode;
+            + '?grant_type=authorization_code'
+            + '&client_id=' + server?.clientID
+            + '&client_secret=' + server?.clientSecret
+            + '&redirect_uri=' + server?.callbackUrl
+            + '&code=' + accessCode;
 
         // console.log('Requesting token with ' + server.tokenUrl);
         const formData = OAuthHandler.buildFormData(accessCode, server);
