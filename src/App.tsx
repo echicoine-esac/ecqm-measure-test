@@ -162,7 +162,6 @@ const App: React.FC = () => {
     if (!knowledgeRepo || !knowledgeRepo.hasOwnProperty('id')) {
       setSelectedKnowledgeRepo(knowledgeRepo);
       setShowPopulations(false);
-      ServerUtils.clearSelectedServer();
       HashParamUtils.clearCachedValues();
       return;
     }

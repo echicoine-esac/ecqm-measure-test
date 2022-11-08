@@ -8,7 +8,6 @@ import { createServers } from '../graphql/mutations';
 Amplify.configure(awsExports);
 
 export class ServerUtils {
-    private static selectedServerId: string = '';
     private static listOfServers: Array<Server>;
 
     // Handle server queries and mutations
@@ -87,15 +86,5 @@ export class ServerUtils {
         await ServerUtils.refreshServerList();
     }
 
-    public static clearSelectedServer () {
-        ServerUtils.selectedServerId = '';
-    }
-
-    /**
-     * returns selectedServer for accessCode workflow
-     */
-    public static getSelectedServer(): string {
-        return ServerUtils.selectedServerId;
-    }
 }
 
