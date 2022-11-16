@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, OverlayTrigger, Spinner, Tooltip} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Server} from "../models/Server";
+import {Server} from '../models/Server';
 
 // Props for ReceivingSystem
 interface props {

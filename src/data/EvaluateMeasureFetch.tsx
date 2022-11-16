@@ -5,7 +5,7 @@ import { MeasureReportGroup } from '../models/MeasureReportGroup';
 import { Population } from '../models/Population';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
-import {Server} from "../models/Server";
+import {Server} from '../models/Server';
 
 export class EvaluateMeasureFetch extends AbstractDataFetch {
     type: FetchType;
@@ -64,7 +64,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         const jsonData = data;
 
         // Handle the error condition where we get an OperationOutcome response
-        if (jsonData.resourceType == 'OperationOutcome') {
+        if (jsonData.resourceType === 'OperationOutcome') {
             return jsonData;
         }
 

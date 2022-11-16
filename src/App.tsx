@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import DataRepository from "./components/DataRepository";
+import DataRepository from './components/DataRepository';
 import KnowledgeRepository from './components/KnowledgeRepository';
-import LoginModal from "./components/LoginModal";
-import Populations from "./components/Populations";
+import LoginModal from './components/LoginModal';
+import Populations from './components/Populations';
 import ReceivingSystem from './components/ReceivingSystem';
-import ReportingPeriod from "./components/ReportingPeriod";
-import Results from "./components/Results";
-import ServerModal from "./components/ServerModal";
+import ReportingPeriod from './components/ReportingPeriod';
+import Results from './components/Results';
+import ServerModal from './components/ServerModal';
 import { Constants } from './constants/Constants';
 import { CollectDataFetch } from './data/CollectDataFetch';
 import { DataRequirementsFetch } from './data/DataRequirementsFetch';
@@ -17,10 +17,10 @@ import { PatientFetch } from './data/PatientFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
 import logo from './icf_logo.png';
 import { Measure } from './models/Measure';
-import { Server } from "./models/Server";
-import { getCodeParam, removeCodeParam } from "./utils/hashUtils";
+import { Server } from './models/Server';
+import { OAuthHandler } from './oauth/OAuthHandler';
+import { HashParamUtils } from './utils/HashParamUtils';
 import { ServerUtils } from './utils/ServerUtils';
-import { StringUtils } from './utils/StringUtils';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -97,9 +97,19 @@ const App: React.FC = () => {
 
   // Handle OAuth redirect
   const [accessToken, setAccessToken] = useState<string>('');
-  const [accessCode] = useState<string>(getCodeParam());
+
+  //tells us when app is busy loading and not to disrupt variable assignment
+
+  const reportErrorToUser = ((source: string, err: any) => {
+    const message = err.message;
+    //console.log(source, err);
+    setResults(message);
+  });
+ 
 
   useEffect(() => {
+    HashParamUtils.buildHashParams();
+
     // Get selected server from session since we will be redirected back to here
     let selectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
     if (selectedKnowledgeRepo) {
@@ -115,14 +125,19 @@ const App: React.FC = () => {
     }
 
     // Remove the code from the URL
-    removeCodeParam();
+    HashParamUtils.removeCodeParam();
+
+    // console.log('HashParamUtils.getAccessCode' + ': ' + HashParamUtils.getAccessCode());
+    // console.log('HashParamUtils.getGeneratedStateCode' + ': ' + HashParamUtils.getGeneratedStateCode());
+    // console.log('HashParamUtils.getStateCode' + ': ' + HashParamUtils.getStateCode());
+    
   }, []);
 
   useEffect(() => {
     // When a server is selected store it in the session
-    if (selectedKnowledgeRepo.baseUrl !== '') {
+    if (selectedKnowledgeRepo?.baseUrl !== '') {
       sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(selectedKnowledgeRepo));
-      console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
+      //console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
     }
   }, [selectedKnowledgeRepo]);
 
@@ -132,75 +147,58 @@ const App: React.FC = () => {
 
   // Uses the GraphQL API to create a server
   const createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
-                              clientSecret: string, scope: string) => {
+    clientSecret: string, scope: string) => {
     try {
       await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('createServer', error);
     }
   }
 
+
   // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
+    setLoading(true);
+    if (!knowledgeRepo || !knowledgeRepo.hasOwnProperty('id')) {
+      setSelectedKnowledgeRepo(knowledgeRepo);
+      setShowPopulations(false);
+      HashParamUtils.clearCachedValues();
+      setLoading(false);
+      return;
+    }
+    // console.log('fetchMeasures, accessCode: ' + HashParamUtils.getAccessCode());
+
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
 
-    // If the selected server requires OAuth then call the Auth URL to get the code if we do not have it
-    if (accessCode === '' && knowledgeRepo.authUrl && knowledgeRepo.authUrl !== '') {
-      // Open a window to the authentication URL to allow them to login and allow scopes
-      const authenticationUrl: string = knowledgeRepo.authUrl + '?client_id=' + knowledgeRepo.clientID +
-          '&redirect_uri=' + knowledgeRepo.callbackUrl + '&scope=' + knowledgeRepo.scope + '&response_type=code';
-      await window.open(authenticationUrl, '_self');
-    }
-
-    // If the selected server requires OAuth, and we have the code then request the token
-    console.log('Access code is ' + accessCode);
-    if (accessCode && accessCode !== '') {
-      console.log('Requesting token with ' + knowledgeRepo.tokenUrl);
-
-      const formData = new FormData();
-      formData.append('code', accessCode);
-      formData.append('client_id', knowledgeRepo.clientID);
-      formData.append('client_secret', knowledgeRepo.clientSecret);
-      formData.append('redirect_uri', knowledgeRepo.callbackUrl);
-      formData.append('grant_type', 'authorization_code');
-
-      // POST to token URL
-      const requestOptions = {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: formData
-      };
-
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ',' + pair[1]);
+    // await new Promise(resolve => setTimeout(resolve, 2500));
+    if (HashParamUtils.getAccessCode() && HashParamUtils.getAccessCode() !== '') {
+      try {
+        setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));
+      } catch (error: any) {
+        //reportErrorToUser('setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));', error);
+        setAccessToken('');
       }
 
-      await fetch(knowledgeRepo.tokenUrl, requestOptions)
-          .then((response) => {
-            if (response.ok === false) {
-              console.log(response.json());
-              throw Error(response.statusText);
-            }
-            return response.json()
-          })
-          .then((data) => {
-            console.log('Got token response');
-            setAccessToken(data.access_token);
-            console.log('access token is ' + accessToken);
-          })
-          .catch((error) => {
-            let message = StringUtils.format(Constants.fetchError,
-                knowledgeRepo.tokenUrl, error);
-            throw new Error(message);
-          });
-    }
+    } else {
+      if (knowledgeRepo?.authUrl && knowledgeRepo?.authUrl !== '') {
 
-    try {
-      setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken))
-    } catch (error: any) {
-      setResults(error.message);
+        //initiate authentication sequence 
+        try {
+          await OAuthHandler.getAccessCode(knowledgeRepo);
+        } catch (error: any) {
+          setLoading(false);
+          //reportErrorToUser('await OAuthHandler.getAccessCode(knowledgeRepo)', error);
+          return;
+        }
+      }
     }
+    try {
+      setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken));
+    } catch (error: any) {
+      reportErrorToUser('setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken))', error);
+    }
+    setLoading(false);
   };
 
   // Function for retrieving the patients from the selected server
@@ -209,9 +207,9 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     try {
-      setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken))
+      setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken));
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken))', error);
     }
   };
 
@@ -276,7 +274,7 @@ const App: React.FC = () => {
 
       setLoading(false);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('evaluateMeasure', error);
       setLoading(false);
     }
   };
@@ -309,7 +307,7 @@ const App: React.FC = () => {
       setResults(await dataRequirementsFetch.fetchData(accessToken));
       setLoading(false);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('setResults(await dataRequirementsFetch.fetchData(accessToken));', error);
       setLoading(false);
     }
 
@@ -345,7 +343,7 @@ const App: React.FC = () => {
       setResults(retJSON);
       setLoading(false);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('const retJSON = await collectDataFetch.fetchData(accessToken);', error);
       setLoading(false);
     }
 
@@ -374,7 +372,7 @@ const App: React.FC = () => {
           selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
-      setResults(error.message);
+      reportErrorToUser('setResults(await new SubmitDataFetch(selectedReceiving,', error);
       setLoading(false);
     }
 

@@ -1,7 +1,7 @@
 import { Constants } from '../constants/Constants';
 import { StringUtils } from '../utils/StringUtils';
-import {Server} from "../models/Server";
-import {AbstractDataFetch, FetchType} from "./AbstractDataFetch";
+import { Server } from '../models/Server';
+import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
 export class SubmitDataFetch extends AbstractDataFetch {
     type: FetchType;
@@ -53,19 +53,21 @@ export class SubmitDataFetch extends AbstractDataFetch {
         let ret = '';
 
         // Call the FHIR server to submit the data
+        let responseStatusText = '';
+
         await fetch(this.getUrl(), requestOptions)
             .then((response) => {
-                if (response.ok === false) {
-                    throw Error(response.statusText);
-                }
+                responseStatusText = response?.statusText;
                 return response.json()
             })
             .then((data) => {
                 ret = this.processReturnedData(data);
             })
             .catch((error) => {
-                let message = StringUtils.format(Constants.fetchError,
-                    this.getUrl(), this.type, error);
+                let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
+                if (responseStatusText.length > 0 && responseStatusText !== 'OK' ){
+                    message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, responseStatusText);
+                }
                 throw new Error(message);
             });
         return ret;

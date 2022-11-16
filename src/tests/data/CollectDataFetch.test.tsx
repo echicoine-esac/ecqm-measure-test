@@ -1,11 +1,10 @@
 import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
 import { CollectDataFetch } from '../../data/CollectDataFetch';
-import { Server } from "../../models/Server";
+import { Server } from '../../models/Server';
 import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
-
 
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {

@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
 import { SubmitDataFetch } from '../../data/SubmitDataFetch';
-import { Server } from "../../models/Server";
+import { Server } from '../../models/Server';
 import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 
@@ -44,12 +44,11 @@ test('fetchData and processData override', async () => {
 
 test('submit data mock', async () => {
     const dataServer: Server = Constants.serverTestData[0];
-
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: '{"prop1": "val1", "prop2": "val2"}',
+        body: Constants.submitPostTestBody,
     });
 
     expect(await submitDataFetch.submitData('')).toEqual(Constants.dataSubmitted);
@@ -72,7 +71,7 @@ test('submit data mock error 400', async () => {
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Bad Request');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Bad Request');
 
 });
 
@@ -91,7 +90,7 @@ test('submit data mock error 500', async () => {
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Error: Internal Server Error');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Internal Server Error');
 
 });
 

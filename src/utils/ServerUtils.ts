@@ -1,14 +1,13 @@
 import { Amplify, API } from 'aws-amplify';
-import { listServers } from "../graphql/queries";
-import { Server } from "../models/Server";
-import awsExports from "../aws-exports";
+import { listServers } from '../graphql/queries';
+import { Server } from '../models/Server';
+import awsExports from '../aws-exports';
 import { CreateServersInput } from '../API';
 import { createServers } from '../graphql/mutations';
 
 Amplify.configure(awsExports);
 
 export class ServerUtils {
-
     private static listOfServers: Array<Server>;
 
     // Handle server queries and mutations
@@ -24,11 +23,26 @@ export class ServerUtils {
         } catch (err) {
             const error = err as any;
             if (error?.errors) {
-                throw new Error ("Error fetching servers: \n" + error.errors);
+                throw new Error ('Error fetching servers: \n' + error.errors);
             }
         }
 
+
         return ServerUtils.listOfServers;
+        
+        // let s = {
+        //     id: '1',
+        //     baseUrl: 'https://authorization-server.com/',
+        //     authUrl: 'https://authorization-server.com/authorize/',
+        //     tokenUrl: 'https://authorization-server.com/token/',
+        //     callbackUrl: 'https://www.oauth.com/playground/authorization-code.html',
+        //     clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
+        //     clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
+        //     scope: 'photo+offline_access'
+        // }
+        // let sList = [s];
+
+        // return sList;
     };
 
     private static refreshServerList = async (): Promise<Array<Server>> => {
@@ -59,11 +73,11 @@ export class ServerUtils {
             if (scope !== '') {
                 serverInput.scope = scope;
             }
-            await API.graphql({ query: createServers, authMode: "API_KEY", variables: { input: serverInput } })
-        } catch (err) { 
+            await API.graphql({ query: createServers, authMode: 'API_KEY', variables: { input: serverInput } })
+        } catch (err) {
             const error = err as any;
             if (error?.errors) {
-                throw new Error ("Error creating server: \n" + error.errors);
+                throw new Error('Error creating server: \n' + error.errors);
             }
 
         }
@@ -71,5 +85,6 @@ export class ServerUtils {
         // If we added a server then we should fetch the list again
         await ServerUtils.refreshServerList();
     }
+
 }
 

@@ -1,7 +1,7 @@
 import { Constants } from '../constants/Constants';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
-import {Server} from "../models/Server";
+import {Server} from '../models/Server';
 
 export class CollectDataFetch extends AbstractDataFetch {
     type: FetchType;
