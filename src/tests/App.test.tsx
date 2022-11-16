@@ -22,7 +22,7 @@ import { HashParamUtils } from '../utils/HashParamUtils';
 import { ServerUtils } from '../utils/ServerUtils';
 import { StringUtils } from '../utils/StringUtils';
 
-const RESPONSE_ERROR_BAD_REQUEST = 'Error: Bad Request';
+const RESPONSE_ERROR_BAD_REQUEST = 'Bad Request';
 
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {

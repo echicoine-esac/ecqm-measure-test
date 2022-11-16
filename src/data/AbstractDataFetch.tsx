@@ -26,19 +26,35 @@ export abstract class AbstractDataFetch {
             headers: { 'Authorization': 'Bearer ' + token }
         } : { method: 'GET' };
 
+
+        let responseStatusText = '';
+
         await fetch(this.getUrl(), requestOptions)
             .then((response) => {
-                return response.json()
+                responseStatusText = response?.statusText;
+                return response.json();
             })
             .then((data) => {
                 ret = this.processReturnedData(data);
             })
             .catch((error) => {
                 let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
+                if (responseStatusText.length > 0 && responseStatusText !== 'OK' ){
+                    message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, responseStatusText);
+                }
                 throw new Error(message);
             })
         return ret;
     };
+
+    isJsonString = (data: any): boolean => {
+        try {
+            JSON.stringify(data, undefined, 2);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
 }
 
 

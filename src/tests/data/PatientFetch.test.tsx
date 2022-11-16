@@ -60,10 +60,9 @@ test('get patients mock return error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using foo/Patient?_count=200 to retrieve Patients caused: Error: Bad Request');
+    expect(errorCatch).toEqual('Using foo/Patient?_count=200 to retrieve Patients caused: Bad Request');
 
     fetchMock.restore();
-
 });
 
 test('test urlformat', async () => {

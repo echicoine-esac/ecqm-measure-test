@@ -61,11 +61,11 @@ export class SubmitDataFetch extends AbstractDataFetch {
         let ret = '';
 
         // Call the FHIR server to submit the data
+        let responseStatusText = '';
+
         await fetch(this.getUrl(), (token && token !== '' ? requestOptionsWithToken : requestOptions))
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error(response.statusText);
-                }
+                responseStatusText = response?.statusText;
                 return response.json()
             })
             .then((data) => {
@@ -73,7 +73,9 @@ export class SubmitDataFetch extends AbstractDataFetch {
             })
             .catch((error) => {
                 let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
-                // console.log('OAuthHandler: ' + message, error);
+                if (responseStatusText.length > 0 && responseStatusText !== 'OK' ){
+                    message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, responseStatusText);
+                }
                 throw new Error(message);
             });
         return ret;
