@@ -40,7 +40,7 @@ test('OAuthHandler: fail scenario', async () => {
       try {
             await OAuthHandler.getAccessToken('accessCode', testServer);
       } catch (error: any) {
-            expect(error.message).toEqual('Using http://localhost:8080/4/token/ to retrieve Error: Not Found caused: {2}');
+            expect(error.message).toEqual('Using http://localhost:8080/4/token/ to retrieve Access Token caused: Not Found');
       }
       fetchMock.restore();
 });

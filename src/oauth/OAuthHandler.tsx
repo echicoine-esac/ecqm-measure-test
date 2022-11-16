@@ -19,10 +19,10 @@ export class OAuthHandler {
         // console.log(this.knowledgeRepo);
         // console.log('AuthURL is ' + this.knowledgeRepo.authUrl);
         const authenticationUrl = HashParamUtils.buildAuthenticationUrl(server);
-
+        window.open(authenticationUrl, '_self');
         //check if url is even reachable:
         try {
-            const res = (await fetch(authenticationUrl, { method: 'HEAD' })).ok;
+            const res = (await fetch(authenticationUrl, { method: 'HEAD', mode: 'no-cors' })).ok;
             if (res) {
                 // console.log('Opening window with ' + authenticationUrl);
                 window.open(authenticationUrl, '_self');
@@ -50,11 +50,7 @@ export class OAuthHandler {
      */
     public static getAccessToken = async (accessCode: string, server: Server): Promise<string> => {
         let accessToken = '';
-
         const tokenUrl: string = server?.tokenUrl;
-
-        console.log('tokenUrl: ', tokenUrl);
-
         // console.log('Requesting token with ' + server.tokenUrl);
         const formData = OAuthHandler.buildFormData(accessCode, server);
 
@@ -80,9 +76,9 @@ export class OAuthHandler {
                 accessToken = data.access_token;
             })
             .catch((error) => {
-                let message = StringUtils.format(Constants.fetchError, tokenUrl, error);
+                let message = StringUtils.format(Constants.fetchError, tokenUrl, 'Access Token', error);
                 if (responseStatusText.length > 0 && responseStatusText !== 'OK') {
-                    message = StringUtils.format(Constants.fetchError, tokenUrl, responseStatusText);
+                    message = StringUtils.format(Constants.fetchError, tokenUrl, 'Access Token', responseStatusText);
                 }
                 throw new Error(message);
             });
