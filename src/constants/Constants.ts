@@ -2,7 +2,7 @@ import { Server } from '../models/Server';
 
 export class Constants {
     public static missingProperty = 'Missing required property: {0}';
-
+    public static unreachableURL = 'The target URL is unreachable: '
     public static fetchError = 'Using {0} to retrieve {1} caused: {2}';
     public static error_receivingSystemServer = 'Please select a Receiving System server to use';
     public static error_selectTestServer = 'Please select a Test Server to use';

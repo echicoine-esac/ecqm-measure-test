@@ -43,18 +43,10 @@ export class SubmitDataFetch extends AbstractDataFetch {
     }
 
     submitData = async (token: string): Promise<string> => {
-        const requestOptionsWithToken = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/fhir+json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: this.collectedData
-        };
-        
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/fhir+json' },
+            headers: { 'Content-Type': 'application/fhir+json',
+                "Authorization": `Bearer ${token}`},
             body: this.collectedData
         };
 
@@ -63,7 +55,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
         // Call the FHIR server to submit the data
         let responseStatusText = '';
 
-        await fetch(this.getUrl(), (token && token !== '' ? requestOptionsWithToken : requestOptions))
+        await fetch(this.getUrl(), requestOptions)
             .then((response) => {
                 responseStatusText = response?.statusText;
                 return response.json()

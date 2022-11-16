@@ -176,9 +176,8 @@ const App: React.FC = () => {
       try {
         setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));
       } catch (error: any) {
-        setLoading(false);
-        // console.log(error.message, error);
-        reportErrorToUser('setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));', error);
+        //reportErrorToUser('setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));', error);
+        setAccessToken('');
       }
 
     } else {
@@ -188,10 +187,8 @@ const App: React.FC = () => {
         try {
           await OAuthHandler.getAccessCode(knowledgeRepo);
         } catch (error: any) {
-
           setLoading(false);
-          // console.log(error.message, error);
-          reportErrorToUser('await OAuthHandler.getAccessCode(knowledgeRepo)', error);
+          //reportErrorToUser('await OAuthHandler.getAccessCode(knowledgeRepo)', error);
           return;
         }
       }
@@ -199,7 +196,6 @@ const App: React.FC = () => {
     try {
       setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken));
     } catch (error: any) {
-      setLoading(false);
       reportErrorToUser('setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken))', error);
     }
     setLoading(false);

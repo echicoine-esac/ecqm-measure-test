@@ -21,19 +21,16 @@ export class OAuthHandler {
         const authenticationUrl = HashParamUtils.buildAuthenticationUrl(server);
 
         //check if url is even reachable:
-
-        const unreachable = 'The target URL is unreachable: ';
-
         try {
             const res = (await fetch(authenticationUrl, { method: 'HEAD' })).ok;
             if (res) {
                 // console.log('Opening window with ' + authenticationUrl);
                 window.open(authenticationUrl, '_self');
             } else {
-               throw new Error();
+                throw new Error();
             }
         } catch (error: any) {
-            throw new Error(unreachable + server.baseUrl);
+            throw new Error(Constants.unreachableURL + server.baseUrl);
         }
     }
 
@@ -56,6 +53,8 @@ export class OAuthHandler {
 
         const tokenUrl: string = server?.tokenUrl;
 
+        console.log('tokenUrl: ', tokenUrl);
+
         // console.log('Requesting token with ' + server.tokenUrl);
         const formData = OAuthHandler.buildFormData(accessCode, server);
 
@@ -70,11 +69,11 @@ export class OAuthHandler {
         //     console.log(pair[0] + ',' + pair[1]);
         // }
 
+        let responseStatusText = '';
+
         await fetch(tokenUrl, requestOptions)
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error(response.statusText);
-                }
+                responseStatusText = response?.statusText;
                 return response.json()
             })
             .then((data) => {
@@ -82,6 +81,9 @@ export class OAuthHandler {
             })
             .catch((error) => {
                 let message = StringUtils.format(Constants.fetchError, tokenUrl, error);
+                if (responseStatusText.length > 0 && responseStatusText !== 'OK') {
+                    message = StringUtils.format(Constants.fetchError, tokenUrl, responseStatusText);
+                }
                 throw new Error(message);
             });
 
