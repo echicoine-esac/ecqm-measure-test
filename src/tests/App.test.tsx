@@ -18,6 +18,7 @@ import jsonTestDataRequirementsData from '../tests/resources/fetchmock-knowledge
 import jsonTestMeasureData from '../tests/resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../tests/resources/fetchmock-patients.json';
 import jsonTestResultsData from '../tests/resources/fetchmock-results.json';
+import jsonErrorData from '../tests/resources/fetchmock-json-error.json';
 import { HashParamUtils } from '../utils/HashParamUtils';
 import { ServerUtils } from '../utils/ServerUtils';
 import { StringUtils } from '../utils/StringUtils';
@@ -317,7 +318,7 @@ test('success scenarios: knowledge repository', async () => {
 
 });
 
-test('fail scenarios: knowledge repository', async () => {
+test('fail scenarios: knowledge repository 400 error', async () => {
   const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
@@ -369,6 +370,60 @@ test('fail scenarios: knowledge repository', async () => {
     dataRequirementsFetch.getUrl(), FetchType.DATA_REQUIREMENTS,
     RESPONSE_ERROR_BAD_REQUEST));
 
+});
+
+test('fail scenarios: knowledge repository, json data', async () => {
+  const dataServers: Server[] = Constants.serverTestData;
+
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
+
+  await act(async () => {
+    await render(<App />);
+  });
+
+  const startDateControl: HTMLInputElement = screen.getByTestId('start-date-control');
+  const startDate = startDateControl.value;
+
+  const endDateControl: HTMLInputElement = screen.getByTestId('end-date-control');
+  const endDate = endDateControl.value;
+
+  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+
+  //get knowledge server dropdown
+  const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
+  const measureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
+
+
+  await act(async () => {
+    //mock measure list server selection will return 
+    const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+    const mockJsonMeasureData = jsonTestMeasureData;
+    fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
+    //select server, mock list should return:
+    await userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
+    fetchMock.restore();
+  });
+
+  await act(async () => {
+    await userEvent.selectOptions(measureDropdown, mockMeasureList[0].name);
+  });
+
+  //mock knowledge repo json data:
+  const dataRequirementsFetch = new DataRequirementsFetch(dataServers[0],
+    mockMeasureList[0].name,
+    startDate,
+    endDate);
+
+  const mockJsonErrorData = jsonErrorData;
+  
+  fetchMock.once(dataRequirementsFetch.getUrl(), JSON.stringify(mockJsonErrorData));
+  await act(async () => {
+    const getDataRequirementsButton: HTMLButtonElement = screen.getByTestId('get-data-requirements-button');
+    await fireEvent.click(getDataRequirementsButton);
+  });
+  fetchMock.restore();
+
+  expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonErrorData, undefined, 2));
 });
 
 test('success scenario: data repository', async () => {
