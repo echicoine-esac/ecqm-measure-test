@@ -79,6 +79,48 @@ test('Server Model - createServer called with correct data', async () => {
         'user/*.readScope');
 });
 
+test('Server Model - createServer called with only required data', async () => {
+    const modalShow = true;
+
+    const createServer = jest.fn();
+    const setModalShow = jest.fn();
+
+    const baseUrlText = 'server-model-baseurl-text';
+    const authUrlText = 'server-model-authurl-text';
+    const accessUrlText = 'server-model-accessurl-text';
+    const clientIdText = 'server-model-clientid-text';
+    const scopeText = 'server-model-scope-text';
+    const submitButton = 'server-model-submit-button';
+
+    render(
+        <ServerModal
+            modalShow={modalShow}
+            setModalShow={setModalShow}
+            createServer={createServer}
+        />
+    );
+    const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
+    const authUrlTextField: HTMLInputElement = screen.getByTestId(authUrlText);
+    const accessUrlTextField: HTMLInputElement = screen.getByTestId(accessUrlText);
+    const clientIdTextField: HTMLInputElement = screen.getByTestId(clientIdText);
+    const scopeTextField: HTMLInputElement = screen.getByTestId(scopeText);
+    const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
+
+
+    await userEvent.type(baseUrlTextField, 'http://localhost:8080/baseUrl/');
+   
+
+    fireEvent.click(submitButtonField);
+    expect(createServer).toHaveBeenCalledWith(
+        'http://localhost:8080/baseUrl/',
+        '',
+        '',
+        '',
+        '',
+        'user/*.read');
+});
+
+
 test('Server Model - cancel sets modalShow to false', async () => {
     const modalShow = true;
 
