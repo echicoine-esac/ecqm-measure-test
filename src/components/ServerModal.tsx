@@ -76,18 +76,23 @@ const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) =
                 return;
             }
 
-            message = validateUrl(authUrl);
-            if (message !== '') {
-                setErrors({...errors, authUrl: message});
-                event.stopPropagation();
-                return;
+            //only validate optional fields when values exist:
+            if (authUrl) {
+                message = validateUrl(authUrl);
+                if (message !== '') {
+                    setErrors({...errors, authUrl: message});
+                    event.stopPropagation();
+                    return;
+                }
             }
 
-            message = validateUrl(tokenUrl);
-            if (message !== '') {
-                setErrors({...errors, tokenUrl: message});
-                event.stopPropagation();
-                return;
+            if (tokenUrl) {
+                message = validateUrl(tokenUrl);
+                if (message !== '') {
+                    setErrors({...errors, tokenUrl: message});
+                    event.stopPropagation();
+                    return;
+                }
             }
 
             createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
