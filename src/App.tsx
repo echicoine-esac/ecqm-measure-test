@@ -150,6 +150,7 @@ const App: React.FC = () => {
     clientSecret: string, scope: string) => {
     try {
       await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
+      setServers(await ServerUtils.getServerList());
     } catch (error: any) {
       reportErrorToUser('createServer', error);
     }
