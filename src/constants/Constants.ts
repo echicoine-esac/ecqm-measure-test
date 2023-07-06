@@ -10,7 +10,11 @@ export class Constants {
     public static error_selectMeasureDR = 'Please select a Measure to get the data requirements for';
     public static error_selectDataRepository = 'Please select a Data Repository server to use';
     public static error_selectMeasureDataCollection = 'Please select a Measure to collect the data for';
-
+    
+    public static error_url = 'Please provide a valid URL: ';
+    public static error_urlStartsWith = 'Must start with http:// or https://';
+    public static error_urlEndsWith = 'Must end with /';
+    
     public static error_selectReceivingSystemServer = 'Please select a Data Repository server to use';
     public static error_selectMeasureToSubmit = 'Please select a Measure to collect the data for';
 

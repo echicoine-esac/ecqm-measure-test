@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Form, Modal} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Constants } from '../constants/Constants';
 
 // Props for ServerModal
 interface props {
@@ -51,9 +52,9 @@ const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) =
         let message: string = '';
 
         if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            message = 'must start with http:// or https://';
+            message = Constants.error_urlStartsWith;
         } else if (!url.endsWith('/')) {
-            message = 'must end with /';
+            message = Constants.error_urlEndsWith;
         }
 
         return message;
@@ -76,18 +77,23 @@ const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) =
                 return;
             }
 
-            message = validateUrl(authUrl);
-            if (message !== '') {
-                setErrors({...errors, authUrl: message});
-                event.stopPropagation();
-                return;
+            //only validate optional fields when values exist:
+            if (authUrl) {
+                message = validateUrl(authUrl);
+                if (message !== '') {
+                    setErrors({...errors, authUrl: message});
+                    event.stopPropagation();
+                    return;
+                }
             }
 
-            message = validateUrl(tokenUrl);
-            if (message !== '') {
-                setErrors({...errors, tokenUrl: message});
-                event.stopPropagation();
-                return;
+            if (tokenUrl) {
+                message = validateUrl(tokenUrl);
+                if (message !== '') {
+                    setErrors({...errors, tokenUrl: message});
+                    event.stopPropagation();
+                    return;
+                }
             }
 
             createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
@@ -114,7 +120,7 @@ const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) =
                         <Form.Label>Base URL (required)</Form.Label>
                         <Form.Control data-testid='server-model-baseurl-text' type='text' value={baseUrl} placeholder='https://example.com/fhir/'
                                       onChange={baseUrlHandler} isInvalid={errors.baseUrl !== ''} required/>
-                        <Form.Control.Feedback data-testid='server-model-baseurl-feedback' type='invalid'>Please provide a valid URL {errors.baseUrl}</Form.Control.Feedback>
+                        <Form.Control.Feedback data-testid='server-model-baseurl-feedback' type='invalid'>{Constants.error_url}{errors.baseUrl}</Form.Control.Feedback>
                     </Form.Group>
                     <hr/>
                     If your server requires OAuth authentication then please provide the additional values
@@ -122,13 +128,13 @@ const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) =
                         <Form.Label>Authentication URL</Form.Label>
                         <Form.Control data-testid='server-model-authurl-text' type='text' value={authUrl} placeholder='https://example.com/auth/'
                                       onChange={authUrlHandler} isInvalid={errors.authUrl !== ''}/>
-                        <Form.Control.Feedback data-testid='server-model-authurl-feedback'  type='invalid'>Please provide a valid URL {errors.authUrl}</Form.Control.Feedback>
+                        <Form.Control.Feedback data-testid='server-model-authurl-feedback'  type='invalid'>{Constants.error_url}{errors.authUrl}</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId='form.tokenUrl'>
                         <Form.Label>Token Access URL</Form.Label>
                         <Form.Control data-testid='server-model-accessurl-text' type='text' value={tokenUrl} placeholder='https://example.com/token/'
                                       onChange={tokenUrlHandler} isInvalid={errors.tokenUrl !== ''}/>
-                        <Form.Control.Feedback data-testid='server-model-accessurl-feedback' type='invalid'>Please provide a valid URL {errors.tokenUrl}</Form.Control.Feedback>
+                        <Form.Control.Feedback data-testid='server-model-accessurl-feedback' type='invalid'>{Constants.error_url}{errors.tokenUrl}</Form.Control.Feedback>
  
                     </Form.Group>
                     <Form.Group controlId='form.clientId'>
