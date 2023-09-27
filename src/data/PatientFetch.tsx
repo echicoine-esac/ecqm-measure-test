@@ -27,7 +27,7 @@ export class PatientFetch extends AbstractDataFetch {
     protected processReturnedData(data: any) {
         let entries = data.entry;
         let ids = entries.map((entry: BundleEntry) => {
-            return entry.resource.id
+            return entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family + ' - ' + entry.resource.id;
         });
         return ids;
     }
