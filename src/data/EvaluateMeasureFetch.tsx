@@ -42,7 +42,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         }
 
         if (selectedServer) this.selectedServer = selectedServer;
-        if (selectedPatient) this.selectedPatient = selectedPatient;
+        if (selectedPatient) this.selectedPatient =  StringUtils.getPatId(selectedPatient);
         if (selectedMeasure) this.selectedMeasure = selectedMeasure;
         if (startDate) this.startDate = startDate;
         if (endDate) this.endDate = endDate;

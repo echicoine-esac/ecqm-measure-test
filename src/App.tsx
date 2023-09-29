@@ -330,10 +330,9 @@ const App: React.FC = () => {
     // Set loading to true for spinner
     setLoading(true);
 
-    const patId = selectedPatient.split(' - ')[1];
 
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
-        startDate, endDate, patId)
+        startDate, endDate, selectedPatient)
 
     let message = 'Calling ' + collectDataFetch.getUrl() + '...';
     setResults(message);

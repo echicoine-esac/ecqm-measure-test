@@ -1,0 +1,312 @@
+{
+  "resourceType": "Group",
+  "id": "AdultMajorDepressiveDisorderMDDSuicideRiskAssessmentFHIR",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2023-09-18T14:47:15.955+00:00",
+    "source": "#s2TQEJ5WJzQbCs50"
+  },
+  "extension": [ {
+    "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+    "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/AdultMajorDepressiveDisorderMDDSuicideRiskAssessmentFHIR"
+  } ],
+  "active": true,
+  "type": "person",
+  "actual": true,
+  "member": [ {
+    "entity": {
+      "reference": "Patient/44ec5bc8-a70b-49ac-bd90-01ddba10b580",
+      "display": "EncLastDayOfMP IPPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/edbbc9b7-dc26-41d8-a7b2-0a2da5f03e25",
+      "display": "RiskAssessAfterEncrelevantPeriod NUMFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/289f4ee8-0af8-41d3-91e7-5d98c8a0fbbf",
+      "display": "EDVisitInvalidCode IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/abf94041-33bd-49ec-b3a7-5113a68bcdc9",
+      "display": "AgeCorrectwithMDDInEDEnc IPPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/7ceb5d82-9469-4ec8-a90c-ff4aeeabc3a0",
+      "display": "SRAInvalidCode NUMFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/25e18b9a-a7a9-4f0d-a3b7-9bdade86e7d2",
+      "display": "OVEncBeforeMP IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/a029a59c-b53a-4c15-ae1b-451bea5cfb6e",
+      "display": "SRAValidCodeSRAInvalidCode NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/9ea5d82f-9919-4c40-b7b7-817988ea462c",
+      "display": "DxDuringEncED DENOMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/5b396c34-9a53-4aaa-94f2-6dba0319e214",
+      "display": "RiskAssessPsychoanalysisEnc NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/aa76cd96-1971-4591-b018-4b6ceda622ee",
+      "display": "NoMDDDxPsychDxEnc IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/c2c8dc96-55f3-4453-9c70-5afb40513c7a",
+      "display": "PsychDxEncAfterMP IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/0a886f1f-7f95-4086-9098-36f6e165a763",
+      "display": "2Enc1RiskAssess NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/db91873f-1ac1-4ef0-a539-db52dc47027e",
+      "display": "DxDuringEncOV DENOMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/daf5c471-e212-4312-867a-5fd5eec6c735",
+      "display": "RiskAssessInPsychEncRelevantDatetime NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/7954d734-9449-4170-b44f-1c3263fc5741",
+      "display": "RiskAssmtDuringEncOpConsult NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/0751c5b0-dd1e-4239-9339-9d2bc93d741a",
+      "display": "RiskAssmtAfterEncPsychDx NUMFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/53833202-3faf-4b90-a01b-ccba0a657912",
+      "display": "PsychVisitEncB4MP IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/f42d9afa-2160-470f-b223-339eb85f5c0b",
+      "display": "RiskAssessInPsychEncRelevantPeriod NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/eca0bc7b-084e-4b61-98d8-a4e5b9c1fd30",
+      "display": "AgeJan1Edge IPPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/d8917c5c-070d-4e23-95c1-de87977133ac",
+      "display": "PatientAgeUnder18 IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/a5b4b9e6-fe31-4240-9df7-1237867ccb38",
+      "display": "MDDPsychDxEnc DENOMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/6a91909b-85de-4248-bada-3e5eb6cd302f",
+      "display": "RiskAssessInOVEnc NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/600c4e81-8a26-47ee-a8e2-2c3ce336504e",
+      "display": "PsychVisitEncAfterMP IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/0f108d2e-f511-4f3d-a805-ca12ba137f6a",
+      "display": "AgeDec31Edge IPPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/1f660222-9c8d-4b99-a6da-94fcb63ba261",
+      "display": "RiskAssmtIn2ndEnc NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/5f14d3da-735b-4ea2-994c-f26f18c081cd",
+      "display": "OPConsultEncBeforeMP IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/9d983260-2a08-4ced-9a61-173f832e8160",
+      "display": "3Enc3RiskAssess  NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/a56a1413-396e-43a8-a381-da8204651bc7",
+      "display": "Age17OnJan1 IPPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/fa279572-3fa0-4dd0-9f71-d064733a6832",
+      "display": "2EncWithDx267daysApart NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/42386969-27af-4f2a-803c-139d480d69bc",
+      "display": "Assmt2ndEncLt104Days NUMFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/2b8a8dd1-9507-466d-a22b-71eabc9353cc",
+      "display": "MDDInEncInOVEnc IPPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/d53300df-1a5b-4506-a8b4-8a74f8b941ea",
+      "display": "RiskAssessNotDoneInitEnc NUMFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/d04b0174-2fc9-4495-91f7-327f68e83655",
+      "display": "MDDInEncInOVEnc IPPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/77f664d1-6d66-47a3-8922-abd614fe3027",
+      "display": "RiskAssessInTeleEnc NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/bd1a813a-c72c-49c5-9d46-a78c0fa06667",
+      "display": "EDVisitEncBeforeMP IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/0a5107f9-6c0f-486d-8fbf-42b91e3dccba",
+      "display": "4Enc4RiskAssess NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/0c4ac843-9e8d-4c39-b2af-a2d0d2c16afa",
+      "display": "2EncWithDx72daysApartrelevantDatetime NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/cf7fee59-8714-4fdd-85dd-c75550a4d2b4",
+      "display": "TwoEncWDxNotFarEnghApart DENOMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/7793dee4-8db4-4463-a3c6-3e295e08125d",
+      "display": "RiskAssessIn2ndEncOP NUMFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/5ef4eefc-7e4b-4156-b14f-b28683d23dc9",
+      "display": "RiskAssessInOVEnc3 NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/ee8ad8e3-096b-41a3-be45-d6c29929f089",
+      "display": "RiskAssmtB4EncPsychotherapyEnc NUMFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/16f045bf-95e8-45d5-8173-1c2f1d4bd536",
+      "display": "AgeUnder17 IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/642110f7-a8e5-4d1d-9db7-7cc35df21673",
+      "display": "2Enc1RiskAssess NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/5cbf01d6-c69b-49d9-9df3-f5c711743426",
+      "display": "DxandRiskAssmtInBOTHEnc NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/d6831d98-7744-49dd-b731-120c101dcc37",
+      "display": "MDDduringEnc IPPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/3d5b58a1-82a2-4106-99ed-b06c54baa6ab",
+      "display": "AgeJan2Edge IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/71bbcd88-7d96-4159-a8c2-340f300cfe73",
+      "display": "OVEncNotPerformed IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/35a207cf-50b2-4f1d-8867-9ab77a807b92",
+      "display": "DxDuringEncTeleHealthServ IPPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/f0505d01-66e0-47e7-9b52-eb6698365b7b",
+      "display": "AgeUnder18withMDDInPsychEnc IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/bb3e5cee-f5d6-4980-9b8f-19975b4698d5",
+      "display": "NoMDDDxInOVEnc IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/8c3195d9-082a-4d81-b3a7-308993577f06",
+      "display": "EncBeforePtBorn IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/0345b68a-50b2-4730-b720-4e518fe2d121",
+      "display": "NoEncounter IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/3f87aeaa-5d86-4ff4-87af-34275e3b188b",
+      "display": "3Enc2RiskAssess NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/70c5f01a-5c2b-4e0a-a119-719cfd8ee3ef",
+      "display": "2EncWithDx72daysApartrelevantPeriod NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/693f2a05-edf8-4cf4-9559-486e22b89284",
+      "display": "EDVisitEncAfterMP IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/1cc97762-893e-41c1-874e-330e2790dfd6",
+      "display": "NoMDDDxInOPConsEnc IPFail"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/9e4def14-e745-416d-aea3-690d4e59e53a",
+      "display": "TwoEncRiskAssessInitEnc NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/b484b485-168a-41a9-91ef-5f33d9a2d3f4",
+      "display": "RiskAssessInOVandOpCons NUMPass"
+    }
+  }, {
+    "entity": {
+      "reference": "Patient/ad282bf3-7a9d-457e-82e0-bb4e63444f46",
+      "display": "RiskAssessAfterEncrelevantDatetime NUMFail"
+    }
+  } ]
+}

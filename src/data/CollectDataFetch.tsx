@@ -41,7 +41,7 @@ export class CollectDataFetch extends AbstractDataFetch {
         this.selectedMeasure = selectedMeasure;
         this.startDate = startDate;
         this.endDate = endDate;
-        if (selectedPatient) this.selectedPatient = selectedPatient;
+        if (selectedPatient) this.selectedPatient = StringUtils.getPatId(selectedPatient);
     }
 
     public getUrl(): string {

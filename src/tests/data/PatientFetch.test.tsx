@@ -3,8 +3,13 @@ import { Constants } from '../../constants/Constants';
 import { PatientFetch } from '../../data/PatientFetch';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
+import jsonTestPatientsGroupData from '../resources/fetchmock-patients-group.json';
 
 const url = 'foo/';
+
+beforeEach(() => {
+    fetchMock.restore(); // Clear mock routes before each test
+});
 
 test('required properties check', () => {
     try {
@@ -21,8 +26,23 @@ test('get patients mock', async () => {
     fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientsData)
         , { method: 'GET' });
+
+        let patientList: string[] = await patientFetch.fetchData('')
+
+    expect(patientList.length).toEqual(21);
+    fetchMock.restore();
+
+});
+
+test('get group patients mock', async () => {
+    const patientFetch = new PatientFetch(url);
+    const mockJsonPatientsData = jsonTestPatientsGroupData;
+    fetchMock.once(patientFetch.getUrl(),
+        JSON.stringify(mockJsonPatientsData)
+        , { method: 'GET' });
     let patientList: string[] = await patientFetch.fetchData('')
-    expect(patientList.length).toEqual(18);
+
+    expect(patientList.length).toEqual(59);
     fetchMock.restore();
 
 });

@@ -8,4 +8,11 @@ export class StringUtils {
                 ;
         });
     };
+
+    public static getPatId(pat: string) {
+        if (pat.indexOf(' - ') > 0) {
+            return pat.split(' - ')[1];
+        }
+        return pat;
+    }
 }

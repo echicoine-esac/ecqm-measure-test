@@ -25,11 +25,40 @@ export class PatientFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        let entries = data.entry;
-        let ids = entries.map((entry: BundleEntry) => {
-            return entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family + ' - ' + entry.resource.id;
-        });
-        return ids;
+        if (this.isGroup(data)) {
+            return this.processAsGroup(data);
+        } else {
+            let entries = data.entry;
+            let ids = entries.map((entry: BundleEntry) => {
+                return entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family + ' - ' + entry.resource.id;
+            });
+            return ids;
+        }
     }
 
+    protected isGroup(data: any): boolean {
+        if (data && data.resourceType === "Group") {
+            return true;
+        }
+        return false;
+    }
+
+    protected processAsGroup(data: any): string[] {
+        const result:string[] = [];
+
+        if (data && data.resourceType === "Group" && Array.isArray(data.member)) {
+          data.member.forEach((member: { entity: { display: any; reference: string; }; }) => {
+            if (member.entity && member.entity.display) {
+              const displayName = member.entity.display;
+              const id = member.entity.reference.split("Patient/")[1];
+              result.push(`${displayName} - ${id}`);
+            }
+          });
+        }
+      
+        return result;
+    }
+
+    
 }
+ 
