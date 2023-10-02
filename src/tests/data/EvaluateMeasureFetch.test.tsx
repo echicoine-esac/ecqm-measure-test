@@ -7,7 +7,7 @@ import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestResultsData from '../resources/fetchmock-results.json';
 
-const selectedPatient = { display: 'Evan Chicoine', id: 'selectedPatient' };
+const selectedPatient = { display: 'John Doe', id: 'selectedPatient' };
 
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
