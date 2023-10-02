@@ -11,7 +11,7 @@ beforeEach(() => {
 });
 
 test('expect functions to be called when selecting items in dropdown', async () => {
-    const patients = ['test-patient-1', 'test-patient-2'];
+    const patients = [{display: 'Michael Holck', id:'test-patient-1'}, {display: 'Evan Chicoine', id:'test-patient-2'}];
     const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
@@ -41,13 +41,13 @@ test('expect functions to be called when selecting items in dropdown', async () 
 
     //select first patient
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-    userEvent.selectOptions(patientDropdown, 'test-patient-1');
-    expect(setSelectedPatient).toBeCalledWith('test-patient-1')
+    userEvent.selectOptions(patientDropdown, 'Michael Holck');
+    expect(setSelectedPatient).toBeCalledWith({display: 'Michael Holck', id:'test-patient-1'})
 
 });
 
 test('expect spinner to show when loading is true', async () => {
-    const patients = ['test-patient-1', 'test-patient-2'];
+    const patients = [{display: 'Michael Holck', id:'test-patient-1'}, {display: 'Evan Chicoine', id:'test-patient-2'}];
     const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = true;
@@ -75,7 +75,7 @@ test('expect spinner to show when loading is true', async () => {
 });
 
 test('hide section', async () => {
-    const patients = ['test-patient-1', 'test-patient-2'];
+    const patients = [{display: 'Michael Holck', id:'test-patient-1'}, {display: 'Evan Chicoine', id:'test-patient-2'}];
     const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
@@ -96,7 +96,7 @@ test('hide section', async () => {
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
-        selectedPatient={''}
+        selectedPatient={{display: '', id: ''}}
         collectData={collectData}
         loading={loadingFlag}
         setModalShow={jest.fn()}
@@ -108,7 +108,7 @@ test('hide section', async () => {
 });
 
 test('show section', async () => {
-    const patients = ['test-patient-1', 'test-patient-2'];
+    const patients = [{display: 'Michael Holck', id:'test-patient-1'}, {display: 'Evan Chicoine', id:'test-patient-2'}];
     const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
@@ -128,7 +128,7 @@ test('show section', async () => {
         patients={patients}
         fetchPatients={fetchPatients}
         setSelectedPatient={setSelectedPatient}
-        selectedPatient={''}
+        selectedPatient={{display: '', id: ''}}
         collectData={collectData}
         loading={loadingFlag}
         setModalShow={jest.fn()}

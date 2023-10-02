@@ -1,7 +1,8 @@
 import React from 'react';
-import {Button, OverlayTrigger, Spinner, Tooltip} from 'react-bootstrap';
+import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Server} from '../models/Server';
+import { Server } from '../models/Server';
+import { Patient } from '../models/Patient';
 
 // Props for DataRepository
 interface props {
@@ -9,10 +10,10 @@ interface props {
   setShowDataRepo: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
   selectedDataRepo: Server | undefined;
-  patients: Array<string>;
+  patients: Array<Patient | undefined>;
   fetchPatients: (dataRepo: Server) => void;
-  setSelectedPatient: React.Dispatch<React.SetStateAction<string>>;
-  selectedPatient: string;
+  setSelectedPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>;
+  selectedPatient: Patient | undefined;
   collectData: () => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,36 +21,36 @@ interface props {
 
 // DataRepository component displays the test server, patient, and button to collect data
 const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers,
-    selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient,
-                                             collectData, loading, setModalShow }) => {
+  selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient,
+  collectData, loading, setModalShow }) => {
 
-    return (
-      <div className='card'>
-        <div className='card-header'>
-          <div className='row'>
-            <div className='col-md-3 order-md-1'>Data Repository</div>
-            {showDataRepo ? (
-              <div className='col-md-8 order-md-2 text-muted'/>
-            ) : (
-              <div className='col-md-8 order-md-2 text-muted'>
-                Selected Patient: {selectedPatient}
-              </div>
-            )}
-            <div className='col-md-1 order-md-3'>{showDataRepo ? (
-                <Button data-testid='data-repo-hide-section-button' className='btn btn-primary btn-lg float-right' 
-                onClick={(e) => setShowDataRepo(false)}>
-                  Hide
-                </Button>
-              ) : (
-                <Button data-testid='data-repo-show-section-button' className='btn btn-primary btn-lg float-right' 
-                onClick={(e) => setShowDataRepo(true)}>
-                  Show
-                </Button>
-              )}
+  return (
+    <div className='card'>
+      <div className='card-header'>
+        <div className='row'>
+          <div className='col-md-3 order-md-1'>Data Repository</div>
+          {showDataRepo ? (
+            <div className='col-md-8 order-md-2 text-muted' />
+          ) : (
+            <div className='col-md-8 order-md-2 text-muted'>
+              Selected Patient: {selectedPatient?.display}
             </div>
+          )}
+          <div className='col-md-1 order-md-3'>{showDataRepo ? (
+            <Button data-testid='data-repo-hide-section-button' className='btn btn-primary btn-lg float-right'
+              onClick={(e) => setShowDataRepo(false)}>
+              Hide
+            </Button>
+          ) : (
+            <Button data-testid='data-repo-show-section-button' className='btn btn-primary btn-lg float-right'
+              onClick={(e) => setShowDataRepo(true)}>
+              Show
+            </Button>
+          )}
           </div>
         </div>
-        {showDataRepo ? (
+      </div>
+      {showDataRepo ? (
         <div className='card-body'>
           <div className='row'>
             <div className='col-md-6 order-md-1'>
@@ -64,29 +65,43 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
               <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo!.baseUrl}
                 onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
-                  {servers.map((server, index) => (
-                    <option key={index}>{server!.baseUrl}</option>
-                  ))}
+                {servers.map((server, index) => (
+                  <option key={index}>{server!.baseUrl}</option>
+                ))}
               </select>
             </div>
-              <div className='col-md-1 order-md-2'>
-                  <OverlayTrigger placement={'top'} overlay={
-                      <Tooltip>Add an Endpoint</Tooltip>
-                  }>
-                      <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
-                  </OverlayTrigger>
-              </div>
+            <div className='col-md-1 order-md-2'>
+              <OverlayTrigger placement={'top'} overlay={
+                <Tooltip>Add an Endpoint</Tooltip>
+              }>
+                <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
+              </OverlayTrigger>
+            </div>
             <div className='col-md-6 order-md-2'>
-              <select data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient}
-                onChange={(e) => setSelectedPatient(e.target.value)}>
+              <select
+                data-testid="data-repo-patient-dropdown"
+                className="custom-select d-block w-100"
+                id="patient"
+                value={selectedPatient?.id || ''}
+                onChange={(e) => {
+                  const selectedPatientId = e.target.value;
+                  const selectedPatientObject = patients.find(
+                    (patient) => patient?.id === selectedPatientId
+                  );
+
+                  setSelectedPatient(selectedPatientObject || undefined);
+                }}
+              >
                 <option value=''>Select a Patient...</option>
-                  {patients.map((patient, index) => (
-                    <option key={index}>{patient}</option>
-                  ))}
+                {patients.map((patient, index) => (
+                  <option key={index} value={patient?.id || ''}>
+                    {patient?.display}
+                  </option>
+                ))}
               </select>
             </div>
             <div className='col-md-5 order-md-2'>
-              <br/>
+              <br />
               {loading ? (
                 <Button data-testid='data-repo-collect-data-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
                   <Spinner
@@ -95,21 +110,21 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                     size='sm'
                     role='status'
                     aria-hidden='true'
-                    animation='border'/>
+                    animation='border' />
                   Loading...</Button>
-              ):(
+              ) : (
                 <Button data-testid='data-repo-collect-data-button' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}
-                    onClick={(e) => collectData()}>
+                  onClick={(e) => collectData()}>
                   Collect Data</Button>
               )}
             </div>
           </div>
         </div>
-        ) : (
-          <div/>
-        )}
-      </div>
-    );
+      ) : (
+        <div />
+      )}
+    </div>
+  );
 };
 
 export default DataRepository;

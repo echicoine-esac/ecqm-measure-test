@@ -1,5 +1,6 @@
 import { Constants } from '../constants/Constants';
 import { BundleEntry } from '../models/BundleEntry';
+import { Patient } from '../models/Patient';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
@@ -30,7 +31,7 @@ export class PatientFetch extends AbstractDataFetch {
         } else {
             let entries = data.entry;
             let ids = entries.map((entry: BundleEntry) => {
-                return entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family + ' - ' + entry.resource.id;
+                return { display: entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family, id: entry.resource.id };
             });
             return ids;
         }
@@ -43,22 +44,19 @@ export class PatientFetch extends AbstractDataFetch {
         return false;
     }
 
-    protected processAsGroup(data: any): string[] {
-        const result:string[] = [];
+    protected processAsGroup(data: any): Patient[] {
+        const result: Patient[] = [];
 
         if (data && data.resourceType === "Group" && Array.isArray(data.member)) {
-          data.member.forEach((member: { entity: { display: any; reference: string; }; }) => {
-            if (member.entity && member.entity.display) {
-              const displayName = member.entity.display;
-              const id = member.entity.reference.split("Patient/")[1];
-              result.push(`${displayName} - ${id}`);
-            }
-          });
+            data.member.forEach((member: { entity: { display: any; reference: string; }; }) => {
+                if (member.entity && member.entity.display) {
+                    result.push({ display: member.entity.display, id: member.entity.reference.split("Patient/")[1] });
+                }
+            });
         }
-      
+
         return result;
     }
 
-    
+
 }
- 

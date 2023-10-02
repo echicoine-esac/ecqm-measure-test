@@ -6,6 +6,8 @@ import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
 
+const selectedPatient = {display: 'Evan Chicoine', id: 'selectedPatient'};
+
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
         return Constants.serverTestData;
@@ -14,13 +16,12 @@ beforeEach(() => {
 
 test('required properties check', async () => {
     const dataServer: Server = Constants.serverTestData[0];
-
     try {
         new CollectDataFetch(undefined,
             'selectedMeasure',
             'startDate',
             'endDate',
-            'selectedPatient');
+            selectedPatient);
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedDataRepo'))
     }
@@ -30,7 +31,7 @@ test('required properties check', async () => {
             '',
             'startDate',
             'endDate',
-            'selectedPatient');
+            selectedPatient);
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedMeasure'))
     }
@@ -40,7 +41,7 @@ test('required properties check', async () => {
             'selectedMeasure',
             '',
             'endDate',
-            'selectedPatient');
+            selectedPatient);
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'startDate'))
     }
@@ -50,7 +51,7 @@ test('required properties check', async () => {
             'selectedMeasure',
             'startDate',
             '',
-            'selectedPatient');
+            selectedPatient);
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'endDate'))
     }
@@ -64,7 +65,7 @@ test('get CollectData mock', async () => {
         'selectedMeasure',
         'startDate',
         'endDate',
-        'selectedPatient');
+        selectedPatient);
     const mockJsonCollectDataData = jsonTestCollectDataData;
     fetchMock.once(collectDataFetch.getUrl(),
         JSON.stringify(mockJsonCollectDataData)
@@ -85,7 +86,7 @@ test('get CollectData mock error', async () => {
         'selectedMeasure',
         'startDate',
         'endDate',
-        'selectedPatient');
+        selectedPatient);
     fetchMock.once(collectDataFetch.getUrl(), { throws: new Error(errorMsg) });
 
     try {
@@ -107,7 +108,7 @@ test('test urlformat', async () => {
         'selectedMeasure',
         'startDate',
         'endDate',
-        'selectedPatient');
+        selectedPatient);
     expect(collectDataFetch.getUrl())
         .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient');
 });
@@ -119,7 +120,7 @@ test('test urlformat without patient', async () => {
         'selectedMeasure',
         'startDate',
         'endDate',
-        '');
+        {display: '', id: ''});
     expect(collectDataFetch.getUrl())
         .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate');
 });

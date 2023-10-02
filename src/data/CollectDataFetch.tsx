@@ -2,6 +2,7 @@ import { Constants } from '../constants/Constants';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 import {Server} from '../models/Server';
+import { Patient } from '../models/Patient';
 
 export class CollectDataFetch extends AbstractDataFetch {
     type: FetchType;
@@ -10,13 +11,13 @@ export class CollectDataFetch extends AbstractDataFetch {
     selectedMeasure: string = '';
     startDate: string = '';
     endDate: string = '';
-    selectedPatient: string = '';
+    selectedPatient: Patient | undefined;
 
     constructor(selectedDataRepo: Server | undefined,
         selectedMeasure: string,
         startDate: string,
         endDate: string,
-        selectedPatient?: string) {
+        selectedPatient?: Patient) {
 
         super();
         this.type = FetchType.COLLECT_DATA;
@@ -41,15 +42,15 @@ export class CollectDataFetch extends AbstractDataFetch {
         this.selectedMeasure = selectedMeasure;
         this.startDate = startDate;
         this.endDate = endDate;
-        if (selectedPatient) this.selectedPatient = StringUtils.getPatId(selectedPatient);
+        if (selectedPatient) this.selectedPatient = selectedPatient;
     }
 
     public getUrl(): string {
         let ret = this.selectedDataRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
             '/$collect-data?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
 
-        if (this.selectedPatient !== '') {
-            ret = ret + '&subject=' + this.selectedPatient;
+        if (this.selectedPatient !== undefined && this.selectedPatient.id) {
+            ret = ret + '&subject=' + this.selectedPatient.id;
         }
         return ret;
     }

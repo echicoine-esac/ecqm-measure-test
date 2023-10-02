@@ -21,6 +21,7 @@ import { Server } from './models/Server';
 import { OAuthHandler } from './oauth/OAuthHandler';
 import { HashParamUtils } from './utils/HashParamUtils';
 import { ServerUtils } from './utils/ServerUtils';
+import { Patient } from './models/Patient';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -31,11 +32,11 @@ const App: React.FC = () => {
   // Then the state for the data repository
   const [servers, setServers] = useState<Array<Server | undefined>>([]);
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
-  const [patients, setPatients] = useState<Array<string>>([]);
+  const [patients, setPatients] = useState<Array<Patient | undefined>>([]);
 
   // Selected States
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
-  const [selectedPatient, setSelectedPatient] = useState<string>('');
+  const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
   const [selectedKnowledgeRepo, setSelectedKnowledgeRepo] = useState<Server>({
     id: '',
     baseUrl: '',
