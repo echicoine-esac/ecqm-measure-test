@@ -6,18 +6,19 @@ import { Population } from '../models/Population';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 import {Server} from '../models/Server';
+import { Patient } from '../models/Patient';
 
 export class EvaluateMeasureFetch extends AbstractDataFetch {
     type: FetchType;
 
     selectedServer: Server | undefined;
-    selectedPatient: string = '';
+    selectedPatient: Patient | undefined;
     selectedMeasure: string = '';
     startDate: string = '';
     endDate: string = '';
 
     constructor(selectedServer: Server | undefined,
-        selectedPatient: string,
+        selectedPatient: Patient | undefined,
         selectedMeasure: string,
         startDate: string,
         endDate: string) {
@@ -42,21 +43,22 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         }
 
         if (selectedServer) this.selectedServer = selectedServer;
-        if (selectedPatient) this.selectedPatient = selectedPatient;
+        if (selectedPatient) this.selectedPatient =  selectedPatient;
         if (selectedMeasure) this.selectedMeasure = selectedMeasure;
         if (startDate) this.startDate = startDate;
         if (endDate) this.endDate = endDate;
     }
 
     public getUrl(): string {
-        if (this.selectedPatient === '') {
+        if (this.selectedPatient !== undefined && this.selectedPatient.id) {
+            return StringUtils.format(Constants.evaluateMeasureWithPatientFetchURL,
+                this.selectedServer?.baseUrl, this.selectedMeasure,
+                this.selectedPatient.id, this.startDate, this.endDate);
+        } else {
             return StringUtils.format(Constants.evaluateMeasureFetchURL,
                 this.selectedServer?.baseUrl, this.selectedMeasure,
                 this.startDate, this.endDate);
-        } else {
-            return StringUtils.format(Constants.evaluateMeasureWithPatientFetchURL,
-                this.selectedServer?.baseUrl, this.selectedMeasure,
-                this.selectedPatient, this.startDate, this.endDate);
+            
         }
     }
 

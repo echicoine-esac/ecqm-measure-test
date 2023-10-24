@@ -7,6 +7,8 @@ import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestResultsData from '../resources/fetchmock-results.json';
 
+const selectedPatient = { display: 'John Doe', id: 'selectedPatient' };
+
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
         return Constants.serverTestData;
@@ -17,29 +19,29 @@ test('required properties check', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
     try {
-        new EvaluateMeasureFetch(undefined, 'selectedPatient',
-        'selectedMeasure', 'startDate', 'endDate');
+        new EvaluateMeasureFetch(undefined, selectedPatient,
+            'selectedMeasure', 'startDate', 'endDate');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedServer'))
     }
 
     try {
-        new EvaluateMeasureFetch(dataServer, 'selectedPatient',
-        '', 'startDate', 'endDate');
+        new EvaluateMeasureFetch(dataServer, selectedPatient,
+            '', 'startDate', 'endDate');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedMeasure'))
     }
 
     try {
-        new EvaluateMeasureFetch(dataServer, 'selectedPatient',
-        'selectedMeasure', '', 'endDate');
+        new EvaluateMeasureFetch(dataServer, selectedPatient,
+            'selectedMeasure', '', 'endDate');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'startDate'))
     }
 
     try {
-        new EvaluateMeasureFetch(dataServer, 'selectedPatient',
-        'selectedMeasure', 'startDate', '');
+        new EvaluateMeasureFetch(dataServer, selectedPatient,
+            'selectedMeasure', 'startDate', '');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'endDate'))
     }
@@ -49,7 +51,7 @@ test('required properties check', async () => {
 test('get evaluate measures mock', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
-    const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, 'selectedPatient',
+    const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, selectedPatient,
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
@@ -69,23 +71,22 @@ test('get evaluate measures mock', async () => {
 test('test urlformat', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
-    const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, 'selectedPatient',
+    const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, selectedPatient,
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
         .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
-        
+
 });
 
 test('test urlformat, no patient', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
-    const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, '',
+    const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, { display: '', id: '' },
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
         .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?periodStart=startDate&periodEnd=endDate&reportType=subject-list');
-        
+
 });
 
- 
