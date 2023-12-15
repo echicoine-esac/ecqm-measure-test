@@ -32,7 +32,11 @@ export class MeasureFetch extends AbstractDataFetch {
                 'scoring': entry.resource.scoring
             }
         });
-        return measureList;
+        return measureList.sort((a, b) => {
+            const measureA = a.name + '';
+            const measureB = b.name + '';
+            return measureA.localeCompare(measureB);
+        });;
     }
 
 }

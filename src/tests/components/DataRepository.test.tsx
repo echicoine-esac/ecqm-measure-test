@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event';
 import DataRepository from '../../components/DataRepository';
 import { ServerUtils } from '../../utils/ServerUtils';
 import { Constants } from '../../constants/Constants';
+import { PatientFetch } from '../../data/PatientFetch';
+import { Patient } from '../../models/Patient';
 
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
@@ -40,9 +42,11 @@ test('expect functions to be called when selecting items in dropdown', async () 
     expect(fetchPatients).toBeCalledWith(servers[0])
 
     //select first patient
+    const expectedPatient: Patient = {display: 'Jane Doe', id:'test-patient-1'};
+    const expectedDisplayName:string = PatientFetch.buildUniquePatientIdentifier(expectedPatient) + '';
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-    userEvent.selectOptions(patientDropdown, 'Jane Doe');
-    expect(setSelectedPatient).toBeCalledWith({display: 'Jane Doe', id:'test-patient-1'})
+    userEvent.selectOptions(patientDropdown, expectedDisplayName);
+    expect(setSelectedPatient).toBeCalledWith(expectedPatient)
 
 });
 

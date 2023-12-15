@@ -22,6 +22,7 @@ import { OAuthHandler } from './oauth/OAuthHandler';
 import { HashParamUtils } from './utils/HashParamUtils';
 import { ServerUtils } from './utils/ServerUtils';
 import { Patient } from './models/Patient';
+import { StringUtils } from './utils/StringUtils';
 
 const App: React.FC = () => {
   // Define the state variables
