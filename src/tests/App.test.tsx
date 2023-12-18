@@ -422,7 +422,9 @@ test('success scenario: data repository', async () => {
   fetchMock.restore();
 
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-  userEvent.selectOptions(patientDropdown, mockPatientList[0].display);
+
+  const expectedDisplayName:string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+  userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
   const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
@@ -499,7 +501,8 @@ test('fail scenario: data repository', async () => {
   fetchMock.restore();
 
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-  userEvent.selectOptions(patientDropdown, mockPatientList[0].display);
+  const expectedDisplayName:string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+  userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
   const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
@@ -581,7 +584,8 @@ test('success scenarios: receiving system', async () => {
   fetchMock.restore();
 
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-  userEvent.selectOptions(patientDropdown, mockPatientList[0].display);
+  const expectedDisplayName:string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+  userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
   const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
@@ -690,7 +694,8 @@ test('success scenarios: receiving system - submit data', async () => {
   fetchMock.restore();
 
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-  userEvent.selectOptions(patientDropdown, mockPatientList[0].display);
+  const expectedDisplayName:string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+  userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
   const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
@@ -786,7 +791,8 @@ test('fail scenarios: receiving system - submit data', async () => {
   fetchMock.restore();
 
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-  userEvent.selectOptions(patientDropdown, mockPatientList[0].display);
+  const expectedDisplayName:string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+  userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
   const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
@@ -883,7 +889,8 @@ test('fail scenario: receiving system', async () => {
   fetchMock.restore();
   
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-  userEvent.selectOptions(patientDropdown, mockPatientList[0].display);
+  const expectedDisplayName:string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+  userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
   const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
   userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
@@ -1212,7 +1219,8 @@ test('renders data repo properly', async () => {
   //select known patient
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
   await waitFor(() => expect(patientDropdown.options.length > 10).toBeTruthy());
-  userEvent.selectOptions(patientDropdown, mockPatientList[1].display);
+  const expectedDisplayName:string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[1]) + '';
+  userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
   //click Collect Data
   const getDataRequirementsButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');

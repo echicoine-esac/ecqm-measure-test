@@ -1,8 +1,9 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Server } from '../models/Server';
+import { PatientFetch } from '../data/PatientFetch';
 import { Patient } from '../models/Patient';
+import { Server } from '../models/Server';
 
 // Props for DataRepository
 interface props {
@@ -18,7 +19,7 @@ interface props {
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
+ 
 // DataRepository component displays the test server, patient, and button to collect data
 const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers,
   selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient,
@@ -95,7 +96,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                 <option value=''>Select a Patient...</option>
                 {patients.map((patient, index) => (
                   <option key={index} value={patient?.id || ''}>
-                    {patient?.display}
+                    { PatientFetch.buildUniquePatientIdentifier(patient) }
                   </option>
                 ))}
               </select>
