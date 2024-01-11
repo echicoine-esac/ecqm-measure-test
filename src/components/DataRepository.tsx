@@ -19,19 +19,7 @@ interface props {
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DataRepository: React.FC<props> = ({
-  showDataRepo,
-  setShowDataRepo,
-  servers,
-  selectedDataRepo,
-  patients,
-  fetchPatients,
-  setSelectedPatient,
-  selectedPatient,
-  collectData,
-  loading,
-  setModalShow,
-}) => {
+const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient, collectData, loading, setModalShow, }) => {
   const [patientFilter, setPatientFilter] = useState<string>('');
 
   const filteredPatients = patients.filter((patient) => {
@@ -53,17 +41,11 @@ const DataRepository: React.FC<props> = ({
           )}
           <div className='col-md-1 order-md-3'>
             {showDataRepo ? (
-              <Button
-                data-testid='data-repo-hide-section-button'
-                className='btn btn-primary btn-lg float-right'
-                onClick={(e) => setShowDataRepo(false)}>
+              <Button data-testid='data-repo-hide-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowDataRepo(false)}>
                 Hide
               </Button>
             ) : (
-              <Button
-                data-testid='data-repo-show-section-button'
-                className='btn btn-primary btn-lg float-right'
-                onClick={(e) => setShowDataRepo(true)}>
+              <Button data-testid='data-repo-show-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowDataRepo(true)}>
                 Show
               </Button>
             )}
@@ -78,21 +60,13 @@ const DataRepository: React.FC<props> = ({
             </div>
             <div className='col-md-6 order-md-2'>
               <label>Patient (optional)</label>
-              <input
-                type='text'
-                className='form-control'
-                placeholder='Filter patients...'
-                value={patientFilter}
-                onChange={(e) => setPatientFilter(e.target.value)}/>
+              <input type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
+                onChange={(e) => setPatientFilter(e.target.value)} />
             </div>
           </div>
           <div className='row'>
             <div className='col-md-5 order-md-1'>
-              <select
-                data-testid='data-repo-server-dropdown'
-                className='custom-select d-block w-100'
-                id='server'
-                value={selectedDataRepo!.baseUrl}
+              <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo!.baseUrl}
                 onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                 {servers.map((server, index) => (
@@ -101,22 +75,14 @@ const DataRepository: React.FC<props> = ({
               </select>
             </div>
             <div className='col-md-1 order-md-2'>
-              <OverlayTrigger
-                placement={'top'}
-                overlay={
-                  <Tooltip>Add an Endpoint</Tooltip>
-                }              >
-                <Button variant='outline-primary' onClick={() => setModalShow(true)}>
-                  +
-                </Button>
+              <OverlayTrigger placement={'top'} overlay={
+                <Tooltip>Add an Endpoint</Tooltip>
+              }>
+                <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
               </OverlayTrigger>
             </div>
             <div className='col-md-6 order-md-2'>
-              <select
-                data-testid='data-repo-patient-dropdown'
-                className='custom-select d-block w-100'
-                id='patient'
-                value={selectedPatient?.id || ''}
+              <select data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
                 onChange={(e) => {
                   const selectedPatientId = e.target.value;
                   const selectedPatientObject = patients.find(
@@ -136,18 +102,14 @@ const DataRepository: React.FC<props> = ({
             <div className='col-md-5 order-md-2'>
               <br />
               {loading ? (
-                <Button
-                  data-testid='data-repo-collect-data-button-spinner'
-                  className='w-100 btn btn-primary btn-lg'
-                  id='evaluate'
-                  disabled={loading}>
+                <Button data-testid='data-repo-collect-data-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
                   <Spinner
                     as='span'
                     variant='light'
                     size='sm'
                     role='status'
                     aria-hidden='true'
-                    animation='border'/>
+                    animation='border' />
                   Loading...
                 </Button>
               ) : (
@@ -157,8 +119,7 @@ const DataRepository: React.FC<props> = ({
                   id='evaluate'
                   disabled={loading}
                   onClick={(e) => collectData()}>
-                  Collect Data
-                </Button>
+                  Collect Data</Button>
               )}
             </div>
           </div>
