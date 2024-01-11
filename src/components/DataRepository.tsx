@@ -60,8 +60,6 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
             </div>
             <div className='col-md-6 order-md-2'>
               <label>Patient (optional)</label>
-              <input type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
-                onChange={(e) => setPatientFilter(e.target.value)} />
             </div>
           </div>
           <div className='row'>
@@ -98,6 +96,8 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                   </option>
                 ))}
               </select>
+              <input type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
+                onChange={(e) => setPatientFilter(e.target.value)} />
             </div>
             <div className='col-md-5 order-md-2'>
               <br />

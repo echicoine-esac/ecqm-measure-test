@@ -210,10 +210,12 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     try {
+      setLoading(true);
       setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken));
     } catch (error: any) {
       reportErrorToUser('setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken))', error);
     }
+    setLoading(false);
   };
 
   // Function for calling the server to perform the measure evaluation
