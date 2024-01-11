@@ -49,15 +49,15 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         if (endDate) this.endDate = endDate;
     }
 
-    public getUrl(): string {
+    public getUrl(): Promise<string> {
         if (this.selectedPatient !== undefined && this.selectedPatient.id) {
-            return StringUtils.format(Constants.evaluateMeasureWithPatientFetchURL,
+            return Promise.resolve(StringUtils.format(Constants.evaluateMeasureWithPatientFetchURL,
                 this.selectedServer?.baseUrl, this.selectedMeasure,
-                this.selectedPatient.id, this.startDate, this.endDate);
+                this.selectedPatient.id, this.startDate, this.endDate));
         } else {
-            return StringUtils.format(Constants.evaluateMeasureFetchURL,
+            return Promise.resolve(StringUtils.format(Constants.evaluateMeasureFetchURL,
                 this.selectedServer?.baseUrl, this.selectedMeasure,
-                this.startDate, this.endDate);
+                this.startDate, this.endDate));
             
         }
     }

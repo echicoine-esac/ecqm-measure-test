@@ -20,8 +20,8 @@ export class MeasureFetch extends AbstractDataFetch {
         this.url = url;
     }
 
-    public getUrl(): string {
-        return this.url + Constants.measureUrlEnding;
+    public getUrl(): Promise<string> {
+        return Promise.resolve(this.url + Constants.measureUrlEnding);
     }
 
     protected processReturnedData(data: any) {

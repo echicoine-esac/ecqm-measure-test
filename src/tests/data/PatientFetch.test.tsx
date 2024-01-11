@@ -23,7 +23,7 @@ test('required properties check', () => {
 test('get patients mock', async () => {
     const patientFetch = new PatientFetch(url);
     const mockJsonPatientsData = jsonTestPatientsData;
-    fetchMock.once(patientFetch.getUrl(),
+    fetchMock.once(await patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientsData)
         , { method: 'GET' });
 
@@ -37,7 +37,7 @@ test('get patients mock', async () => {
 test('get group patients mock', async () => {
     const patientFetch = new PatientFetch(url);
     const mockJsonPatientsData = jsonTestPatientsGroupData;
-    fetchMock.once(patientFetch.getUrl(),
+    fetchMock.once(await patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientsData)
         , { method: 'GET' });
     let patientList: string[] = await patientFetch.fetchData('')
@@ -52,7 +52,7 @@ test('get patients mock function error', async () => {
     let errorCatch = '';
     const patientFetch = new PatientFetch(url);
 
-    fetchMock.once(patientFetch.getUrl(), {
+    fetchMock.once(await patientFetch.getUrl(), {
         throws: new Error(errorMsg)
     });
 
@@ -72,7 +72,7 @@ test('get patients mock return error', async () => {
     let errorCatch = '';
     const patientFetch = new PatientFetch(url);
 
-    fetchMock.once(patientFetch.getUrl(), 400);
+    fetchMock.once(await patientFetch.getUrl(), 400);
 
     try {
         await patientFetch.fetchData('')

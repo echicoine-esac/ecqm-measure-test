@@ -13,22 +13,23 @@ export enum FetchType {
 
 export abstract class AbstractDataFetch {
     type: FetchType = FetchType.DEFAULT;
+    requestOptions: any;
 
-    abstract getUrl(): string;
+    abstract getUrl(): Promise<string>;
     protected abstract processReturnedData(data: any): any;
 
     fetchData = async (token: string): Promise<any> => {
         let ret: any;
 
         // Add any token provided to the header
-        const requestOptions = {
+        this.requestOptions = {
             headers: {"Authorization": `Bearer ${token}`}
         };
 
 
         let responseStatusText = '';
 
-        await fetch(this.getUrl(), requestOptions)
+        await fetch(await this.getUrl(), this.requestOptions)
             .then((response) => {
                 responseStatusText = response?.statusText;
                 return response.json();

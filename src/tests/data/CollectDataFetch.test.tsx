@@ -67,7 +67,7 @@ test('get CollectData mock', async () => {
         'endDate',
         selectedPatient);
     const mockJsonCollectDataData = jsonTestCollectDataData;
-    fetchMock.once(collectDataFetch.getUrl(),
+    fetchMock.once(await collectDataFetch.getUrl(),
         JSON.stringify(mockJsonCollectDataData)
         , { method: 'GET' });
     let collectedData: string = await collectDataFetch.fetchData('')
@@ -87,7 +87,7 @@ test('get CollectData mock error', async () => {
         'startDate',
         'endDate',
         selectedPatient);
-    fetchMock.once(collectDataFetch.getUrl(), { throws: new Error(errorMsg) });
+    fetchMock.once(await collectDataFetch.getUrl(), { throws: new Error(errorMsg) });
 
     try {
         await collectDataFetch.fetchData('')
