@@ -10,7 +10,9 @@ export class PatientFetch extends AbstractDataFetch {
     type: FetchType;
     url: string = '';
 
-    constructor(url: string) {
+    totalPatients:number = 5;
+
+    private constructor(url: string) {
         super();
 
         if (!url || url === '') {
@@ -21,30 +23,25 @@ export class PatientFetch extends AbstractDataFetch {
         this.url = url;
     }
 
-    public getUrl(): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            let urlString: string = this.url + Constants.patientUrlEnding + '200';
+    // Use this static method to create an instance and wait for totalPatients to be populated
+    public static async createInstance(url: string): Promise<PatientFetch> {
+        const instance = new PatientFetch(url);
+        await instance.initializeTotalPatients(url);
+        return instance;
+    }
 
-            this.getPatientTotalCount(this.url)
-                .then((result: number) => {
-                    console.log('Total patient count at ' + this.url + ': ' + result);
-                    if (result === 0) {
-                        urlString = this.url + Constants.patientUrlEnding + '200';
-                    } else {
-                        urlString = this.url + Constants.patientUrlEnding + result;
-                    }
-                    console.log('PatientFetch getUrl(): ' + urlString);
-                    resolve(urlString);
-                })
-                .catch((error) => {
-                    reject(error);
-                });
-        });
+    private async initializeTotalPatients(url: string): Promise<void> {
+        // Wait for the fetch call to finish
+        this.totalPatients = await this.getPatientTotalCount(url);
+    }
+
+    public getUrl(): string {
+        return  this.url + Constants.patientUrlEnding + this.totalPatients;
     }
 
     private async getPatientTotalCount(url: string): Promise<number> {
         let patientCount = 0;
-        await fetch(url + "/Patient?_summary=count", this.requestOptions)
+        await fetch(url + Constants.patientTotalCountUrlEnding, this.requestOptions)
             .then((response) => {
                 return response.json();
             })

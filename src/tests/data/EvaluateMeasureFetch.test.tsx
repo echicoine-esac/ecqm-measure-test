@@ -58,7 +58,7 @@ test('get evaluate measures mock', async () => {
         .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
 
     const mockJsonResultsData = jsonTestResultsData;
-    fetchMock.once(await evaluateMeasuresFetch.getUrl(),
+    fetchMock.once(evaluateMeasuresFetch.getUrl(),
         JSON.stringify(mockJsonResultsData)
         , { method: 'GET' });
     let measureData: MeasureData = await evaluateMeasuresFetch.fetchData('');

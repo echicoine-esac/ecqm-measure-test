@@ -34,8 +34,8 @@ export class SubmitDataFetch extends AbstractDataFetch {
         this.collectedData = collectedData;
     }
 
-    public getUrl(): Promise<string> {
-        return Promise.resolve(this.selectedReceiving?.baseUrl + 'Measure/' + this.selectedMeasure + '/$submit-data');
+    public getUrl(): string {
+        return this.selectedReceiving?.baseUrl + 'Measure/' + this.selectedMeasure + '/$submit-data';
     }
 
     protected processReturnedData(data: any) {

@@ -25,6 +25,8 @@ export class Constants {
     public static defaultEndDate = '2019-12-31';
 
     public static patientUrlEnding = 'Patient?_count=';
+    public static patientTotalCountUrlEnding = 'Patient?_summary=count';
+    
     public static measureUrlEnding = 'Measure?_count=200';
 
     public static error_selectKnowledgeRepository = 'Please select a Knowledge Repository server to use';
