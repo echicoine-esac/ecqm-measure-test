@@ -165,6 +165,8 @@ const App: React.FC = () => {
 
   // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
+    resetResults();
+
     setLoading(true);
     if (!knowledgeRepo || !knowledgeRepo.hasOwnProperty('id')) {
       setSelectedKnowledgeRepo(knowledgeRepo);
@@ -206,6 +208,8 @@ const App: React.FC = () => {
 
   // Function for retrieving the patients from the selected server
   const fetchPatients = async (dataRepo: Server) => {
+    resetResults();
+    
     setSelectedDataRepo(dataRepo);
     setShowPopulations(false);
 
