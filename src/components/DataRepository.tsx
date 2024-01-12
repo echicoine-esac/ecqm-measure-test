@@ -91,7 +91,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                 }}>
                 <option value=''>Select a Patient...</option>
                 {filteredPatients.map((patient, index) => (
-                  <option key={index} value={patient?.id || ''}>
+                  <option key={index} value={patient?.id || ''} title={`ID: ${patient?.id || ''}`}>
                     {PatientFetch.buildUniquePatientIdentifier(patient)}
                   </option>
                 ))}
