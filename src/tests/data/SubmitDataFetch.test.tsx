@@ -45,7 +45,7 @@ test('fetchData and processData override', async () => {
 test('submit data mock', async () => {
     const dataServer: Server = Constants.serverTestData[0];
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
-    fetchMock.once(await submitDataFetch.getUrl(), {
+    fetchMock.once(submitDataFetch.getUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: Constants.submitPostTestBody,
@@ -60,7 +60,7 @@ test('submit data mock error 400', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
-    fetchMock.once(await submitDataFetch.getUrl(), 400, { method: 'POST' });
+    fetchMock.once(submitDataFetch.getUrl(), 400, { method: 'POST' });
 
     let errorCatch = '';
     try {
@@ -71,7 +71,7 @@ test('submit data mock error 400', async () => {
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Bad Request');
+    expect(errorCatch).toEqual('Using http://localhost:8123/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Bad Request');
 
 });
 
@@ -79,7 +79,7 @@ test('submit data mock error 500', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
-    fetchMock.once(await submitDataFetch.getUrl(), 500, { method: 'POST' });
+    fetchMock.once(submitDataFetch.getUrl(), 500, { method: 'POST' });
 
     let errorCatch = '';
     try {
@@ -90,7 +90,7 @@ test('submit data mock error 500', async () => {
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Internal Server Error');
+    expect(errorCatch).toEqual('Using http://localhost:8123/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Internal Server Error');
 
 });
 
@@ -102,5 +102,5 @@ test('test urlformat', async () => {
         'selectedMeasure',
         'collectedData');
     expect(submitDataFetch.getUrl())
-        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$submit-data');
+        .toEqual('http://localhost:8123/1/Measure/selectedMeasure/$submit-data');
 });

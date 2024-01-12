@@ -21,9 +21,9 @@ test('OAuthHandler: calls window.open with expected input', async () => {
       //call getAccessCode to trigger process of opening window with speficially crafted authentication url
       await OAuthHandler.getAccessCode(testServer);
 
-      expect(mockWindowOpen).toHaveBeenCalledWith('http://localhost:8080/4/authorize/'
+      expect(mockWindowOpen).toHaveBeenCalledWith('http://localhost:8123/4/authorize/'
             + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
-            + '&redirect_uri=http://localhost:8080/4/'
+            + '&redirect_uri=http://localhost:8123/4/'
             + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getGeneratedStateCode(), '_self', undefined);
 
       fetchMock.restore();
@@ -40,7 +40,7 @@ test('OAuthHandler: fail scenario', async () => {
       try {
             await OAuthHandler.getAccessToken('accessCode', testServer);
       } catch (error: any) {
-            expect(error.message).toEqual('Using http://localhost:8080/4/token/ to retrieve Access Token caused: Not Found');
+            expect(error.message).toEqual('Using http://localhost:8123/4/token/ to retrieve Access Token caused: Not Found');
       }
       fetchMock.restore();
 });

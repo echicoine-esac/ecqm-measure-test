@@ -45,14 +45,14 @@ export class CollectDataFetch extends AbstractDataFetch {
         if (selectedPatient) this.selectedPatient = selectedPatient;
     }
 
-    public getUrl(): Promise<string> {
+    public getUrl(): string {
         let ret = this.selectedDataRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
             '/$collect-data?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
 
         if (this.selectedPatient !== undefined && this.selectedPatient.id) {
             ret = ret + '&subject=' + this.selectedPatient.id;
         }
-        return Promise.resolve(ret);
+        return ret;
     }
 
     protected processReturnedData(data: any) {

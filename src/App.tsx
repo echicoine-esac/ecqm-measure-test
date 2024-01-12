@@ -211,9 +211,10 @@ const App: React.FC = () => {
 
     try {
       setLoading(true);
-      setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken));
+      const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
+      setPatients(await patientFetch.fetchData(accessToken));
     } catch (error: any) {
-      reportErrorToUser('setPatients(await new PatientFetch(dataRepo.baseUrl).fetchData(accessToken))', error);
+      reportErrorToUser('setPatients(await PatientFetch.createInstance(dataRepo.baseUrl).fetchData(accessToken))', error);
     }
     setLoading(false);
   };

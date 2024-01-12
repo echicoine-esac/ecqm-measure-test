@@ -29,9 +29,9 @@ test('given path, should return valid url', () => {
 
 test('HashParamUtils: build authentication url ', async () => {
       const authenticationUrl = HashParamUtils.buildAuthenticationUrl(testServer);
-      expect(authenticationUrl).toEqual('http://localhost:8080/4/authorize/'
+      expect(authenticationUrl).toEqual('http://localhost:8123/4/authorize/'
             + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
-            + '&redirect_uri=http://localhost:8080/4/'
+            + '&redirect_uri=http://localhost:8123/4/'
             + '&scope=photo+offline_access'
             + '&response_type=code'
             + '&state=' + HashParamUtils.getGeneratedStateCode());

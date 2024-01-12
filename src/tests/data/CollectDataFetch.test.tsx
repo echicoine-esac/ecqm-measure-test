@@ -67,7 +67,7 @@ test('get CollectData mock', async () => {
         'endDate',
         selectedPatient);
     const mockJsonCollectDataData = jsonTestCollectDataData;
-    fetchMock.once(await collectDataFetch.getUrl(),
+    fetchMock.once(collectDataFetch.getUrl(),
         JSON.stringify(mockJsonCollectDataData)
         , { method: 'GET' });
     let collectedData: string = await collectDataFetch.fetchData('')
@@ -87,7 +87,7 @@ test('get CollectData mock error', async () => {
         'startDate',
         'endDate',
         selectedPatient);
-    fetchMock.once(await collectDataFetch.getUrl(), { throws: new Error(errorMsg) });
+    fetchMock.once(collectDataFetch.getUrl(), { throws: new Error(errorMsg) });
 
     try {
         await collectDataFetch.fetchData('')
@@ -95,7 +95,7 @@ test('get CollectData mock error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient to retrieve Collect Data caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using http://localhost:8123/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient to retrieve Collect Data caused: Error: this is a test');
 
     fetchMock.restore();
 
@@ -110,7 +110,7 @@ test('test urlformat', async () => {
         'endDate',
         selectedPatient);
     expect(collectDataFetch.getUrl())
-        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient');
+        .toEqual('http://localhost:8123/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient');
 });
 
 test('test urlformat without patient', async () => {
@@ -122,6 +122,6 @@ test('test urlformat without patient', async () => {
         'endDate',
         {display: '', id: ''});
     expect(collectDataFetch.getUrl())
-        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate');
+        .toEqual('http://localhost:8123/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate');
 });
  

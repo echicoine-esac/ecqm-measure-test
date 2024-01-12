@@ -5,7 +5,7 @@ import { MeasureReportGroup } from '../models/MeasureReportGroup';
 import { Population } from '../models/Population';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
-import {Server} from '../models/Server';
+import { Server } from '../models/Server';
 import { Patient } from '../models/Patient';
 
 export class EvaluateMeasureFetch extends AbstractDataFetch {
@@ -43,22 +43,22 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         }
 
         if (selectedServer) this.selectedServer = selectedServer;
-        if (selectedPatient) this.selectedPatient =  selectedPatient;
+        if (selectedPatient) this.selectedPatient = selectedPatient;
         if (selectedMeasure) this.selectedMeasure = selectedMeasure;
         if (startDate) this.startDate = startDate;
         if (endDate) this.endDate = endDate;
     }
 
-    public getUrl(): Promise<string> {
+    public getUrl(): string {
         if (this.selectedPatient !== undefined && this.selectedPatient.id) {
-            return Promise.resolve(StringUtils.format(Constants.evaluateMeasureWithPatientFetchURL,
+            return StringUtils.format(Constants.evaluateMeasureWithPatientFetchURL,
                 this.selectedServer?.baseUrl, this.selectedMeasure,
-                this.selectedPatient.id, this.startDate, this.endDate));
+                this.selectedPatient.id, this.startDate, this.endDate);
         } else {
-            return Promise.resolve(StringUtils.format(Constants.evaluateMeasureFetchURL,
+            return StringUtils.format(Constants.evaluateMeasureFetchURL,
                 this.selectedServer?.baseUrl, this.selectedMeasure,
-                this.startDate, this.endDate));
-            
+                this.startDate, this.endDate);
+
         }
     }
 
@@ -95,4 +95,3 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     }
 
 }
- 

@@ -41,9 +41,9 @@ export class DataRequirementsFetch extends AbstractDataFetch {
         if (endDate) this.endDate = endDate;
     }
 
-    public getUrl(): Promise<string> {
-        return Promise.resolve(this.selectedKnowledgeRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
-        '/$data-requirements?periodStart=' + this.startDate + '&periodEnd=' + this.endDate);
+    public getUrl(): string {
+        return this.selectedKnowledgeRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
+        '/$data-requirements?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
     }
 
     protected processReturnedData(data: any) {
