@@ -169,17 +169,14 @@ const App: React.FC = () => {
       setLoading(false);
       return;
     }
-    // console.log('fetchMeasures, accessCode: ' + HashParamUtils.getAccessCode());
 
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
 
-    // await new Promise(resolve => setTimeout(resolve, 2500));
     if (HashParamUtils.getAccessCode() && HashParamUtils.getAccessCode() !== '') {
       try {
         setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));
       } catch (error: any) {
-        //reportErrorToUser('setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));', error);
         setAccessToken('');
       }
 
@@ -191,7 +188,6 @@ const App: React.FC = () => {
           await OAuthHandler.getAccessCode(knowledgeRepo);
         } catch (error: any) {
           setLoading(false);
-          //reportErrorToUser('await OAuthHandler.getAccessCode(knowledgeRepo)', error);
           return;
         }
       }
@@ -214,7 +210,7 @@ const App: React.FC = () => {
       const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
       setPatients(await patientFetch.fetchData(accessToken));
     } catch (error: any) {
-      reportErrorToUser('setPatients(await PatientFetch.createInstance(dataRepo.baseUrl).fetchData(accessToken))', error);
+      reportErrorToUser('fetchPatients', error);
     }
     setLoading(false);
   };
@@ -313,7 +309,7 @@ const App: React.FC = () => {
       setResults(await dataRequirementsFetch.fetchData(accessToken));
       setLoading(false);
     } catch (error: any) {
-      reportErrorToUser('setResults(await dataRequirementsFetch.fetchData(accessToken));', error);
+      reportErrorToUser('getDataRequirements', error);
       setLoading(false);
     }
 
@@ -350,7 +346,7 @@ const App: React.FC = () => {
       setResults(retJSON);
       setLoading(false);
     } catch (error: any) {
-      reportErrorToUser('const retJSON = await collectDataFetch.fetchData(accessToken);', error);
+      reportErrorToUser('collectData', error);
       setLoading(false);
     }
 
@@ -379,7 +375,7 @@ const App: React.FC = () => {
           selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
-      reportErrorToUser('setResults(await new SubmitDataFetch(selectedReceiving,', error);
+      reportErrorToUser('submitData', error);
       setLoading(false);
     }
 
