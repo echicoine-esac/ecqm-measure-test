@@ -38,7 +38,7 @@ export class Constants {
     public static serverTestData: Server[] = [
         {
             id: 'ec2345-1',
-            baseUrl: 'http://localhost:8123/1/',
+            baseUrl: 'http://localhost:8080/1/',
             authUrl: '',
             tokenUrl: '',
             callbackUrl: '',
@@ -48,7 +48,7 @@ export class Constants {
         },
         {
             id: 'ec2345-2',
-            baseUrl: 'http://localhost:8123/2/',
+            baseUrl: 'http://localhost:8080/2/',
             authUrl: '',
             tokenUrl: '',
             callbackUrl: '',
@@ -58,7 +58,7 @@ export class Constants {
         },
         {
             id: 'ec2345-3',
-            baseUrl: 'http://localhost:8123/3/',
+            baseUrl: 'http://localhost:8080/3/',
             authUrl: '',
             tokenUrl: '',
             callbackUrl: '',
@@ -68,10 +68,10 @@ export class Constants {
         },
         {
             id: 'ec2345-4',
-            baseUrl: 'http://localhost:8123/4/',
-            authUrl: 'http://localhost:8123/4/authorize/',
-            tokenUrl: 'http://localhost:8123/4/token/',
-            callbackUrl: 'http://localhost:8123/4/',
+            baseUrl: 'http://localhost:8080/4/',
+            authUrl: 'http://localhost:8080/4/authorize/',
+            tokenUrl: 'http://localhost:8080/4/token/',
+            callbackUrl: 'http://localhost:8080/4/',
             clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
             clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
             scope: 'photo+offline_access'

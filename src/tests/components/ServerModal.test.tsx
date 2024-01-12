@@ -18,7 +18,7 @@ test('ServerModel form validation - base url starts with ', async () => {
         />
     );
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
-    await userEvent.type(baseUrlTextField, 'localhost:8123/fhir');
+    await userEvent.type(baseUrlTextField, 'localhost:8080/fhir');
     
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
@@ -46,10 +46,10 @@ test('ServerModel form validation - auth url starts with ', async () => {
     
     const baseUrlText = 'server-model-baseurl-text';
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
-    await userEvent.type(baseUrlTextField, 'http://localhost:8123/fhir/base/');
+    await userEvent.type(baseUrlTextField, 'http://localhost:8080/fhir/base/');
 
     const authUrlTextField: HTMLInputElement = screen.getByTestId(authUrlText);
-    await userEvent.type(authUrlTextField, 'localhost:8123/fhir');
+    await userEvent.type(authUrlTextField, 'localhost:8080/fhir');
     
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
@@ -76,10 +76,10 @@ test('ServerModel form validation - access url starts with', async () => {
     );
     const baseUrlText = 'server-model-baseurl-text';
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
-    await userEvent.type(baseUrlTextField, 'http://localhost:8123/fhir/base/');
+    await userEvent.type(baseUrlTextField, 'http://localhost:8080/fhir/base/');
 
     const accessUrlTextField: HTMLInputElement = screen.getByTestId(accessUrlText);
-    await userEvent.type(accessUrlTextField, 'localhost:8123/fhir');
+    await userEvent.type(accessUrlTextField, 'localhost:8080/fhir');
     
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
@@ -107,7 +107,7 @@ test('ServerModel form validation - base url ends with ', async () => {
     );
     
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
-    await userEvent.type(baseUrlTextField, 'http://localhost:8123/fhir');
+    await userEvent.type(baseUrlTextField, 'http://localhost:8080/fhir');
     
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
@@ -134,10 +134,10 @@ test('ServerModel form validation - auth url ends with ', async () => {
     );
     const baseUrlText = 'server-model-baseurl-text';
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
-    await userEvent.type(baseUrlTextField, 'http://localhost:8123/fhir/base/');
+    await userEvent.type(baseUrlTextField, 'http://localhost:8080/fhir/base/');
 
     const authUrlTextField: HTMLInputElement = screen.getByTestId(authUrlText);
-    await userEvent.type(authUrlTextField, 'http://localhost:8123/fhir');
+    await userEvent.type(authUrlTextField, 'http://localhost:8080/fhir');
     
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
@@ -164,10 +164,10 @@ test('ServerModel form validation - access url ends with', async () => {
     );
     const baseUrlText = 'server-model-baseurl-text';
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
-    await userEvent.type(baseUrlTextField, 'http://localhost:8123/fhir/base/');
+    await userEvent.type(baseUrlTextField, 'http://localhost:8080/fhir/base/');
 
     const accessUrlTextField: HTMLInputElement = screen.getByTestId(accessUrlText);
-    await userEvent.type(accessUrlTextField, 'http://localhost:8123/fhir');
+    await userEvent.type(accessUrlTextField, 'http://localhost:8080/fhir');
     
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
@@ -208,17 +208,17 @@ test('Server Model - createServer called with correct data', async () => {
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
 
-    await userEvent.type(baseUrlTextField, 'http://localhost:8123/baseUrl/');
-    await userEvent.type(authUrlTextField, 'http://localhost:8123/authUrl/');
-    await userEvent.type(accessUrlTextField, 'http://localhost:8123/accessUrl/');
+    await userEvent.type(baseUrlTextField, 'http://localhost:8080/baseUrl/');
+    await userEvent.type(authUrlTextField, 'http://localhost:8080/authUrl/');
+    await userEvent.type(accessUrlTextField, 'http://localhost:8080/accessUrl/');
     await userEvent.type(clientIdTextField, 'clientId');
     await userEvent.type(scopeTextField, 'Scope');
 
     fireEvent.click(submitButtonField);
     expect(createServer).toHaveBeenCalledWith(
-        'http://localhost:8123/baseUrl/',
-        'http://localhost:8123/authUrl/',
-        'http://localhost:8123/accessUrl/',
+        'http://localhost:8080/baseUrl/',
+        'http://localhost:8080/authUrl/',
+        'http://localhost:8080/accessUrl/',
         'clientId',
         '',
         'user/*.readScope');
@@ -252,12 +252,12 @@ test('Server Model - createServer called with only required data', async () => {
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
 
-    await userEvent.type(baseUrlTextField, 'http://localhost:8123/baseUrl/');
+    await userEvent.type(baseUrlTextField, 'http://localhost:8080/baseUrl/');
    
 
     fireEvent.click(submitButtonField);
     expect(createServer).toHaveBeenCalledWith(
-        'http://localhost:8123/baseUrl/',
+        'http://localhost:8080/baseUrl/',
         '',
         '',
         '',

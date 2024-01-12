@@ -90,7 +90,7 @@ test('get DataRequirements mock error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using http://localhost:8123/1/Measure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate to retrieve Data Requirements caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate to retrieve Data Requirements caused: Error: this is a test');
 
     fetchMock.restore();
 

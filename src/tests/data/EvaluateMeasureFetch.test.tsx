@@ -55,7 +55,7 @@ test('get evaluate measures mock', async () => {
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
-        .toEqual('http://localhost:8123/1/Measure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
 
     const mockJsonResultsData = jsonTestResultsData;
     fetchMock.once(evaluateMeasuresFetch.getUrl(),
@@ -75,7 +75,7 @@ test('test urlformat', async () => {
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
-        .toEqual('http://localhost:8123/1/Measure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate');
 
 });
 
@@ -86,7 +86,7 @@ test('test urlformat, no patient', async () => {
         'selectedMeasure', 'startDate', 'endDate');
 
     expect(evaluateMeasuresFetch.getUrl())
-        .toEqual('http://localhost:8123/1/Measure/selectedMeasure/$evaluate-measure?periodStart=startDate&periodEnd=endDate&reportType=subject-list');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?periodStart=startDate&periodEnd=endDate&reportType=subject-list');
 
 });
 

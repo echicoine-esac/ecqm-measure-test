@@ -139,18 +139,18 @@ test('success scenarios: create new server button opens modal', async () => {
   const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
 
-  await userEvent.type(baseUrlTextField, 'http://localhost:8123/baseUrl/');
-  await userEvent.type(authUrlTextField, 'http://localhost:8123/authUrl/');
-  await userEvent.type(accessUrlTextField, 'http://localhost:8123/accessUrl/');
+  await userEvent.type(baseUrlTextField, 'http://localhost:8080/baseUrl/');
+  await userEvent.type(authUrlTextField, 'http://localhost:8080/authUrl/');
+  await userEvent.type(accessUrlTextField, 'http://localhost:8080/accessUrl/');
   await userEvent.type(clientIdTextField, 'clientId');
   await userEvent.type(scopeTextField, 'Scope');
 
   fireEvent.click(submitButtonField);
 
   expect(mockCreateServerFn).toHaveBeenCalledWith(
-    'http://localhost:8123/baseUrl/',
-    'http://localhost:8123/authUrl/',
-    'http://localhost:8123/accessUrl/',
+    'http://localhost:8080/baseUrl/',
+    'http://localhost:8080/authUrl/',
+    'http://localhost:8080/accessUrl/',
     'clientId',
     '',
     'user/*.readScope');
@@ -195,17 +195,17 @@ test('success scenarios: knowledge repository: server with auth url navigates ou
   });
   fetchMock.restore();
 
-  expect(mockWindowOpen).toHaveBeenCalledWith('http://localhost:8123/4/authorize/'
+  expect(mockWindowOpen).toHaveBeenCalledWith('http://localhost:8080/4/authorize/'
     + '?client_id=SKeK4PfHWPFSFzmy0CeD-pe8'
-    + '&redirect_uri=http://localhost:8123/4/'
+    + '&redirect_uri=http://localhost:8080/4/'
     + '&scope=photo+offline_access&response_type=code&state=' + HashParamUtils.getGeneratedStateCode(), '_self', undefined);
 
   const expectedStoredServer = {
     id: 'ec2345-4',
-    baseUrl: 'http://localhost:8123/4/',
-    authUrl: 'http://localhost:8123/4/authorize/',
-    tokenUrl: 'http://localhost:8123/4/token/',
-    callbackUrl: 'http://localhost:8123/4/',
+    baseUrl: 'http://localhost:8080/4/',
+    authUrl: 'http://localhost:8080/4/authorize/',
+    tokenUrl: 'http://localhost:8080/4/token/',
+    callbackUrl: 'http://localhost:8080/4/',
     clientID: 'SKeK4PfHWPFSFzmy0CeD-pe8',
     clientSecret: 'Q_s6HeMPpzjZfNNbtqwFZjvhoXmiw8CPBLp_4tiRiZ_wQLQW',
     scope: 'photo+offline_access'
