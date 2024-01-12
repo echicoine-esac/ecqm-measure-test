@@ -201,7 +201,7 @@ const App: React.FC = () => {
     try {
       setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken));
     } catch (error: any) {
-      reportErrorToUser('setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken))', error);
+      reportErrorToUser('fetchMeasures', error);
     }
     setLoading(false);
   };
@@ -209,7 +209,7 @@ const App: React.FC = () => {
   // Function for retrieving the patients from the selected server
   const fetchPatients = async (dataRepo: Server) => {
     resetResults();
-    
+
     setSelectedDataRepo(dataRepo);
     setShowPopulations(false);
 
