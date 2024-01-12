@@ -18,7 +18,7 @@ test('required properties check', () => {
 test('get measures mock', async () => {
     const measureFetch = new MeasureFetch(url);
     const mockJsonMeasureData = jsonTestMeasureData;
-    fetchMock.once(measureFetch.getUrl(),
+    fetchMock.once(await measureFetch.getUrl(),
         JSON.stringify(mockJsonMeasureData)
         , { method: 'GET' });
     let measureList: Measure[] = await measureFetch.fetchData('');
@@ -31,7 +31,7 @@ test('get measures mock error', async () => {
     let errorCatch = '';
     const measureFetch = new MeasureFetch(url);
 
-    fetchMock.once(measureFetch.getUrl(), {
+    fetchMock.once(await measureFetch.getUrl(), {
         throws: new Error(errorMsg)
     });
 

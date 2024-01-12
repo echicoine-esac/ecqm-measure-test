@@ -45,7 +45,7 @@ test('fetchData and processData override', async () => {
 test('submit data mock', async () => {
     const dataServer: Server = Constants.serverTestData[0];
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
-    fetchMock.once(submitDataFetch.getUrl(), {
+    fetchMock.once(await submitDataFetch.getUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: Constants.submitPostTestBody,
@@ -60,7 +60,7 @@ test('submit data mock error 400', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
-    fetchMock.once(submitDataFetch.getUrl(), 400, { method: 'POST' });
+    fetchMock.once(await submitDataFetch.getUrl(), 400, { method: 'POST' });
 
     let errorCatch = '';
     try {
@@ -79,7 +79,7 @@ test('submit data mock error 500', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
-    fetchMock.once(submitDataFetch.getUrl(), 500, { method: 'POST' });
+    fetchMock.once(await submitDataFetch.getUrl(), 500, { method: 'POST' });
 
     let errorCatch = '';
     try {

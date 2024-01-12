@@ -21,13 +21,42 @@ export class PatientFetch extends AbstractDataFetch {
         this.url = url;
     }
 
-    public getUrl(): string {
-        return this.url + Constants.patientUrlEnding;
+    public getUrl(): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
+            let urlString: string = this.url + Constants.patientUrlEnding + '200';
+
+            this.getPatientTotalCount(this.url)
+                .then((result: number) => {
+                    console.log('Total patient count at ' + this.url + ': ' + result);
+                    if (result === 0) {
+                        urlString = this.url + Constants.patientUrlEnding + '200';
+                    } else {
+                        urlString = this.url + Constants.patientUrlEnding + result;
+                    }
+                    console.log('PatientFetch getUrl(): ' + urlString);
+                    resolve(urlString);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
+
+    private async getPatientTotalCount(url: string): Promise<number> {
+        let patientCount = 0;
+        await fetch(url + "/Patient?_summary=count", this.requestOptions)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                patientCount = data?.total;
+            })
+        return patientCount;
     }
 
     protected processReturnedData(data: any) {
         let patients: Patient[];
-        
+
         if (this.isGroup(data)) {
             patients = this.processAsGroup(data);
         } else {
@@ -41,7 +70,7 @@ export class PatientFetch extends AbstractDataFetch {
             const patientA = PatientFetch.buildUniquePatientIdentifier(a) + '';
             const patientB = PatientFetch.buildUniquePatientIdentifier(b) + '';
             return patientA.localeCompare(patientB);
-          });
+        });
     }
 
     protected isGroup(data: any): boolean {

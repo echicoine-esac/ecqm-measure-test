@@ -63,7 +63,7 @@ test('get DataRequirements mock', async () => {
         'startDate',
         'endDate');
     const mockJsonDataRequirementsData = jsonTestDataRequirementsData;
-    fetchMock.once(dataRequirementsFetch.getUrl(),
+    fetchMock.once(await dataRequirementsFetch.getUrl(),
         JSON.stringify(mockJsonDataRequirementsData)
         , { method: 'GET' });
     let collectedData: string = await dataRequirementsFetch.fetchData('')
@@ -82,7 +82,7 @@ test('get DataRequirements mock error', async () => {
         'selectedMeasure',
         'startDate',
         'endDate');
-    fetchMock.once(dataRequirementsFetch.getUrl(), { throws: new Error(errorMsg) });
+    fetchMock.once(await dataRequirementsFetch.getUrl(), { throws: new Error(errorMsg) });
 
     try {
         await dataRequirementsFetch.fetchData('')
