@@ -9,11 +9,27 @@ const url = 'foo/';
 
 beforeEach(() => {
     fetchMock.restore(); // Clear mock routes before each test
+    fetchMock.mock('foo/Patient?_summary=count', `{
+        "resourceType": "Bundle",
+        "id": "604e7395-8850-4a15-a2f2-67a1d334b2d0",
+        "meta": {
+          "lastUpdated": "2024-01-12T16:42:57.392+00:00",
+          "tag": [ {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationValue",
+            "code": "SUBSETTED",
+            "display": "Resource encoded in summary mode"
+          } ]
+        },
+        "type": "searchset",
+        "total": 200
+      }`);
 });
 
-test('required properties check', () => {
+ 
+
+test('required properties check', async () => {
     try {
-        new PatientFetch('')
+        const patientFetch = await PatientFetch.createInstance('');
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'url'))
     }
@@ -21,9 +37,9 @@ test('required properties check', () => {
 });
 
 test('get patients mock', async () => {
-    const patientFetch = new PatientFetch(url);
+    const patientFetch = await PatientFetch.createInstance(url);
     const mockJsonPatientsData = jsonTestPatientsData;
-    fetchMock.once(await patientFetch.getUrl(),
+    fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientsData)
         , { method: 'GET' });
 
@@ -35,9 +51,9 @@ test('get patients mock', async () => {
 });
 
 test('get group patients mock', async () => {
-    const patientFetch = new PatientFetch(url);
+    const patientFetch = await PatientFetch.createInstance(url);
     const mockJsonPatientsData = jsonTestPatientsGroupData;
-    fetchMock.once(await patientFetch.getUrl(),
+    fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientsData)
         , { method: 'GET' });
     let patientList: string[] = await patientFetch.fetchData('')
@@ -50,9 +66,9 @@ test('get group patients mock', async () => {
 test('get patients mock function error', async () => {
     const errorMsg = 'this is a test'
     let errorCatch = '';
-    const patientFetch = new PatientFetch(url);
+    const patientFetch = await PatientFetch.createInstance(url);
 
-    fetchMock.once(await patientFetch.getUrl(), {
+    fetchMock.once(patientFetch.getUrl(), {
         throws: new Error(errorMsg)
     });
 
@@ -70,9 +86,9 @@ test('get patients mock function error', async () => {
 
 test('get patients mock return error', async () => {
     let errorCatch = '';
-    const patientFetch = new PatientFetch(url);
+    const patientFetch = await PatientFetch.createInstance(url);
 
-    fetchMock.once(await patientFetch.getUrl(), 400);
+    fetchMock.once(patientFetch.getUrl(), 400);
 
     try {
         await patientFetch.fetchData('')
@@ -86,7 +102,7 @@ test('get patients mock return error', async () => {
 });
 
 test('test urlformat', async () => {
-    let patientFetch = await new PatientFetch(url);
+    let patientFetch = await PatientFetch.createInstance(url);
     expect(patientFetch.getUrl())
         .toEqual('foo/Patient?_count=200');
 });

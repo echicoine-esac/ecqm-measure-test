@@ -15,7 +15,7 @@ export abstract class AbstractDataFetch {
     type: FetchType = FetchType.DEFAULT;
     requestOptions: any;
 
-    abstract getUrl(): Promise<string>;
+    abstract getUrl(): string;
     protected abstract processReturnedData(data: any): any;
 
     fetchData = async (token: string): Promise<any> => {
@@ -29,7 +29,7 @@ export abstract class AbstractDataFetch {
 
         let responseStatusText = '';
 
-        await fetch(await this.getUrl(), this.requestOptions)
+        await fetch(this.getUrl(), this.requestOptions)
             .then((response) => {
                 responseStatusText = response?.statusText;
                 return response.json();
