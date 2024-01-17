@@ -76,7 +76,6 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                 {servers.map((server, index) => (
                   <option key={index}
                     title={ServerUtils.buildDropdownTooltip(server)}
-                    aria-describedby={ServerUtils.buildDropdownTooltip(server).replace('\t', '').replace('\n', ', ')}
                   >{server!.baseUrl}</option>
 
                 ))}
@@ -103,7 +102,6 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                 {filteredPatients.map((patient, index) => (
                   <option key={index} value={patient?.id || ''} 
                   title={buildPatientDropdownTooltip(patient)}
-                  aria-describedby={buildPatientDropdownTooltip(patient).replace('\t', '').replace('\n', ', ')}
                   >
                     {PatientFetch.buildUniquePatientIdentifier(patient)}
                   </option>

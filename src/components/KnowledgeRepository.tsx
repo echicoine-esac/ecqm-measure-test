@@ -75,7 +75,6 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                 {servers.map((server: any, index: React.Key | null | undefined) => (
                   <option key={index}
                     title={ServerUtils.buildDropdownTooltip(server)}
-                    aria-describedby={ServerUtils.buildDropdownTooltip(server).replace('\t', '').replace('\n', ', ')}
                   >{server!.baseUrl}</option>
                 ))}
               </select>
@@ -94,7 +93,6 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                 {measures.map((measure, index) => (
                   <option key={index}
                     title={buildMeasureDropdownTooltip(measure)}
-                    aria-describedby={buildMeasureDropdownTooltip(measure).replace('\t', '').replace('\n', ', ')}
                   >{measure!.name}</option>
                 ))}
               </select>
