@@ -3,6 +3,8 @@ import React from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { Measure } from '../models/Measure';
 import { Server } from '../models/Server';
+import { StringUtils } from '../utils/StringUtils';
+import { Constants } from '../constants/Constants';
 
 // Props for KnowledgeRepository
 interface props {
@@ -66,7 +68,11 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                           <option value={'Select a Server...'}>
                           Select a Server...</option>
                           {servers.map((server: any, index: React.Key | null | undefined) => (
-                              <option key={index}>{server!.baseUrl}</option>
+                              <option key={index}
+                              title={
+                                StringUtils.generateTitleString(server, Constants.ignoredServerToolTipProperties)
+                              }
+                              >{server!.baseUrl}</option>
                           ))}
                       </select>
                     </div>
@@ -82,7 +88,11 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
                         onChange={(e) => setSelectedMeasure(e.target.value)}>
                       <option value=''>Select a Measure...</option>
                         {measures.map((measure, index) => (
-                          <option key={index}>{measure!.name}</option>
+                          <option key={index}
+                          title={
+                            StringUtils.generateTitleString(measure, [])
+                          }
+                          >{measure!.name}</option>
                         ))}
                       </select>
                     </div>

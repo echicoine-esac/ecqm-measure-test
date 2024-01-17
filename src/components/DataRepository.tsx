@@ -4,6 +4,8 @@ import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { PatientFetch } from '../data/PatientFetch';
 import { Patient } from '../models/Patient';
 import { Server } from '../models/Server';
+import { StringUtils } from '../utils/StringUtils';
+import { Constants } from '../constants/Constants';
 
 interface props {
   showDataRepo: boolean;
@@ -68,7 +70,12 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                 onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                 {servers.map((server, index) => (
-                  <option key={index}>{server!.baseUrl}</option>
+                  <option key={index} value={server?.id || ''}
+                    title={
+                      StringUtils.generateTitleString(server, Constants.ignoredServerToolTipProperties)
+                    }
+                  >{server!.baseUrl}</option>
+
                 ))}
               </select>
             </div>
@@ -91,7 +98,11 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                 }}>
                 <option value=''>Select a Patient...</option>
                 {filteredPatients.map((patient, index) => (
-                  <option key={index} value={patient?.id || ''}>
+                  <option key={index} value={patient?.id || ''}
+                    title={
+                      StringUtils.generateTitleString(patient, [])
+                    }
+                  >
                     {PatientFetch.buildUniquePatientIdentifier(patient)}
                   </option>
                 ))}

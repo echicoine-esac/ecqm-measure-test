@@ -2,6 +2,8 @@ import React from 'react';
 import {Button, OverlayTrigger, Spinner, Tooltip} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Server} from '../models/Server';
+import { StringUtils } from '../utils/StringUtils';
+import { Constants } from '../constants/Constants';
 
 // Props for ReceivingSystem
 interface props {
@@ -48,7 +50,11 @@ const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, ser
                     onChange={(e) => setSelectedReceiving(servers[e.target.selectedIndex - 1]!)}>
                     <option value=''>Select a Server...</option>
                     {servers.map((server, index) => (
-                      <option key={index}>{server!.baseUrl}</option>
+                      <option key={index}
+                      title={
+                        StringUtils.generateTitleString(server, Constants.ignoredServerToolTipProperties)
+                      }
+                      >{server!.baseUrl}</option>
                     ))}
                   </select>
                 </div>
