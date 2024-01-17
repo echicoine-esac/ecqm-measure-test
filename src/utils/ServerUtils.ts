@@ -90,5 +90,23 @@ export class ServerUtils {
         await ServerUtils.refreshServerList();
     }
 
+
+    public static buildDropdownTooltip(server:any): string{
+        if (!server){
+            return '';
+        }
+
+        let title:string = 'Base URL:\t' + (server?.baseUrl ?? '');
+        
+        if (server?.authUrl) title = title + '\nAuthorization URL:\t' + (server?.authUrl ?? ''); 
+        if (server?.tokenUrl) title = title + '\nToken URL:\t' + (server?.tokenUrl ?? '');
+        if (server?.clientID) title = title + '\nClient ID:\t' + (server?.clientID ?? '');
+        if (server?.clientSecret) title = title + '\nClient Secret:\t' + (server?.clientSecret ?? '');
+        if (server?.scope) title = title + '\nScope:\t' + (server?.scope ?? '');
+
+        return title;
+    }
+
+    
 }
 

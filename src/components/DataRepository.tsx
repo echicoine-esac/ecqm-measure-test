@@ -4,8 +4,7 @@ import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { PatientFetch } from '../data/PatientFetch';
 import { Patient } from '../models/Patient';
 import { Server } from '../models/Server';
-import { StringUtils } from '../utils/StringUtils';
-import { Constants } from '../constants/Constants';
+import { ServerUtils } from '../utils/ServerUtils';
 
 interface props {
   showDataRepo: boolean;
@@ -28,6 +27,11 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
     const patDisplay = PatientFetch.buildUniquePatientIdentifier(patient);
     return patDisplay && patDisplay.toLowerCase().includes(patientFilter.toLowerCase());
   });
+
+
+  const buildPatientDropdownTooltip = (patient:any): string => {
+    return 'Name:\t' + (patient?.display ?? '')  + '\nID:\t' + (patient?.id ?? '');  
+  }
 
   return (
     <div className='card'>
@@ -70,10 +74,9 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                 onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                 {servers.map((server, index) => (
-                  <option key={index} value={server?.id || ''}
-                    title={
-                      StringUtils.generateTitleString(server, Constants.ignoredServerToolTipProperties)
-                    }
+                  <option key={index}
+                    title={ServerUtils.buildDropdownTooltip(server)}
+                    aria-describedby={ServerUtils.buildDropdownTooltip(server).replace('\t', '').replace('\n', ', ')}
                   >{server!.baseUrl}</option>
 
                 ))}
@@ -98,10 +101,9 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                 }}>
                 <option value=''>Select a Patient...</option>
                 {filteredPatients.map((patient, index) => (
-                  <option key={index} value={patient?.id || ''}
-                    title={
-                      StringUtils.generateTitleString(patient, [])
-                    }
+                  <option key={index} value={patient?.id || ''} 
+                  title={buildPatientDropdownTooltip(patient)}
+                  aria-describedby={buildPatientDropdownTooltip(patient).replace('\t', '').replace('\n', ', ')}
                   >
                     {PatientFetch.buildUniquePatientIdentifier(patient)}
                   </option>
