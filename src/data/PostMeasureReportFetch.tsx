@@ -3,40 +3,32 @@ import { StringUtils } from '../utils/StringUtils';
 import { Server } from '../models/Server';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
-export class SubmitDataFetch extends AbstractDataFetch {
+export class PostMeasureReportFetch extends AbstractDataFetch {
     type: FetchType;
 
-    selectedMeasureEvaluation: Server | undefined;
-    selectedMeasure: string = '';
-    collectedData: string = '';
+    selectedReceiving: Server | undefined;
+    measureReport: string = '';
 
-    constructor(selectedMeasureEvaluation: Server | undefined,
-        selectedMeasure: string,
-        collectedData: string) {
-
+    constructor(selectedReceiving: Server | undefined,
+        measureReport: string) {
 
         super();
-        this.type = FetchType.SUBMIT_DATA;
+        this.type = FetchType.POST_MEASURE;
 
-        if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
-            throw new Error(StringUtils.format(Constants.missingProperty, 'selectedMeasureEvaluation'));
+        if (!selectedReceiving || selectedReceiving.baseUrl === '') {
+            throw new Error(StringUtils.format(Constants.missingProperty, 'selectedReceiving'));
         }
 
-        if (!selectedMeasure || selectedMeasure === '') {
-            throw new Error(StringUtils.format(Constants.missingProperty, 'selectedMeasure'));
+        if (!measureReport || measureReport === '') {
+            throw new Error(StringUtils.format(Constants.missingProperty, 'measureReport'));
         }
 
-        if (!collectedData || collectedData === '') {
-            throw new Error(StringUtils.format(Constants.missingProperty, 'collectedData'));
-        }
-
-        this.selectedMeasureEvaluation = selectedMeasureEvaluation;
-        this.selectedMeasure = selectedMeasure;
-        this.collectedData = collectedData;
+        this.selectedReceiving = selectedReceiving;
+        this.measureReport = measureReport;
     }
 
     public getUrl(): string {
-        return this.selectedMeasureEvaluation?.baseUrl + 'Measure/' + this.selectedMeasure + '/$submit-data';
+        return this.selectedReceiving?.baseUrl + 'MeasureReport/';
     }
 
     protected processReturnedData(data: any) {
@@ -48,7 +40,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
             method: 'POST',
             headers: { 'Content-Type': 'application/fhir+json',
                 "Authorization": `Bearer ${token}`},
-            body: this.collectedData
+            body: this.measureReport
         };
 
         let ret = '';
@@ -75,7 +67,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
     }
 
     fetchData = async (): Promise<string> => {
-        return Constants.submitDataFetchDataError;
+        return Constants.measurePostedFetchDataError;
     }
 }
 

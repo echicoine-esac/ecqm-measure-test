@@ -3,48 +3,48 @@ import {Button, OverlayTrigger, Spinner, Tooltip} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Server} from '../models/Server';
 
-// Props for ReceivingSystem
+// Props for MeasureEvaluation
 interface props {
-  showReceiving: boolean;
-  setShowReceiving: React.Dispatch<React.SetStateAction<boolean>>;
+  showMeasureEvaluation: boolean;
+  setShowMeasureEvaluation: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
-  setSelectedReceiving: React.Dispatch<React.SetStateAction<Server>>;
-  selectedReceiving: Server | undefined;
-  postMeasureReport: () => void;
+  setSelectedMeasureEvaluation: React.Dispatch<React.SetStateAction<Server>>;
+  selectedMeasureEvaluation: Server | undefined;
+  submitData: () => void;
+  evaluateMeasure: () => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-// ReceivingSystem component displays the fields for selecting and using the receiving system
-const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, servers, setSelectedReceiving,
-    selectedReceiving, postMeasureReport, loading, setModalShow }) => {
+// MeasureEvaluation component displays the fields for selecting and using the measure evaluation system
+const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation, selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow }) => {
     return (
       <div className='card'>
         <div className='card-header'>
-          Receiving System
-          {showReceiving ? (
+          Measure Evaluation Service
+          {showMeasureEvaluation ? (
             <Button data-testid='rec-sys-hide-section-button' className='btn btn-primary btn-lg float-right' 
-            onClick={(e) => setShowReceiving(false)}>
+            onClick={(e) => setShowMeasureEvaluation(false)}>
               Hide
             </Button>
           ) : (
             <Button data-testid='rec-sys-show-section-button' className='btn btn-primary btn-lg float-right' 
-            onClick={(e) => setShowReceiving(true)}>
+            onClick={(e) => setShowMeasureEvaluation(true)}>
               Show
             </Button>
           )}
         </div>
-          {showReceiving ? (
+          {showMeasureEvaluation ? (
             <div className='card-body'>
               <div className='row'>
                 <div className='col-md-6 order-md-1'>
-                  <label>Receiving System Server</label>
+                  <label>Measure Evaluation Server</label>
                 </div>
               </div>
               <div className='row'>
                 <div className='col-md-5 order-md-1'>
-                  <select data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedReceiving!.baseUrl}
-                    onChange={(e) => setSelectedReceiving(servers[e.target.selectedIndex - 1]!)}>
+                  <select data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedMeasureEvaluation!.baseUrl}
+                    onChange={(e) => setSelectedMeasureEvaluation(servers[e.target.selectedIndex - 1]!)}>
                     <option value=''>Select a Server...</option>
                     {servers.map((server, index) => (
                       <option key={index}>{server!.baseUrl}</option>
@@ -75,8 +75,28 @@ const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, ser
                     </Button>
                   ):(
                     <Button data-testid='rec-sys-submit-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
-                      onClick={(e) => postMeasureReport()}>
-                        Post Measure Report
+                      onClick={(e) => submitData()}>
+                        Submit Data
+                    </Button>
+                  )}
+                </div>
+                <div className='col-md-5 order-md-2'>
+                  <br/>
+                  {loading ? (
+                    <Button data-testid='rec-sys-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
+                      <Spinner
+                        as='span'
+                        variant='light'
+                        size='sm'
+                        role='status'
+                        aria-hidden='true'
+                        animation='border'/>
+                        Loading...
+                    </Button>
+                  ):(
+                    <Button  data-testid='rec-sys-evaluate-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
+                      onClick={(e) => evaluateMeasure()}>
+                        Evaluate Measure
                     </Button>
                   )}
                 </div>
@@ -89,4 +109,4 @@ const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, ser
     );
 };
 
-export default ReceivingSystem;
+export default MeasureEvaluation;

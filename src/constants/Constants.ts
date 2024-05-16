@@ -5,11 +5,13 @@ export class Constants {
     public static unreachableURL = 'The target URL is unreachable: '
     public static fetchError = 'Using {0} to retrieve {1} caused: {2}';
     public static error_receivingSystemServer = 'Please select a Receiving System server to use';
+    public static error_measureEvaluationServer = 'Please select a Measure Evaluation server to use';
     public static error_selectTestServer = 'Please select a Test Server to use';
     public static error_selectMeasure = 'Please select a Measure to evaluate';
     public static error_selectMeasureDR = 'Please select a Measure to get the data requirements for';
     public static error_selectDataRepository = 'Please select a Data Repository server to use';
     public static error_selectMeasureDataCollection = 'Please select a Measure to collect the data for';
+    public static error_generateMeasureReport = 'Please evaluate a Measure to generate a MeasureReport to post';
     
     public static error_url = 'Please provide a valid URL: ';
     public static error_urlStartsWith = 'Must start with http:// or https://';
@@ -21,8 +23,8 @@ export class Constants {
     public static evaluateMeasureFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&reportType=subject-list';
     public static evaluateMeasureWithPatientFetchURL = '{0}Measure/{1}/$evaluate-measure?subject={2}&periodStart={3}&periodEnd={4}';
 
-    public static defaultStartDate = '2019-01-01';
-    public static defaultEndDate = '2019-12-31';
+    public static defaultStartDate = '2025-01-01';
+    public static defaultEndDate = '2025-12-31';
 
     public static patientUrlEnding = 'Patient?_count=';
     public static patientTotalCountUrlEnding = 'Patient?_summary=count';
@@ -32,7 +34,10 @@ export class Constants {
     public static error_selectKnowledgeRepository = 'Please select a Knowledge Repository server to use';
 
     public static dataSubmitted = 'Data Submitted';
-    public static submitDataFetchDataError = 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.'
+    public static submitDataFetchDataError = 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.';
+
+    public static measurePosted = 'Measure Posted';
+    public static measurePostedFetchDataError = 'There was an error posting the measure';
 
     //testing purposes:
     public static serverTestData: Server[] = [

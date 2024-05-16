@@ -8,7 +8,8 @@ export enum FetchType {
     EVALUATE_MEASURE = 'Evaluate Measure',
     DATA_REQUIREMENTS = 'Data Requirements',
     COLLECT_DATA = 'Collect Data',
-    SUBMIT_DATA = 'Submit Data'
+    SUBMIT_DATA = 'Submit Data',
+    POST_MEASURE = 'Post Measure Report'
 };
 
 export abstract class AbstractDataFetch {

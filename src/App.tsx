@@ -4,6 +4,7 @@ import DataRepository from './components/DataRepository';
 import KnowledgeRepository from './components/KnowledgeRepository';
 import LoginModal from './components/LoginModal';
 import Populations from './components/Populations';
+import MeasureEvaluation from "./components/MeasureEvaluation";
 import ReceivingSystem from './components/ReceivingSystem';
 import ReportingPeriod from './components/ReportingPeriod';
 import Results from './components/Results';
@@ -12,6 +13,7 @@ import { Constants } from './constants/Constants';
 import { CollectDataFetch } from './data/CollectDataFetch';
 import { DataRequirementsFetch } from './data/DataRequirementsFetch';
 import { EvaluateMeasureFetch } from './data/EvaluateMeasureFetch';
+import { PostMeasureReportFetch } from './data/PostMeasureReportFetch';
 import { MeasureFetch } from './data/MeasureFetch';
 import { PatientFetch } from './data/PatientFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
@@ -58,6 +60,16 @@ const App: React.FC = () => {
     clientSecret: '',
     scope: ''
   });
+  const [selectedMeasureEvaluation, setSelectedMeasureEvaluation] = useState<Server>({
+    id: '',
+    baseUrl: '',
+    authUrl: '',
+    tokenUrl: '',
+    callbackUrl: '',
+    clientID: '',
+    clientSecret: '',
+    scope: ''
+  });
   const [selectedReceiving, setSelectedReceiving] = useState<Server>({
     id: '',
     baseUrl: '',
@@ -76,6 +88,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showKnowledgeRepo, setShowKnowledgeRepo] = useState<boolean>(true);
   const [showDataRepo, setShowDataRepo] = useState<boolean>(false);
+  const [showMeasureEvaluation, setShowMeasureEvaluation] = useState<boolean>(false);
   const [showReceiving, setShowReceiving] = useState<boolean>(false);
   const [showPopulations, setShowPopulations] = useState<boolean>(false);
   const [serverModalShow, setServerModalShow] = useState<boolean>(false);
@@ -96,6 +109,7 @@ const App: React.FC = () => {
 
   // Saved data
   const [collectedData, setCollectedData] = useState<string>('');
+  const [measureReport, setMeasureReport] = useState<string>('');
 
   // Handle OAuth redirect
   const [accessToken, setAccessToken] = useState<string>('');
@@ -228,8 +242,8 @@ const App: React.FC = () => {
     resetResults();
 
     // Make sure all required elements are set
-    if (!selectedReceiving || selectedReceiving.baseUrl === '') {
-      setResults(Constants.error_receivingSystemServer);
+    if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
+      setResults(Constants.error_measureEvaluationServer);
       return;
     }
     if (selectedMeasure === '') {
@@ -248,7 +262,7 @@ const App: React.FC = () => {
       }
     }
 
-    const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedReceiving,
+    const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluation,
       selectedPatient, selectedMeasure, startDate, endDate)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
@@ -260,7 +274,9 @@ const App: React.FC = () => {
       if (measureData.resourceType === 'OperationOutcome') {
         setResults(JSON.stringify(measureData, undefined, 2));
       } else {
-        setResults(JSON.stringify(measureData.jsonBody, undefined, 2));
+        const retJSON = JSON.stringify(measureData.jsonBody, undefined, 2);
+        setMeasureReport(retJSON);
+        setResults(retJSON);
         // Iterate through the population names to set the state
         const popNames = measureData.popNames;
         const counts = measureData.counts;
@@ -373,8 +389,8 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (!selectedReceiving) {
-      setResults(Constants.error_selectReceivingSystemServer);
+    if (!selectedMeasureEvaluation) {
+      setResults(Constants.error_measureEvaluationServer);
       return;
     }
     if (!selectedMeasure) {
@@ -385,16 +401,43 @@ const App: React.FC = () => {
     // Set loading to true for spinner
     setLoading(true);
 
-
     try {
-      setResults(await new SubmitDataFetch(selectedReceiving,
+      setResults(await new SubmitDataFetch(selectedMeasureEvaluation,
         selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
       reportErrorToUser('submitData', error);
       setLoading(false);
     }
+  };
 
+  // Function for posting the measure report to the receiving server
+  const postMeasureReport = async () => {
+    resetResults();
+
+    setShowPopulations(false);
+
+    // Make sure all required elements are set
+    if (!selectedReceiving) {
+      setResults(Constants.error_receivingSystemServer);
+      return;
+    }
+    if (!measureReport) {
+      setResults(Constants.error_generateMeasureReport);
+      return;
+    }
+
+    // Set loading to true for spinner
+    setLoading(true);
+
+    try {
+      setResults(await new PostMeasureReportFetch(selectedReceiving,
+          measureReport).submitData(accessToken));
+      setLoading(false);
+    } catch (error: any) {
+      reportErrorToUser('postMeasure', error);
+      setLoading(false);
+    }
   };
 
   // Function for clearing all population counts
@@ -434,10 +477,15 @@ const App: React.FC = () => {
         selectedPatient={selectedPatient}
         collectData={collectData} loading={loading} setModalShow={setServerModalShow} />
       <br />
+      <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
+                         servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}
+                         selectedMeasureEvaluation={selectedMeasureEvaluation} submitData={submitData}
+                         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow} />
+      <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={selectedReceiving}
-        submitData={submitData} evaluateMeasure={evaluateMeasure} loading={loading}
+        postMeasureReport={postMeasureReport} loading={loading}
         setModalShow={setServerModalShow} />
       <Results results={results} />
       <Populations initialPopulation={initialPopulation} denominator={denominator}

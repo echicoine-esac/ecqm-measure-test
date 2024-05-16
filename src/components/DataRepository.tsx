@@ -31,7 +31,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
     <div className='card'>
       <div className='card-header'>
         <div className='row'>
-          <div className='col-md-3 order-md-1'>Data Repository</div>
+          <div className='col-md-3 order-md-1'>Data Extraction Service/Data Repository</div>
           {showDataRepo ? (
             <div className='col-md-8 order-md-2 text-muted' />
           ) : (

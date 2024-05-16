@@ -18,8 +18,7 @@ test('expect functions to be called properly', async () => {
 
     const setShowReceiving = jest.fn();
     const setSelectedReceiving = jest.fn();
-    const submitData = jest.fn();
-    const evaluateMeasure = jest.fn();
+    const postMeasureReport = jest.fn();
 
     render(<ReceivingSystem
         showReceiving={showReceiving}
@@ -27,8 +26,7 @@ test('expect functions to be called properly', async () => {
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={servers[0]}
-        submitData={submitData}
-        evaluateMeasure={evaluateMeasure}
+        postMeasureReport={postMeasureReport}
         loading={loadingFlag}
         setModalShow={jest.fn()}
     />);
@@ -37,9 +35,9 @@ test('expect functions to be called properly', async () => {
     userEvent.selectOptions(serverDropdown, servers[0].baseUrl);
     expect(setSelectedReceiving).toBeCalledWith(servers[0])
 
-    const submitButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
-    fireEvent.click(submitButton);
-    expect(submitData).toHaveBeenCalled();
+    const postMeasureReportButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
+    fireEvent.click(postMeasureReportButton);
+    expect(postMeasureReportButton).toHaveBeenCalled();
 
 });
 
@@ -51,8 +49,7 @@ test('expect spinner to show with loading set to true', async () => {
 
     const setShowReceiving = jest.fn();
     const setSelectedReceiving = jest.fn();
-    const submitData = jest.fn();
-    const evaluateMeasure = jest.fn();
+    const postMeasureReport = jest.fn();
 
     render(<ReceivingSystem
         showReceiving={showReceiving}
@@ -60,18 +57,13 @@ test('expect spinner to show with loading set to true', async () => {
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={servers[0]}
-        submitData={submitData}
-        evaluateMeasure={evaluateMeasure}
+        postMeasureReport={postMeasureReport}
         loading={loadingFlag}
         setModalShow={jest.fn()}
     />);
 
-    const submitButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button-spinner');
-    expect(submitButton).toBeInTheDocument();
-
-    const evalButton: HTMLButtonElement = screen.getByTestId('rec-sys-evaluate-button-spinner');
-    expect(evalButton).toBeInTheDocument();
-
+    const postMeasureReportButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button-spinner');
+    expect(postMeasureReportButton).toBeInTheDocument();
 });
 
 test('hide/show functionality', async () => {
@@ -82,8 +74,7 @@ test('hide/show functionality', async () => {
 
     const setShowReceiving = jest.fn();
     const setSelectedReceiving = jest.fn();
-    const submitData = jest.fn();
-    const evaluateMeasure = jest.fn();
+    const postMeasureReport = jest.fn();
 
     render(<ReceivingSystem
         showReceiving={showReceiving}
@@ -91,14 +82,13 @@ test('hide/show functionality', async () => {
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={servers[0]}
-        submitData={submitData}
-        evaluateMeasure={evaluateMeasure}
+        postMeasureReport={postMeasureReport}
         loading={loadingFlag}
         setModalShow={jest.fn()}
     />);
 
-    const evaluateButton: HTMLButtonElement = screen.getByTestId('rec-sys-hide-section-button');
-    fireEvent.click(evaluateButton);
+    const showHideButton: HTMLButtonElement = screen.getByTestId('rec-sys-hide-section-button');
+    fireEvent.click(showHideButton);
     expect(setShowReceiving).toHaveBeenCalledWith(false);
 
 });
@@ -111,8 +101,7 @@ test('hide/show functionality', async () => {
 
     const setShowReceiving = jest.fn();
     const setSelectedReceiving = jest.fn();
-    const submitData = jest.fn();
-    const evaluateMeasure = jest.fn();
+    const postMeasureReport = jest.fn();
 
     render(<ReceivingSystem
         showReceiving={showReceiving}
@@ -120,18 +109,16 @@ test('hide/show functionality', async () => {
         servers={servers}
         setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={servers[0]}
-        submitData={submitData}
-        evaluateMeasure={evaluateMeasure}
+        postMeasureReport={postMeasureReport}
         loading={loadingFlag}
         setModalShow={jest.fn()}
     />);
 
-    const evaluateButton: HTMLButtonElement = screen.getByTestId('rec-sys-show-section-button');
-    fireEvent.click(evaluateButton);
+    const showHideButton: HTMLButtonElement = screen.getByTestId('rec-sys-show-section-button');
+    fireEvent.click(showHideButton);
     expect(setShowReceiving).toHaveBeenCalledWith(true);
 
     expect(screen.queryByText('Receiving System Server')).not.toBeInTheDocument();
-    expect(screen.queryByText('Submit Data')).not.toBeInTheDocument();
-    expect(screen.queryByText('Evaluate Measure')).not.toBeInTheDocument();
+    expect(screen.queryByText('Post Measure Report')).not.toBeInTheDocument();
 });
 
