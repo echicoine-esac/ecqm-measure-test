@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ReceivingSystem from '../../components/ReceivingSystem';
 import { ServerUtils } from '../../utils/ServerUtils';
@@ -10,7 +10,7 @@ beforeEach(() => {
     });
 });
 
-test('expect functions to be called properly', async () => {
+test('expect postMeasureReport functions to be called properly', async () => {
     const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
@@ -36,8 +36,13 @@ test('expect functions to be called properly', async () => {
     expect(setSelectedReceiving).toBeCalledWith(servers[0])
 
     const postMeasureReportButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
-    fireEvent.click(postMeasureReportButton);
-    expect(postMeasureReportButton).toHaveBeenCalled();
+
+    await act(async () => {
+        await fireEvent.click(postMeasureReportButton);;
+    });
+
+
+    expect(postMeasureReport).toHaveBeenCalled();
 
 });
 
