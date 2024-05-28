@@ -18,6 +18,8 @@ import jsonTestDataRequirementsData from '../resources/fetchmock-knowledge-repo.
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
 
+const thisTestFile = "Knowledge Repository";
+
 const RESPONSE_ERROR_BAD_REQUEST = 'Bad Request';
 const mockPatientTotalCountJSON = `{
   "resourceType": "Bundle",
@@ -57,8 +59,62 @@ beforeEach(() => {
 });
 
 
+//RENDERING:
+test(thisTestFile + ': renders properly', async () => {
+  const dataServers: Server[] = Constants.serverTestData;
 
-test('success scenarios: knowledge repository: server with auth url navigates outward, selected server is stored in session storage', async () => {
+  const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
+
+  await act(async () => {
+    render(<App />);
+  });
+  //Knowledge Repository
+  //hide section, show section
+  const hideButton: HTMLButtonElement = screen.getByTestId('knowledge-repo-hide-section-button');
+  fireEvent.click(hideButton);
+  expect(screen.getByTestId('selected-measure-div')).toBeInTheDocument();
+  expect(screen.queryByText('Select a Server...')).not.toBeInTheDocument();
+  expect(screen.queryByText('Select a Measure...')).not.toBeInTheDocument();
+  expect(screen.queryByText('Get Data Requirements')).not.toBeInTheDocument();
+  const showButton: HTMLButtonElement = screen.getByTestId('knowledge-repo-show-section-button');
+  fireEvent.click(showButton);
+  expect(screen.queryByText('Selected Measure')).not.toBeInTheDocument();
+  expect(screen.queryByText('Select a Server...')).toBeInTheDocument();
+  expect(screen.queryByText('Select a Measure...')).toBeInTheDocument();
+  expect(screen.queryByText('Get Data Requirements')).toBeInTheDocument();
+
+  //get knowledge server dropdown
+  const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
+
+  //mock measure list server selection will return 
+  const url = dataServers[0].baseUrl;
+  const measureFetch = new MeasureFetch(url);
+  const mockJsonMeasureData = jsonTestMeasureData;
+  fetchMock.once(measureFetch.getUrl(),
+    JSON.stringify(mockJsonMeasureData)
+    , { method: 'GET' });
+  //select server, mock list should return:
+  userEvent.selectOptions(serverDropdown, url);
+  fetchMock.restore();
+
+  //select known measure
+  const measureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
+  await waitFor(() => expect(measureDropdown.options.length > 10).toBeTruthy());
+  userEvent.selectOptions(measureDropdown, mockMeasureList[1].name);
+
+  //hiding the section should now reveal 'Selected Measure: BreastCancerScreeningsFHIR'
+  fireEvent.click(hideButton);
+  expect(screen.getByTestId('selected-measure-div')).toBeInTheDocument();
+
+  //restore section to get to button
+  fireEvent.click(showButton);
+
+  expect(screen.getByTestId('get-data-requirements-button')).toBeInTheDocument();
+
+});
+ 
+
+test(thisTestFile + ': success scenario: erver with auth url navigates outward, selected server is stored in session storage', async () => {
 
   const mockWindowOpen = jest.fn((url?: string | URL | undefined, target?: string | undefined, features?: string | undefined): Window => {
     return new Window();
@@ -127,7 +183,7 @@ test('success scenarios: knowledge repository: server with auth url navigates ou
 });
 
 
-test('success scenarios: knowledge repository: simulate successful access code returned to redirect uri', async () => {
+test(thisTestFile + ': success scenario: simulate successful access code returned to redirect uri', async () => {
 
 
 
@@ -177,7 +233,7 @@ test('success scenarios: knowledge repository: simulate successful access code r
   fetchMock.restore();
 });
 
-test('success scenarios: knowledge repository', async () => {
+test(thisTestFile + ': success scenario: Get Data Requirements', async () => {
   const dataServers: Server[] = Constants.serverTestData;
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
 
@@ -231,7 +287,7 @@ test('success scenarios: knowledge repository', async () => {
 
 });
 
-test('fail scenarios: knowledge repository', async () => {
+test(thisTestFile + ': fail scenario: Bad Request', async () => {
   const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
@@ -284,10 +340,9 @@ test('fail scenarios: knowledge repository', async () => {
     RESPONSE_ERROR_BAD_REQUEST));
 
 });
- 
 
-//MISSING SELECTIONS:
-test('error scenarios: knowledge repository', async () => {
+
+test(thisTestFile + ': error scenario: Please select a Measure', async () => {
   await act(async () => {
     render(<App />);
   });
@@ -320,61 +375,6 @@ test('error scenarios: knowledge repository', async () => {
   fireEvent.click(getDataRequirementsButton);
 
   expect(resultsTextField.value).toEqual(Constants.error_selectMeasureDR);
-
-});
- 
-
-//RENDERING:
-test('renders knowledge repo properly', async () => {
-  const dataServers: Server[] = Constants.serverTestData;
-
-  const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
-
-  await act(async () => {
-    render(<App />);
-  });
-  //Knowledge Repository
-  //hide section, show section
-  const hideButton: HTMLButtonElement = screen.getByTestId('knowledge-repo-hide-section-button');
-  fireEvent.click(hideButton);
-  expect(screen.getByTestId('selected-measure-div')).toBeInTheDocument();
-  expect(screen.queryByText('Select a Server...')).not.toBeInTheDocument();
-  expect(screen.queryByText('Select a Measure...')).not.toBeInTheDocument();
-  expect(screen.queryByText('Get Data Requirements')).not.toBeInTheDocument();
-  const showButton: HTMLButtonElement = screen.getByTestId('knowledge-repo-show-section-button');
-  fireEvent.click(showButton);
-  expect(screen.queryByText('Selected Measure')).not.toBeInTheDocument();
-  expect(screen.queryByText('Select a Server...')).toBeInTheDocument();
-  expect(screen.queryByText('Select a Measure...')).toBeInTheDocument();
-  expect(screen.queryByText('Get Data Requirements')).toBeInTheDocument();
-
-  //get knowledge server dropdown
-  const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
-
-  //mock measure list server selection will return 
-  const url = dataServers[0].baseUrl;
-  const measureFetch = new MeasureFetch(url);
-  const mockJsonMeasureData = jsonTestMeasureData;
-  fetchMock.once(measureFetch.getUrl(),
-    JSON.stringify(mockJsonMeasureData)
-    , { method: 'GET' });
-  //select server, mock list should return:
-  userEvent.selectOptions(serverDropdown, url);
-  fetchMock.restore();
-
-  //select known measure
-  const measureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
-  await waitFor(() => expect(measureDropdown.options.length > 10).toBeTruthy());
-  userEvent.selectOptions(measureDropdown, mockMeasureList[1].name);
-
-  //hiding the section should now reveal 'Selected Measure: BreastCancerScreeningsFHIR'
-  fireEvent.click(hideButton);
-  expect(screen.getByTestId('selected-measure-div')).toBeInTheDocument();
-
-  //restore section to get to button
-  fireEvent.click(showButton);
-
-  expect(screen.getByTestId('get-data-requirements-button')).toBeInTheDocument();
 
 });
  

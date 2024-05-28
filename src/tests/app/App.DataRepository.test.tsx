@@ -17,6 +17,8 @@ import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
 
+const thisTestFile = "Data Repository";
+
 const RESPONSE_ERROR_BAD_REQUEST = 'Bad Request';
 const mockPatientTotalCountJSON = `{
   "resourceType": "Bundle",
@@ -55,7 +57,59 @@ beforeEach(() => {
 
 });
 
-test('success scenario: data repository', async () => {
+
+
+
+test(thisTestFile + ': renders properly', async () => {
+  const dataServers: Server[] = Constants.serverTestData;
+
+  const url = dataServers[0].baseUrl;
+  const mockPatientList: Patient[] = await buildPatientData(url);
+
+  await act(async () => {
+    render(<App />);
+  });
+
+  //Data Repository
+  //section is hidden by default, show section:
+  const showButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
+  fireEvent.click(showButton);
+  await waitFor(() => expect(screen.getByTestId('data-repo-collect-data-button')).toBeInTheDocument());
+
+  //get repo server dropdown
+  const serverDropdown: HTMLSelectElement = screen.getByTestId('data-repo-server-dropdown');
+  //mock patient list server selection will return
+
+  fetchMock.mock(dataServers[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
+
+  await act(async () => {
+    const patientFetch = await PatientFetch.createInstance(url);
+    const mockJsonPatientsData = jsonTestPatientsData;
+    fetchMock.once(patientFetch.getUrl(),
+      JSON.stringify(mockJsonPatientsData)
+      , { method: 'GET' });
+
+    userEvent.selectOptions(serverDropdown, url);
+  });
+  fetchMock.restore();
+
+  //select known patient
+  const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
+
+  await waitFor(() =>
+    expect(patientDropdown.options.length > 10).toBeTruthy()
+  );
+  const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[1]) + '';
+  userEvent.selectOptions(patientDropdown, expectedDisplayName);
+
+  //click Collect Data
+  const getDataRequirementsButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
+  fireEvent.click(getDataRequirementsButton);
+});
+
+
+
+test(thisTestFile + ': success scenario: Collect Data', async () => {
   const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
@@ -136,7 +190,7 @@ test('success scenario: data repository', async () => {
 
 });
 
-test('fail scenario: data repository', async () => {
+test(thisTestFile + ': fail scenario: data repository', async () => {
   const dataServers: Server[] = Constants.serverTestData;
 
   const mockMeasureList: Measure[] = await buildMeasureData(dataServers[0].baseUrl);
@@ -215,7 +269,7 @@ test('fail scenario: data repository', async () => {
 
 });
 
-test('error scenario: data repository', async () => {
+test(thisTestFile + ': error scenario: Please select a Measure', async () => {
   await act(async () => {
     render(<App />);
   });
@@ -254,54 +308,6 @@ test('error scenario: data repository', async () => {
   fireEvent.click(collectDataButton);
   expect(resultsTextField.value).toEqual(Constants.error_selectMeasureDataCollection);
 
-});
-
-
-test('renders data repo properly', async () => {
-  const dataServers: Server[] = Constants.serverTestData;
-
-  const url = dataServers[0].baseUrl;
-  const mockPatientList: Patient[] = await buildPatientData(url);
-
-  await act(async () => {
-    render(<App />);
-  });
-
-  //Data Repository
-  //section is hidden by default, show section:
-  const showButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
-  fireEvent.click(showButton);
-  await waitFor(() => expect(screen.getByTestId('data-repo-collect-data-button')).toBeInTheDocument());
-
-  //get repo server dropdown
-  const serverDropdown: HTMLSelectElement = screen.getByTestId('data-repo-server-dropdown');
-  //mock patient list server selection will return
-
-  fetchMock.mock(dataServers[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
-
-  await act(async () => {
-    const patientFetch = await PatientFetch.createInstance(url);
-    const mockJsonPatientsData = jsonTestPatientsData;
-    fetchMock.once(patientFetch.getUrl(),
-      JSON.stringify(mockJsonPatientsData)
-      , { method: 'GET' });
-
-    userEvent.selectOptions(serverDropdown, url);
-  });
-  fetchMock.restore();
-
-  //select known patient
-  const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-
-  await waitFor(() =>
-    expect(patientDropdown.options.length > 10).toBeTruthy()
-  );
-  const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[1]) + '';
-  userEvent.selectOptions(patientDropdown, expectedDisplayName);
-
-  //click Collect Data
-  const getDataRequirementsButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
-  fireEvent.click(getDataRequirementsButton);
 });
 
 

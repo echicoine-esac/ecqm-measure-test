@@ -18,7 +18,6 @@ import jsonTestPatientsData from '../resources/fetchmock-patients.json';
 
 const thisTestFile = "Receiving System";
 
-const RESPONSE_ERROR_BAD_REQUEST = 'Bad Request';
 const mockPatientTotalCountJSON = `{
   "resourceType": "Bundle",
   "id": "604e7395-8850-4a15-a2f2-67a1d334b2d0",
