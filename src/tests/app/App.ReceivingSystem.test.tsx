@@ -3,24 +3,18 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import App from '../../App';
 import { Constants } from '../../constants/Constants';
-import { CollectDataFetch } from '../../data/CollectDataFetch';
+import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
 import { MeasureFetch } from '../../data/MeasureFetch';
 import { PatientFetch } from '../../data/PatientFetch';
-import { SubmitDataFetch } from '../../data/SubmitDataFetch';
+import { PostMeasureReportFetch } from '../../data/PostMeasureReportFetch';
 import { Measure } from '../../models/Measure';
 import { Patient } from '../../models/Patient';
 import { Server } from '../../models/Server';
+import jsonTestMeasureEvaluationData from '../../tests/resources/fetchmock-measure-evaluation.json';
 import { HashParamUtils } from '../../utils/HashParamUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
-import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
-import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
-import { StringUtils } from '../../utils/StringUtils';
-import { FetchType } from '../../data/AbstractDataFetch';
-import { DataRequirementsFetch } from '../../data/DataRequirementsFetch';
-import jsonTestMeasureEvaluationData from '../../tests/resources/fetchmock-measure-evaluation.json';
-import { PostMeasureReportFetch } from '../../data/PostMeasureReportFetch';
 
 const thisTestFile = "Receiving System";
 
