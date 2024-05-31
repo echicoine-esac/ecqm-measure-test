@@ -23,12 +23,12 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
         <div className='card-header'>
           Measure Evaluation Service
           {showMeasureEvaluation ? (
-            <Button data-testid='rec-sys-hide-section-button' className='btn btn-primary btn-lg float-right' 
+            <Button data-testid='mea-eva-hide-section-button' className='btn btn-primary btn-lg float-right' 
             onClick={(e) => setShowMeasureEvaluation(false)}>
               Hide
             </Button>
           ) : (
-            <Button data-testid='rec-sys-show-section-button' className='btn btn-primary btn-lg float-right' 
+            <Button data-testid='mea-eva-show-section-button' className='btn btn-primary btn-lg float-right' 
             onClick={(e) => setShowMeasureEvaluation(true)}>
               Show
             </Button>
@@ -43,7 +43,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
               </div>
               <div className='row'>
                 <div className='col-md-5 order-md-1'>
-                  <select data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedMeasureEvaluation!.baseUrl}
+                  <select data-testid='mea-eva-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedMeasureEvaluation!.baseUrl}
                     onChange={(e) => setSelectedMeasureEvaluation(servers[e.target.selectedIndex - 1]!)}>
                     <option value=''>Select a Server...</option>
                     {servers.map((server, index) => (
@@ -63,7 +63,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
                 <div className='col-md-5 order-md-2'>
                   <br/>
                   {loading ? (
-                    <Button data-testid='rec-sys-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
+                    <Button data-testid='mea-eva-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                       <Spinner
                         as='span'
                         variant='light'
@@ -74,7 +74,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
                         Loading...
                     </Button>
                   ):(
-                    <Button data-testid='rec-sys-submit-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
+                    <Button data-testid='mea-eva-submit-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
                       onClick={(e) => submitData()}>
                         Submit Data
                     </Button>
@@ -83,7 +83,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
                 <div className='col-md-5 order-md-2'>
                   <br/>
                   {loading ? (
-                    <Button data-testid='rec-sys-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
+                    <Button data-testid='mea-eva-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                       <Spinner
                         as='span'
                         variant='light'
@@ -94,7 +94,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
                         Loading...
                     </Button>
                   ):(
-                    <Button  data-testid='rec-sys-evaluate-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
+                    <Button  data-testid='mea-eva-evaluate-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
                       onClick={(e) => evaluateMeasure()}>
                         Evaluate Measure
                     </Button>

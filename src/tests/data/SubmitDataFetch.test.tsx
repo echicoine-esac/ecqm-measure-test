@@ -17,7 +17,7 @@ test('required properties check', async () => {
     try {
         new SubmitDataFetch(undefined, 'selectedMeasure', 'collectedData');
     } catch (error: any) {
-        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedReceiving'))
+        expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedMeasureEvaluation'))
     }
 
     try {

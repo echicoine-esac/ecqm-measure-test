@@ -26,17 +26,22 @@ export class MeasureFetch extends AbstractDataFetch {
 
     protected processReturnedData(data: any) {
         let entries = data.entry;
+        if (!entries || entries.length === 0) {
+            return [];
+        }
+
         let measureList: Measure[] = entries.map((entry: BundleEntry) => {
             return {
                 'name': entry.resource.id,
                 'scoring': entry.resource.scoring
             }
         });
+
         return measureList.sort((a, b) => {
             const measureA = a.name + '';
             const measureB = b.name + '';
             return measureA.localeCompare(measureB);
-        });;
+        });
     }
 
 }

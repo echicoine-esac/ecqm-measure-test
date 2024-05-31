@@ -10,7 +10,7 @@ beforeEach(() => {
     });
 });
 
-test('expect functions to be called properly', async () => {
+test('MeasureEvaluation expect functions to be called properly', async () => {
     const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
@@ -33,21 +33,21 @@ test('expect functions to be called properly', async () => {
         setModalShow={jest.fn()}
     />);
 
-    const serverDropdown: HTMLSelectElement = screen.getByTestId('rec-sys-server-dropdown');
+    const serverDropdown: HTMLSelectElement = screen.getByTestId('mea-eva-server-dropdown');
     userEvent.selectOptions(serverDropdown, servers[0].baseUrl);
     expect(setSelectedMeasureEvaluation).toBeCalledWith(servers[0])
 
-    const submitDataButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
+    const submitDataButton: HTMLButtonElement = screen.getByTestId('mea-eva-submit-button');
     fireEvent.click(submitDataButton);
-    expect(submitDataButton).toHaveBeenCalled();
+    expect(submitData).toHaveBeenCalled();
 
-    const evaluateMeasureButton: HTMLButtonElement = screen.getByTestId('rec-sys-evaluate-button');
+    const evaluateMeasureButton: HTMLButtonElement = screen.getByTestId('mea-eva-evaluate-button');
     fireEvent.click(evaluateMeasureButton);
-    expect(evaluateMeasureButton).toHaveBeenCalled();
+    expect(evaluateMeasure).toHaveBeenCalled();
 
 });
 
-test('expect spinner to show with loading set to true', async () => {
+test('MeasureEvaluation expect spinner buttons to show with loading set to true', async () => {
     const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = true;
@@ -70,14 +70,14 @@ test('expect spinner to show with loading set to true', async () => {
         setModalShow={jest.fn()}
     />);
 
-    const submitDataButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
-    expect(submitDataButton).toBeInTheDocument();
+    const submitDataButtonSpinner: HTMLButtonElement = screen.getByTestId('mea-eva-submit-button-spinner');
+    expect(submitDataButtonSpinner).toBeInTheDocument();
 
-    const evaluateMeasureButton: HTMLButtonElement = screen.getByTestId('rec-sys-evaluate-button');
-    expect(evaluateMeasureButton).toBeInTheDocument();
+    const evaluateMeasureButtonSpinner: HTMLButtonElement = screen.getByTestId('mea-eva-evaluate-button-spinner');
+    expect(evaluateMeasureButtonSpinner).toBeInTheDocument();
 });
 
-test('hide/show functionality', async () => {
+test('MeasureEvaluation hide/show functionality', async () => {
     const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
@@ -100,13 +100,13 @@ test('hide/show functionality', async () => {
         setModalShow={jest.fn()}
     />);
 
-    const showHideButton: HTMLButtonElement = screen.getByTestId('rec-sys-hide-section-button');
+    const showHideButton: HTMLButtonElement = screen.getByTestId('mea-eva-hide-section-button');
     fireEvent.click(showHideButton);
     expect(setShowMeasureEvaluation).toHaveBeenCalledWith(false);
 
 });
 
-test('hide/show functionality', async () => {
+test('MeasureEvaluation hide/show functionality 2', async () => {
     const servers = await ServerUtils.getServerList();
 
     const loadingFlag: boolean = false;
@@ -129,7 +129,7 @@ test('hide/show functionality', async () => {
         setModalShow={jest.fn()}
     />);
 
-    const showHideButton: HTMLButtonElement = screen.getByTestId('rec-sys-show-section-button');
+    const showHideButton: HTMLButtonElement = screen.getByTestId('mea-eva-show-section-button');
     fireEvent.click(showHideButton);
     expect(setShowMeasureEvaluation).toHaveBeenCalledWith(true);
 

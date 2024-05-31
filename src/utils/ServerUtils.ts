@@ -27,12 +27,11 @@ export class ServerUtils {
             }
         }
 
-
         return ServerUtils.listOfServers.sort((a, b) => {
             const serverA = a.baseUrl + '';
             const serverB = b.baseUrl + '';
             return serverA.localeCompare(serverB);
-        });;;
+        });
         
         // let s = {
         //     id: '1',

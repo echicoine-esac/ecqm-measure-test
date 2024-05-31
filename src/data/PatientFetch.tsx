@@ -58,6 +58,9 @@ export class PatientFetch extends AbstractDataFetch {
             patients = this.processAsGroup(data);
         } else {
             let entries = data.entry;
+            if (!entries || entries.length === 0) {
+                return [];
+            }
             patients = entries.map((entry: BundleEntry) => {
                 return { display: entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family, id: entry.resource.id };
             });
