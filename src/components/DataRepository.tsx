@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { PatientFetch } from '../data/PatientFetch';
+import { Group, Member } from '../models/Group';
 import { Patient } from '../models/Patient';
 import { Server } from '../models/Server';
 
@@ -17,14 +18,35 @@ interface props {
   collectData: () => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedMeasure?: string;
+  groups?: Map<string, Group>;
 }
 
-const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient, collectData, loading, setModalShow, }) => {
+const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient, collectData, loading, setModalShow, selectedMeasure, groups }) => {
   const [patientFilter, setPatientFilter] = useState<string>('');
 
   const filteredPatients = patients.filter((patient) => {
     const patDisplay = PatientFetch.buildUniquePatientIdentifier(patient);
-    return patDisplay && patDisplay.toLowerCase().includes(patientFilter.toLowerCase());
+
+    let groupingCondition: boolean = true;
+
+    if (selectedMeasure) {
+      let group: Group | undefined = groups?.get(selectedMeasure);
+
+      //sometimes can be undefined
+      if (group) {
+        let members: Member[] = group.member;
+        let patFound: boolean = false;
+        for (let member of members) {
+          if (member.entity.display === patient?.display) {
+            patFound = true;
+            break;
+          }
+        }
+        groupingCondition = patFound;
+      }
+    }
+    return groupingCondition && patDisplay?.toLowerCase().includes(patientFilter.toLowerCase());
   });
 
   return (

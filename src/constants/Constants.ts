@@ -30,6 +30,9 @@ export class Constants {
     public static readonly patientTotalCountUrlEnding = 'Patient?_summary=count';
     
     public static readonly measureUrlEnding = 'Measure?_count=200';
+    
+    public static readonly groupUrlEnding = 'Group';
+    
 
     public static readonly error_selectKnowledgeRepository = 'Please select a Knowledge Repository server to use';
 

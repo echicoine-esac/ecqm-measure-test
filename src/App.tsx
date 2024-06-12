@@ -25,6 +25,8 @@ import { HashParamUtils } from './utils/HashParamUtils';
 import { ServerUtils } from './utils/ServerUtils';
 import { Patient } from './models/Patient';
 import { StringUtils } from './utils/StringUtils';
+import { Group } from './models/Group';
+import { GroupFetch } from './data/GroupFetch';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -36,6 +38,7 @@ const App: React.FC = () => {
   const [servers, setServers] = useState<Array<Server | undefined>>([]);
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<Patient | undefined>>([]);
+  const [groups, setGroups] = useState<Map<string, Group> | undefined>(undefined);
 
   // Selected States
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
@@ -229,8 +232,15 @@ const App: React.FC = () => {
 
     try {
       setLoading(true);
+      const groupFetch = new GroupFetch(dataRepo.baseUrl);
+
+      let  groupsMap: Map<string, Group> = await groupFetch.fetchData(accessToken);
+      setGroups(groupsMap);
+      
       const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
       setPatients(await patientFetch.fetchData(accessToken));
+
+
     } catch (error: any) {
       reportErrorToUser('fetchPatients', error);
     }
@@ -475,7 +485,9 @@ const App: React.FC = () => {
         selectedDataRepo={selectedDataRepo} patients={patients}
         fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient}
         selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading} setModalShow={setServerModalShow} />
+        collectData={collectData} loading={loading} setModalShow={setServerModalShow} 
+        selectedMeasure={selectedMeasure}
+        groups={groups}/>
       <br />
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
                          servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}

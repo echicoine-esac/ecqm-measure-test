@@ -1,5 +1,6 @@
 import { Constants } from '../constants/Constants';
 import { BundleEntry } from '../models/BundleEntry';
+import { Group } from '../models/Group';
 import { Patient } from '../models/Patient';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
@@ -10,7 +11,7 @@ export class PatientFetch extends AbstractDataFetch {
     type: FetchType;
     url: string = '';
 
-    totalPatients:number = 5;
+    totalPatients: number = 5;
 
     private constructor(url: string) {
         super();
@@ -36,7 +37,7 @@ export class PatientFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        return  this.url + Constants.patientUrlEnding + this.totalPatients;
+        return this.url + Constants.patientUrlEnding + this.totalPatients;
     }
 
     private async getPatientTotalCount(url: string): Promise<number> {
@@ -62,7 +63,11 @@ export class PatientFetch extends AbstractDataFetch {
                 return [];
             }
             patients = entries.map((entry: BundleEntry) => {
-                return { display: entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family, id: entry.resource.id };
+                return {
+                    display: entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family,
+                    id: entry.resource.id,
+                };
+
             });
         }
 
@@ -84,9 +89,21 @@ export class PatientFetch extends AbstractDataFetch {
         const result: Patient[] = [];
 
         if (data && data.resourceType === "Group" && Array.isArray(data.member)) {
+
+            let patientGroup: Group = {
+                id: data.id,
+                extension: data.extension,
+                member: data.member
+            }
+
+
             data.member.forEach((member: { entity: { display: any; reference: string; }; }) => {
                 if (member.entity?.display) {
-                    result.push({ display: member.entity.display, id: member.entity.reference.split("Patient/")[1] });
+                    result.push({
+                        display: member.entity.display,
+                        id: member.entity.reference.split("Patient/")[1],
+                        group: patientGroup
+                    });
                 }
             });
         }
