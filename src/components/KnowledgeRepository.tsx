@@ -19,11 +19,13 @@ interface props {
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+
+
 // KnowledgeRepository component displays the fields for selecting and using the Knowledge Repository
 const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowledgeRepo, servers,
     fetchMeasures, selectedKnowledgeRepo, measures, setSelectedMeasure,
     selectedMeasure, getDataRequirements, loading, setModalShow }) => {
-
+    
     return (
       <div className='card'>
         <div className='card-header'>
@@ -50,15 +52,18 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
           </div>
         </div>
           {showKnowledgeRepo ? (
-            <div className='card-body'>
-                 <div className='row'>
-                     <div className='col-md-6 order-md-1'>
-                            <label>Knowledge Repository Server</label>
-                       </div>
-                      <div className='col-md-6 order-md-1'>
-                          <label>Measure</label>
-                      </div>
-                </div>
+          <div className='card-body'>
+            <div className='row'>
+              <div className='col-md-6 order-md-1'>
+                <label>Knowledge Repository Server</label>
+              </div>
+              <div className='col-md-3 order-md-2'>
+                <label>Measure</label>
+              </div>
+              <div className='col-md-3 order-md-3 text-right'>
+                <label style={{ fontSize: '0.8em' }}>Measure List Count: {measures.length}</label>
+              </div>
+          </div>
                 <div className='row'>
                     <div className='col-md-5 order-md-1'>
                       <select data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo?.baseUrl}

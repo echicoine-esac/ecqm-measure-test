@@ -80,8 +80,11 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
             <div className='col-md-6 order-md-1'>
               <label>Data Repository Server</label>
             </div>
-            <div className='col-md-6 order-md-2'>
+            <div className='col-md-3 order-md-2'>
               <label>Patient (optional)</label>
+            </div>
+            <div className='col-md-3 order-md-3 text-right'>
+              <label style={{ fontSize: '0.8em'}}>Patient List Count: {filteredPatients.length}</label>
             </div>
           </div>
           <div className='row'>
