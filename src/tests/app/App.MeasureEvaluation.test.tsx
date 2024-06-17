@@ -5,8 +5,10 @@ import App from '../../App';
 import { Constants } from '../../constants/Constants';
 import { CollectDataFetch } from '../../data/CollectDataFetch';
 import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
+import { GroupFetch } from '../../data/GroupFetch';
 import { MeasureFetch } from '../../data/MeasureFetch';
 import { PatientFetch } from '../../data/PatientFetch';
+import { SubmitDataFetch } from '../../data/SubmitDataFetch';
 import { Measure } from '../../models/Measure';
 import { Patient } from '../../models/Patient';
 import { Server } from '../../models/Server';
@@ -14,9 +16,9 @@ import jsonTestMeasureEvaluationData from '../../tests/resources/fetchmock-measu
 import { HashParamUtils } from '../../utils/HashParamUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
+import jsonTestGroupData from '../resources/fetchmock-group.json';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
-import { SubmitDataFetch } from '../../data/SubmitDataFetch';
 
 const thisTestFile = "Measure Evaluation";
 
@@ -131,6 +133,14 @@ test(thisTestFile + ' success scenario: evaluate data', async () => {
       fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientData)
         , { method: 'GET' });
+
+      const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+      const mockJsonGroupData = jsonTestGroupData;
+      fetchMock.once(groupFetch.getUrl(),
+        JSON.stringify(mockJsonGroupData)
+        , { method: 'GET' });
+
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
     });
     fetchMock.restore();
@@ -240,6 +250,14 @@ test(thisTestFile + ' success scenario: submit data', async () => {
       fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientData)
         , { method: 'GET' });
+
+      const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+      const mockJsonGroupData = jsonTestGroupData;
+      fetchMock.once(groupFetch.getUrl(),
+        JSON.stringify(mockJsonGroupData)
+        , { method: 'GET' });
+
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
     });
     fetchMock.restore();
@@ -357,6 +375,14 @@ test(thisTestFile + ' fail scenario: submit data', async () => {
       fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientData)
         , { method: 'GET' });
+
+      const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+      const mockJsonGroupData = jsonTestGroupData;
+      fetchMock.once(groupFetch.getUrl(),
+        JSON.stringify(mockJsonGroupData)
+        , { method: 'GET' });
+
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
     });
     fetchMock.restore();
@@ -463,6 +489,14 @@ test(thisTestFile + ' fail scenario: evaluate data without selecting Server', as
       fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientData)
         , { method: 'GET' });
+
+      const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+      const mockJsonGroupData = jsonTestGroupData;
+      fetchMock.once(groupFetch.getUrl(),
+        JSON.stringify(mockJsonGroupData)
+        , { method: 'GET' });
+
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
     });
     fetchMock.restore();

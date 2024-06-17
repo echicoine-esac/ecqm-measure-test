@@ -16,6 +16,8 @@ import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
+import jsonTestGroupData from '../resources/fetchmock-group.json';
+import { GroupFetch } from '../../data/GroupFetch';
 
 const thisTestFile = "Data Repository";
 
@@ -58,8 +60,6 @@ beforeEach(() => {
 });
 
 
-
-
 test(thisTestFile + ': renders properly', async () => {
   const dataServers: Server[] = Constants.serverTestData;
 
@@ -89,6 +89,13 @@ test(thisTestFile + ': renders properly', async () => {
       JSON.stringify(mockJsonPatientsData)
       , { method: 'GET' });
 
+    const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+    const mockJsonGroupData = jsonTestGroupData;
+    fetchMock.once(groupFetch.getUrl(),
+      JSON.stringify(mockJsonGroupData)
+      , { method: 'GET' });
+
     userEvent.selectOptions(serverDropdown, url);
   });
   fetchMock.restore();
@@ -97,8 +104,9 @@ test(thisTestFile + ': renders properly', async () => {
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
 
   await waitFor(() =>
-    expect(patientDropdown.options.length > 10).toBeTruthy()
+    expect(patientDropdown.options.length === 22).toBeTruthy()
   );
+
   const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[1]) + '';
   userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
@@ -144,6 +152,14 @@ test(thisTestFile + ': success scenario: Collect Data', async () => {
     fetchMock.once(patientFetch.getUrl(),
       JSON.stringify(mockJsonPatientData)
       , { method: 'GET' });
+
+    const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+    const mockJsonGroupData = jsonTestGroupData;
+    fetchMock.once(groupFetch.getUrl(),
+      JSON.stringify(mockJsonGroupData)
+      , { method: 'GET' });
+
     userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
   });
   fetchMock.restore();
@@ -225,6 +241,15 @@ test(thisTestFile + ': fail scenario: data repository', async () => {
     fetchMock.once(patientFetch.getUrl(),
       JSON.stringify(mockJsonPatientData)
       , { method: 'GET' });
+
+
+    const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+    const mockJsonGroupData = jsonTestGroupData;
+    fetchMock.once(groupFetch.getUrl(),
+      JSON.stringify(mockJsonGroupData)
+      , { method: 'GET' });
+
     userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
   });
   fetchMock.restore();
@@ -298,6 +323,14 @@ test(thisTestFile + ': error scenario: Please select a Measure', async () => {
   fetchMock.once(patientFetch.getUrl(),
     JSON.stringify(mockJsonPatientData)
     , { method: 'GET' });
+
+  const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+  const mockJsonGroupData = jsonTestGroupData;
+  fetchMock.once(groupFetch.getUrl(),
+    JSON.stringify(mockJsonGroupData)
+    , { method: 'GET' });
+
   //select server, mock list should return:
   await act(async () => {
     userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);

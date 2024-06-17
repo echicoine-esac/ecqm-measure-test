@@ -15,6 +15,8 @@ import { HashParamUtils } from '../../utils/HashParamUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
+import jsonTestGroupData from '../resources/fetchmock-group.json';
+import { GroupFetch } from '../../data/GroupFetch';
 
 const thisTestFile = "Receiving System";
 
@@ -152,6 +154,14 @@ test(thisTestFile + ' success scenario: submit', async () => {
       fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientData)
         , { method: 'GET' });
+
+      const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+      const mockJsonGroupData = jsonTestGroupData;
+      fetchMock.once(groupFetch.getUrl(),
+        JSON.stringify(mockJsonGroupData)
+        , { method: 'GET' });
+
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
     });
     fetchMock.restore();
@@ -293,10 +303,20 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
     //select server, mock list should return:
     await act(async () => {
       const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
+
       const mockJsonPatientData = jsonTestPatientsData;
       fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientData)
         , { method: 'GET' });
+
+
+      const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+
+      const mockJsonGroupData = jsonTestGroupData;
+      fetchMock.once(groupFetch.getUrl(),
+        JSON.stringify(mockJsonGroupData)
+        , { method: 'GET' });
+
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
     });
     fetchMock.restore();
