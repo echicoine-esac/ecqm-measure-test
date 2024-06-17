@@ -38,7 +38,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
         let members: Member[] = group.member;
         let patFound: boolean = false;
         for (let member of members) {
-          if (member.entity.display === patient?.display) {
+          if (member.entity.reference.split('Patient/')[1] === patient?.id) {
             patFound = true;
             break;
           }
@@ -84,7 +84,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
               <label>Patient (optional)</label>
             </div>
             <div className='col-md-3 order-md-3 text-right'>
-              <label style={{ fontSize: '0.8em'}}>Patient List Count: {filteredPatients.length}</label>
+              <label style={{ fontSize: '0.8em' }}>Patient List Count: {filteredPatients.length}</label>
             </div>
           </div>
           <div className='row'>
