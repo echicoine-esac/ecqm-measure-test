@@ -1,0 +1,13 @@
+{
+  "resourceType": "Bundle",
+  "id": "189420e3-0fcf-420b-b68b-73ae7e25290f",
+  "meta": {
+    "lastUpdated": "2024-06-17T12:44:03.320+00:00"
+  },
+  "type": "searchset",
+  "total": 0,
+  "link": [ {
+    "relation": "self",
+    "url": "http://localhost:8080/fhir/Group"
+  } ]
+}

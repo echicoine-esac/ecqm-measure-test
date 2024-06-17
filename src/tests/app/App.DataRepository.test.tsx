@@ -5,6 +5,7 @@ import App from '../../App';
 import { Constants } from '../../constants/Constants';
 import { FetchType } from '../../data/AbstractDataFetch';
 import { CollectDataFetch } from '../../data/CollectDataFetch';
+import { GroupFetch } from '../../data/GroupFetch';
 import { MeasureFetch } from '../../data/MeasureFetch';
 import { PatientFetch } from '../../data/PatientFetch';
 import { Measure } from '../../models/Measure';
@@ -14,10 +15,9 @@ import { HashParamUtils } from '../../utils/HashParamUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
+import jsonTestGroupData from '../resources/fetchmock-group.json';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
-import jsonTestGroupData from '../resources/fetchmock-group.json';
-import { GroupFetch } from '../../data/GroupFetch';
 
 const thisTestFile = "Data Repository";
 

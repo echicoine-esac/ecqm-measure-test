@@ -29,7 +29,6 @@ export class GroupFetch extends AbstractDataFetch {
 
         let entries = data.entry;
         if (!entries || entries.length === 0) {
-            console.log('GroupFetch: No group entries found in return bundle');
             return groupMap;
         }
 
