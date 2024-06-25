@@ -3,8 +3,8 @@ import './App.css';
 import DataRepository from './components/DataRepository';
 import KnowledgeRepository from './components/KnowledgeRepository';
 import LoginModal from './components/LoginModal';
-import Populations from './components/Populations';
 import MeasureEvaluation from "./components/MeasureEvaluation";
+import Populations from './components/Populations';
 import ReceivingSystem from './components/ReceivingSystem';
 import ReportingPeriod from './components/ReportingPeriod';
 import Results from './components/Results';
@@ -13,18 +13,19 @@ import { Constants } from './constants/Constants';
 import { CollectDataFetch } from './data/CollectDataFetch';
 import { DataRequirementsFetch } from './data/DataRequirementsFetch';
 import { EvaluateMeasureFetch } from './data/EvaluateMeasureFetch';
-import { PostMeasureReportFetch } from './data/PostMeasureReportFetch';
+import { GroupFetch } from './data/GroupFetch';
 import { MeasureFetch } from './data/MeasureFetch';
 import { PatientFetch } from './data/PatientFetch';
+import { PostMeasureReportFetch } from './data/PostMeasureReportFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
 import logo from './icf_logo.png';
+import { Group } from './models/Group';
 import { Measure } from './models/Measure';
+import { Patient } from './models/Patient';
 import { Server } from './models/Server';
 import { OAuthHandler } from './oauth/OAuthHandler';
 import { HashParamUtils } from './utils/HashParamUtils';
 import { ServerUtils } from './utils/ServerUtils';
-import { Patient } from './models/Patient';
-import { StringUtils } from './utils/StringUtils';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -36,6 +37,7 @@ const App: React.FC = () => {
   const [servers, setServers] = useState<Array<Server | undefined>>([]);
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<Patient | undefined>>([]);
+  const [groups, setGroups] = useState<Map<string, Group> | undefined>(undefined);
 
   // Selected States
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
@@ -118,7 +120,6 @@ const App: React.FC = () => {
 
   const reportErrorToUser = ((source: string, err: any) => {
     const message = err.message;
-    //console.log(source, err);
     setResults(message);
   });
 
@@ -229,8 +230,15 @@ const App: React.FC = () => {
 
     try {
       setLoading(true);
+      const groupFetch = new GroupFetch(dataRepo.baseUrl);
+
+      let  groupsMap: Map<string, Group> = await groupFetch.fetchData(accessToken);
+      setGroups(groupsMap);
+      
       const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
       setPatients(await patientFetch.fetchData(accessToken));
+
+
     } catch (error: any) {
       reportErrorToUser('fetchPatients', error);
     }
@@ -256,9 +264,9 @@ const App: React.FC = () => {
     clearPopulationCounts();
 
     // Get the scoring from the selected measure
-    for (var i = 0; i < measures.length; i++) {
-      if (measures[i]!.name === selectedMeasure) {
-        setMeasureScoring(measures[i]!.scoring.coding[0].code);
+    for (let measure of measures) {
+      if (measure!.name === selectedMeasure) {
+        setMeasureScoring(measure!.scoring.coding[0].code);
       }
     }
 
@@ -280,7 +288,7 @@ const App: React.FC = () => {
         // Iterate through the population names to set the state
         const popNames = measureData.popNames;
         const counts = measureData.counts;
-        for (var x = 0; x < popNames.length; x++) {
+        for (let x = 0; x < popNames.length; x++) {
           if (popNames[x] === 'initial-population') {
             setInitialPopulation(counts[x]);
           } else if (popNames[x] === 'denominator') {
@@ -475,7 +483,9 @@ const App: React.FC = () => {
         selectedDataRepo={selectedDataRepo} patients={patients}
         fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient}
         selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading} setModalShow={setServerModalShow} />
+        collectData={collectData} loading={loading} setModalShow={setServerModalShow} 
+        selectedMeasure={selectedMeasure}
+        groups={groups}/>
       <br />
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
                          servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}

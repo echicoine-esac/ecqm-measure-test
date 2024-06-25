@@ -1,0 +1,4171 @@
+{
+    "resourceType": "Bundle",
+    "id": "b020ad90-add2-43fb-94c0-8ebe556c27c1",
+    "meta": {
+      "lastUpdated": "2024-06-12T15:11:59.253+00:00"
+    },
+    "type": "searchset",
+    "link": [ {
+      "relation": "self",
+      "url": "http://fhir.ecqm.icfcloud.com/fhir/Group"
+    }, {
+      "relation": "next",
+      "url": "http://fhir.ecqm.icfcloud.com/fhir?_getpages=b020ad90-add2-43fb-94c0-8ebe556c27c1&_getpagesoffset=20&_count=20&_pretty=true&_bundletype=searchset"
+    } ],
+    "entry": [ {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/3821",
+      "resource": {
+        "resourceType": "Group",
+        "id": "3821",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-24T14:22:35.358+00:00",
+          "source": "#1mVWHCxeSdekxzev"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVViralSuppressionFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/765f96cd-d613-460d-98d1-111d44c08723",
+            "display": "EncDec31BeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/15c4c2c5-9cdb-4eed-b27a-22462692881a",
+            "display": "TestDuringMPResult199 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/728e5e56-8230-4cab-9808-c0c4139836f4",
+            "display": "TestDuringMPResultUnderRelevantPeriod NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1e89cfdc-ec5e-456a-abcf-ab349c9cfbed",
+            "display": "2Tests1BeforeMP1duringMP NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/770e94b3-a82c-4a56-8882-09d53533950e",
+            "display": "TestOnJan1ofMPResult199 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/061ab97e-4e5d-4c1d-91dc-21e34b415b5b",
+            "display": "HIVDxonApr1ofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/564678c9-1495-4cfe-9b68-2fcedb80fd9b",
+            "display": "NoVLTests NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1fe11eea-dd7a-48f6-84a6-6522de5c1745",
+            "display": "TestDuringMPResultDRCBelow NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/fee37cef-a36c-4640-b58f-c7df0743597d",
+            "display": "HIVDXonMarch29ofMPLeapYear IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/56fc45b6-2a2b-45dd-af07-c946b029b9df",
+            "display": "VLTestDuringMPResultEmpty NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7c34502d-cd54-4f08-9c0c-93d3c04fc3bf",
+            "display": "EncOn240DayEdgeofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6e36591c-d366-4dc0-b1b4-4b939b920a85",
+            "display": "TestDuringMPResultDRCNotDetectedRelevantdateTime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2a83ceb0-b652-479c-8b3f-69209286ca86",
+            "display": "HIVDxAndEncon91stDayofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/74aab416-6a06-4fb8-8fbf-5df8012dd811",
+            "display": "2VLTestsduringMPwithMostRecentResultOver NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5da3f95f-8881-41fe-826a-cb43f0fe4949",
+            "display": "TestAug28DuringMPResult201 NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e03fd6c9-9b4c-4814-9301-f22a28e4b1be",
+            "display": "HIVDxinyearsbeforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a98409bd-26b7-499a-bdff-f4c0118e0934",
+            "display": "HIVDxJan1WithEncOnOutside240DayEdgeofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/14605ae3-a67b-423b-942e-06a54531bc70",
+            "display": "DxwithNoEnc IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7ebb36aa-b8dc-4d22-9c09-3250684e3d30",
+            "display": "VLTestDec31ofMPResult199 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/eae55f3d-0a15-4a21-9229-dfb11f8e3f9d",
+            "display": "EncOn240DayEdgeofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/67fe9319-a486-463e-9e0f-346b17628e3c",
+            "display": "EncOn240DayEdgeofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/267848e8-9b42-4a94-931d-d2bc4a142c61",
+            "display": "HIVDxLocalCodeinFebofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4dcecfe3-5b54-46f2-b26c-f82954ca68fe",
+            "display": "HIVDxinfirst90daysofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d4741a72-3191-4a77-b3ab-7f4e62bc8221",
+            "display": "TestBeforeMP NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8d786705-7605-4c33-a5d4-0ef145a3bcbc",
+            "display": "2VLTestsduringMPwithMostRecentResultUnder NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/9df5bcfb-2893-42f4-b092-a7d49bc0276e",
+            "display": "TestOnDec31DuringMPResultUnderRelevantdateTime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b124de67-0311-4c75-bb67-e6c45e48ca45",
+            "display": "HIVDxyearsgo IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/920a15ae-3bc9-4e7b-9f0f-e1554b78157a",
+            "display": "HIVDxonMarch31ofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b5df1024-993a-42aa-8afd-a1a83c32c95a",
+            "display": "TestDuringMPResultUnder200 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6f46bfc8-e7b3-45a2-82ae-896144b2aebd",
+            "display": "2TestsduringMPBothOver NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8a74f67d-482c-4cdd-8b71-71d1b14dd432",
+            "display": "2TestsduringMP1ResultUnder1NotDetected NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f8c028d-5443-41dc-895e-ad9541af0dfe",
+            "display": "TestOnJan1ofMPResult199 NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/23dd9286-8299-4fa0-8edf-2dc19e966deb",
+            "display": "PreventativeCareEnc IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c3a81338-d107-4762-84a8-3a8ce88b781a",
+            "display": "2TestsduringMP1Over1Less NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/0dba5c80-03d8-40cd-ab24-786910e61265",
+            "display": "2TestsduringMPBothResultsUnder NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/763778d4-705a-4659-837a-914827625a39",
+            "display": "TestOnJan1ofMPResult201 NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1a5ca6a4-7ff9-4b3f-bb47-655b5cc14fd0",
+            "display": "AnnualWellnessEnc IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6972e617-a003-45d1-8de5-9d4b695324fd",
+            "display": "EncOnJan1ofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6d6980b9-1f73-495a-a78c-c9c26a26ceaf",
+            "display": "EncBeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/15d3fb71-37d0-4d5c-b504-4fd1c8b5b942",
+            "display": "HIVDxinDecofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/48fd1cfc-ee44-4e04-a174-db33789bf10c",
+            "display": "TestDuringMPResultOver NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f48ef2d5-b690-4068-9268-b06a7558bb68",
+            "display": "EncOnOutside240DayEdgeofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f5ab0931-7298-476d-8529-3e13214e626f",
+            "display": "HIVDxonMarch30ofMP IPPass"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/3824",
+      "resource": {
+        "resourceType": "Group",
+        "id": "3824",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-24T14:22:51.278+00:00",
+          "source": "#m9DBrCTy7JZ6ej4f"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVSTITestingFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/3d16a3a5-a2e7-49f8-8335-1b908a646ff4",
+            "display": "3LabBeforeMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b21edef6-b548-47fc-b399-55188354fbf1",
+            "display": "1LabBeforeMP2LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6c08efb1-922f-4e66-98bc-0de25182e723",
+            "display": "AllLabTestsTestingrelevantPeriodMissingStartdatetime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b7cb0363-3581-4627-a684-a4a1e2f34f42",
+            "display": "3LabAfterMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/9947d6a4-aff5-49ab-8a01-c3c438a7faa2",
+            "display": "AllLabTestsBeforeEncAndBooleanValue NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1734084f-7e87-43cb-9376-2261e94d3f09",
+            "display": "ComboGonorrheaANDChlamydiaCode NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d66ec0c1-1b48-4337-afbb-c2abd3fae91e",
+            "display": "AllLabTestsBeforeEnc NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bc145782-a19e-4d1f-824b-d48aa3e9fe10",
+            "display": "Age13onJan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/65404068-ae4f-43e1-ac90-11a293315aa1",
+            "display": "EncAfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/876ad4f9-f0aa-431e-b76d-c0ef5b9425e0",
+            "display": "HIVBeforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/164b7628-fecf-440c-b138-3f7a43adcd7e",
+            "display": "EncBeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/77973e2d-625a-4c4f-aa69-2c716af0ad3c",
+            "display": "AllLabTestsTestingrelevantPeriodMissingEnddatetime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ff1abac3-d7f8-427f-ab58-af89c95e0878",
+            "display": "EncOnDec31DuringMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c51459e4-0636-452f-9cbc-d73b599ad7c5",
+            "display": "1LabAfterMP2LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/75fec959-d869-4377-a181-73985bd33787",
+            "display": "EncOnDec31BeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8002d0cb-c4c0-4f54-96b0-c0e701947c07",
+            "display": "2LabBeforeMP1LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3aa2678e-0a9c-4233-9634-daae7e0e31e9",
+            "display": "AllLabTestsAfterEncReleventPeriod NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/73085704-0980-4bc2-bae1-b79e75a6be99",
+            "display": "EncDuringMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1b318b63-7b54-4410-9e9c-6107d5eb97ca",
+            "display": "Age13onDec31beforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/74ac3135-a328-4695-93aa-17368142976f",
+            "display": "MultipleOfAllLabTestsDuringMP NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/770c7dc8-5c0b-4987-8f60-27e90f251dae",
+            "display": "AllLabTestsBeforeEncWith2ofSameTest NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bc4eb112-a4df-4295-8200-ad5b3f1b9254",
+            "display": "HIVonJan1at1200ofnextyear IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2334a2b0-2a8a-4fc7-b905-5271a1619eb2",
+            "display": "EncOnJan1at1200amofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/716d4ddd-aa73-48ea-b17a-7b037b76634e",
+            "display": "AgeUnder13 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1e1a00b6-fe51-46c8-b982-2c2ff0f20158",
+            "display": "Age13onDec31at1159ambeforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2384d351-d4e4-4395-bd39-2446e18674e9",
+            "display": "2LabAfterMP1LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/0319c116-3664-46a8-94c9-798a6d61ca29",
+            "display": "EncOnJan1AfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7fafc4ad-74d9-48e7-b12e-d51a11030a14",
+            "display": "AllLabTestsMultipleEnc NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/71c8f6dc-592e-4675-8799-803d10991782",
+            "display": "Age13onJan2 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/efa9696e-1451-4f5e-895a-552485e5c2b9",
+            "display": "AgeOver13 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6e5d5e93-aaf8-440f-9f99-7fbb105dce3c",
+            "display": "2LabBeforeMP1LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/23a881d2-1897-4674-8857-c438bdb8bd7d",
+            "display": "3LabBeforeMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/de5e2460-196e-4a0f-bb6a-988c39edadd6",
+            "display": "AllLabTestsAfterEncReleventDateTime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b08c7da7-5871-499c-b266-c745ba23a426",
+            "display": "HIVonDec31at1159ofMP IPPass"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/3826",
+      "resource": {
+        "resourceType": "Group",
+        "id": "3826",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-24T14:23:09.818+00:00",
+          "source": "#ks1bUWWhDpUhjcjG"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVScreeningFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/72632db4-5184-4a7f-8ab7-879a7503ac49",
+            "display": "LabTestHIVDxBeforeMP NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/eff43fcb-973d-4222-aedc-f26c51c0faba",
+            "display": "Patient65StartMP IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8e9a6beb-2485-4aff-8fbc-d8f62c43be97",
+            "display": "HIVDxStartsDuringMP  DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/85b40cb7-0686-4e70-b4c9-dffa10491ebc",
+            "display": "HIVDxJan2duringMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8311fb5d-afaf-4e73-8968-8a9a3ef92b06",
+            "display": "EncOverlapsMPStart IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2190f846-6e59-492d-83f4-966f8c1f6ba2",
+            "display": "AgeUnder15 IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/415a39a6-74db-4168-b704-291c71c8def9",
+            "display": "NoHIVDiag DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3b956fce-b7d6-44c6-ac9f-11260fec4d71",
+            "display": "TwoHIVDxBothInvalidTiming DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b26beebe-30ab-4734-b1d1-958ff70e29ca",
+            "display": "TwoInvalidEncs IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cc3f7a61-ba3c-4456-86c6-260ad0c3123c",
+            "display": "LabTestInvalid NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cb6cbd21-6739-4551-958c-4f487784d0c2",
+            "display": "LabTestAge65relevantDatetime NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/65886cfc-4242-4edc-b745-5883929effdf",
+            "display": "LabTestHIVDxDuringMPrelevantDatetime NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6844d823-07b3-4b55-8572-892f8df76c20",
+            "display": "HIVDxInvalid DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5516ccc0-3773-4fdc-bb70-97733373e040",
+            "display": "InvalidEncounter IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6ccb42f9-af10-44fd-bb63-e29f00238a11",
+            "display": "LabTestHIVDxDuringMPrelevantPeriod NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f7265a2f-e063-4c13-82fe-0e356ba61689",
+            "display": "HIVDxStartsBeforeMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/aeec70c8-0299-473e-9bec-dec37f70c079",
+            "display": "Age65Dec31 IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f96bf714-ae74-456a-85bc-2d896fdae2a1",
+            "display": "Age16InitialVisit DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7d3d8242-5606-473b-924c-91b72518809e",
+            "display": "TwoLabBothInvalidTiming NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3dee8540-b4d0-474a-9315-feb5859205d5",
+            "display": "LabTestBeforeBirth NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1985a91a-0a76-463d-a52c-1cf9f66ffbf8",
+            "display": "LabTestTooYoung NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/26255213-0c5c-49a1-b3b6-1011faebe918",
+            "display": "LabTestAfterMP NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ba8ca84a-2636-42e5-8538-7a70b1c48670",
+            "display": "LabTestAge65relevantPeriod NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/58a0445c-247c-4535-bcec-050954c273dd",
+            "display": "NoLabTest NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/32faa6ed-8228-473f-b1d2-715ea6e66ba2",
+            "display": "Age65Jan1 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bb261749-b2c6-49b1-b42c-0f42a689b431",
+            "display": "Age64Dec31 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2fc09f3d-f196-477f-90b5-430d8bcb6247",
+            "display": "NoEncounter IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/79371589-113c-4c26-9dcf-02e32b137be5",
+            "display": "LabTestTooOld NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2ca6fcbd-127d-4186-b65e-9b685f860f8d",
+            "display": "HIVDxDec31BeforeMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b03e8b62-8b46-442b-90ae-fc8b7cdfaf5c",
+            "display": "PatientTooOld IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5737c2f3-0550-437d-9d4c-846c3dba902b",
+            "display": "Age15Jan1 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bc914a40-4024-42c3-8818-2c110d53b410",
+            "display": "HIVDxJan1duringMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/29181d46-2dc5-4aeb-a24e-c27692e345dc",
+            "display": "EncOverlapsMPEnd IPPFail"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/3828",
+      "resource": {
+        "resourceType": "Group",
+        "id": "3828",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-24T14:23:48.723+00:00",
+          "source": "#CJxLQGyFFn4odHUe"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/Cataracts2040BCVAwithin90DaysFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/b765067f-d81a-4d58-87c1-3cad1044e007",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/631703fb-7ae8-4f63-84bb-e39692bbd261",
+            "display": "DisseminatedChorioretinitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/87cd6dfd-1fad-4008-8e0e-36b20ee28e8f",
+            "display": "InjurytoOpticNerveWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b64785e4-be49-40d1-8110-7c4c036128bf",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/32a253b0-79d4-4bd8-a591-5557984392c6",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c4e0b756-c07b-49f6-80cc-23bb28d4b5f6",
+            "display": "DiabeticMacularEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/25d3565a-4bf6-4082-9ea6-62a0bed23a9c",
+            "display": "OtherBackgroundRetinopathyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/474db000-fed4-4679-b8de-be967e146299",
+            "display": "FailAcuteSubacuteIridocyclitisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b0e366ce-b13b-454d-ac58-ffc9005a8336",
+            "display": "CornealEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d3b7d697-069b-47d2-82d3-ed3e375c9aff",
+            "display": "AclridocyclitisOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/736df249-2ed8-43a8-afa5-c177a12cea82",
+            "display": "HereditaryRetinalDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cd97bd33-8e19-409c-ae92-b3c665cf3282",
+            "display": "CataractPosteriorPolarOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1b854323-2f47-4bdb-88ee-d34e6d28ba63",
+            "display": "VisAcuity20/40=90DaysAfter NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f3eea646-c6ef-404d-8ee9-0626a6153906",
+            "display": "DisordersofOpticWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1232c53b-a54c-43f2-9f31-5453ce2507fc",
+            "display": "PathologicMyopiaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c3d3aba5-f483-4e18-8492-48cc60d8fdb4",
+            "display": "OtherEndophthalmitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/58ffc94d-dd15-4bf4-899e-5574b47f4615",
+            "display": "VisAcuity20/40=90DaysAfterEdge NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8bab0696-02d1-4e8f-a719-a91621cce9e0",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0ff4cc2-6235-4270-bf4c-4637fe7ccc17",
+            "display": "DegenerationofMaculaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e4f0c8b6-6004-4565-93d6-9df005b8061f",
+            "display": "UveitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5177b27f-59bc-460e-ae96-88a0baa325d5",
+            "display": "BurnsOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4788274e-9b09-45fa-a9a7-d97237a40f58",
+            "display": "ScleritisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4dd85cf1-18a3-44ed-8a72-096694776335",
+            "display": "VisualAcuityExamPerformedinDec NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2e4a70e8-5331-4f90-ad15-a11e75e7c163",
+            "display": "OpticNeuritisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/34a7b6cd-b70b-4983-8d12-d13862ced1bf",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/67e718ff-c59c-46a9-832c-d3b51247874e",
+            "display": "ChoroidDetachWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c7378293-1ceb-4e42-928a-e9800053b335",
+            "display": "PriorPenetratingKeratoplastyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f9e96d8-a941-46c5-8e97-35f9498e82c3",
+            "display": "CatSurgAfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a408e883-7952-457e-a895-a4fcc055ab0f",
+            "display": "GlaucomaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e064bc2f-965a-4493-a9fb-31ebc09b9009",
+            "display": "MorgagnianCataractWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/216ed2eb-6d8c-4f08-8769-120e03d60611",
+            "display": "RetinalDetachmentWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0a1cf17-fcdc-40f5-98b6-2b47ef2ae3cb",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/94ddaee0-1b05-44aa-8298-9fd53c8e8144",
+            "display": "LessThan18 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/39013200-2f18-4d0e-90d0-93ab94f0cf87",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/edcca964-8fb0-4672-85cb-8e64495d3077",
+            "display": "VisAcuity20/40SnellenChart NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/02764b97-9bce-4fb3-a49a-91575de42d04",
+            "display": "HereditaryCornealDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e7d855b5-fb38-4449-8c02-54088d561a18",
+            "display": "RetrolentalFibroplasiasWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61ca9664-580e-4f01-8015-8cb3bcf00a01",
+            "display": "ScleritisEndB4CatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e8772fb9-e5b2-4960-aa20-40fdde26f2c0",
+            "display": "VisAcuity20/40>90DAfterCatSurg NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cce515b3-72e3-4ce8-88e4-626a46d5578f",
+            "display": "VisAcuityLessThan2040 NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f68e8f1d-8c06-4ce8-a541-af39083a984c",
+            "display": "OpenWoundofEyeballWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7a0adf5f-8671-4bd8-97dc-e82f2f25d214",
+            "display": "DENEXPassAmblyopiaOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cb570eec-4de5-4dd7-bd0a-9ee00bbeeb48",
+            "display": "CertainTypeIridOverlapsCatSurg DENEXPASS"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/3830",
+      "resource": {
+        "resourceType": "Group",
+        "id": "3830",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-24T14:24:04.998+00:00",
+          "source": "#A6sXAc0EAOwkaEhP"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVRetentionFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/55918f04-a1a3-480a-8d79-c2a2208481fe",
+            "display": "EncInMPVLafterMP 5NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5689101e-6489-4ad5-86ba-4c3261a36a58",
+            "display": "NoHIVDiagnosis 18IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4a461ae6-b9f7-4e9f-aab2-ecc9e65fb298",
+            "display": "TwoEncJan1andDec31 15NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e2b6e56e-7af4-4500-ab26-8cf4178ab76e",
+            "display": "OneEncOutOfMP 19NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/fbc7c974-0ed5-4441-a147-4c69ec98bf14",
+            "display": "EncWithHIVonDateofEnc 3IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5b2aee56-e057-4632-8f39-4b91c1cb6a32",
+            "display": "EncWithHIVBeforeEnc 2IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b142f5b4-0f0e-4a68-9943-d2a1a9359639",
+            "display": "EncInMPVLafterEncDuringMPOver90Days 13NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8d813db7-b796-4f8a-a616-8ff89138159a",
+            "display": "TwoEncOver90DaysApart DRC NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4fb37f38-8be8-4963-8386-38c98cc095c8",
+            "display": "LV240DaysIntoMP 22IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/98acbc6d-b8e1-4a69-9b6f-682890dd64b3",
+            "display": "EncInMPVLafterEncDuringMP 12NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7d2ac41c-0346-43d9-b069-6418679074d5",
+            "display": "EncInMPVLafterMP 5NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4f318d2b-56a8-4fad-ad95-858a17d6d0e3",
+            "display": "AdolescentWithMultipleEncAndVL 24NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/12abed4a-8a88-4d4c-854c-ca9402dc2d08",
+            "display": "EncAndVLWithin90Days 23NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c1ac2e8a-6c58-4c63-943c-e73bc94e209a",
+            "display": "EncEachMonthVLEachMonth 11NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d7b99dec-f87f-40b9-98ae-96326cbe447c",
+            "display": "TwoEnc90DaysApart 14NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/944f86a3-e617-4a14-97b8-e5678fb92f8e",
+            "display": "TwoEncwithOneDuringMPoneafterMP 8NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8b83ee2c-fbad-4b89-a7e0-10f7d749d60f",
+            "display": "VLduringMPwithEncAfter90DaysDRC NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ca5f1ee4-ff35-4324-96b5-1488a696dd04",
+            "display": "OnlyEncMoreThan240DaysIntoMP 21IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/89de85c7-996d-40f2-bbdb-2495c659b959",
+            "display": "TwoEncLessThan90DaysApart 6NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1f17a806-3a0c-43b9-9105-e0e6a97de64d",
+            "display": "VLduringMPwithEncAfter90Days 9NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61c642a2-4490-482e-a21a-e0ab8715dae4",
+            "display": "HIVDiagAfterFirst240DaysOfMP 20IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e329c762-8076-4006-9d9d-e5c1d6132d97",
+            "display": "TwoEncOneAfterMP 7NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1f17a806-3a0c-43b9-9105-e0e6a97de64e",
+            "display": "VLduringMPwithEncAfter90Days 9NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f2044a96-a0a7-4d28-8a38-ec5458468acf",
+            "display": "SingleEncInMP 17NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ba27b68f-b183-4b1e-8ba4-7b3b895f9607",
+            "display": "EncInMPVLafterEncDuringMP 4NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5d20c03f-3fa1-422f-913a-a58e8db09444",
+            "display": "TwoEncOver90DaysApart 16NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/60fa3554-b650-43fe-b23e-604acc5e4bbf",
+            "display": "VLduringMPwithEncAfterUnder90days 10NumFail"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/4855",
+      "resource": {
+        "resourceType": "Group",
+        "id": "4855",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:28:35.175+00:00",
+          "source": "#e6No6bxeiLSLzq0C"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVSTITestingFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/3d16a3a5-a2e7-49f8-8335-1b908a646ff4",
+            "display": "3LabBeforeMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b21edef6-b548-47fc-b399-55188354fbf1",
+            "display": "1LabBeforeMP2LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6c08efb1-922f-4e66-98bc-0de25182e723",
+            "display": "AllLabTestsTestingrelevantPeriodMissingStartdatetime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b7cb0363-3581-4627-a684-a4a1e2f34f42",
+            "display": "3LabAfterMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/9947d6a4-aff5-49ab-8a01-c3c438a7faa2",
+            "display": "AllLabTestsBeforeEncAndBooleanValue NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1734084f-7e87-43cb-9376-2261e94d3f09",
+            "display": "ComboGonorrheaANDChlamydiaCode NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d66ec0c1-1b48-4337-afbb-c2abd3fae91e",
+            "display": "AllLabTestsBeforeEnc NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bc145782-a19e-4d1f-824b-d48aa3e9fe10",
+            "display": "Age13onJan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/65404068-ae4f-43e1-ac90-11a293315aa1",
+            "display": "EncAfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/876ad4f9-f0aa-431e-b76d-c0ef5b9425e0",
+            "display": "HIVBeforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/164b7628-fecf-440c-b138-3f7a43adcd7e",
+            "display": "EncBeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/77973e2d-625a-4c4f-aa69-2c716af0ad3c",
+            "display": "AllLabTestsTestingrelevantPeriodMissingEnddatetime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ff1abac3-d7f8-427f-ab58-af89c95e0878",
+            "display": "EncOnDec31DuringMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c51459e4-0636-452f-9cbc-d73b599ad7c5",
+            "display": "1LabAfterMP2LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/75fec959-d869-4377-a181-73985bd33787",
+            "display": "EncOnDec31BeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8002d0cb-c4c0-4f54-96b0-c0e701947c07",
+            "display": "2LabBeforeMP1LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3aa2678e-0a9c-4233-9634-daae7e0e31e9",
+            "display": "AllLabTestsAfterEncReleventPeriod NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/73085704-0980-4bc2-bae1-b79e75a6be99",
+            "display": "EncDuringMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1b318b63-7b54-4410-9e9c-6107d5eb97ca",
+            "display": "Age13onDec31beforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/74ac3135-a328-4695-93aa-17368142976f",
+            "display": "MultipleOfAllLabTestsDuringMP NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/770c7dc8-5c0b-4987-8f60-27e90f251dae",
+            "display": "AllLabTestsBeforeEncWith2ofSameTest NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bc4eb112-a4df-4295-8200-ad5b3f1b9254",
+            "display": "HIVonJan1at1200ofnextyear IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2334a2b0-2a8a-4fc7-b905-5271a1619eb2",
+            "display": "EncOnJan1at1200amofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/716d4ddd-aa73-48ea-b17a-7b037b76634e",
+            "display": "AgeUnder13 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1e1a00b6-fe51-46c8-b982-2c2ff0f20158",
+            "display": "Age13onDec31at1159ambeforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2384d351-d4e4-4395-bd39-2446e18674e9",
+            "display": "2LabAfterMP1LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/0319c116-3664-46a8-94c9-798a6d61ca29",
+            "display": "EncOnJan1AfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7fafc4ad-74d9-48e7-b12e-d51a11030a14",
+            "display": "AllLabTestsMultipleEnc NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/71c8f6dc-592e-4675-8799-803d10991782",
+            "display": "Age13onJan2 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/efa9696e-1451-4f5e-895a-552485e5c2b9",
+            "display": "AgeOver13 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6e5d5e93-aaf8-440f-9f99-7fbb105dce3c",
+            "display": "2LabBeforeMP1LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/23a881d2-1897-4674-8857-c438bdb8bd7d",
+            "display": "3LabBeforeMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/de5e2460-196e-4a0f-bb6a-988c39edadd6",
+            "display": "AllLabTestsAfterEncReleventDateTime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b08c7da7-5871-499c-b266-c745ba23a426",
+            "display": "HIVonDec31at1159ofMP IPPass"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/4856",
+      "resource": {
+        "resourceType": "Group",
+        "id": "4856",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:28:35.678+00:00",
+          "source": "#baDs5hEwYr8eD6K6"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVViralSuppressionFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/765f96cd-d613-460d-98d1-111d44c08723",
+            "display": "EncDec31BeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/15c4c2c5-9cdb-4eed-b27a-22462692881a",
+            "display": "TestDuringMPResult199 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/728e5e56-8230-4cab-9808-c0c4139836f4",
+            "display": "TestDuringMPResultUnderRelevantPeriod NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1e89cfdc-ec5e-456a-abcf-ab349c9cfbed",
+            "display": "2Tests1BeforeMP1duringMP NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/770e94b3-a82c-4a56-8882-09d53533950e",
+            "display": "TestOnJan1ofMPResult199 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/061ab97e-4e5d-4c1d-91dc-21e34b415b5b",
+            "display": "HIVDxonApr1ofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/564678c9-1495-4cfe-9b68-2fcedb80fd9b",
+            "display": "NoVLTests NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1fe11eea-dd7a-48f6-84a6-6522de5c1745",
+            "display": "TestDuringMPResultDRCBelow NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/fee37cef-a36c-4640-b58f-c7df0743597d",
+            "display": "HIVDXonMarch29ofMPLeapYear IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/56fc45b6-2a2b-45dd-af07-c946b029b9df",
+            "display": "VLTestDuringMPResultEmpty NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7c34502d-cd54-4f08-9c0c-93d3c04fc3bf",
+            "display": "EncOn240DayEdgeofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6e36591c-d366-4dc0-b1b4-4b939b920a85",
+            "display": "TestDuringMPResultDRCNotDetectedRelevantdateTime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2a83ceb0-b652-479c-8b3f-69209286ca86",
+            "display": "HIVDxAndEncon91stDayofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/74aab416-6a06-4fb8-8fbf-5df8012dd811",
+            "display": "2VLTestsduringMPwithMostRecentResultOver NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5da3f95f-8881-41fe-826a-cb43f0fe4949",
+            "display": "TestAug28DuringMPResult201 NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e03fd6c9-9b4c-4814-9301-f22a28e4b1be",
+            "display": "HIVDxinyearsbeforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a98409bd-26b7-499a-bdff-f4c0118e0934",
+            "display": "HIVDxJan1WithEncOnOutside240DayEdgeofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/14605ae3-a67b-423b-942e-06a54531bc70",
+            "display": "DxwithNoEnc IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7ebb36aa-b8dc-4d22-9c09-3250684e3d30",
+            "display": "VLTestDec31ofMPResult199 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/eae55f3d-0a15-4a21-9229-dfb11f8e3f9d",
+            "display": "EncOn240DayEdgeofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/67fe9319-a486-463e-9e0f-346b17628e3c",
+            "display": "EncOn240DayEdgeofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/267848e8-9b42-4a94-931d-d2bc4a142c61",
+            "display": "HIVDxLocalCodeinFebofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4dcecfe3-5b54-46f2-b26c-f82954ca68fe",
+            "display": "HIVDxinfirst90daysofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d4741a72-3191-4a77-b3ab-7f4e62bc8221",
+            "display": "TestBeforeMP NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8d786705-7605-4c33-a5d4-0ef145a3bcbc",
+            "display": "2VLTestsduringMPwithMostRecentResultUnder NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/9df5bcfb-2893-42f4-b092-a7d49bc0276e",
+            "display": "TestOnDec31DuringMPResultUnderRelevantdateTime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b124de67-0311-4c75-bb67-e6c45e48ca45",
+            "display": "HIVDxyearsgo IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/920a15ae-3bc9-4e7b-9f0f-e1554b78157a",
+            "display": "HIVDxonMarch31ofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b5df1024-993a-42aa-8afd-a1a83c32c95a",
+            "display": "TestDuringMPResultUnder200 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6f46bfc8-e7b3-45a2-82ae-896144b2aebd",
+            "display": "2TestsduringMPBothOver NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8a74f67d-482c-4cdd-8b71-71d1b14dd432",
+            "display": "2TestsduringMP1ResultUnder1NotDetected NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f8c028d-5443-41dc-895e-ad9541af0dfe",
+            "display": "TestOnJan1ofMPResult199 NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/23dd9286-8299-4fa0-8edf-2dc19e966deb",
+            "display": "PreventativeCareEnc IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c3a81338-d107-4762-84a8-3a8ce88b781a",
+            "display": "2TestsduringMP1Over1Less NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/0dba5c80-03d8-40cd-ab24-786910e61265",
+            "display": "2TestsduringMPBothResultsUnder NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/763778d4-705a-4659-837a-914827625a39",
+            "display": "TestOnJan1ofMPResult201 NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1a5ca6a4-7ff9-4b3f-bb47-655b5cc14fd0",
+            "display": "AnnualWellnessEnc IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6972e617-a003-45d1-8de5-9d4b695324fd",
+            "display": "EncOnJan1ofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6d6980b9-1f73-495a-a78c-c9c26a26ceaf",
+            "display": "EncBeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/15d3fb71-37d0-4d5c-b504-4fd1c8b5b942",
+            "display": "HIVDxinDecofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/48fd1cfc-ee44-4e04-a174-db33789bf10c",
+            "display": "TestDuringMPResultOver NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f48ef2d5-b690-4068-9268-b06a7558bb68",
+            "display": "EncOnOutside240DayEdgeofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f5ab0931-7298-476d-8529-3e13214e626f",
+            "display": "HIVDxonMarch30ofMP IPPass"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/4857",
+      "resource": {
+        "resourceType": "Group",
+        "id": "4857",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:28:36.048+00:00",
+          "source": "#HKDeUU6vQGQc2BQH"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/KidneyHealthEvaluationFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/023b65d6-0b68-4b1f-b276-f500e4b77ed2",
+            "display": "PalliativeCareAssessment DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/55c5c208-190b-4f90-bdbb-0c02332df772",
+            "display": "EncounterPerfHospCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f4d1182a-1c06-4c62-a0be-1f994c4343b3",
+            "display": "EdgeAge18Jan1 DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a9536c98-3157-4443-bfe1-ef4e585360be",
+            "display": "EdgeAge85Jan1 DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/80cbaf27-f12e-47b7-a875-59b068294036",
+            "display": "DiabetesDxFirstDayOfMP DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/fa02a22e-e0c5-49ef-8955-2e581ca12ca5",
+            "display": "EndStageRenal DenExPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f8c48a84-406c-44b7-b79e-b7a5f9d15b31",
+            "display": "SingleUACRLab NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8e10675e-b991-4327-9514-6feb9d385b7f",
+            "display": "HomeServiceEGFRAndUACR NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/26408298-880b-468a-9b05-938cee6d8def",
+            "display": "PTHospServices DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b49e5ec9-8a2d-4ed4-acae-9e13e21d67f2",
+            "display": "withCKDStage5 DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8ca88661-f12a-4b24-98e8-93183e8e2472",
+            "display": "Age20 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/53abb201-a2ef-4966-9102-8fab192aa008",
+            "display": "NoActiveDiabetesDx IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a2cf34eb-1f20-426f-bfce-53599a178b71",
+            "display": "DiabetesEncoOver75 DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/52988c36-5e85-4818-9baa-983a3e27281a",
+            "display": "OfficeVisitEGFRAndUACR NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1127bc95-bf52-4921-b02a-de0902780191",
+            "display": "PerformHospAmb DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ac7a62b6-a440-4d4c-849d-0ce05743109c",
+            "display": "EdgeAge18Jan1 NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b1e68658-d64f-4ca4-a4ee-89c64e4536fa",
+            "display": "HospiceCareDiagnosis DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ebbf9c22-fb8c-498b-a261-11d177d10e45",
+            "display": "NoEncounter IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ff43a29d-e740-44ba-9452-63d1ba2b0709",
+            "display": "EndStageRenalHospice DenExPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1d012d11-4b38-4bdc-bd27-e7d8bcc88c89",
+            "display": "EdgeAge85Jan1 NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61c9b47c-2223-4e45-b83b-eee21f031cad",
+            "display": "PerformHospCareMinDataSet DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7921acb6-7c9a-4c78-bdf1-a8e1ec2c7023",
+            "display": "ESRDDxFirstDayOfMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ae52c591-1a71-4090-aeeb-2dd758f63ce4",
+            "display": "MutlipeEncounterDiagnosis DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4354fbec-b63a-46ce-8465-ec82710ea1c6",
+            "display": "PerformPalliativeHospCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/95ee3081-b973-4bd2-8b86-5b46bd664905",
+            "display": "OutpatientEGFRAndUACR NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d4a593b2-d485-4bfa-a8b1-a401bdbf8d23",
+            "display": "DischargeHomeHospDayBeforeMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/277e15ec-f1a0-4a6e-a8d9-856c0a4fa4f0",
+            "display": "DiabetesDxAfterMP DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/40e0c576-25c4-41fc-854a-116db99f1a65",
+            "display": "OrderPalliativeHospCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2a7112e7-5937-4288-9271-cdc2d7e5eaa4",
+            "display": "DischargeHomeHosp DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7e7c41ee-7704-419c-937b-72d10c76f99a",
+            "display": "AnnualWelllnessEGFRAndUACR NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b6ac3dd1-ff55-4152-be9a-153cad2ba2a2",
+            "display": "EncounterPerfPalliativeCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8cfb2747-a46d-4348-9e21-5ef3417e524a",
+            "display": "KidenyPanelPerformedNoValue NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/77620fcb-7a0a-4015-89cc-c32bd8681c13",
+            "display": "OrderHospCareAmb DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ed17f9e5-1200-49e3-a4fc-1c188d8932dc",
+            "display": "AnnualWellnessVisitDuringMP DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/54c38c8f-1e1b-41a7-a2fe-9ee285a923bc",
+            "display": "AgeLessThan18EncoDiabetes DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ef8cde66-ab81-4a37-8cc2-6b390182b7ac",
+            "display": "OfficeVisitB4MP DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a7284289-8784-48d9-a342-7d851085efb7",
+            "display": "DiabetesOverlapsMP DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f860c8e-e5fc-4843-ac4e-acb8e63471f3",
+            "display": "DischargeFacilityHosp DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1e8e8baf-0c27-42b2-93ad-5426418552c7",
+            "display": "HospEncoLastDayOfMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d7e37bcf-d13b-4415-82ac-a51b5c83151c",
+            "display": "DiagnosisPalliativeCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b998e967-eb53-426b-a3a9-8226939efdb6",
+            "display": "EndStageRenalHospiceAllVisits DenExPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/0ce4362d-60f0-41af-8d47-c61f76d025a4",
+            "display": "DiabetesDxLastDayOfPriorYear DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c13a82b6-fb44-4fc7-befd-d762b9fafa97",
+            "display": "CKDStage5OutofMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f2b74f6e-1b67-49ca-b9b1-bb6752287935",
+            "display": "EncounterOutofMP DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e4ad8ac6-e4c4-4e9f-acbb-4e345c8a84ad",
+            "display": "PreventativeCareVisitAfterMP DENOMFail"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/4858",
+      "resource": {
+        "resourceType": "Group",
+        "id": "4858",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:28:51.201+00:00",
+          "source": "#lYl077XpQ0BRRjDA"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVRetentionFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/55918f04-a1a3-480a-8d79-c2a2208481fe",
+            "display": "EncInMPVLafterMP 5NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5689101e-6489-4ad5-86ba-4c3261a36a58",
+            "display": "NoHIVDiagnosis 18IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4a461ae6-b9f7-4e9f-aab2-ecc9e65fb298",
+            "display": "TwoEncJan1andDec31 15NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e2b6e56e-7af4-4500-ab26-8cf4178ab76e",
+            "display": "OneEncOutOfMP 19NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/fbc7c974-0ed5-4441-a147-4c69ec98bf14",
+            "display": "EncWithHIVonDateofEnc 3IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5b2aee56-e057-4632-8f39-4b91c1cb6a32",
+            "display": "EncWithHIVBeforeEnc 2IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b142f5b4-0f0e-4a68-9943-d2a1a9359639",
+            "display": "EncInMPVLafterEncDuringMPOver90Days 13NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8d813db7-b796-4f8a-a616-8ff89138159a",
+            "display": "TwoEncOver90DaysApart DRC NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4fb37f38-8be8-4963-8386-38c98cc095c8",
+            "display": "LV240DaysIntoMP 22IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/98acbc6d-b8e1-4a69-9b6f-682890dd64b3",
+            "display": "EncInMPVLafterEncDuringMP 12NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7d2ac41c-0346-43d9-b069-6418679074d5",
+            "display": "EncInMPVLafterMP 5NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4f318d2b-56a8-4fad-ad95-858a17d6d0e3",
+            "display": "AdolescentWithMultipleEncAndVL 24NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/12abed4a-8a88-4d4c-854c-ca9402dc2d08",
+            "display": "EncAndVLWithin90Days 23NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c1ac2e8a-6c58-4c63-943c-e73bc94e209a",
+            "display": "EncEachMonthVLEachMonth 11NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d7b99dec-f87f-40b9-98ae-96326cbe447c",
+            "display": "TwoEnc90DaysApart 14NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/944f86a3-e617-4a14-97b8-e5678fb92f8e",
+            "display": "TwoEncwithOneDuringMPoneafterMP 8NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8b83ee2c-fbad-4b89-a7e0-10f7d749d60f",
+            "display": "VLduringMPwithEncAfter90DaysDRC NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ca5f1ee4-ff35-4324-96b5-1488a696dd04",
+            "display": "OnlyEncMoreThan240DaysIntoMP 21IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/89de85c7-996d-40f2-bbdb-2495c659b959",
+            "display": "TwoEncLessThan90DaysApart 6NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1f17a806-3a0c-43b9-9105-e0e6a97de64d",
+            "display": "VLduringMPwithEncAfter90Days 9NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61c642a2-4490-482e-a21a-e0ab8715dae4",
+            "display": "HIVDiagAfterFirst240DaysOfMP 20IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e329c762-8076-4006-9d9d-e5c1d6132d97",
+            "display": "TwoEncOneAfterMP 7NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1f17a806-3a0c-43b9-9105-e0e6a97de64e",
+            "display": "VLduringMPwithEncAfter90Days 9NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f2044a96-a0a7-4d28-8a38-ec5458468acf",
+            "display": "SingleEncInMP 17NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ba27b68f-b183-4b1e-8ba4-7b3b895f9607",
+            "display": "EncInMPVLafterEncDuringMP 4NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5d20c03f-3fa1-422f-913a-a58e8db09444",
+            "display": "TwoEncOver90DaysApart 16NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/60fa3554-b650-43fe-b23e-604acc5e4bbf",
+            "display": "VLduringMPwithEncAfterUnder90days 10NumFail"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/4861",
+      "resource": {
+        "resourceType": "Group",
+        "id": "4861",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:29:20.939+00:00",
+          "source": "#NEblnlCWrQCrVucp"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/Cataracts2040BCVAwithin90DaysFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/b765067f-d81a-4d58-87c1-3cad1044e007",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/631703fb-7ae8-4f63-84bb-e39692bbd261",
+            "display": "DisseminatedChorioretinitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/87cd6dfd-1fad-4008-8e0e-36b20ee28e8f",
+            "display": "InjurytoOpticNerveWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b64785e4-be49-40d1-8110-7c4c036128bf",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/32a253b0-79d4-4bd8-a591-5557984392c6",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c4e0b756-c07b-49f6-80cc-23bb28d4b5f6",
+            "display": "DiabeticMacularEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/25d3565a-4bf6-4082-9ea6-62a0bed23a9c",
+            "display": "OtherBackgroundRetinopathyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/474db000-fed4-4679-b8de-be967e146299",
+            "display": "FailAcuteSubacuteIridocyclitisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b0e366ce-b13b-454d-ac58-ffc9005a8336",
+            "display": "CornealEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d3b7d697-069b-47d2-82d3-ed3e375c9aff",
+            "display": "AclridocyclitisOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/736df249-2ed8-43a8-afa5-c177a12cea82",
+            "display": "HereditaryRetinalDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cd97bd33-8e19-409c-ae92-b3c665cf3282",
+            "display": "CataractPosteriorPolarOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1b854323-2f47-4bdb-88ee-d34e6d28ba63",
+            "display": "VisAcuity20/40=90DaysAfter NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f3eea646-c6ef-404d-8ee9-0626a6153906",
+            "display": "DisordersofOpticWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1232c53b-a54c-43f2-9f31-5453ce2507fc",
+            "display": "PathologicMyopiaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c3d3aba5-f483-4e18-8492-48cc60d8fdb4",
+            "display": "OtherEndophthalmitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/58ffc94d-dd15-4bf4-899e-5574b47f4615",
+            "display": "VisAcuity20/40=90DaysAfterEdge NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8bab0696-02d1-4e8f-a719-a91621cce9e0",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0ff4cc2-6235-4270-bf4c-4637fe7ccc17",
+            "display": "DegenerationofMaculaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e4f0c8b6-6004-4565-93d6-9df005b8061f",
+            "display": "UveitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5177b27f-59bc-460e-ae96-88a0baa325d5",
+            "display": "BurnsOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4788274e-9b09-45fa-a9a7-d97237a40f58",
+            "display": "ScleritisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4dd85cf1-18a3-44ed-8a72-096694776335",
+            "display": "VisualAcuityExamPerformedinDec NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2e4a70e8-5331-4f90-ad15-a11e75e7c163",
+            "display": "OpticNeuritisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/34a7b6cd-b70b-4983-8d12-d13862ced1bf",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/67e718ff-c59c-46a9-832c-d3b51247874e",
+            "display": "ChoroidDetachWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c7378293-1ceb-4e42-928a-e9800053b335",
+            "display": "PriorPenetratingKeratoplastyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f9e96d8-a941-46c5-8e97-35f9498e82c3",
+            "display": "CatSurgAfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a408e883-7952-457e-a895-a4fcc055ab0f",
+            "display": "GlaucomaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e064bc2f-965a-4493-a9fb-31ebc09b9009",
+            "display": "MorgagnianCataractWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/216ed2eb-6d8c-4f08-8769-120e03d60611",
+            "display": "RetinalDetachmentWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0a1cf17-fcdc-40f5-98b6-2b47ef2ae3cb",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/94ddaee0-1b05-44aa-8298-9fd53c8e8144",
+            "display": "LessThan18 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/39013200-2f18-4d0e-90d0-93ab94f0cf87",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/edcca964-8fb0-4672-85cb-8e64495d3077",
+            "display": "VisAcuity20/40SnellenChart NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/02764b97-9bce-4fb3-a49a-91575de42d04",
+            "display": "HereditaryCornealDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e7d855b5-fb38-4449-8c02-54088d561a18",
+            "display": "RetrolentalFibroplasiasWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61ca9664-580e-4f01-8015-8cb3bcf00a01",
+            "display": "ScleritisEndB4CatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e8772fb9-e5b2-4960-aa20-40fdde26f2c0",
+            "display": "VisAcuity20/40>90DAfterCatSurg NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cce515b3-72e3-4ce8-88e4-626a46d5578f",
+            "display": "VisAcuityLessThan2040 NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f68e8f1d-8c06-4ce8-a541-af39083a984c",
+            "display": "OpenWoundofEyeballWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7a0adf5f-8671-4bd8-97dc-e82f2f25d214",
+            "display": "DENEXPassAmblyopiaOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cb570eec-4de5-4dd7-bd0a-9ee00bbeeb48",
+            "display": "CertainTypeIridOverlapsCatSurg DENEXPASS"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/4864",
+      "resource": {
+        "resourceType": "Group",
+        "id": "4864",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:29:23.588+00:00",
+          "source": "#Q014HVYuz6SRfLea"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVScreeningFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/72632db4-5184-4a7f-8ab7-879a7503ac49",
+            "display": "LabTestHIVDxBeforeMP NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/eff43fcb-973d-4222-aedc-f26c51c0faba",
+            "display": "Patient65StartMP IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8e9a6beb-2485-4aff-8fbc-d8f62c43be97",
+            "display": "HIVDxStartsDuringMP  DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/85b40cb7-0686-4e70-b4c9-dffa10491ebc",
+            "display": "HIVDxJan2duringMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8311fb5d-afaf-4e73-8968-8a9a3ef92b06",
+            "display": "EncOverlapsMPStart IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2190f846-6e59-492d-83f4-966f8c1f6ba2",
+            "display": "AgeUnder15 IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/415a39a6-74db-4168-b704-291c71c8def9",
+            "display": "NoHIVDiag DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3b956fce-b7d6-44c6-ac9f-11260fec4d71",
+            "display": "TwoHIVDxBothInvalidTiming DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b26beebe-30ab-4734-b1d1-958ff70e29ca",
+            "display": "TwoInvalidEncs IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cc3f7a61-ba3c-4456-86c6-260ad0c3123c",
+            "display": "LabTestInvalid NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cb6cbd21-6739-4551-958c-4f487784d0c2",
+            "display": "LabTestAge65relevantDatetime NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/65886cfc-4242-4edc-b745-5883929effdf",
+            "display": "LabTestHIVDxDuringMPrelevantDatetime NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6844d823-07b3-4b55-8572-892f8df76c20",
+            "display": "HIVDxInvalid DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5516ccc0-3773-4fdc-bb70-97733373e040",
+            "display": "InvalidEncounter IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6ccb42f9-af10-44fd-bb63-e29f00238a11",
+            "display": "LabTestHIVDxDuringMPrelevantPeriod NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f7265a2f-e063-4c13-82fe-0e356ba61689",
+            "display": "HIVDxStartsBeforeMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/aeec70c8-0299-473e-9bec-dec37f70c079",
+            "display": "Age65Dec31 IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f96bf714-ae74-456a-85bc-2d896fdae2a1",
+            "display": "Age16InitialVisit DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7d3d8242-5606-473b-924c-91b72518809e",
+            "display": "TwoLabBothInvalidTiming NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3dee8540-b4d0-474a-9315-feb5859205d5",
+            "display": "LabTestBeforeBirth NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1985a91a-0a76-463d-a52c-1cf9f66ffbf8",
+            "display": "LabTestTooYoung NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/26255213-0c5c-49a1-b3b6-1011faebe918",
+            "display": "LabTestAfterMP NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ba8ca84a-2636-42e5-8538-7a70b1c48670",
+            "display": "LabTestAge65relevantPeriod NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/58a0445c-247c-4535-bcec-050954c273dd",
+            "display": "NoLabTest NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/32faa6ed-8228-473f-b1d2-715ea6e66ba2",
+            "display": "Age65Jan1 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bb261749-b2c6-49b1-b42c-0f42a689b431",
+            "display": "Age64Dec31 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2fc09f3d-f196-477f-90b5-430d8bcb6247",
+            "display": "NoEncounter IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/79371589-113c-4c26-9dcf-02e32b137be5",
+            "display": "LabTestTooOld NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2ca6fcbd-127d-4186-b65e-9b685f860f8d",
+            "display": "HIVDxDec31BeforeMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b03e8b62-8b46-442b-90ae-fc8b7cdfaf5c",
+            "display": "PatientTooOld IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5737c2f3-0550-437d-9d4c-846c3dba902b",
+            "display": "Age15Jan1 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bc914a40-4024-42c3-8818-2c110d53b410",
+            "display": "HIVDxJan1duringMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/29181d46-2dc5-4aeb-a24e-c27692e345dc",
+            "display": "EncOverlapsMPEnd IPPFail"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/5635",
+      "resource": {
+        "resourceType": "Group",
+        "id": "5635",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:42:15.009+00:00",
+          "source": "#r6LU8zEmz5vtKMda"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/Cataracts2040BCVAwithin90DaysFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/b765067f-d81a-4d58-87c1-3cad1044e007",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/631703fb-7ae8-4f63-84bb-e39692bbd261",
+            "display": "DisseminatedChorioretinitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/87cd6dfd-1fad-4008-8e0e-36b20ee28e8f",
+            "display": "InjurytoOpticNerveWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b64785e4-be49-40d1-8110-7c4c036128bf",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/32a253b0-79d4-4bd8-a591-5557984392c6",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c4e0b756-c07b-49f6-80cc-23bb28d4b5f6",
+            "display": "DiabeticMacularEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/25d3565a-4bf6-4082-9ea6-62a0bed23a9c",
+            "display": "OtherBackgroundRetinopathyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/474db000-fed4-4679-b8de-be967e146299",
+            "display": "FailAcuteSubacuteIridocyclitisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b0e366ce-b13b-454d-ac58-ffc9005a8336",
+            "display": "CornealEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d3b7d697-069b-47d2-82d3-ed3e375c9aff",
+            "display": "AclridocyclitisOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/736df249-2ed8-43a8-afa5-c177a12cea82",
+            "display": "HereditaryRetinalDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cd97bd33-8e19-409c-ae92-b3c665cf3282",
+            "display": "CataractPosteriorPolarOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1b854323-2f47-4bdb-88ee-d34e6d28ba63",
+            "display": "VisAcuity20/40=90DaysAfter NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f3eea646-c6ef-404d-8ee9-0626a6153906",
+            "display": "DisordersofOpticWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1232c53b-a54c-43f2-9f31-5453ce2507fc",
+            "display": "PathologicMyopiaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c3d3aba5-f483-4e18-8492-48cc60d8fdb4",
+            "display": "OtherEndophthalmitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/58ffc94d-dd15-4bf4-899e-5574b47f4615",
+            "display": "VisAcuity20/40=90DaysAfterEdge NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8bab0696-02d1-4e8f-a719-a91621cce9e0",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0ff4cc2-6235-4270-bf4c-4637fe7ccc17",
+            "display": "DegenerationofMaculaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e4f0c8b6-6004-4565-93d6-9df005b8061f",
+            "display": "UveitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5177b27f-59bc-460e-ae96-88a0baa325d5",
+            "display": "BurnsOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4788274e-9b09-45fa-a9a7-d97237a40f58",
+            "display": "ScleritisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4dd85cf1-18a3-44ed-8a72-096694776335",
+            "display": "VisualAcuityExamPerformedinDec NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2e4a70e8-5331-4f90-ad15-a11e75e7c163",
+            "display": "OpticNeuritisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/34a7b6cd-b70b-4983-8d12-d13862ced1bf",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/67e718ff-c59c-46a9-832c-d3b51247874e",
+            "display": "ChoroidDetachWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c7378293-1ceb-4e42-928a-e9800053b335",
+            "display": "PriorPenetratingKeratoplastyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f9e96d8-a941-46c5-8e97-35f9498e82c3",
+            "display": "CatSurgAfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a408e883-7952-457e-a895-a4fcc055ab0f",
+            "display": "GlaucomaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e064bc2f-965a-4493-a9fb-31ebc09b9009",
+            "display": "MorgagnianCataractWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/216ed2eb-6d8c-4f08-8769-120e03d60611",
+            "display": "RetinalDetachmentWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0a1cf17-fcdc-40f5-98b6-2b47ef2ae3cb",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/94ddaee0-1b05-44aa-8298-9fd53c8e8144",
+            "display": "LessThan18 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/39013200-2f18-4d0e-90d0-93ab94f0cf87",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/edcca964-8fb0-4672-85cb-8e64495d3077",
+            "display": "VisAcuity20/40SnellenChart NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/02764b97-9bce-4fb3-a49a-91575de42d04",
+            "display": "HereditaryCornealDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e7d855b5-fb38-4449-8c02-54088d561a18",
+            "display": "RetrolentalFibroplasiasWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61ca9664-580e-4f01-8015-8cb3bcf00a01",
+            "display": "ScleritisEndB4CatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e8772fb9-e5b2-4960-aa20-40fdde26f2c0",
+            "display": "VisAcuity20/40>90DAfterCatSurg NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cce515b3-72e3-4ce8-88e4-626a46d5578f",
+            "display": "VisAcuityLessThan2040 NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f68e8f1d-8c06-4ce8-a541-af39083a984c",
+            "display": "OpenWoundofEyeballWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7a0adf5f-8671-4bd8-97dc-e82f2f25d214",
+            "display": "DENEXPassAmblyopiaOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cb570eec-4de5-4dd7-bd0a-9ee00bbeeb48",
+            "display": "CertainTypeIridOverlapsCatSurg DENEXPASS"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/5637",
+      "resource": {
+        "resourceType": "Group",
+        "id": "5637",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:42:49.778+00:00",
+          "source": "#W28ZlMTP1BeJe0SA"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/KidneyHealthEvaluationFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/023b65d6-0b68-4b1f-b276-f500e4b77ed2",
+            "display": "PalliativeCareAssessment DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/55c5c208-190b-4f90-bdbb-0c02332df772",
+            "display": "EncounterPerfHospCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f4d1182a-1c06-4c62-a0be-1f994c4343b3",
+            "display": "EdgeAge18Jan1 DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a9536c98-3157-4443-bfe1-ef4e585360be",
+            "display": "EdgeAge85Jan1 DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/80cbaf27-f12e-47b7-a875-59b068294036",
+            "display": "DiabetesDxFirstDayOfMP DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/fa02a22e-e0c5-49ef-8955-2e581ca12ca5",
+            "display": "EndStageRenal DenExPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f8c48a84-406c-44b7-b79e-b7a5f9d15b31",
+            "display": "SingleUACRLab NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8e10675e-b991-4327-9514-6feb9d385b7f",
+            "display": "HomeServiceEGFRAndUACR NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/26408298-880b-468a-9b05-938cee6d8def",
+            "display": "PTHospServices DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b49e5ec9-8a2d-4ed4-acae-9e13e21d67f2",
+            "display": "withCKDStage5 DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8ca88661-f12a-4b24-98e8-93183e8e2472",
+            "display": "Age20 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/53abb201-a2ef-4966-9102-8fab192aa008",
+            "display": "NoActiveDiabetesDx IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a2cf34eb-1f20-426f-bfce-53599a178b71",
+            "display": "DiabetesEncoOver75 DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/52988c36-5e85-4818-9baa-983a3e27281a",
+            "display": "OfficeVisitEGFRAndUACR NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1127bc95-bf52-4921-b02a-de0902780191",
+            "display": "PerformHospAmb DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ac7a62b6-a440-4d4c-849d-0ce05743109c",
+            "display": "EdgeAge18Jan1 NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b1e68658-d64f-4ca4-a4ee-89c64e4536fa",
+            "display": "HospiceCareDiagnosis DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ebbf9c22-fb8c-498b-a261-11d177d10e45",
+            "display": "NoEncounter IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ff43a29d-e740-44ba-9452-63d1ba2b0709",
+            "display": "EndStageRenalHospice DenExPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1d012d11-4b38-4bdc-bd27-e7d8bcc88c89",
+            "display": "EdgeAge85Jan1 NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61c9b47c-2223-4e45-b83b-eee21f031cad",
+            "display": "PerformHospCareMinDataSet DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7921acb6-7c9a-4c78-bdf1-a8e1ec2c7023",
+            "display": "ESRDDxFirstDayOfMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ae52c591-1a71-4090-aeeb-2dd758f63ce4",
+            "display": "MutlipeEncounterDiagnosis DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4354fbec-b63a-46ce-8465-ec82710ea1c6",
+            "display": "PerformPalliativeHospCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/95ee3081-b973-4bd2-8b86-5b46bd664905",
+            "display": "OutpatientEGFRAndUACR NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d4a593b2-d485-4bfa-a8b1-a401bdbf8d23",
+            "display": "DischargeHomeHospDayBeforeMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/277e15ec-f1a0-4a6e-a8d9-856c0a4fa4f0",
+            "display": "DiabetesDxAfterMP DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/40e0c576-25c4-41fc-854a-116db99f1a65",
+            "display": "OrderPalliativeHospCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2a7112e7-5937-4288-9271-cdc2d7e5eaa4",
+            "display": "DischargeHomeHosp DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7e7c41ee-7704-419c-937b-72d10c76f99a",
+            "display": "AnnualWelllnessEGFRAndUACR NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b6ac3dd1-ff55-4152-be9a-153cad2ba2a2",
+            "display": "EncounterPerfPalliativeCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8cfb2747-a46d-4348-9e21-5ef3417e524a",
+            "display": "KidenyPanelPerformedNoValue NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/77620fcb-7a0a-4015-89cc-c32bd8681c13",
+            "display": "OrderHospCareAmb DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ed17f9e5-1200-49e3-a4fc-1c188d8932dc",
+            "display": "AnnualWellnessVisitDuringMP DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/54c38c8f-1e1b-41a7-a2fe-9ee285a923bc",
+            "display": "AgeLessThan18EncoDiabetes DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ef8cde66-ab81-4a37-8cc2-6b390182b7ac",
+            "display": "OfficeVisitB4MP DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a7284289-8784-48d9-a342-7d851085efb7",
+            "display": "DiabetesOverlapsMP DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f860c8e-e5fc-4843-ac4e-acb8e63471f3",
+            "display": "DischargeFacilityHosp DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1e8e8baf-0c27-42b2-93ad-5426418552c7",
+            "display": "HospEncoLastDayOfMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d7e37bcf-d13b-4415-82ac-a51b5c83151c",
+            "display": "DiagnosisPalliativeCare DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b998e967-eb53-426b-a3a9-8226939efdb6",
+            "display": "EndStageRenalHospiceAllVisits DenExPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/0ce4362d-60f0-41af-8d47-c61f76d025a4",
+            "display": "DiabetesDxLastDayOfPriorYear DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c13a82b6-fb44-4fc7-befd-d762b9fafa97",
+            "display": "CKDStage5OutofMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f2b74f6e-1b67-49ca-b9b1-bb6752287935",
+            "display": "EncounterOutofMP DENOMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e4ad8ac6-e4c4-4e9f-acbb-4e345c8a84ad",
+            "display": "PreventativeCareVisitAfterMP DENOMFail"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/5640",
+      "resource": {
+        "resourceType": "Group",
+        "id": "5640",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:43:16.308+00:00",
+          "source": "#Il5WaAILBiQhZgxi"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVViralSuppressionFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/765f96cd-d613-460d-98d1-111d44c08723",
+            "display": "EncDec31BeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/15c4c2c5-9cdb-4eed-b27a-22462692881a",
+            "display": "TestDuringMPResult199 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/728e5e56-8230-4cab-9808-c0c4139836f4",
+            "display": "TestDuringMPResultUnderRelevantPeriod NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1e89cfdc-ec5e-456a-abcf-ab349c9cfbed",
+            "display": "2Tests1BeforeMP1duringMP NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/770e94b3-a82c-4a56-8882-09d53533950e",
+            "display": "TestOnJan1ofMPResult199 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/061ab97e-4e5d-4c1d-91dc-21e34b415b5b",
+            "display": "HIVDxonApr1ofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/564678c9-1495-4cfe-9b68-2fcedb80fd9b",
+            "display": "NoVLTests NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1fe11eea-dd7a-48f6-84a6-6522de5c1745",
+            "display": "TestDuringMPResultDRCBelow NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/fee37cef-a36c-4640-b58f-c7df0743597d",
+            "display": "HIVDXonMarch29ofMPLeapYear IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/56fc45b6-2a2b-45dd-af07-c946b029b9df",
+            "display": "VLTestDuringMPResultEmpty NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7c34502d-cd54-4f08-9c0c-93d3c04fc3bf",
+            "display": "EncOn240DayEdgeofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6e36591c-d366-4dc0-b1b4-4b939b920a85",
+            "display": "TestDuringMPResultDRCNotDetectedRelevantdateTime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2a83ceb0-b652-479c-8b3f-69209286ca86",
+            "display": "HIVDxAndEncon91stDayofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/74aab416-6a06-4fb8-8fbf-5df8012dd811",
+            "display": "2VLTestsduringMPwithMostRecentResultOver NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5da3f95f-8881-41fe-826a-cb43f0fe4949",
+            "display": "TestAug28DuringMPResult201 NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e03fd6c9-9b4c-4814-9301-f22a28e4b1be",
+            "display": "HIVDxinyearsbeforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a98409bd-26b7-499a-bdff-f4c0118e0934",
+            "display": "HIVDxJan1WithEncOnOutside240DayEdgeofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/14605ae3-a67b-423b-942e-06a54531bc70",
+            "display": "DxwithNoEnc IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7ebb36aa-b8dc-4d22-9c09-3250684e3d30",
+            "display": "VLTestDec31ofMPResult199 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/eae55f3d-0a15-4a21-9229-dfb11f8e3f9d",
+            "display": "EncOn240DayEdgeofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/67fe9319-a486-463e-9e0f-346b17628e3c",
+            "display": "EncOn240DayEdgeofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/267848e8-9b42-4a94-931d-d2bc4a142c61",
+            "display": "HIVDxLocalCodeinFebofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4dcecfe3-5b54-46f2-b26c-f82954ca68fe",
+            "display": "HIVDxinfirst90daysofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d4741a72-3191-4a77-b3ab-7f4e62bc8221",
+            "display": "TestBeforeMP NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8d786705-7605-4c33-a5d4-0ef145a3bcbc",
+            "display": "2VLTestsduringMPwithMostRecentResultUnder NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/9df5bcfb-2893-42f4-b092-a7d49bc0276e",
+            "display": "TestOnDec31DuringMPResultUnderRelevantdateTime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b124de67-0311-4c75-bb67-e6c45e48ca45",
+            "display": "HIVDxyearsgo IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/920a15ae-3bc9-4e7b-9f0f-e1554b78157a",
+            "display": "HIVDxonMarch31ofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b5df1024-993a-42aa-8afd-a1a83c32c95a",
+            "display": "TestDuringMPResultUnder200 NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6f46bfc8-e7b3-45a2-82ae-896144b2aebd",
+            "display": "2TestsduringMPBothOver NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8a74f67d-482c-4cdd-8b71-71d1b14dd432",
+            "display": "2TestsduringMP1ResultUnder1NotDetected NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f8c028d-5443-41dc-895e-ad9541af0dfe",
+            "display": "TestOnJan1ofMPResult199 NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/23dd9286-8299-4fa0-8edf-2dc19e966deb",
+            "display": "PreventativeCareEnc IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c3a81338-d107-4762-84a8-3a8ce88b781a",
+            "display": "2TestsduringMP1Over1Less NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/0dba5c80-03d8-40cd-ab24-786910e61265",
+            "display": "2TestsduringMPBothResultsUnder NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/763778d4-705a-4659-837a-914827625a39",
+            "display": "TestOnJan1ofMPResult201 NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1a5ca6a4-7ff9-4b3f-bb47-655b5cc14fd0",
+            "display": "AnnualWellnessEnc IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6972e617-a003-45d1-8de5-9d4b695324fd",
+            "display": "EncOnJan1ofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6d6980b9-1f73-495a-a78c-c9c26a26ceaf",
+            "display": "EncBeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/15d3fb71-37d0-4d5c-b504-4fd1c8b5b942",
+            "display": "HIVDxinDecofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/48fd1cfc-ee44-4e04-a174-db33789bf10c",
+            "display": "TestDuringMPResultOver NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f48ef2d5-b690-4068-9268-b06a7558bb68",
+            "display": "EncOnOutside240DayEdgeofMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f5ab0931-7298-476d-8529-3e13214e626f",
+            "display": "HIVDxonMarch30ofMP IPPass"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/5642",
+      "resource": {
+        "resourceType": "Group",
+        "id": "5642",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:43:18.378+00:00",
+          "source": "#CmTfM0XFS78MFq2U"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVRetentionFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/55918f04-a1a3-480a-8d79-c2a2208481fe",
+            "display": "EncInMPVLafterMP 5NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5689101e-6489-4ad5-86ba-4c3261a36a58",
+            "display": "NoHIVDiagnosis 18IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4a461ae6-b9f7-4e9f-aab2-ecc9e65fb298",
+            "display": "TwoEncJan1andDec31 15NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e2b6e56e-7af4-4500-ab26-8cf4178ab76e",
+            "display": "OneEncOutOfMP 19NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/fbc7c974-0ed5-4441-a147-4c69ec98bf14",
+            "display": "EncWithHIVonDateofEnc 3IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5b2aee56-e057-4632-8f39-4b91c1cb6a32",
+            "display": "EncWithHIVBeforeEnc 2IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b142f5b4-0f0e-4a68-9943-d2a1a9359639",
+            "display": "EncInMPVLafterEncDuringMPOver90Days 13NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8d813db7-b796-4f8a-a616-8ff89138159a",
+            "display": "TwoEncOver90DaysApart DRC NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4fb37f38-8be8-4963-8386-38c98cc095c8",
+            "display": "LV240DaysIntoMP 22IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/98acbc6d-b8e1-4a69-9b6f-682890dd64b3",
+            "display": "EncInMPVLafterEncDuringMP 12NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7d2ac41c-0346-43d9-b069-6418679074d5",
+            "display": "EncInMPVLafterMP 5NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4f318d2b-56a8-4fad-ad95-858a17d6d0e3",
+            "display": "AdolescentWithMultipleEncAndVL 24NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/12abed4a-8a88-4d4c-854c-ca9402dc2d08",
+            "display": "EncAndVLWithin90Days 23NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c1ac2e8a-6c58-4c63-943c-e73bc94e209a",
+            "display": "EncEachMonthVLEachMonth 11NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d7b99dec-f87f-40b9-98ae-96326cbe447c",
+            "display": "TwoEnc90DaysApart 14NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/944f86a3-e617-4a14-97b8-e5678fb92f8e",
+            "display": "TwoEncwithOneDuringMPoneafterMP 8NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8b83ee2c-fbad-4b89-a7e0-10f7d749d60f",
+            "display": "VLduringMPwithEncAfter90DaysDRC NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ca5f1ee4-ff35-4324-96b5-1488a696dd04",
+            "display": "OnlyEncMoreThan240DaysIntoMP 21IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/89de85c7-996d-40f2-bbdb-2495c659b959",
+            "display": "TwoEncLessThan90DaysApart 6NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1f17a806-3a0c-43b9-9105-e0e6a97de64d",
+            "display": "VLduringMPwithEncAfter90Days 9NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61c642a2-4490-482e-a21a-e0ab8715dae4",
+            "display": "HIVDiagAfterFirst240DaysOfMP 20IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e329c762-8076-4006-9d9d-e5c1d6132d97",
+            "display": "TwoEncOneAfterMP 7NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1f17a806-3a0c-43b9-9105-e0e6a97de64e",
+            "display": "VLduringMPwithEncAfter90Days 9NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f2044a96-a0a7-4d28-8a38-ec5458468acf",
+            "display": "SingleEncInMP 17NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ba27b68f-b183-4b1e-8ba4-7b3b895f9607",
+            "display": "EncInMPVLafterEncDuringMP 4NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5d20c03f-3fa1-422f-913a-a58e8db09444",
+            "display": "TwoEncOver90DaysApart 16NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/60fa3554-b650-43fe-b23e-604acc5e4bbf",
+            "display": "VLduringMPwithEncAfterUnder90days 10NumFail"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/5643",
+      "resource": {
+        "resourceType": "Group",
+        "id": "5643",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:43:18.717+00:00",
+          "source": "#Mg0Yn46mYYEVANWR"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVScreeningFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/72632db4-5184-4a7f-8ab7-879a7503ac49",
+            "display": "LabTestHIVDxBeforeMP NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/eff43fcb-973d-4222-aedc-f26c51c0faba",
+            "display": "Patient65StartMP IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8e9a6beb-2485-4aff-8fbc-d8f62c43be97",
+            "display": "HIVDxStartsDuringMP  DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/85b40cb7-0686-4e70-b4c9-dffa10491ebc",
+            "display": "HIVDxJan2duringMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8311fb5d-afaf-4e73-8968-8a9a3ef92b06",
+            "display": "EncOverlapsMPStart IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2190f846-6e59-492d-83f4-966f8c1f6ba2",
+            "display": "AgeUnder15 IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/415a39a6-74db-4168-b704-291c71c8def9",
+            "display": "NoHIVDiag DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3b956fce-b7d6-44c6-ac9f-11260fec4d71",
+            "display": "TwoHIVDxBothInvalidTiming DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b26beebe-30ab-4734-b1d1-958ff70e29ca",
+            "display": "TwoInvalidEncs IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cc3f7a61-ba3c-4456-86c6-260ad0c3123c",
+            "display": "LabTestInvalid NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cb6cbd21-6739-4551-958c-4f487784d0c2",
+            "display": "LabTestAge65relevantDatetime NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/65886cfc-4242-4edc-b745-5883929effdf",
+            "display": "LabTestHIVDxDuringMPrelevantDatetime NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6844d823-07b3-4b55-8572-892f8df76c20",
+            "display": "HIVDxInvalid DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5516ccc0-3773-4fdc-bb70-97733373e040",
+            "display": "InvalidEncounter IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6ccb42f9-af10-44fd-bb63-e29f00238a11",
+            "display": "LabTestHIVDxDuringMPrelevantPeriod NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f7265a2f-e063-4c13-82fe-0e356ba61689",
+            "display": "HIVDxStartsBeforeMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/aeec70c8-0299-473e-9bec-dec37f70c079",
+            "display": "Age65Dec31 IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f96bf714-ae74-456a-85bc-2d896fdae2a1",
+            "display": "Age16InitialVisit DENOMPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7d3d8242-5606-473b-924c-91b72518809e",
+            "display": "TwoLabBothInvalidTiming NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3dee8540-b4d0-474a-9315-feb5859205d5",
+            "display": "LabTestBeforeBirth NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1985a91a-0a76-463d-a52c-1cf9f66ffbf8",
+            "display": "LabTestTooYoung NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/26255213-0c5c-49a1-b3b6-1011faebe918",
+            "display": "LabTestAfterMP NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ba8ca84a-2636-42e5-8538-7a70b1c48670",
+            "display": "LabTestAge65relevantPeriod NUMERPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/58a0445c-247c-4535-bcec-050954c273dd",
+            "display": "NoLabTest NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/32faa6ed-8228-473f-b1d2-715ea6e66ba2",
+            "display": "Age65Jan1 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bb261749-b2c6-49b1-b42c-0f42a689b431",
+            "display": "Age64Dec31 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2fc09f3d-f196-477f-90b5-430d8bcb6247",
+            "display": "NoEncounter IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/79371589-113c-4c26-9dcf-02e32b137be5",
+            "display": "LabTestTooOld NUMERFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2ca6fcbd-127d-4186-b65e-9b685f860f8d",
+            "display": "HIVDxDec31BeforeMP DENEXPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b03e8b62-8b46-442b-90ae-fc8b7cdfaf5c",
+            "display": "PatientTooOld IPPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5737c2f3-0550-437d-9d4c-846c3dba902b",
+            "display": "Age15Jan1 IPPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bc914a40-4024-42c3-8818-2c110d53b410",
+            "display": "HIVDxJan1duringMP DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/29181d46-2dc5-4aeb-a24e-c27692e345dc",
+            "display": "EncOverlapsMPEnd IPPFail"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/5644",
+      "resource": {
+        "resourceType": "Group",
+        "id": "5644",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T17:43:21.658+00:00",
+          "source": "#5xKdPvRA4DHeY1Rb"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVSTITestingFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/3d16a3a5-a2e7-49f8-8335-1b908a646ff4",
+            "display": "3LabBeforeMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b21edef6-b548-47fc-b399-55188354fbf1",
+            "display": "1LabBeforeMP2LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6c08efb1-922f-4e66-98bc-0de25182e723",
+            "display": "AllLabTestsTestingrelevantPeriodMissingStartdatetime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b7cb0363-3581-4627-a684-a4a1e2f34f42",
+            "display": "3LabAfterMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/9947d6a4-aff5-49ab-8a01-c3c438a7faa2",
+            "display": "AllLabTestsBeforeEncAndBooleanValue NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1734084f-7e87-43cb-9376-2261e94d3f09",
+            "display": "ComboGonorrheaANDChlamydiaCode NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d66ec0c1-1b48-4337-afbb-c2abd3fae91e",
+            "display": "AllLabTestsBeforeEnc NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bc145782-a19e-4d1f-824b-d48aa3e9fe10",
+            "display": "Age13onJan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/65404068-ae4f-43e1-ac90-11a293315aa1",
+            "display": "EncAfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/876ad4f9-f0aa-431e-b76d-c0ef5b9425e0",
+            "display": "HIVBeforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/164b7628-fecf-440c-b138-3f7a43adcd7e",
+            "display": "EncBeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/77973e2d-625a-4c4f-aa69-2c716af0ad3c",
+            "display": "AllLabTestsTestingrelevantPeriodMissingEnddatetime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ff1abac3-d7f8-427f-ab58-af89c95e0878",
+            "display": "EncOnDec31DuringMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c51459e4-0636-452f-9cbc-d73b599ad7c5",
+            "display": "1LabAfterMP2LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/75fec959-d869-4377-a181-73985bd33787",
+            "display": "EncOnDec31BeforeMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8002d0cb-c4c0-4f54-96b0-c0e701947c07",
+            "display": "2LabBeforeMP1LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3aa2678e-0a9c-4233-9634-daae7e0e31e9",
+            "display": "AllLabTestsAfterEncReleventPeriod NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/73085704-0980-4bc2-bae1-b79e75a6be99",
+            "display": "EncDuringMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1b318b63-7b54-4410-9e9c-6107d5eb97ca",
+            "display": "Age13onDec31beforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/74ac3135-a328-4695-93aa-17368142976f",
+            "display": "MultipleOfAllLabTestsDuringMP NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/770c7dc8-5c0b-4987-8f60-27e90f251dae",
+            "display": "AllLabTestsBeforeEncWith2ofSameTest NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/bc4eb112-a4df-4295-8200-ad5b3f1b9254",
+            "display": "HIVonJan1at1200ofnextyear IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2334a2b0-2a8a-4fc7-b905-5271a1619eb2",
+            "display": "EncOnJan1at1200amofMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/716d4ddd-aa73-48ea-b17a-7b037b76634e",
+            "display": "AgeUnder13 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1e1a00b6-fe51-46c8-b982-2c2ff0f20158",
+            "display": "Age13onDec31at1159ambeforeMP IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2384d351-d4e4-4395-bd39-2446e18674e9",
+            "display": "2LabAfterMP1LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/0319c116-3664-46a8-94c9-798a6d61ca29",
+            "display": "EncOnJan1AfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7fafc4ad-74d9-48e7-b12e-d51a11030a14",
+            "display": "AllLabTestsMultipleEnc NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/71c8f6dc-592e-4675-8799-803d10991782",
+            "display": "Age13onJan2 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/efa9696e-1451-4f5e-895a-552485e5c2b9",
+            "display": "AgeOver13 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/6e5d5e93-aaf8-440f-9f99-7fbb105dce3c",
+            "display": "2LabBeforeMP1LabDuringMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/23a881d2-1897-4674-8857-c438bdb8bd7d",
+            "display": "3LabBeforeMP NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/de5e2460-196e-4a0f-bb6a-988c39edadd6",
+            "display": "AllLabTestsAfterEncReleventDateTime NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b08c7da7-5871-499c-b266-c745ba23a426",
+            "display": "HIVonDec31at1159ofMP IPPass"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/6407",
+      "resource": {
+        "resourceType": "Group",
+        "id": "6407",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-05-30T19:59:52.798+00:00",
+          "source": "#Q5LvHQNZckhyddIC"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/Cataracts2040BCVAwithin90DaysFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/b765067f-d81a-4d58-87c1-3cad1044e007",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/631703fb-7ae8-4f63-84bb-e39692bbd261",
+            "display": "DisseminatedChorioretinitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/87cd6dfd-1fad-4008-8e0e-36b20ee28e8f",
+            "display": "InjurytoOpticNerveWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b64785e4-be49-40d1-8110-7c4c036128bf",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/32a253b0-79d4-4bd8-a591-5557984392c6",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c4e0b756-c07b-49f6-80cc-23bb28d4b5f6",
+            "display": "DiabeticMacularEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/25d3565a-4bf6-4082-9ea6-62a0bed23a9c",
+            "display": "OtherBackgroundRetinopathyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/474db000-fed4-4679-b8de-be967e146299",
+            "display": "FailAcuteSubacuteIridocyclitisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b0e366ce-b13b-454d-ac58-ffc9005a8336",
+            "display": "CornealEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d3b7d697-069b-47d2-82d3-ed3e375c9aff",
+            "display": "AclridocyclitisOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/736df249-2ed8-43a8-afa5-c177a12cea82",
+            "display": "HereditaryRetinalDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cd97bd33-8e19-409c-ae92-b3c665cf3282",
+            "display": "CataractPosteriorPolarOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1b854323-2f47-4bdb-88ee-d34e6d28ba63",
+            "display": "VisAcuity20/40=90DaysAfter NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f3eea646-c6ef-404d-8ee9-0626a6153906",
+            "display": "DisordersofOpticWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1232c53b-a54c-43f2-9f31-5453ce2507fc",
+            "display": "PathologicMyopiaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c3d3aba5-f483-4e18-8492-48cc60d8fdb4",
+            "display": "OtherEndophthalmitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/58ffc94d-dd15-4bf4-899e-5574b47f4615",
+            "display": "VisAcuity20/40=90DaysAfterEdge NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8bab0696-02d1-4e8f-a719-a91621cce9e0",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0ff4cc2-6235-4270-bf4c-4637fe7ccc17",
+            "display": "DegenerationofMaculaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e4f0c8b6-6004-4565-93d6-9df005b8061f",
+            "display": "UveitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5177b27f-59bc-460e-ae96-88a0baa325d5",
+            "display": "BurnsOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4788274e-9b09-45fa-a9a7-d97237a40f58",
+            "display": "ScleritisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4dd85cf1-18a3-44ed-8a72-096694776335",
+            "display": "VisualAcuityExamPerformedinDec NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2e4a70e8-5331-4f90-ad15-a11e75e7c163",
+            "display": "OpticNeuritisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/34a7b6cd-b70b-4983-8d12-d13862ced1bf",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/67e718ff-c59c-46a9-832c-d3b51247874e",
+            "display": "ChoroidDetachWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c7378293-1ceb-4e42-928a-e9800053b335",
+            "display": "PriorPenetratingKeratoplastyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f9e96d8-a941-46c5-8e97-35f9498e82c3",
+            "display": "CatSurgAfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a408e883-7952-457e-a895-a4fcc055ab0f",
+            "display": "GlaucomaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e064bc2f-965a-4493-a9fb-31ebc09b9009",
+            "display": "MorgagnianCataractWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/216ed2eb-6d8c-4f08-8769-120e03d60611",
+            "display": "RetinalDetachmentWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0a1cf17-fcdc-40f5-98b6-2b47ef2ae3cb",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/94ddaee0-1b05-44aa-8298-9fd53c8e8144",
+            "display": "LessThan18 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/39013200-2f18-4d0e-90d0-93ab94f0cf87",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/edcca964-8fb0-4672-85cb-8e64495d3077",
+            "display": "VisAcuity20/40SnellenChart NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/02764b97-9bce-4fb3-a49a-91575de42d04",
+            "display": "HereditaryCornealDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e7d855b5-fb38-4449-8c02-54088d561a18",
+            "display": "RetrolentalFibroplasiasWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61ca9664-580e-4f01-8015-8cb3bcf00a01",
+            "display": "ScleritisEndB4CatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e8772fb9-e5b2-4960-aa20-40fdde26f2c0",
+            "display": "VisAcuity20/40>90DAfterCatSurg NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cce515b3-72e3-4ce8-88e4-626a46d5578f",
+            "display": "VisAcuityLessThan2040 NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f68e8f1d-8c06-4ce8-a541-af39083a984c",
+            "display": "OpenWoundofEyeballWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7a0adf5f-8671-4bd8-97dc-e82f2f25d214",
+            "display": "DENEXPassAmblyopiaOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cb570eec-4de5-4dd7-bd0a-9ee00bbeeb48",
+            "display": "CertainTypeIridOverlapsCatSurg DENEXPASS"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/8233",
+      "resource": {
+        "resourceType": "Group",
+        "id": "8233",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-06-03T14:12:11.383+00:00",
+          "source": "#QmVP6Ambm8HoJOit"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/HIVRetentionFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/55918f04-a1a3-480a-8d79-c2a2208481fe",
+            "display": "EncInMPVLafterMP 5NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5689101e-6489-4ad5-86ba-4c3261a36a58",
+            "display": "NoHIVDiagnosis 18IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4a461ae6-b9f7-4e9f-aab2-ecc9e65fb298",
+            "display": "TwoEncJan1andDec31 15NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e2b6e56e-7af4-4500-ab26-8cf4178ab76e",
+            "display": "OneEncOutOfMP 19NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/fbc7c974-0ed5-4441-a147-4c69ec98bf14",
+            "display": "EncWithHIVonDateofEnc 3IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5b2aee56-e057-4632-8f39-4b91c1cb6a32",
+            "display": "EncWithHIVBeforeEnc 2IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b142f5b4-0f0e-4a68-9943-d2a1a9359639",
+            "display": "EncInMPVLafterEncDuringMPOver90Days 13NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8d813db7-b796-4f8a-a616-8ff89138159a",
+            "display": "TwoEncOver90DaysApart DRC NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4fb37f38-8be8-4963-8386-38c98cc095c8",
+            "display": "LV240DaysIntoMP 22IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/98acbc6d-b8e1-4a69-9b6f-682890dd64b3",
+            "display": "EncInMPVLafterEncDuringMP 12NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7d2ac41c-0346-43d9-b069-6418679074d5",
+            "display": "EncInMPVLafterMP 5NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4f318d2b-56a8-4fad-ad95-858a17d6d0e3",
+            "display": "AdolescentWithMultipleEncAndVL 24NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/12abed4a-8a88-4d4c-854c-ca9402dc2d08",
+            "display": "EncAndVLWithin90Days 23NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c1ac2e8a-6c58-4c63-943c-e73bc94e209a",
+            "display": "EncEachMonthVLEachMonth 11NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d7b99dec-f87f-40b9-98ae-96326cbe447c",
+            "display": "TwoEnc90DaysApart 14NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/944f86a3-e617-4a14-97b8-e5678fb92f8e",
+            "display": "TwoEncwithOneDuringMPoneafterMP 8NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8b83ee2c-fbad-4b89-a7e0-10f7d749d60f",
+            "display": "VLduringMPwithEncAfter90DaysDRC NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ca5f1ee4-ff35-4324-96b5-1488a696dd04",
+            "display": "OnlyEncMoreThan240DaysIntoMP 21IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/89de85c7-996d-40f2-bbdb-2495c659b959",
+            "display": "TwoEncLessThan90DaysApart 6NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1f17a806-3a0c-43b9-9105-e0e6a97de64d",
+            "display": "VLduringMPwithEncAfter90Days 9NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61c642a2-4490-482e-a21a-e0ab8715dae4",
+            "display": "HIVDiagAfterFirst240DaysOfMP 20IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e329c762-8076-4006-9d9d-e5c1d6132d97",
+            "display": "TwoEncOneAfterMP 7NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1f17a806-3a0c-43b9-9105-e0e6a97de64e",
+            "display": "VLduringMPwithEncAfter90Days 9NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f2044a96-a0a7-4d28-8a38-ec5458468acf",
+            "display": "SingleEncInMP 17NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/ba27b68f-b183-4b1e-8ba4-7b3b895f9607",
+            "display": "EncInMPVLafterEncDuringMP 4NumFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5d20c03f-3fa1-422f-913a-a58e8db09444",
+            "display": "TwoEncOver90DaysApart 16NumPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/60fa3554-b650-43fe-b23e-604acc5e4bbf",
+            "display": "VLduringMPwithEncAfterUnder90days 10NumFail"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    }, {
+      "fullUrl": "http://fhir.ecqm.icfcloud.com/fhir/Group/8234",
+      "resource": {
+        "resourceType": "Group",
+        "id": "8234",
+        "meta": {
+          "versionId": "1",
+          "lastUpdated": "2024-06-03T14:12:11.738+00:00",
+          "source": "#jWogJHMNYMH82Vd2"
+        },
+        "extension": [ {
+          "url": "http://hl7.org/fhir/StructureDefinition/artifact-testArtifact",
+          "valueCanonical": "http://ecqi.healthit.gov/ecqms/Measure/Cataracts2040BCVAwithin90DaysFHIR"
+        } ],
+        "active": true,
+        "type": "person",
+        "actual": true,
+        "member": [ {
+          "entity": {
+            "reference": "Patient/b765067f-d81a-4d58-87c1-3cad1044e007",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/631703fb-7ae8-4f63-84bb-e39692bbd261",
+            "display": "DisseminatedChorioretinitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/87cd6dfd-1fad-4008-8e0e-36b20ee28e8f",
+            "display": "InjurytoOpticNerveWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b64785e4-be49-40d1-8110-7c4c036128bf",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/32a253b0-79d4-4bd8-a591-5557984392c6",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c4e0b756-c07b-49f6-80cc-23bb28d4b5f6",
+            "display": "DiabeticMacularEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/25d3565a-4bf6-4082-9ea6-62a0bed23a9c",
+            "display": "OtherBackgroundRetinopathyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/474db000-fed4-4679-b8de-be967e146299",
+            "display": "FailAcuteSubacuteIridocyclitisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/b0e366ce-b13b-454d-ac58-ffc9005a8336",
+            "display": "CornealEdemaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d3b7d697-069b-47d2-82d3-ed3e375c9aff",
+            "display": "AclridocyclitisOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/736df249-2ed8-43a8-afa5-c177a12cea82",
+            "display": "HereditaryRetinalDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cd97bd33-8e19-409c-ae92-b3c665cf3282",
+            "display": "CataractPosteriorPolarOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1b854323-2f47-4bdb-88ee-d34e6d28ba63",
+            "display": "VisAcuity20/40=90DaysAfter NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f3eea646-c6ef-404d-8ee9-0626a6153906",
+            "display": "DisordersofOpticWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/1232c53b-a54c-43f2-9f31-5453ce2507fc",
+            "display": "PathologicMyopiaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c3d3aba5-f483-4e18-8492-48cc60d8fdb4",
+            "display": "OtherEndophthalmitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/58ffc94d-dd15-4bf4-899e-5574b47f4615",
+            "display": "VisAcuity20/40=90DaysAfterEdge NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/8bab0696-02d1-4e8f-a719-a91621cce9e0",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0ff4cc2-6235-4270-bf4c-4637fe7ccc17",
+            "display": "DegenerationofMaculaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e4f0c8b6-6004-4565-93d6-9df005b8061f",
+            "display": "UveitisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/5177b27f-59bc-460e-ae96-88a0baa325d5",
+            "display": "BurnsOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4788274e-9b09-45fa-a9a7-d97237a40f58",
+            "display": "ScleritisAfterCatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/4dd85cf1-18a3-44ed-8a72-096694776335",
+            "display": "VisualAcuityExamPerformedinDec NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/2e4a70e8-5331-4f90-ad15-a11e75e7c163",
+            "display": "OpticNeuritisWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/34a7b6cd-b70b-4983-8d12-d13862ced1bf",
+            "display": "Age18Jan1 IPPass"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/67e718ff-c59c-46a9-832c-d3b51247874e",
+            "display": "ChoroidDetachWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/c7378293-1ceb-4e42-928a-e9800053b335",
+            "display": "PriorPenetratingKeratoplastyWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/3f9e96d8-a941-46c5-8e97-35f9498e82c3",
+            "display": "CatSurgAfterMP IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/a408e883-7952-457e-a895-a4fcc055ab0f",
+            "display": "GlaucomaWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e064bc2f-965a-4493-a9fb-31ebc09b9009",
+            "display": "MorgagnianCataractWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/216ed2eb-6d8c-4f08-8769-120e03d60611",
+            "display": "RetinalDetachmentWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/d0a1cf17-fcdc-40f5-98b6-2b47ef2ae3cb",
+            "display": "DisordersOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/94ddaee0-1b05-44aa-8298-9fd53c8e8144",
+            "display": "LessThan18 IPFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/39013200-2f18-4d0e-90d0-93ab94f0cf87",
+            "display": "CataractCongenitalWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/edcca964-8fb0-4672-85cb-8e64495d3077",
+            "display": "VisAcuity20/40SnellenChart NUMPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/02764b97-9bce-4fb3-a49a-91575de42d04",
+            "display": "HereditaryCornealDystrophiesWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e7d855b5-fb38-4449-8c02-54088d561a18",
+            "display": "RetrolentalFibroplasiasWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/61ca9664-580e-4f01-8015-8cb3bcf00a01",
+            "display": "ScleritisEndB4CatSurg DENEXFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/e8772fb9-e5b2-4960-aa20-40fdde26f2c0",
+            "display": "VisAcuity20/40>90DAfterCatSurg NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cce515b3-72e3-4ce8-88e4-626a46d5578f",
+            "display": "VisAcuityLessThan2040 NUMFail"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/f68e8f1d-8c06-4ce8-a541-af39083a984c",
+            "display": "OpenWoundofEyeballWithCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/7a0adf5f-8671-4bd8-97dc-e82f2f25d214",
+            "display": "DENEXPassAmblyopiaOverlapsCatSurg DENEXPASS"
+          }
+        }, {
+          "entity": {
+            "reference": "Patient/cb570eec-4de5-4dd7-bd0a-9ee00bbeeb48",
+            "display": "CertainTypeIridOverlapsCatSurg DENEXPASS"
+          }
+        } ]
+      },
+      "search": {
+        "mode": "match"
+      }
+    } ]
+  }
