@@ -26,6 +26,8 @@ import { Server } from './models/Server';
 import { OAuthHandler } from './oauth/OAuthHandler';
 import { HashParamUtils } from './utils/HashParamUtils';
 import { ServerUtils } from './utils/ServerUtils';
+import TestingComparator from './components/TestingComparator';
+import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -94,7 +96,8 @@ const App: React.FC = () => {
   const [showReceiving, setShowReceiving] = useState<boolean>(false);
   const [showPopulations, setShowPopulations] = useState<boolean>(false);
   const [serverModalShow, setServerModalShow] = useState<boolean>(false);
-
+  const [showTestCompare, setShowTestCompare] = useState<boolean>(false);
+  
   // Handle authentication when required
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -112,16 +115,20 @@ const App: React.FC = () => {
   // Saved data
   const [collectedData, setCollectedData] = useState<string>('');
   const [measureReport, setMeasureReport] = useState<string>('');
+ 
 
   // Handle OAuth redirect
   const [accessToken, setAccessToken] = useState<string>('');
 
-  //tells us when app is busy loading and not to disrupt variable assignment
+  const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonManager>>(new Map());
 
+
+  //tells us when app is busy loading and not to disrupt variable assignment
   const reportErrorToUser = ((source: string, err: any) => {
     const message = err.message;
     setResults(message);
   });
+
 
 
   useEffect(() => {
@@ -233,6 +240,7 @@ const App: React.FC = () => {
       const groupFetch = new GroupFetch(dataRepo.baseUrl);
 
       let  groupsMap: Map<string, Group> = await groupFetch.fetchData(accessToken);
+      
       setGroups(groupsMap);
       
       const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
@@ -459,6 +467,106 @@ const App: React.FC = () => {
     resetResults();
   }
 
+  // This function acts a lot like evaluateMeasure, except after evaluating our measure,
+  // a MeasureReport based on the subject ('Patient/' + selectedPatient.id) is fetched. 
+
+  const compareTestResults = async () => {
+    resetResults();
+
+    // Make sure all required elements are set
+    if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
+      setResults(Constants.error_measureEvaluationServer);
+      return;
+    }
+
+
+    //Establish the Measure first
+    let measureObj: Measure | undefined;
+    if (selectedMeasure !== '') {
+      for (let measure of measures) {
+        if (measure!.name === selectedMeasure) {
+          measureObj = measure;
+        }
+      }
+    }
+    if (!measureObj) {
+      setResults(Constants.error_selectMeasure);
+      return;
+    }
+
+
+    //no patient was selected, verify the data repo was set:
+    if (!selectedPatient) {
+
+      //if data repo isn't set then spit an error
+      if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
+        setResults(Constants.error_selectDataRepository);
+        return;
+      }
+
+
+      //data repo was selected so patients will contain list of Patient
+      setLoading(true);
+      const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
+      clearPopulationCounts();
+
+      //loop through the patient list, verify it belongs to a measure's group before processing it
+      for (const patientEntry of patients) {
+
+        if (groups && groups.has(selectedMeasure)) {
+          
+          const selectedMeasureGroup: Group | undefined = groups.get(selectedMeasure);
+
+          if (selectedMeasureGroup?.member)
+            for (const member of selectedMeasureGroup.member) {
+              if (member.entity.reference.split('Patient/')[1] === patientEntry?.id) {
+                //patient belongs to this group, proceed:
+                const mcMan = new MeasureComparisonManager(patientEntry,
+                  measureObj,
+                  selectedMeasureEvaluation,
+                  startDate, endDate,
+                  accessToken);
+
+                await mcMan.fetchGroups();
+                const patientDisplayKey = '' + patientEntry?.display;
+                if (patientDisplayKey.length > 0) {
+                  newTestComparatorMap.set(patientEntry, mcMan);
+                }
+              }
+            }
+        }
+      }
+      setTestComparatorMap(newTestComparatorMap);
+      setResults('');
+      setLoading(false);
+
+    } else {//process single selectedPatient
+      setLoading(true);
+      const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
+
+      clearPopulationCounts();
+
+
+      const mcMan = new MeasureComparisonManager(selectedPatient,
+        measureObj,
+        selectedMeasureEvaluation,
+        startDate, endDate,
+        accessToken);
+
+      await mcMan.fetchGroups();
+
+      newTestComparatorMap.set(selectedPatient, mcMan);
+
+
+      setTestComparatorMap(newTestComparatorMap);
+      setResults('');
+      setLoading(false);
+    }
+
+
+
+  };
+
   return (
     <div className="container">
       <div className="row">
@@ -497,6 +605,11 @@ const App: React.FC = () => {
         selectedReceiving={selectedReceiving}
         postMeasureReport={postMeasureReport} loading={loading}
         setModalShow={setServerModalShow} />
+
+      <br />
+      <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare} items={testComparatorMap} compareTestResults={compareTestResults} loading={loading} 
+        selectedMeasure={selectedMeasure} startDate={startDate} endDate={endDate}/>
+
       <Results results={results} />
       <Populations initialPopulation={initialPopulation} denominator={denominator}
         denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
@@ -504,8 +617,10 @@ const App: React.FC = () => {
         measureScoring={measureScoring} />
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
+      
       <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
         setUsername={setUsername} password={password} setPassword={setPassword} />
+      <br />
     </div>
   );
 }
