@@ -62,30 +62,16 @@ export class MeasureReportFetch extends AbstractDataFetch {
      * @returns 
      */
     protected processReturnedData(data: any) {
-
-        let x = data.entry?.filter((entry: any) => {
+        return data.entry?.filter((entry: any) => {
             const entryStartDate = new Date(entry.resource.period?.start);
             const entryEndDate = new Date(entry.resource.period?.end);
             const filterStartDate = new Date(this.startDate);
             const filterEndDate = new Date(this.endDate);
 
-            // // Log each entry's start and end dates
-            // console.log("Entry Start Date:", entry.resource.period?.start);
-            // console.log("Entry End Date:", entry.resource.period?.end);
-            // console.log("Filter Start Date:", this.startDate);
-            // console.log("Filter End Date:", this.endDate);
-
             const dateCondition = (entryStartDate >= filterStartDate) &&
                 (entryEndDate <= filterEndDate);
 
-            // // Log the result of the date condition check
-            // console.log("Date condition result:", dateCondition);
-
             return dateCondition;
         });
-
-        // console.log(x);
-        return x;
-         
     }
 }

@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { Button, Spinner } from 'react-bootstrap';
+import { Button, Spinner, Table } from 'react-bootstrap';
 import { Patient } from '../models/Patient';
 import { MeasureComparisonManager } from '../utils/MeasureComparisonManager';
 
@@ -34,6 +34,17 @@ interface props {
  * @returns 
  */
 const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items, compareTestResults, loading }) => {
+
+  let trueCount = 0;
+  let falseCount = 0;
+
+  items.forEach(item => {
+    if (item.discrepancyExists) {
+      trueCount++;
+    } else {
+      falseCount++;
+    }
+  });
 
   return (
     <div className='card'>
@@ -92,22 +103,47 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
             <div style={{ display: 'flex' }}>
               <div style={{ flex: 1, padding: '.1rem' }}>
                 {items.size > 0 &&
+
                   <div >
-                     {items.size} Patients evaluated using {items.get(items.keys().next().value)?.selectedMeasure.name}
+                    <Table >
+                      <thead>
+                        <tr>
+                          <th colSpan={2} className="text-center">
+                            <h4>Test Comparison Summary for {items.get(items.keys().next().value)?.selectedMeasure.name}</h4>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td className="text-start">Patients Evaluated:</td>
+                          <td>{items.size}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-start">Discrepancies Found:</td>
+                          <td>{trueCount}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-start">Matching Data Found:</td>
+                          <td>{falseCount}</td>
+                        </tr>
+                      </tbody>
+                    </Table>
                   </div>
+
+
                 }
                 {Array.from(items.entries()).map(([key, value]) => (
                   value.fetchedMeasureReportGroups.length > 0 && value.fetchedEvaluatedMeasureGroups.length > 0 ? (
                     <div className="row mt-4" key={key.display + key.id}>
 
                       <div className="row mt-4">
-                        <h4>{key.display} - {key.id}</h4>
-                        <h5 className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}>
-                          {value.discrepancyExists ? 'Discrepancy' : 'Match'}</h5>
+                        <h5>{key.display} - {key.id}</h5>
+                        <h6 className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}>
+                          {value.discrepancyExists ? 'Discrepancy' : 'Match'}</h6>
                       </div>
                       <div className="row mt-4">
                         <div className="col-md-6">
-                          <h6>Current Evaluation</h6>
+                          <a target='_blank' href={value.evaluatedMeasureURL}><h6>This Evaluation </h6></a>
                           <table className="table">
                             <tbody>
                               {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
@@ -120,7 +156,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                           </table>
                         </div>
                         <div className="col-md-6">
-                          <h6>Existing Measure Report</h6>
+                          <a target='_blank' href={value.measureReportURL}><h6>Previous Measure Report</h6></a>
                           <table className="table">
                             <tbody>
                               {value.fetchedMeasureReportGroups.map((group, index) => (
@@ -139,13 +175,13 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   ) : (
                     <div key={key.display + key.id}>
                       <div className="row mt-4">
-                        <h4>{key.display} - {key.id}</h4>
-                        <h5 className='text-danger'>
-                          Processing Error</h5>
+                        <h5>{key.display} - {key.id}</h5>
+                        <h6 className='text-danger'>
+                          Processing Error</h6>
                       </div>
                       <div>
-                        {value.fetchedMeasureReportGroups.length == 0 && <h6>MeasureReport not found for: {key.display} - {key.id} using selected Data Repository Server.</h6>}
-                        {value.fetchedEvaluatedMeasureGroups.length == 0 && <h6>Measure Evaluation was unsuccesful for: {key.display} - {key.id}.<br></br>Please verify results with Measure Evaluation Service.</h6>}
+                        {value.fetchedMeasureReportGroups.length === 0 && <h6>MeasureReport not found for: {key.display} - {key.id} using selected Data Repository Server.</h6>}
+                        {value.fetchedEvaluatedMeasureGroups.length === 0 && <h6>Measure Evaluation was unsuccesful for: {key.display} - {key.id}.<br></br>Please verify results with Measure Evaluation Service.</h6>}
                       </div>
                     </div>
                   )

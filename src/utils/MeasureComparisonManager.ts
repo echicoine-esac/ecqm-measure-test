@@ -33,6 +33,9 @@ export class MeasureComparisonManager {
 
     public discrepancyExists = false;
 
+    public evaluatedMeasureURL = '';
+    public measureReportURL = '';
+
     constructor(selectedPatient: Patient | undefined,
         selectedMeasure: Measure,
         selectedMeasureEvaluation: Server,
@@ -56,11 +59,17 @@ export class MeasureComparisonManager {
      */
     public async fetchGroups() {
         try {
-            this.fetchedMeasureReportGroups = this.extractBundleMeasureReportGroupData(await new MeasureReportFetch(this.selectedMeasureEvaluation,
-                this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate).fetchData(this.accessToken));
+            
+            const measureReportFetch = new MeasureReportFetch(this.selectedMeasureEvaluation,
+                this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate);
+            this.measureReportURL = measureReportFetch.getUrl();
+            this.fetchedMeasureReportGroups = this.extractBundleMeasureReportGroupData(await measureReportFetch.fetchData(this.accessToken));
 
-            this.fetchedEvaluatedMeasureGroups = this.extractMeasureReportGroupData((await new EvaluateMeasureFetch(this.selectedMeasureEvaluation,
-                this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate).fetchData(this.accessToken)).jsonBody);
+
+            const evaluateMeasureFetch = new EvaluateMeasureFetch(this.selectedMeasureEvaluation,
+                this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate);
+            this.evaluatedMeasureURL = evaluateMeasureFetch.getUrl();
+            this.fetchedEvaluatedMeasureGroups = this.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonBody);
 
             this.discrepancyExists = this.compareMeasureGroups();
         } catch (error: any) {
