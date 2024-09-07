@@ -22,7 +22,7 @@ type MeasureGroup = {
  */
 export class MeasureComparisonManager {
     private selectedPatient: Patient | undefined;
-    private selectedMeasure: Measure;
+    public selectedMeasure: Measure;
     private selectedMeasureEvaluation: Server | undefined;
     private startDate: string = '';
     private endDate: string = '';
@@ -82,6 +82,10 @@ export class MeasureComparisonManager {
     //evaluate measure comes back as a single MeasureReport
     private extractMeasureReportGroupData(data: any): MeasureGroup[] {
         let mgArr: MeasureGroup[] = [];
+        if (!data || !data.group){
+            console.log(data);
+            return [];
+        }
         for (const group of data.group) {
             if (group.population) {
                 for (const population of group.population) {
@@ -96,6 +100,8 @@ export class MeasureComparisonManager {
     }
 
     private compareMeasureGroups(): boolean {
+        console.log("fetchedEvaluatedMeasureGroups: " + this.fetchedEvaluatedMeasureGroups.length);
+        console.log("fetchedMeasureReportGroups: " + this.fetchedMeasureReportGroups.length);
         if (this.fetchedEvaluatedMeasureGroups.length !== this.fetchedMeasureReportGroups.length) {
             return true;
         }
@@ -106,6 +112,15 @@ export class MeasureComparisonManager {
             if (
                 sortedArray1[i].code !== sortedArray2[i].code ||
                 sortedArray1[i].count !== sortedArray2[i].count
+            ) {
+                return true;
+            }
+        }
+
+        for (let i = 0; i < sortedArray2.length; i++) {
+            if (
+                sortedArray2[i].code !== sortedArray1[i].code ||
+                sortedArray2[i].count !== sortedArray1[i].count
             ) {
                 return true;
             }

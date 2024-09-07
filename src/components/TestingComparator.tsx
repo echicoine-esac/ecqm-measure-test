@@ -5,14 +5,12 @@ import { Patient } from '../models/Patient';
 import { MeasureComparisonManager } from '../utils/MeasureComparisonManager';
 
 interface props {
-  selectedMeasure: string;
   showTestCompare: boolean;
   setShowTestCompare: React.Dispatch<React.SetStateAction<boolean>>;
   items: Map<Patient, MeasureComparisonManager>;
   compareTestResults: () => void;
   loading: boolean;
-  startDate: string;
-  endDate: string;
+
 }
 
 
@@ -35,7 +33,7 @@ interface props {
  * @param param0 
  * @returns 
  */
-const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items, compareTestResults, loading, selectedMeasure, startDate, endDate }) => {
+const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items, compareTestResults, loading }) => {
 
   return (
     <div className='card'>
@@ -63,7 +61,6 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
           </div>
         </div>
       </div>
-
 
       {showTestCompare ? (
         <div className='card-body'>
@@ -93,48 +90,63 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
               )}
             </div>
             <div style={{ display: 'flex' }}>
-
               <div style={{ flex: 1, padding: '.1rem' }}>
-                <h6>Patients Evaluated: {items.size}</h6>
-                <h6>Measure Selected: {selectedMeasure}</h6>
-                <h6>Start Date: {startDate}</h6>
-                <h6>End Date: {endDate} </h6>
+                {items.size > 0 &&
+                  <div >
+                     {items.size} Patients evaluated using {items.get(items.keys().next().value)?.selectedMeasure.name}
+                  </div>
+                }
                 {Array.from(items.entries()).map(([key, value]) => (
-                  value.fetchedMeasureReportGroups.length > 0 ? (  // Check if the fetchedMeasureReportGroups is not empty
-                    <div key={key.display}>
+                  value.fetchedMeasureReportGroups.length > 0 && value.fetchedEvaluatedMeasureGroups.length > 0 ? (
+                    <div className="row mt-4" key={key.display + key.id}>
+
                       <div className="row mt-4">
                         <h4>{key.display} - {key.id}</h4>
                         <h5 className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}>
-                          {value.discrepancyExists ? 'Discrepancy Exists' : 'Match'}</h5>
+                          {value.discrepancyExists ? 'Discrepancy' : 'Match'}</h5>
                       </div>
                       <div className="row mt-4">
                         <div className="col-md-6">
                           <h6>Current Evaluation</h6>
-                          <ul className="list-group">
-                            {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
-                              <li key={index} className="list-group-item">
-                                <strong>Code:</strong> {group.code} <br />
-                                <strong>Count:</strong> {group.count}
-                              </li>
-                            ))}
-                          </ul>
+                          <table className="table">
+                            <tbody>
+                              {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
+                                <tr key={index}>
+                                  <td>{group.code}</td>
+                                  <td>{group.count}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
                         </div>
                         <div className="col-md-6">
                           <h6>Existing Measure Report</h6>
-                          <ul className="list-group">
-                            {value.fetchedMeasureReportGroups.map((group, index) => (
-                              <li key={index} className="list-group-item">
-                                <strong>Code:</strong> {group.code} <br />
-                                <strong>Count:</strong> {group.count}
-                              </li>
-                            ))}
-                          </ul>
+                          <table className="table">
+                            <tbody>
+                              {value.fetchedMeasureReportGroups.map((group, index) => (
+                                <tr key={index}>
+                                  <td>{group.code}</td>
+                                  <td>{group.count}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
                         </div>
                       </div>
+
+
                     </div>
                   ) : (
-                    <div key={key.display}>
-                      <h4>No existing MeasureReport: {key.display} - {key.id} </h4>
+                    <div key={key.display + key.id}>
+                      <div className="row mt-4">
+                        <h4>{key.display} - {key.id}</h4>
+                        <h5 className='text-danger'>
+                          Processing Error</h5>
+                      </div>
+                      <div>
+                        {value.fetchedMeasureReportGroups.length == 0 && <h6>MeasureReport not found for: {key.display} - {key.id} using selected Data Repository Server.</h6>}
+                        {value.fetchedEvaluatedMeasureGroups.length == 0 && <h6>Measure Evaluation was unsuccesful for: {key.display} - {key.id}.<br></br>Please verify results with Measure Evaluation Service.</h6>}
+                      </div>
                     </div>
                   )
                 ))}

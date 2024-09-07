@@ -465,6 +465,7 @@ const App: React.FC = () => {
     setNumerator('-');
     setNumeratorExclusion('-');
     resetResults();
+    setShowPopulations(false);
   }
 
   // This function acts a lot like evaluateMeasure, except after evaluating our measure,
@@ -472,6 +473,7 @@ const App: React.FC = () => {
 
   const compareTestResults = async () => {
     resetResults();
+    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
 
     // Make sure all required elements are set
     if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
@@ -508,16 +510,17 @@ const App: React.FC = () => {
       //data repo was selected so patients will contain list of Patient
       setLoading(true);
       const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
+      
       clearPopulationCounts();
 
       //loop through the patient list, verify it belongs to a measure's group before processing it
       for (const patientEntry of patients) {
 
         if (groups && groups.has(selectedMeasure)) {
-          
+
           const selectedMeasureGroup: Group | undefined = groups.get(selectedMeasure);
 
-          if (selectedMeasureGroup?.member)
+          if (selectedMeasureGroup?.member) {
             for (const member of selectedMeasureGroup.member) {
               if (member.entity.reference.split('Patient/')[1] === patientEntry?.id) {
                 //patient belongs to this group, proceed:
@@ -534,9 +537,11 @@ const App: React.FC = () => {
                 }
               }
             }
+          }
+          setTestComparatorMap(newTestComparatorMap);
         }
       }
-      setTestComparatorMap(newTestComparatorMap);
+
       setResults('');
       setLoading(false);
 
@@ -607,8 +612,7 @@ const App: React.FC = () => {
         setModalShow={setServerModalShow} />
 
       <br />
-      <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare} items={testComparatorMap} compareTestResults={compareTestResults} loading={loading} 
-        selectedMeasure={selectedMeasure} startDate={startDate} endDate={endDate}/>
+      <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare} items={testComparatorMap} compareTestResults={compareTestResults} loading={loading} />
 
       <Results results={results} />
       <Populations initialPopulation={initialPopulation} denominator={denominator}
