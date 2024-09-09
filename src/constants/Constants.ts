@@ -47,6 +47,8 @@ export class Constants {
     public static readonly measurePosted = 'Measure Posted';
     public static readonly measurePostedFetchDataError = 'There was an error posting the measure';
 
+    public static readonly testCompare_NoGroup = 'No Patient Group files could be established for the selected Measure.';
+
     //testing purposes:
     public static readonly serverTestData: Server[] = [
         {

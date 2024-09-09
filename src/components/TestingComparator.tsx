@@ -13,7 +13,8 @@ interface props {
   items: Map<Patient, MeasureComparisonManager>;
   compareTestResults: () => void;
   loading: boolean;
-
+  startDate: string;
+  endDate: string;
 }
 
 /**
@@ -35,7 +36,8 @@ interface props {
  * @param param0 
  * @returns 
  */
-const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items, compareTestResults, loading }) => {
+const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items, 
+  compareTestResults, loading, startDate, endDate }) => {
 
   const componentRef = useRef(null);
   const title = 'Test Comparison Summary for' + items.get(Array.from(items.keys())[0])?.selectedMeasure.name;
@@ -43,10 +45,14 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
   let falseCount = 0;
 
   const pageStyle = `@media print {
-    @page {
-      margin: 20mm;
-    }
-  }`;
+                      @page {
+                        margin: 20mm;
+                      }
+                      body {
+                        -webkit-print-color-adjust: exact;
+                        
+                      }
+                  }`;
 
   items.forEach(item => {
     if (item.discrepancyExists) {
@@ -56,8 +62,23 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
     }
   });
 
+  const getNow = () => {
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    return formattedDate;
+  }
+
   return (
+
     <div className='card'>
+      <style>{`
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+    `}</style>
       <div className='card-header'>
         <div className='row'>
           <div className='col-md-3'>Test Comparator</div>
@@ -90,7 +111,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
             {items.size > 0 &&
 
               <div >
-                <Table >
+                <Table style={{ width: '100%', border: 'none' }}>
                   <thead>
                     <tr>
                       <th colSpan={2} className="text-center">
@@ -99,18 +120,34 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="text-start">Patients Evaluated:</td>
-                      <td>{items.size}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-start">Discrepancies Found:</td>
-                      <td>{trueCount}</td>
-                    </tr>
-                    <tr>
-                      <td className="text-start">Matching Data Found:</td>
-                      <td>{falseCount}</td>
-                    </tr>
+                    <td style={{ width: '50%', border: 'none' }}>
+                      <tr>
+                        <td className="text-start" style={{ minWidth: '200px', border: 'none' }}>Patients Evaluated:</td>
+                        <td style={{ width: '100%', border: 'none' }}>{items.size}</td>
+                      </tr>
+                      <tr>
+                        <td className="text-start" style={{ minWidth: '200px', border: 'none' }}>Discrepancies Found:</td>
+                        <td style={{ width: '100%', border: 'none' }}>{trueCount}</td>
+                      </tr>
+                      <tr>
+                        <td className="text-start" style={{ minWidth: '200px', border: 'none' }}>Matching Data Found:</td>
+                        <td style={{ width: '100%', border: 'none' }}>{falseCount}</td>
+                      </tr>
+                    </td>
+                    <td style={{ width: '50%', border: 'none' }}>
+                      <tr>
+                        <td className="text-start" style={{ minWidth: '200px', border: 'none' }}>Period Start Date:</td>
+                        <td style={{ width: '100%', border: 'none' }}>{startDate}</td>
+                      </tr>
+                      <tr>
+                        <td className="text-start" style={{ minWidth: '200px', border: 'none' }}>Period End Date:</td>
+                        <td style={{ width: '100%', border: 'none' }}>{endDate}</td>
+                      </tr>
+                      <tr>
+                        <td className="text-start" style={{ minWidth: '200px', border: 'none' }}>Comparison Date:</td>
+                        <td style={{ width: '100%', border: 'none' }}>{getNow()}</td>
+                      </tr>
+                    </td>
                   </tbody>
                 </Table>
               </div>
@@ -124,18 +161,18 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
               .map(([key, value]) => (
                 value.fetchedMeasureReportGroups.length > 0 && value.fetchedEvaluatedMeasureGroups.length > 0 ? (
 
-                  <table className="table mt-4" key={key.display + key.id} style={{ width: '100%' }}>
+                  <table className="table mt-4" key={key.display + key.id} style={{ width: '100%', border: '2px solid lightgrey' }}>
                     <thead>
                       <tr>
                         <th colSpan={2}>
 
-                          <table style={{ width: '100%', background: '#F7F7F7' }}>
+                          <table style={{ width: '100%', background: '#F7F7F7', borderCollapse: 'collapse', border: 'none', colorAdjust: 'exact' }}>
                             <tr >
-                              <td style={{ width: '50%' }}>
+                              <td style={{ width: '50%', border: 'none' }}>
                                 <h4>{key.display} </h4>
                                 <h6>ID: {key.id}</h6>
                               </td>
-                              <td style={{ width: '50%' }}>
+                              <td style={{ width: '50%', border: 'none' }}>
                                 <h6>Comparison Result:</h6>
                                 <h3 className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}>
                                   {value.discrepancyExists ? 'Discrepancy' : 'Match'}</h3>
@@ -150,11 +187,11 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                     </thead>
                     <tbody>
                       <tr>
-                        <td style={{ width: '50%' }}>
+                        <td style={{ width: '50%', border: 'none' }}>
                           <a target='_blank' href={value.evaluatedMeasureURL}>
                             <h6>This Evaluation:</h6>
                           </a>
-                          <table className="table">
+                          <table className="table" style={{ border: '1px solid lightgrey' }}>
                             <tbody>
                               {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
                                 <tr key={index} className={`${group.discrepancy && 'fw-bold'}`}>
@@ -170,7 +207,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                           <a target='_blank' href={value.measureReportURL}>
                             <h6>Previous Measure Report:</h6>
                           </a>
-                          <table className="table">
+                          <table className="table" style={{ border: '1px solid lightgrey' }}>
                             <tbody>
                               {value.fetchedMeasureReportGroups.map((group, index) => (
                                 <tr key={index} className={`${group.discrepancy && 'fw-bold'}`}>
@@ -259,7 +296,6 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                     </Button>
                   )}
                   content={() => componentRef.current}
-                  copyStyles={true}
                   documentTitle={title}
                   pageStyle={pageStyle}
                 />

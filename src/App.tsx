@@ -544,7 +544,9 @@ const App: React.FC = () => {
 
       setResults('');
       setLoading(false);
-
+      if (newTestComparatorMap.size === 0){
+        setResults(Constants.testCompare_NoGroup);
+      }
     } else {//process single selectedPatient
       setLoading(true);
       const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
@@ -566,6 +568,10 @@ const App: React.FC = () => {
       setTestComparatorMap(newTestComparatorMap);
       setResults('');
       setLoading(false);
+
+      if (newTestComparatorMap.size === 0){
+        setResults(Constants.testCompare_NoGroup);
+      }
     }
 
 
@@ -612,7 +618,9 @@ const App: React.FC = () => {
         setModalShow={setServerModalShow} />
 
       <br />
-      <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare} items={testComparatorMap} compareTestResults={compareTestResults} loading={loading} />
+      <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare} 
+      items={testComparatorMap} compareTestResults={compareTestResults} loading={loading} 
+      startDate={startDate} endDate={endDate}/>
 
       <Results results={results} />
       <Populations initialPopulation={initialPopulation} denominator={denominator}
