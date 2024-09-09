@@ -11,6 +11,7 @@ Amplify.configure(awsExports);
 type MeasureGroup = {
     code: string;
     count: number;
+    discrepancy: boolean;
 };
 
 /**
@@ -100,7 +101,8 @@ export class MeasureComparisonManager {
                 for (const population of group.population) {
                     mgArr.push({
                         code: population.code.coding[0].display,
-                        count: population.count
+                        count: population.count,
+                        discrepancy: false
                     })
                 }
             }
@@ -111,31 +113,28 @@ export class MeasureComparisonManager {
     private compareMeasureGroups(): boolean {
         console.log("fetchedEvaluatedMeasureGroups: " + this.fetchedEvaluatedMeasureGroups.length);
         console.log("fetchedMeasureReportGroups: " + this.fetchedMeasureReportGroups.length);
+        
         if (this.fetchedEvaluatedMeasureGroups.length !== this.fetchedMeasureReportGroups.length) {
             return true;
         }
+
         const sortedArray1 = [...this.fetchedEvaluatedMeasureGroups].sort((a, b) => a.code.localeCompare(b.code));
         const sortedArray2 = [...this.fetchedMeasureReportGroups].sort((a, b) => a.code.localeCompare(b.code));
+
+        let discrepancyFound = false;
 
         for (let i = 0; i < sortedArray1.length; i++) {
             if (
                 sortedArray1[i].code !== sortedArray2[i].code ||
                 sortedArray1[i].count !== sortedArray2[i].count
             ) {
-                return true;
+                sortedArray1[i].discrepancy = true;
+                sortedArray2[i].discrepancy = true;
+                discrepancyFound = true;
             }
         }
 
-        for (let i = 0; i < sortedArray2.length; i++) {
-            if (
-                sortedArray2[i].code !== sortedArray1[i].code ||
-                sortedArray2[i].count !== sortedArray1[i].count
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        return discrepancyFound;
     }
 }
 

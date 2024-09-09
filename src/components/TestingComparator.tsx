@@ -157,7 +157,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                           <table className="table">
                             <tbody>
                               {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
-                                <tr key={index}>
+                                <tr key={index} className={`${group.discrepancy && 'fw-bold'}`}>
                                   <td>{group.code}</td>
                                   <td>{group.count}</td>
                                 </tr>
@@ -173,7 +173,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                           <table className="table">
                             <tbody>
                               {value.fetchedMeasureReportGroups.map((group, index) => (
-                                <tr key={index}>
+                                <tr key={index} className={`${group.discrepancy && 'fw-bold'}`}>
                                   <td>{group.code}</td>
                                   <td>{group.count}</td>
                                 </tr>
