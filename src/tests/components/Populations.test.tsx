@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import Populations from '../../components/Populations';
+import { PopulationScoring } from '../../models/PopulationScoring';
 
 test('population renders and accepts values', () => {
 
@@ -12,15 +13,24 @@ test('population renders and accepts values', () => {
   const numeratorDivText = 'text-numerator-div';
   const numeratorExclusionDivText = 'text-numerator-exclusion-div';
 
+  // Creating the PopulationScoring instance
+  const populationScoringInstance: PopulationScoring[] = [{
+    initialPopulation: initialPopulationDivText,
+    denominator: denominatorDivText,
+    denominatorExclusion: denominatorExclusionDivText,
+    denominatorException: denominatorExceptionDivText,
+    numerator: numeratorDivText,
+    numeratorExclusion: numeratorExclusionDivText,
+    groupID: "id1",
+    measureName: 'selectedMeasure'
+    // Optionally set groupScoring if needed:
+    // groupScoring: new Scoring()  
+  }];
+
   render(<Populations
-    measureScoring={measureScoringDivText}
-    initialPopulation={initialPopulationDivText}
-    denominator={denominatorDivText}
-    denominatorExclusion={denominatorExclusionDivText}
-    denominatorException={denominatorExceptionDivText}
-    numerator={numeratorDivText}
-    numeratorExclusion={numeratorExclusionDivText}
+    populationScoring={populationScoringInstance}
     showPopulations={showPopulations}
+    measureScoringType={measureScoringDivText}
   />);
   const measureScoringDiv: HTMLDivElement = screen.getByTestId('measure-scoring-div');
   const initialPopulationDiv: HTMLDivElement = screen.getByTestId('initial-population-div');
@@ -59,15 +69,24 @@ test('showPopulations is false and hides specific divs', () => {
   const numeratorDivText = 'text-numerator-div';
   const numeratorExclusionDivText = 'text-numerator-exclusion-div';
 
+  // Creating the PopulationScoring instance
+  const populationScoringInstance: PopulationScoring[] = [{
+    initialPopulation: initialPopulationDivText,
+    denominator: denominatorDivText,
+    denominatorExclusion: denominatorExclusionDivText,
+    denominatorException: denominatorExceptionDivText,
+    numerator: numeratorDivText,
+    numeratorExclusion: numeratorExclusionDivText,
+    groupID: "id1",
+    measureName: 'selectedMeasure'
+    // Optionally set groupScoring if needed:
+    // groupScoring: new Scoring() 
+  }];
+
   render(<Populations
-    measureScoring={measureScoringDivText}
-    initialPopulation={initialPopulationDivText}
-    denominator={denominatorDivText}
-    denominatorExclusion={denominatorExclusionDivText}
-    denominatorException={denominatorExceptionDivText}
-    numerator={numeratorDivText}
-    numeratorExclusion={numeratorExclusionDivText}
+    populationScoring={populationScoringInstance}
     showPopulations={showPopulations}
+    measureScoringType={measureScoringDivText}
   />);
 
   expect(screen.queryByText('measure-scoring-div')).not.toBeInTheDocument();

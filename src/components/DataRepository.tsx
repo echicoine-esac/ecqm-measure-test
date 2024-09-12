@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { PatientFetch } from '../data/PatientFetch';
-import { Group, Member } from '../models/Group';
+import { PatientGroup, Member } from '../models/PatientGroup';
 import { Patient } from '../models/Patient';
 import { Server } from '../models/Server';
 
@@ -19,7 +19,7 @@ interface props {
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
   selectedMeasure?: string;
-  groups?: Map<string, Group>;
+  groups?: Map<string, PatientGroup>;
 }
 
 const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient, collectData, loading, setModalShow, selectedMeasure, groups }) => {
@@ -31,7 +31,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
     let groupingCondition: boolean = true;
 
     if (selectedMeasure) {
-      let group: Group | undefined = groups?.get(selectedMeasure);
+      let group: PatientGroup | undefined = groups?.get(selectedMeasure);
 
       //sometimes can be undefined
       if (group) {

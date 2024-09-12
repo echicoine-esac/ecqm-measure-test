@@ -9,6 +9,7 @@ import ReceivingSystem from './components/ReceivingSystem';
 import ReportingPeriod from './components/ReportingPeriod';
 import Results from './components/Results';
 import ServerModal from './components/ServerModal';
+import TestingComparator from './components/TestingComparator';
 import { Constants } from './constants/Constants';
 import { CollectDataFetch } from './data/CollectDataFetch';
 import { DataRequirementsFetch } from './data/DataRequirementsFetch';
@@ -19,15 +20,18 @@ import { PatientFetch } from './data/PatientFetch';
 import { PostMeasureReportFetch } from './data/PostMeasureReportFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
 import logo from './icf_logo.png';
-import { Group } from './models/Group';
+import { PatientGroup } from './models/PatientGroup';
 import { Measure } from './models/Measure';
 import { Patient } from './models/Patient';
 import { Server } from './models/Server';
 import { OAuthHandler } from './oauth/OAuthHandler';
+import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { HashParamUtils } from './utils/HashParamUtils';
-import { ServerUtils } from './utils/ServerUtils';
-import TestingComparator from './components/TestingComparator';
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
+import { ServerUtils } from './utils/ServerUtils';
+import { PopulationScoring } from './models/PopulationScoring';
+import { GroupElement } from './models/Scoring';
+import { CodeableConcept } from './models/CodeableConcept';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -39,7 +43,7 @@ const App: React.FC = () => {
   const [servers, setServers] = useState<Array<Server | undefined>>([]);
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<Patient | undefined>>([]);
-  const [groups, setGroups] = useState<Map<string, Group> | undefined>(undefined);
+  const [groups, setGroups] = useState<Map<string, PatientGroup> | undefined>(undefined);
 
   // Selected States
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
@@ -104,13 +108,9 @@ const App: React.FC = () => {
   const [loginModalShow, setLoginModalShow] = useState<boolean>(false);
 
   // Population states
-  const [initialPopulation, setInitialPopulation] = useState<string>('-');
-  const [denominator, setDenominator] = useState<string>('-');
-  const [denominatorExclusion, setDenominatorExclusion] = useState<string>('-');
-  const [denominatorException, setDenominatorException] = useState<string>('-');
-  const [numerator, setNumerator] = useState<string>('-');
-  const [numeratorExclusion, setNumeratorExclusion] = useState<string>('-');
   const [measureScoring, setMeasureScoring] = useState<string>('');
+  const [populationScoring, setPopulationScoring] = useState<PopulationScoring[]>([]);
+  
 
   // Saved data
   const [collectedData, setCollectedData] = useState<string>('');
@@ -239,7 +239,7 @@ const App: React.FC = () => {
       setLoading(true);
       const groupFetch = new GroupFetch(dataRepo.baseUrl);
 
-      let  groupsMap: Map<string, Group> = await groupFetch.fetchData(accessToken);
+      let  groupsMap: Map<string, PatientGroup> = await groupFetch.fetchData(accessToken);
       
       setGroups(groupsMap);
       
@@ -256,61 +256,86 @@ const App: React.FC = () => {
   // Function for calling the server to perform the measure evaluation
   const evaluateMeasure = async () => {
     resetResults();
+    clearPopulationCounts();
 
     // Make sure all required elements are set
     if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
       setResults(Constants.error_measureEvaluationServer);
       return;
     }
-    if (selectedMeasure === '') {
+     
+
+    //Establish the Measure object
+    let measureObj: Measure | undefined;
+    if (selectedMeasure !== '') {
+      for (let measure of measures) {
+        if (measure!.name === selectedMeasure) {
+          measureObj = measure;
+        }
+      }
+    }
+
+    if (!measureObj) {
       setResults(Constants.error_selectMeasure);
       return;
+    } else if (measureObj.scoring) {
+      setMeasureScoring(measureObj.scoring.coding[0].code);
     }
 
     // Set the loading state since this call can take a while to return
     setLoading(true);
-    clearPopulationCounts();
-
-    // Get the scoring from the selected measure
-    for (let measure of measures) {
-      if (measure!.name === selectedMeasure) {
-        setMeasureScoring(measure!.scoring.coding[0].code);
-      }
-    }
-
+  
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluation,
       selectedPatient, selectedMeasure, startDate, endDate)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
 
     try {
-      let measureData = await evaluateMeasureFetch.fetchData(accessToken);
+      let evaluateMeasureResult = await evaluateMeasureFetch.fetchData(accessToken);
 
       // Handle the error case where an OperationOutcome was returned instead of a MeasureReport
-      if (measureData.resourceType === 'OperationOutcome') {
-        setResults(JSON.stringify(measureData, undefined, 2));
+      if (evaluateMeasureResult.resourceType === 'OperationOutcome') {
+        setResults(JSON.stringify(evaluateMeasureResult, undefined, 2));
       } else {
-        const retJSON = JSON.stringify(measureData.jsonBody, undefined, 2);
+        const retJSON = JSON.stringify(evaluateMeasureResult.jsonBody, undefined, 2);
         setMeasureReport(retJSON);
         setResults(retJSON);
         // Iterate through the population names to set the state
-        const popNames = measureData.popNames;
-        const counts = measureData.counts;
-        for (let x = 0; x < popNames.length; x++) {
-          if (popNames[x] === 'initial-population') {
-            setInitialPopulation(counts[x]);
-          } else if (popNames[x] === 'denominator') {
-            setDenominator(counts[x]);
-          } else if (popNames[x] === 'denominator-exclusion') {
-            setDenominatorExclusion(counts[x]);
-          } else if (popNames[x] === 'denominator-exception') {
-            setDenominatorException(counts[x]);
-          } else if (popNames[x] === 'numerator') {
-            setNumerator(counts[x]);
-          } else if (popNames[x] === 'numerator-exclusion') {
-            setNumeratorExclusion(counts[x]);
-          }
+        const popNames = evaluateMeasureResult.popNames;
+        const counts = evaluateMeasureResult.counts;
+        const measureGroups: GroupElement[] = evaluateMeasureResult.measureGroups;
+
+
+        let populationScoringCollection: PopulationScoring[] = [];
+        
+        //used for testing
+        // const scoringConcept: CodeableConcept = {
+        //   coding: [{
+        //     system: "http://terminology.hl7.org/CodeSystem/measure-scoring",
+        //     code: "proportion",
+        //     display: "Proportion"
+        //   }]
+        // };
+
+        for (const group of measureGroups){
+          const groupElement: GroupElement = group;
+
+          populationScoringCollection.push({
+            initialPopulation: getScore(popNames, counts, 'initial-population'),
+            denominator: getScore(popNames, counts, 'denominator'),
+            denominatorExclusion: getScore(popNames, counts, 'denominator-exclusion'),
+            denominatorException: getScore(popNames, counts, 'denominator-exception'),
+            numerator: getScore(popNames, counts, 'numerator'),
+            numeratorExclusion: getScore(popNames, counts, 'numerator-exclusion'),
+            groupID: groupElement.id,
+            groupScoring: evaluateMeasureResult.jsonBody.scoring ? evaluateMeasureResult.jsonBody.scoring.coding[0].code : undefined,
+            measureName: selectedMeasure,
+            groupPopulations: group.population
+          })
         }
+
+        setPopulationScoring(populationScoringCollection);
+
       }
 
       // Show the populations
@@ -322,6 +347,11 @@ const App: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const getScore = (popNames: string[], counts: string[], popName: string): string => {
+    const index = popNames.indexOf(popName);
+    return index !== -1 ? counts[index] : '';
+  }
 
   // Function for calling the server to get the data requirements
   const getDataRequirements = async () => {
@@ -458,31 +488,41 @@ const App: React.FC = () => {
 
   // Function for clearing all population counts
   const clearPopulationCounts = () => {
-    setInitialPopulation('-');
-    setDenominator('-');
-    setDenominatorException('-');
-    setDenominatorExclusion('-');
-    setNumerator('-');
-    setNumeratorExclusion('-');
+    const populationScoringInstance: PopulationScoring[] = [{
+      initialPopulation: '-',
+      denominator: '-',
+      denominatorExclusion: '-',
+      denominatorException: '-',
+      numerator: '-',
+      numeratorExclusion: '-',
+      groupID: '-',
+      // Optionally set:
+      groupScoring: undefined,
+      measureName: '-',
+      groupPopulations: []
+    }];
+    setPopulationScoring(populationScoringInstance);
     resetResults();
+    setMeasureScoring('');
     setShowPopulations(false);
   }
 
-  // This function acts a lot like evaluateMeasure, except after evaluating our measure,
-  // a MeasureReport based on the subject ('Patient/' + selectedPatient.id) is fetched. 
 
+  // This function acts a lot like evaluateMeasure, except after evaluating our measure,
+  // a MeasureReport based on the subject ('Patient/' + selectedPatient.id) is fetched
+  // and scoring is compared, mapped, and a summary in differences/matches presented to user.
   const compareTestResults = async () => {
     resetResults();
     setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
 
     // Make sure all required elements are set
+    let missingData = '';
+
     if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
-      setResults(Constants.error_measureEvaluationServer);
-      return;
+      missingData = Constants.error_measureEvaluationServer + '\n';
     }
 
-
-    //Establish the Measure first
+    //Establish the Measure object
     let measureObj: Measure | undefined;
     if (selectedMeasure !== '') {
       for (let measure of measures) {
@@ -491,92 +531,79 @@ const App: React.FC = () => {
         }
       }
     }
+
     if (!measureObj) {
-      setResults(Constants.error_selectMeasure);
+      missingData += Constants.error_selectMeasure + '\n';
+    }
+
+    //Data Repository server
+    if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
+      missingData += Constants.error_selectDataRepository + '\n';
+    }
+    
+    if (missingData.length > 0) {
+      setResults(missingData);
       return;
     }
 
-
-    //no patient was selected, verify the data repo was set:
-    if (!selectedPatient) {
-
-      //if data repo isn't set then spit an error
-      if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
-        setResults(Constants.error_selectDataRepository);
-        return;
-      }
-
-
-      //data repo was selected so patients will contain list of Patient
-      setLoading(true);
-      const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
-      
-      clearPopulationCounts();
-
-      //loop through the patient list, verify it belongs to a measure's group before processing it
-      for (const patientEntry of patients) {
-
-        if (groups && groups.has(selectedMeasure)) {
-
-          const selectedMeasureGroup: Group | undefined = groups.get(selectedMeasure);
-
-          if (selectedMeasureGroup?.member) {
-            for (const member of selectedMeasureGroup.member) {
-              if (member.entity.reference.split('Patient/')[1] === patientEntry?.id) {
-                //patient belongs to this group, proceed:
-                const mcMan = new MeasureComparisonManager(patientEntry,
-                  measureObj,
-                  selectedMeasureEvaluation,
-                  startDate, endDate,
-                  accessToken);
-
-                await mcMan.fetchGroups();
-                const patientDisplayKey = '' + patientEntry?.display;
-                if (patientDisplayKey.length > 0) {
-                  newTestComparatorMap.set(patientEntry, mcMan);
-                }
-              }
-            }
+    //Patient Group data:
+    const patientCompareList: Patient[] = [];
+    if (groups && groups.has(selectedMeasure)) {
+      const selectedMeasureGroup: PatientGroup | undefined = groups.get(selectedMeasure);
+      //Whether its one Patient selected or the user intends all patients,
+      //build a list by verifying Group has the Patient in it.
+      if (selectedMeasureGroup && selectedPatient &&
+        (PatientGroupUtils.patientExistsInGroup(selectedPatient, selectedMeasureGroup))) {
+        patientCompareList.push(selectedPatient);
+      } else {
+        for (const patient of patients) {
+          if (selectedMeasureGroup && patient &&
+            (PatientGroupUtils.patientExistsInGroup(patient, selectedMeasureGroup))) {
+            patientCompareList.push(patient);
           }
-          setTestComparatorMap(newTestComparatorMap);
         }
-      }
-
-      setResults('');
-      setLoading(false);
-      if (newTestComparatorMap.size === 0){
-        setResults(Constants.testCompare_NoGroup);
-      }
-    } else {//process single selectedPatient
-      setLoading(true);
-      const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
-
-      clearPopulationCounts();
-
-
-      const mcMan = new MeasureComparisonManager(selectedPatient,
-        measureObj,
-        selectedMeasureEvaluation,
-        startDate, endDate,
-        accessToken);
-
-      await mcMan.fetchGroups();
-
-      newTestComparatorMap.set(selectedPatient, mcMan);
-
-
-      setTestComparatorMap(newTestComparatorMap);
-      setResults('');
-      setLoading(false);
-
-      if (newTestComparatorMap.size === 0){
-        setResults(Constants.testCompare_NoGroup);
       }
     }
 
+    if (patientCompareList.length === 0) {
+      setResults(Constants.testCompare_NoGroup);
+      return;
+    }
 
+    //Now begin processing valid patients in our list:
+    const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
+    setLoading(true);
+    clearPopulationCounts();
 
+    if (measureObj) {
+      for (const patientEntry of patientCompareList) {
+        //patient belongs to this group, proceed:
+        const mcMan = new MeasureComparisonManager(patientEntry,
+          measureObj,
+          selectedMeasureEvaluation,
+          startDate, endDate,
+          accessToken);
+
+        await mcMan.fetchGroups();
+
+        const patientDisplayKey = '' + patientEntry?.display;
+
+        if (patientDisplayKey.length > 0) {
+          newTestComparatorMap.set(patientEntry, mcMan);
+        }
+      }
+    }
+    
+    //setting this Map triggers the ui in TestingComparator to automatically present the data
+    setTestComparatorMap(newTestComparatorMap);
+
+    setResults('');
+    setLoading(false);
   };
+
+
+
+
 
   return (
     <div className="container">
@@ -623,10 +650,7 @@ const App: React.FC = () => {
       startDate={startDate} endDate={endDate}/>
 
       <Results results={results} />
-      <Populations initialPopulation={initialPopulation} denominator={denominator}
-        denominatorExclusion={denominatorExclusion} denominatorException={denominatorException}
-        numerator={numerator} numeratorExclusion={numeratorExclusion} showPopulations={showPopulations}
-        measureScoring={measureScoring} />
+          <Populations populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring}/>
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
       

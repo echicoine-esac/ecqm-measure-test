@@ -5,6 +5,7 @@ import { Button, Spinner, Table } from 'react-bootstrap';
 import { Patient } from '../models/Patient';
 import { MeasureComparisonManager } from '../utils/MeasureComparisonManager';
 import ReactToPrint from 'react-to-print';
+import { Constants } from '../constants/Constants';
 
 
 interface props {
@@ -36,11 +37,11 @@ interface props {
  * @param param0 
  * @returns 
  */
-const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items, 
+const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items,
   compareTestResults, loading, startDate, endDate }) => {
 
   const componentRef = useRef(null);
-  const title = 'Test Comparison Summary for' + items.get(Array.from(items.keys())[0])?.selectedMeasure.name;
+  const title = 'Test Comparison Summary for ' + items.get(Array.from(items.keys())[0])?.selectedMeasure.name;
   let trueCount = 0;
   let falseCount = 0;
 
@@ -107,15 +108,15 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
       {showTestCompare ? (
         <div className='card-body'>
 
-          <div ref={componentRef}  >
-            {items.size > 0 &&
+          <div ref={componentRef}>
+            {items.size > 0 ? (
 
               <div >
                 <Table style={{ width: '100%', border: 'none' }}>
                   <thead>
                     <tr>
                       <th colSpan={2} className="text-center">
-                        <h4>Test Comparison Summary for {items.get(Array.from(items.keys())[0])?.selectedMeasure.name}</h4>
+                        <h4>{title}</h4>
                       </th>
                     </tr>
                   </thead>
@@ -151,7 +152,11 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   </tbody>
                 </Table>
               </div>
-            }
+            ) : (
+              <div>
+                <p>{Constants.testComparisonInstruction}</p>
+              </div>
+            )}
             {/* Sort array by discrepancy so matches are bottom of list. Convert boolean to 1/0, compare by basic int: */}
             {Array.from(items.entries())
               .sort(([keyA, valueA], [keyB, valueB]) =>
@@ -195,7 +200,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                             <tbody>
                               {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
                                 <tr key={index} className={`${group.discrepancy && 'fw-bold'}`}>
-                                  <td>{group.code}</td>
+                                  <td>{group.code.coding[0].code}</td>
                                   <td>{group.count}</td>
                                 </tr>
                               ))}
@@ -211,7 +216,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                             <tbody>
                               {value.fetchedMeasureReportGroups.map((group, index) => (
                                 <tr key={index} className={`${group.discrepancy && 'fw-bold'}`}>
-                                  <td>{group.code}</td>
+                                  <td>{group.code.coding[0].code}</td>
                                   <td>{group.count}</td>
                                 </tr>
                               ))}
@@ -305,6 +310,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
           </div>
         </div>
       ) : (
+
         <div />
       )}
     </div>

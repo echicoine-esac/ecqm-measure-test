@@ -1,7 +1,7 @@
-import { Group } from "./Group";
+import { PatientGroup } from "./PatientGroup";
 
 export type Patient = {
     display: string;
     id: string;
-    group?: Group;
+    group?: PatientGroup;
   };

@@ -33,7 +33,7 @@ export class MeasureFetch extends AbstractDataFetch {
         let measureList: Measure[] = entries.map((entry: BundleEntry) => {
             return {
                 'name': entry.resource.id,
-                'scoring': entry.resource.scoring
+                'scoring': entry.resource.scoring ? entry.resource.scoring : ''
             }
         });
 

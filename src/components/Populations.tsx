@@ -1,127 +1,105 @@
 import React from 'react';
+import { PopulationScoring } from '../models/PopulationScoring';
 
 // Props for Populations
 interface props {
-  initialPopulation: string;
-  denominator: string;
-  denominatorExclusion: string;
-  denominatorException: string;
-  numerator: string;
-  numeratorExclusion: string;
   showPopulations: boolean;
-  measureScoring: string;
+  populationScoring: PopulationScoring[] | undefined;
+  measureScoringType: string;
 }
 
 // Populations component displays the population cards
-const Populations: React.FC<props> = ({ initialPopulation, denominator, denominatorExclusion, denominatorException,
-    numerator, numeratorExclusion, showPopulations, measureScoring}) => {
-    return (
-      <div>
-        <div className='row'>
-          <div className='col-md-2 order-md-1'>
-            {showPopulations ? (
-              <div className='card'>
-                <div className='card-header'>
-                  Scoring Type:
-                </div>
-                <div className='card-body' data-testid='measure-scoring-div'>
-                  {measureScoring}
-                </div>
+const Populations: React.FC<props> = ({ showPopulations, populationScoring, measureScoringType }) => {
+
+  let title = '';
+  if (populationScoring) {
+    if (populationScoring[0]) {
+      title = 'Measure Evaluation Scoring Summary for: ' + populationScoring[0].measureName;
+    }
+  }
+
+  return (
+    <div>
+      {showPopulations ? (
+        <div style={{ textAlign: 'start', marginTop: '20px' }}>
+          <h4>{title}</h4>
+          <h5>
+            {'Measure Scoring Type: '}
+            {measureScoringType && measureScoringType.length > 0 ? measureScoringType : 'N/A'}
+          </h5>
+
+          {populationScoring && Array.from(populationScoring)
+            .map((scoring, index) => (
+              <div key={index}>
+                <table className="table mt-4" style={{ width: '100%', border: '2px solid lightgrey' }}>
+                  <thead style={{ width: '100%', background: '#F7F7F7' }}>
+                    <tr>
+                      <td  >
+                        <h5>
+                          {'Group ID: ' + scoring.groupID}
+                        </h5>
+                      </td>
+
+                      <td>
+                        <h5>
+                          {scoring.groupScoring &&
+                            'Scoring Type: ' + scoring.groupScoring.coding[0].code
+                          }
+                        </h5>
+                      </td>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {scoring.groupPopulations ? (
+                      scoring.groupPopulations.map((group, idx) => (
+                        <tr key={idx} className={`${group.discrepancy ? 'fw-bold text-danger' : ''}`}>
+                          <td className="text-start">{group.code.coding[0].code}:</td>
+                          <td>{group.count}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <>
+                        <tr>
+                          <td className="text-start" style={{ width: '50%' }}>Initial Population:</td>
+                          <td>{scoring.initialPopulation}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-start">Denominator:</td>
+                          <td>{scoring.denominator}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-start">Denominator Exclusion:</td>
+                          <td>{scoring.denominatorExclusion}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-start">Denominator Exception:</td>
+                          <td>{scoring.denominatorException}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-start">Numerator:</td>
+                          <td>{scoring.numerator}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-start">Numerator Exclusion:</td>
+                          <td>{scoring.numeratorExclusion}</td>
+                        </tr>
+                      </>
+                    )}
+                  </tbody>
+                </table>
               </div>
-            ) : (
-              <div/>
-            )}
-          </div>
+            ))
+          }
         </div>
-        <br/>
-        <div className='row'>
-          <div className='col-md-2 order-md-1'>
-            {showPopulations ? (
-              <div className='card'>
-                <div className='card-header'>
-                  IPOP
-                </div>
-                <div className='card-body' data-testid='initial-population-div'>
-                  {initialPopulation}
-                </div>
-              </div>
-            ) : (
-              <div/>
-            )}
-          </div>
-          <div className='col-md-2 order-md-2'>
-            {showPopulations ? (
-              <div className='card'>
-                <div className='card-header'>
-                  DENOM
-                </div>
-                <div className='card-body' data-testid='denominator-div'>
-                  {denominator}
-                </div>
-              </div>
-            ) : (
-              <div/>
-            )}
-          </div>
-          <div className='col-md-2 order-md-3'>
-            {showPopulations ? (
-              <div className='card'>
-                <div className='card-header'>
-                  DENEXCL
-                </div>
-                <div className='card-body' data-testid='denominator-exclusion-div'>
-                  {denominatorExclusion}
-                </div>
-              </div>
-            ) : (
-              <div/>
-            )}
-          </div>
-          <div className='col-md-2 order-md-4'>
-            {showPopulations ? (
-              <div className='card'>
-                <div className='card-header'>
-                  DENEXCEP
-                </div>
-                <div className='card-body' data-testid='denominator-exception-div'>
-                  {denominatorException}
-                </div>
-              </div>
-            ) : (
-              <div/>
-            )}
-          </div>
-          <div className='col-md-2 order-md-4'>
-            {showPopulations ? (
-              <div className='card'>
-                <div className='card-header'>
-                  NUMER
-                </div>
-                <div className='card-body' data-testid='numerator-div'>
-                  {numerator}
-                </div>
-              </div>
-            ) : (
-              <div/>
-            )}
-          </div>
-          <div className='col-md-2 order-md-4'>
-            {showPopulations ? (
-              <div className='card'>
-                <div className='card-header'>
-                  NUMEXCL
-                </div>
-                <div className='card-body' data-testid='numerator-exclusion-div'>
-                  {numeratorExclusion}
-                </div>
-              </div>
-            ) : (
-              <div/>
-            )}
-          </div>
-        </div>
-      </div>
-    );
+      ) : (
+        <div />
+      )}
+    </div>
+  );
+
+
+
 };
 
 export default Populations;

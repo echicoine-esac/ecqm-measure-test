@@ -1,5 +1,8 @@
-export type MeasureData = {
+import { GroupElement } from "./Scoring";
+
+export type EvaluateMeasureResult = {
     jsonBody: string;
     popNames: string[];
-    counts: string[];
+    counts: number[];
+    measureGroups?: GroupElement[];
   };

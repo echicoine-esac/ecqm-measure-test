@@ -5,14 +5,10 @@ import { Measure } from '../models/Measure';
 import { Server } from '../models/Server';
 import { EvaluateMeasureFetch } from '../data/EvaluateMeasureFetch';
 import { MeasureReportFetch } from '../data/MeasureReportFetch';
+import { ScoringUtils } from './ScoringUtils';
+import { PopulationElement } from '../models/Scoring';
 
 Amplify.configure(awsExports);
-
-type MeasureGroup = {
-    code: string;
-    count: number;
-    discrepancy: boolean;
-};
 
 /**
  * Create a new manager class with intention of maintaining test comparisons
@@ -29,8 +25,8 @@ export class MeasureComparisonManager {
     private endDate: string = '';
     private accessToken: string = '';
 
-    public fetchedEvaluatedMeasureGroups: MeasureGroup[] = [];
-    public fetchedMeasureReportGroups: MeasureGroup[] = [];
+    public fetchedEvaluatedMeasureGroups: PopulationElement[] = [];
+    public fetchedMeasureReportGroups: PopulationElement[] = [];
 
     public discrepancyExists = false;
 
@@ -52,7 +48,6 @@ export class MeasureComparisonManager {
     }
 
 
-
     /**
      * Attempts to first evaluate measure against selected patient using specific eval server.
      * Next, using the measure information a MeasureReport fetch is ran to gather existing evaluations
@@ -64,51 +59,24 @@ export class MeasureComparisonManager {
             const measureReportFetch = new MeasureReportFetch(this.selectedMeasureEvaluation,
                 this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate);
             this.measureReportURL = measureReportFetch.getUrl();
-            this.fetchedMeasureReportGroups = this.extractBundleMeasureReportGroupData(await measureReportFetch.fetchData(this.accessToken));
+            
+            //MeasureReport fetch filters by date manually (period.start/period.end) comes back as entry array
+            this.fetchedMeasureReportGroups = ScoringUtils.extractBundleMeasureReportGroupData(await measureReportFetch.fetchData(this.accessToken));
 
 
             const evaluateMeasureFetch = new EvaluateMeasureFetch(this.selectedMeasureEvaluation,
                 this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate);
             this.evaluatedMeasureURL = evaluateMeasureFetch.getUrl();
-            this.fetchedEvaluatedMeasureGroups = this.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonBody);
+             
+            //evaluate measure comes back as a single MeasureReport
+            this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonBody);
 
             this.discrepancyExists = this.compareMeasureGroups();
         } catch (error: any) {
             console.log(error);
         }
     }
-
-    //MeasureReport fetch filters by date manually (period.start/period.end) comes back as entry array
-    private extractBundleMeasureReportGroupData(entry: any): MeasureGroup[] {
-        let mgArr: MeasureGroup[] = [];
-        if (entry) {
-            for (const measureReport of entry) {
-                mgArr = [...mgArr, ...this.extractMeasureReportGroupData(measureReport.resource)];
-            }
-        }
-        return mgArr
-    }
-
-    //evaluate measure comes back as a single MeasureReport
-    private extractMeasureReportGroupData(data: any): MeasureGroup[] {
-        let mgArr: MeasureGroup[] = [];
-        if (!data || !data.group){
-            console.log(data);
-            return [];
-        }
-        for (const group of data.group) {
-            if (group.population) {
-                for (const population of group.population) {
-                    mgArr.push({
-                        code: population.code.coding[0].display,
-                        count: population.count,
-                        discrepancy: false
-                    })
-                }
-            }
-        }
-        return mgArr;
-    }
+ 
 
     private compareMeasureGroups(): boolean {
         console.log("fetchedEvaluatedMeasureGroups: " + this.fetchedEvaluatedMeasureGroups.length);
@@ -118,8 +86,8 @@ export class MeasureComparisonManager {
             return true;
         }
 
-        const sortedArray1 = [...this.fetchedEvaluatedMeasureGroups].sort((a, b) => a.code.localeCompare(b.code));
-        const sortedArray2 = [...this.fetchedMeasureReportGroups].sort((a, b) => a.code.localeCompare(b.code));
+        const sortedArray1 = [...this.fetchedEvaluatedMeasureGroups].sort((a, b) => a.code.coding[0].code.localeCompare(b.code.coding[0].code));
+        const sortedArray2 = [...this.fetchedMeasureReportGroups].sort((a, b) => a.code.coding[0].code.localeCompare(b.code.coding[0].code));
 
         let discrepancyFound = false;
 

@@ -1,11 +1,6 @@
+import { CodeableConcept } from "./CodeableConcept";
+
 export type Measure = {
   name: string;
-  scoring: {
-    coding: [
-      {
-        system: string;
-        code:string;
-      }
-    ]
-  };
+  scoring: CodeableConcept;
 };

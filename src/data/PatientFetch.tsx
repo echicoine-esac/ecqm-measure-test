@@ -1,6 +1,6 @@
 import { Constants } from '../constants/Constants';
 import { BundleEntry } from '../models/BundleEntry';
-import { Group } from '../models/Group';
+import { PatientGroup } from '../models/PatientGroup';
 import { Patient } from '../models/Patient';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
@@ -90,7 +90,7 @@ export class PatientFetch extends AbstractDataFetch {
 
         if (data && data.resourceType === "Group" && Array.isArray(data.member)) {
 
-            let patientGroup: Group = {
+            let patientGroup: PatientGroup = {
                 id: data.id,
                 extension: data.extension,
                 member: data.member

@@ -1,4 +1,7 @@
-export type Group =
+/**
+ * Used in Group resources that give Patient information based on Measure
+ */
+export type PatientGroup =
     {
         id: string,
         extension: Extension[],
