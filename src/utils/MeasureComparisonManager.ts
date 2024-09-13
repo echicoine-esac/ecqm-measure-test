@@ -79,30 +79,31 @@ export class MeasureComparisonManager {
  
 
     private compareMeasureGroups(): boolean {
-        console.log("fetchedEvaluatedMeasureGroups: " + this.fetchedEvaluatedMeasureGroups.length);
-        console.log("fetchedMeasureReportGroups: " + this.fetchedMeasureReportGroups.length);
-        
         if (this.fetchedEvaluatedMeasureGroups.length !== this.fetchedMeasureReportGroups.length) {
             return true;
         }
-
         const sortedArray1 = [...this.fetchedEvaluatedMeasureGroups].sort((a, b) => a.code.coding[0].code.localeCompare(b.code.coding[0].code));
         const sortedArray2 = [...this.fetchedMeasureReportGroups].sort((a, b) => a.code.coding[0].code.localeCompare(b.code.coding[0].code));
 
-        let discrepancyFound = false;
-
         for (let i = 0; i < sortedArray1.length; i++) {
             if (
-                sortedArray1[i].code !== sortedArray2[i].code ||
+                sortedArray1[i].code.coding[0].code !== sortedArray2[i].code.coding[0].code ||
                 sortedArray1[i].count !== sortedArray2[i].count
             ) {
-                sortedArray1[i].discrepancy = true;
-                sortedArray2[i].discrepancy = true;
-                discrepancyFound = true;
+                return true;
             }
         }
 
-        return discrepancyFound;
+        for (let i = 0; i < sortedArray2.length; i++) {
+            if (
+                sortedArray2[i].code.coding[0].code !== sortedArray1[i].code.coding[0].code ||
+                sortedArray2[i].count !== sortedArray1[i].count
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

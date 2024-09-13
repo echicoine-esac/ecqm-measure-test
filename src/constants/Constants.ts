@@ -22,11 +22,11 @@ export class Constants {
     public static readonly error_selectMeasureToSubmit = 'Please select a Measure to collect the data for';
 
     public static readonly evaluateMeasureFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&reportType=subject-list';
-    public static readonly evaluateMeasureWithPatientFetchURL = '{0}Measure/{1}/$evaluate-measure?subject={2}&periodStart={3}&periodEnd={4}';
+    public static readonly evaluateMeasureWithPatientFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject';
+
 
     public static readonly measureReportFetchURL_byEvaluatedResource = '{0}MeasureReport?evaluated-resource=Patient/{1}';
     public static readonly measureReportFetchURL_byMeasure = '{0}MeasureReport?evaluated-resource=Patient/{1}&measure=Measure/{2}';
-    //https://fhir.ecqm.icfcloud.com/fhir/MeasureReport?evaluated-resource=Patient/d128dd74-b827-4442-99d6-d9437ad09e07&&_search?measure=Measure/AnticoagulationTherapyforAtrialFibrillationFlutterFHIR
 
     public static readonly defaultStartDate = '2025-01-01';
     public static readonly defaultEndDate = '2025-12-31';

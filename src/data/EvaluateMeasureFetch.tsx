@@ -52,10 +52,12 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
+         
+        //{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject
         if (this.selectedPatient !== undefined && this.selectedPatient.id) {
             return StringUtils.format(Constants.evaluateMeasureWithPatientFetchURL,
                 this.selectedServer?.baseUrl, this.selectedMeasure,
-                this.selectedPatient.id, this.startDate, this.endDate);
+                this.startDate, this.endDate, this.selectedPatient.id);
         } else {
             return StringUtils.format(Constants.evaluateMeasureFetchURL,
                 this.selectedServer?.baseUrl, this.selectedMeasure,

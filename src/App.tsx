@@ -309,13 +309,13 @@ const App: React.FC = () => {
         let populationScoringCollection: PopulationScoring[] = [];
         
         //used for testing
-        // const scoringConcept: CodeableConcept = {
-        //   coding: [{
-        //     system: "http://terminology.hl7.org/CodeSystem/measure-scoring",
-        //     code: "proportion",
-        //     display: "Proportion"
-        //   }]
-        // };
+        const scoringConcept: CodeableConcept = {
+          coding: [{
+            system: "http://terminology.hl7.org/CodeSystem/measure-scoring",
+            code: "proportion",
+            display: "Proportion"
+          }]
+        };
 
         for (const group of measureGroups){
           const groupElement: GroupElement = group;
@@ -328,7 +328,7 @@ const App: React.FC = () => {
             numerator: getScore(popNames, counts, 'numerator'),
             numeratorExclusion: getScore(popNames, counts, 'numerator-exclusion'),
             groupID: groupElement.id,
-            groupScoring: evaluateMeasureResult.jsonBody.scoring ? evaluateMeasureResult.jsonBody.scoring.coding[0].code : undefined,
+            groupScoring: evaluateMeasureResult.jsonBody.scoring ? evaluateMeasureResult.jsonBody.scoring.coding[0].code : scoringConcept,
             measureName: selectedMeasure,
             groupPopulations: group.population
           })
@@ -601,10 +601,6 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
-
-
-
-
   return (
     <div className="container">
       <div className="row">
@@ -650,7 +646,9 @@ const App: React.FC = () => {
       startDate={startDate} endDate={endDate}/>
 
       <Results results={results} />
-          <Populations populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring}/>
+          
+      <Populations populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring}/>
+      
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
       
