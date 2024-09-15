@@ -1,7 +1,6 @@
 import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
-import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
-import { EvaluateMeasureResult } from '../../models/MeasureData';
+import { EvaluateMeasureFetch, EvaluateMeasureResult } from '../../data/EvaluateMeasureFetch';
 import { Server } from '../../models/Server';
 import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';

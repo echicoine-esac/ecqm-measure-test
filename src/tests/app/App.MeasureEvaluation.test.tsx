@@ -322,8 +322,10 @@ test(thisTestFile + ' success scenario: submit data', async () => {
     });
     fetchMock.restore();
     const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-
-    expect(resultsTextField.value).toEqual(Constants.dataSubmitted);
+ 
+    const swCon: boolean = resultsTextField.value.startsWith(Constants.dataSubmitted);
+    
+    expect(swCon).toEqual(true);
   }
 });
 

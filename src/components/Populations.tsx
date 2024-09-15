@@ -11,83 +11,47 @@ interface props {
 // Populations component displays the population cards
 const Populations: React.FC<props> = ({ showPopulations, populationScoring, measureScoringType }) => {
 
-  let title = '';
-  if (populationScoring) {
-    if (populationScoring[0]) {
-      title = 'Measure Evaluation Scoring Summary for: ' + populationScoring[0].measureName;
-    }
+  const convertToID = (str: any | undefined):string => {
+    let strIn: string = '' + str;
+    return (strIn.replace(' ', ''));
   }
 
   return (
     <div>
       {showPopulations ? (
         <div style={{ textAlign: 'start', marginTop: '20px' }}>
-          <h4>{title}</h4>
-          <h5>
+          <h5 data-testid={'pops-measure-score-type'}>
             {'Measure Scoring Type: '}
             {measureScoringType && measureScoringType.length > 0 ? measureScoringType : 'N/A'}
           </h5>
 
           {populationScoring && Array.from(populationScoring)
             .map((scoring, index) => (
-              <div key={index}>
+              <div key={index + scoring.groupID}>
                 <table className="table mt-4" style={{ width: '100%', border: '2px solid lightgrey' }}>
                   <thead style={{ width: '100%', background: '#F7F7F7' }}>
                     <tr>
-                      <td  >
-                        <h5>
-                          {'Group ID: ' + scoring.groupID}
-                        </h5>
-                      </td>
-
-                      <td>
-                        <h5>
+                      <th>
+                        <h5 data-testid={'pops-group-id-' + convertToID(scoring.groupID)}>{'Group ID: ' + scoring.groupID}</h5>
+                      </th>
+                      <th>
+                        <h5 data-testid={'pops-group-score-type-' + convertToID(scoring?.groupScoring?.coding[0]?.code)}>
                           {scoring.groupScoring &&
-                            'Scoring Type: ' + scoring.groupScoring.coding[0].code
-                          }
+                            'Scoring Type: ' + scoring.groupScoring.coding[0].code}
                         </h5>
-                      </td>
-
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {scoring.groupPopulations ? (
-                      scoring.groupPopulations.map((group, idx) => (
-                        <tr key={idx} className={`${group.discrepancy ? 'fw-bold text-danger' : ''}`}>
-                          <td className="text-start">{group.code.coding[0].code}:</td>
-                          <td>{group.count}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <>
-                        <tr>
-                          <td className="text-start" style={{ width: '50%' }}>Initial Population:</td>
-                          <td>{scoring.initialPopulation}</td>
-                        </tr>
-                        <tr>
-                          <td className="text-start">Denominator:</td>
-                          <td>{scoring.denominator}</td>
-                        </tr>
-                        <tr>
-                          <td className="text-start">Denominator Exclusion:</td>
-                          <td>{scoring.denominatorExclusion}</td>
-                        </tr>
-                        <tr>
-                          <td className="text-start">Denominator Exception:</td>
-                          <td>{scoring.denominatorException}</td>
-                        </tr>
-                        <tr>
-                          <td className="text-start">Numerator:</td>
-                          <td>{scoring.numerator}</td>
-                        </tr>
-                        <tr>
-                          <td className="text-start">Numerator Exclusion:</td>
-                          <td>{scoring.numeratorExclusion}</td>
-                        </tr>
-                      </>
-                    )}
+                    {scoring.groupPopulations?.map((pop, idx) => (
+                      <tr key={idx} className={`${pop.discrepancy ? 'fw-bold text-danger' : ''}`}>
+                        <td data-testid={'pops-group-code-' + convertToID(pop.code.coding[0].code)} className="text-start">{pop.code.coding[0].code}:</td>
+                        <td data-testid={'pops-group-count-' + convertToID(pop.count)}>{pop.count}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
+
               </div>
             ))
           }

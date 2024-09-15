@@ -301,35 +301,25 @@ const App: React.FC = () => {
         setMeasureReport(retJSON);
         setResults(retJSON);
         // Iterate through the population names to set the state
-        const popNames = evaluateMeasureResult.popNames;
-        const counts = evaluateMeasureResult.counts;
         const measureGroups: GroupElement[] = evaluateMeasureResult.measureGroups;
-
 
         let populationScoringCollection: PopulationScoring[] = [];
         
-        //used for testing
-        const scoringConcept: CodeableConcept = {
-          coding: [{
-            system: "http://terminology.hl7.org/CodeSystem/measure-scoring",
-            code: "proportion",
-            display: "Proportion"
-          }]
-        };
+        // //used for testing
+        // const scoringConcept: CodeableConcept = {
+        //   coding: [{
+        //     system: "http://terminology.hl7.org/CodeSystem/measure-scoring",
+        //     code: "proportion",
+        //     display: "Proportion"
+        //   }]
+        // };
 
         for (const group of measureGroups){
           const groupElement: GroupElement = group;
 
           populationScoringCollection.push({
-            initialPopulation: getScore(popNames, counts, 'initial-population'),
-            denominator: getScore(popNames, counts, 'denominator'),
-            denominatorExclusion: getScore(popNames, counts, 'denominator-exclusion'),
-            denominatorException: getScore(popNames, counts, 'denominator-exception'),
-            numerator: getScore(popNames, counts, 'numerator'),
-            numeratorExclusion: getScore(popNames, counts, 'numerator-exclusion'),
             groupID: groupElement.id,
-            groupScoring: evaluateMeasureResult.jsonBody.scoring ? evaluateMeasureResult.jsonBody.scoring.coding[0].code : scoringConcept,
-            measureName: selectedMeasure,
+            groupScoring: evaluateMeasureResult.jsonBody.scoring ? evaluateMeasureResult.jsonBody.scoring.coding[0].code : undefined,
             groupPopulations: group.population
           })
         }
@@ -347,11 +337,6 @@ const App: React.FC = () => {
       setLoading(false);
     }
   };
-
-  const getScore = (popNames: string[], counts: string[], popName: string): string => {
-    const index = popNames.indexOf(popName);
-    return index !== -1 ? counts[index] : '';
-  }
 
   // Function for calling the server to get the data requirements
   const getDataRequirements = async () => {
@@ -489,16 +474,9 @@ const App: React.FC = () => {
   // Function for clearing all population counts
   const clearPopulationCounts = () => {
     const populationScoringInstance: PopulationScoring[] = [{
-      initialPopulation: '-',
-      denominator: '-',
-      denominatorExclusion: '-',
-      denominatorException: '-',
-      numerator: '-',
-      numeratorExclusion: '-',
       groupID: '-',
       // Optionally set:
       groupScoring: undefined,
-      measureName: '-',
       groupPopulations: []
     }];
     setPopulationScoring(populationScoringInstance);
@@ -632,7 +610,9 @@ const App: React.FC = () => {
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
                          servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}
                          selectedMeasureEvaluation={selectedMeasureEvaluation} submitData={submitData}
-                         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow} />
+                         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
+                         //Scoring now captured within evaluate measure card:
+                         populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving}
@@ -647,8 +627,6 @@ const App: React.FC = () => {
 
       <Results results={results} />
           
-      <Populations populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring}/>
-      
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
       

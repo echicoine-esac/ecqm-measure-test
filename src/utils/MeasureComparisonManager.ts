@@ -94,14 +94,6 @@ export class MeasureComparisonManager {
             }
         }
 
-        for (let i = 0; i < sortedArray2.length; i++) {
-            if (
-                sortedArray2[i].code.coding[0].code !== sortedArray1[i].code.coding[0].code ||
-                sortedArray2[i].count !== sortedArray1[i].count
-            ) {
-                return true;
-            }
-        }
 
         return false;
     }

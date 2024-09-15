@@ -40,7 +40,8 @@ export class SubmitDataFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        return Constants.dataSubmitted;
+        const ret: string = JSON.stringify(data, undefined, 2)
+        return Constants.dataSubmitted + '\n\r' + ret;
     }
 
     submitData = async (token: string): Promise<string> => {

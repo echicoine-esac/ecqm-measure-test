@@ -1,20 +1,6 @@
 export type GroupElement = {
   id: string;
-  population: {
-      id: string;
-      extension?: {
-          url: string;
-          valueString: string;
-      }[];
-      code: {
-          coding: {
-              system: string;
-              code: string;
-              display: string;
-          }[];
-      };
-      count: number;
-  }[];
+  population: PopulationElement[];
 };
 
 export type PopulationElement = {

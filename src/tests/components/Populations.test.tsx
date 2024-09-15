@@ -1,100 +1,100 @@
 import { render, screen } from '@testing-library/react';
 import Populations from '../../components/Populations';
 import { PopulationScoring } from '../../models/PopulationScoring';
+import jsonTestResultsData from '../resources/fetchmock-measure-evaluation-multi-group.json';
+import { GroupElement, PopulationElement } from '../../models/Scoring';
+import { CodeableConcept } from '../../models/CodeableConcept';
+
+let populationScoringCollection: PopulationScoring[] = [];
+
+const convertToID = (str: any | undefined): string => {
+  let strIn: string = '' + str;
+  return (strIn.replace(' ', ''));
+}
+
+beforeAll(() => {
+  const measureGroups: GroupElement[] = jsonTestResultsData.group;
+  let populationScoringCollection: PopulationScoring[] = [];
+
+  //used for testing
+  const scoringConcept: CodeableConcept = {
+    coding: [{
+      system: "http://terminology.hl7.org/CodeSystem/measure-scoring",
+      code: "proportion",
+      display: "Proportion"
+    }]
+  };
+
+  for (const group of measureGroups) {
+    const groupElement: GroupElement = group;
+    populationScoringCollection.push({
+      groupID: groupElement.id,
+      groupScoring: scoringConcept,
+      groupPopulations: group.population
+    })
+  }
+
+
+  expect(populationScoringCollection.length).toBe(6);
+});
+
 
 test('population renders and accepts values', () => {
 
-  const showPopulations = true;
-  const measureScoringDivText = 'text-measure-scoring-div';
-  const initialPopulationDivText = 'text-initial-population-div';
-  const denominatorDivText = 'text-denominator-div';
-  const denominatorExclusionDivText = 'text-denominator-exclusion-div';
-  const denominatorExceptionDivText = 'text-denominator-exception-div';
-  const numeratorDivText = 'text-numerator-div';
-  const numeratorExclusionDivText = 'text-numerator-exclusion-div';
+  //measure scoring
+  const measureScoring = 'measureScoring';
+  const measureScoringTitle = 'Measure Scoring Type: ' + measureScoring;
+  const popsMeasureScoreTypeDivId = 'pops-measure-score-type';
 
-  // Creating the PopulationScoring instance
-  const populationScoringInstance: PopulationScoring[] = [{
-    initialPopulation: initialPopulationDivText,
-    denominator: denominatorDivText,
-    denominatorExclusion: denominatorExclusionDivText,
-    denominatorException: denominatorExceptionDivText,
-    numerator: numeratorDivText,
-    numeratorExclusion: numeratorExclusionDivText,
-    groupID: "id1",
-    measureName: 'selectedMeasure'
-    // Optionally set groupScoring if needed:
-    // groupScoring: new Scoring()  
-  }];
+  const showPopulations = true;
 
   render(<Populations
-    populationScoring={populationScoringInstance}
+    populationScoring={populationScoringCollection}
     showPopulations={showPopulations}
-    measureScoringType={measureScoringDivText}
+    measureScoringType={measureScoring}
   />);
-  const measureScoringDiv: HTMLDivElement = screen.getByTestId('measure-scoring-div');
-  const initialPopulationDiv: HTMLDivElement = screen.getByTestId('initial-population-div');
-  const denominatorDiv: HTMLDivElement = screen.getByTestId('denominator-div');
-  const denominatorExclusionDiv: HTMLDivElement = screen.getByTestId('denominator-exclusion-div');
-  const denominatorExceptionDiv: HTMLDivElement = screen.getByTestId('denominator-exception-div');
-  const numeratorDiv: HTMLDivElement = screen.getByTestId('numerator-div');
-  const numeratorExclusionDiv: HTMLDivElement = screen.getByTestId('numerator-exclusion-div');
+  
+  const popsMeasureScoreTypeDiv: HTMLDivElement = screen.getByTestId(popsMeasureScoreTypeDivId);
+  expect(popsMeasureScoreTypeDiv).toBeInTheDocument();
+  expect(popsMeasureScoreTypeDiv.innerHTML).toEqual(measureScoringTitle);
 
-  expect(measureScoringDiv).toBeInTheDocument();
-  expect(initialPopulationDiv).toBeInTheDocument();
-  expect(denominatorDiv).toBeInTheDocument();
-  expect(denominatorExclusionDiv).toBeInTheDocument();
-  expect(denominatorExceptionDiv).toBeInTheDocument();
-  expect(numeratorDiv).toBeInTheDocument();
-  expect(numeratorExclusionDiv).toBeInTheDocument();
+  for (const popScoring of populationScoringCollection){
+    const popsGroupIdDiv: HTMLDivElement = screen.getByTestId('pops-group-id-' + convertToID(popScoring.groupID));
+    const popsGroupScoreTypeDiv: HTMLDivElement = screen.getByTestId('pops-group-score-type-' + convertToID(popScoring?.groupScoring?.coding[0]?.code));
+    
+    expect(popsGroupIdDiv).toBeInTheDocument();
+    expect(popsGroupScoreTypeDiv).toBeInTheDocument();
 
-  expect(measureScoringDiv.innerHTML).toEqual(measureScoringDivText);
-  expect(initialPopulationDiv.innerHTML).toEqual(initialPopulationDivText);
-  expect(denominatorDiv.innerHTML).toEqual(denominatorDivText);
-  expect(denominatorExclusionDiv.innerHTML).toEqual(denominatorExclusionDivText);
-  expect(denominatorExceptionDiv.innerHTML).toEqual(denominatorExceptionDivText);
-  expect(numeratorDiv.innerHTML).toEqual(numeratorDivText);
-  expect(numeratorExclusionDiv.innerHTML).toEqual(numeratorExclusionDivText);
+    expect(popsGroupIdDiv.innerHTML).toEqual(popScoring.groupID);
+    expect(popsGroupScoreTypeDiv.innerHTML).toEqual(popScoring?.groupScoring?.coding[0]?.code);
 
+    //group level items
+    for (const popElement of popScoring.groupPopulations){
+      const popsGroupCodeDiv: HTMLDivElement = screen.getByTestId('pops-group-code-' + convertToID(popElement.code.coding[0].code));
+      const popsGroupCountDiv: HTMLDivElement = screen.getByTestId('pops-group-count-' + convertToID(popElement.count));
+
+      expect(popsGroupCodeDiv).toBeInTheDocument();
+      expect(popsGroupCountDiv).toBeInTheDocument();
+    
+      expect(popsGroupCodeDiv.innerHTML).toEqual(popElement.code.coding[0].code);
+      expect(popsGroupCountDiv.innerHTML).toEqual(popElement.count);
+    }
+  }
 });
 
 test('showPopulations is false and hides specific divs', () => {
 
+  //measure scoring
+  const measureScoring = 'measureScoring';
+  const popsMeasureScoreTypeDivId = 'pops-measure-score-type';
   const showPopulations = false;
-  const measureScoringDivText = 'text-measure-scoring-div';
-  const initialPopulationDivText = 'text-initial-population-div';
-  const denominatorDivText = 'text-denominator-div';
-  const denominatorExclusionDivText = 'text-denominator-exclusion-div';
-  const denominatorExceptionDivText = 'text-denominator-exception-div';
-  const numeratorDivText = 'text-numerator-div';
-  const numeratorExclusionDivText = 'text-numerator-exclusion-div';
-
-  // Creating the PopulationScoring instance
-  const populationScoringInstance: PopulationScoring[] = [{
-    initialPopulation: initialPopulationDivText,
-    denominator: denominatorDivText,
-    denominatorExclusion: denominatorExclusionDivText,
-    denominatorException: denominatorExceptionDivText,
-    numerator: numeratorDivText,
-    numeratorExclusion: numeratorExclusionDivText,
-    groupID: "id1",
-    measureName: 'selectedMeasure'
-    // Optionally set groupScoring if needed:
-    // groupScoring: new Scoring() 
-  }];
 
   render(<Populations
-    populationScoring={populationScoringInstance}
+    populationScoring={populationScoringCollection}
     showPopulations={showPopulations}
-    measureScoringType={measureScoringDivText}
+    measureScoringType={measureScoring}
   />);
 
-  expect(screen.queryByText('measure-scoring-div')).not.toBeInTheDocument();
-  expect(screen.queryByText('initial-population-div')).not.toBeInTheDocument();
-  expect(screen.queryByText('denominator-div')).not.toBeInTheDocument();
-  expect(screen.queryByText('denominator-exclusion-div')).not.toBeInTheDocument();
-  expect(screen.queryByText('denominator-exception-div')).not.toBeInTheDocument();
-  expect(screen.queryByText('numerator-div')).not.toBeInTheDocument();
-  expect(screen.queryByText('numerator-exclusion-div')).not.toBeInTheDocument();
-
-}); 
+  expect(screen.queryByText(popsMeasureScoreTypeDivId)).not.toBeInTheDocument();
+});
+ 

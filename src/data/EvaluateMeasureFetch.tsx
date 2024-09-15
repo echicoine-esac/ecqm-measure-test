@@ -1,14 +1,14 @@
 import { Constants } from '../constants/Constants';
-import { MeasureReport } from '../models/MeasureReport';
-// import { MeasureReportGroup } from '../models/MeasureReportGroup';
-import { Population } from '../models/Population';
+import { Patient } from '../models/Patient';
+import { GroupElement } from '../models/Scoring';
+import { Server } from '../models/Server';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
-import { Server } from '../models/Server';
-import { Patient } from '../models/Patient';
-import { ScoringUtils } from '../utils/ScoringUtils';
-import { GroupElement, PopulationElement } from '../models/Scoring';
-import { EvaluateMeasureResult } from '../models/MeasureData';
+
+export type EvaluateMeasureResult = {
+    jsonBody: string;
+    measureGroups?: GroupElement[];
+  };
 
 export class EvaluateMeasureFetch extends AbstractDataFetch {
     type: FetchType;
@@ -52,50 +52,21 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-         
-        //{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject
-        if (this.selectedPatient !== undefined && this.selectedPatient.id) {
+        if (this.selectedPatient?.id) {
             return StringUtils.format(Constants.evaluateMeasureWithPatientFetchURL,
                 this.selectedServer?.baseUrl, this.selectedMeasure,
-                this.startDate, this.endDate, this.selectedPatient.id);
+                this.selectedPatient.id, this.startDate, this.endDate);
         } else {
             return StringUtils.format(Constants.evaluateMeasureFetchURL,
                 this.selectedServer?.baseUrl, this.selectedMeasure,
                 this.startDate, this.endDate);
-
         }
     }
 
     protected processReturnedData(data: any) {
-        const jsonData = data;
-
-        // Handle the error condition where we get an OperationOutcome response
-        if (jsonData.resourceType === 'OperationOutcome') {
-            return jsonData;
-        }
-        let report: MeasureReport = data;
-
-        const measureGroups: GroupElement[] = report.group;
-
-        let populations = measureGroups.map((group: GroupElement) => {
-            return group.population;
-        });
-        let pop = populations[0];
-        let popNames = pop.map((pop: PopulationElement) => {
-            return pop.code.coding[0].code;
-        });
-        let counts = pop.map((pop: PopulationElement) => {
-            return pop.count;
-        });
-
-        const popNamesData = popNames;
-        const countsData = counts;
-
         let measureData: EvaluateMeasureResult = {
-            jsonBody: jsonData,
-            popNames: popNamesData,
-            counts: countsData,
-            measureGroups: measureGroups
+            jsonBody: data,
+            measureGroups: data.group
         }
         return measureData;
     }
