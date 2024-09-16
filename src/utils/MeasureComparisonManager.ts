@@ -45,6 +45,7 @@ export class MeasureComparisonManager {
         this.selectedMeasureEvaluation = selectedMeasureEvaluation;
         this.startDate = startDate;
         this.endDate = endDate;
+        
     }
 
 
