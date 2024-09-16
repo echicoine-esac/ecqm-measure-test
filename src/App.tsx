@@ -294,7 +294,7 @@ const App: React.FC = () => {
       let evaluateMeasureResult = await evaluateMeasureFetch.fetchData(accessToken);
 
       // Handle the error case where an OperationOutcome was returned instead of a MeasureReport
-      if (evaluateMeasureResult.resourceType === 'OperationOutcome') {
+      if (evaluateMeasureResult.jsonBody.resourceType === 'OperationOutcome') {
         setResults(JSON.stringify(evaluateMeasureResult, undefined, 2));
       } else {
         const retJSON = JSON.stringify(evaluateMeasureResult.jsonBody, undefined, 2);
@@ -302,12 +302,6 @@ const App: React.FC = () => {
         setResults(retJSON);
         // Iterate through the population names to set the state
         const measureGroups: GroupElement[] = evaluateMeasureResult.measureGroups;
-
-        if (!measureGroups || measureGroups.length === 0) {
-          setResults(Constants.testCompare_NoMeasureGroup)
-          setLoading(false);
-          return;
-        }
 
         let populationScoringCollection: PopulationScoring[] = [];
 

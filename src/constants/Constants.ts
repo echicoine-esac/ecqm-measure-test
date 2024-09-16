@@ -53,7 +53,6 @@ export class Constants {
     public static readonly measurePostedFetchDataError = 'There was an error posting the measure';
 
     public static readonly testCompare_NoGroup = 'No Patient Group files could be established for the selected Measure.';
-    public static readonly testCompare_NoMeasureGroup = 'No Group scoring data established for the selected Measure.';
     public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with existing MeasureReports. To begin, select a Measure, select a Data Repository Server for Patient and MeasureReport data, select a Patient (NOTE: for bulk processing of all Patients, leave unselected), and select a Measure Evaluation Server.';
 
     //testing purposes:
