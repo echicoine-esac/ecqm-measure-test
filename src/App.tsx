@@ -101,7 +101,7 @@ const App: React.FC = () => {
   const [showPopulations, setShowPopulations] = useState<boolean>(false);
   const [serverModalShow, setServerModalShow] = useState<boolean>(false);
   const [showTestCompare, setShowTestCompare] = useState<boolean>(false);
-  
+
   // Handle authentication when required
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -110,12 +110,12 @@ const App: React.FC = () => {
   // Population states
   const [measureScoring, setMeasureScoring] = useState<string>('');
   const [populationScoring, setPopulationScoring] = useState<PopulationScoring[]>([]);
-  
+
 
   // Saved data
   const [collectedData, setCollectedData] = useState<string>('');
   const [measureReport, setMeasureReport] = useState<string>('');
- 
+
 
   // Handle OAuth redirect
   const [accessToken, setAccessToken] = useState<string>('');
@@ -239,10 +239,10 @@ const App: React.FC = () => {
       setLoading(true);
       const groupFetch = new GroupFetch(dataRepo.baseUrl);
 
-      let  groupsMap: Map<string, PatientGroup> = await groupFetch.fetchData(accessToken);
-      
+      let groupsMap: Map<string, PatientGroup> = await groupFetch.fetchData(accessToken);
+
       setGroups(groupsMap);
-      
+
       const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
       setPatients(await patientFetch.fetchData(accessToken));
 
@@ -263,7 +263,7 @@ const App: React.FC = () => {
       setResults(Constants.error_measureEvaluationServer);
       return;
     }
-     
+
 
     //Establish the Measure object
     let measureObj: Measure | undefined;
@@ -284,7 +284,7 @@ const App: React.FC = () => {
 
     // Set the loading state since this call can take a while to return
     setLoading(true);
-  
+
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluation,
       selectedPatient, selectedMeasure, startDate, endDate)
 
@@ -303,8 +303,14 @@ const App: React.FC = () => {
         // Iterate through the population names to set the state
         const measureGroups: GroupElement[] = evaluateMeasureResult.measureGroups;
 
+        if (!measureGroups || measureGroups.length === 0) {
+          setResults(Constants.testCompare_NoMeasureGroup)
+          setLoading(false);
+          return;
+        }
+
         let populationScoringCollection: PopulationScoring[] = [];
-        
+
         // //used for testing
         // const scoringConcept: CodeableConcept = {
         //   coding: [{
@@ -314,7 +320,7 @@ const App: React.FC = () => {
         //   }]
         // };
 
-        for (const group of measureGroups){
+        for (const group of measureGroups) {
           const groupElement: GroupElement = group;
 
           populationScoringCollection.push({
@@ -463,7 +469,7 @@ const App: React.FC = () => {
 
     try {
       setResults(await new PostMeasureReportFetch(selectedReceiving,
-          measureReport).submitData(accessToken));
+        measureReport).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
       reportErrorToUser('postMeasure', error);
@@ -518,7 +524,7 @@ const App: React.FC = () => {
     if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
       missingData += Constants.error_selectDataRepository + '\n';
     }
-    
+
     if (missingData.length > 0) {
       setResults(missingData);
       return;
@@ -571,7 +577,7 @@ const App: React.FC = () => {
         }
       }
     }
-    
+
     //setting this Map triggers the ui in TestingComparator to automatically present the data
     setTestComparatorMap(newTestComparatorMap);
 
@@ -603,16 +609,16 @@ const App: React.FC = () => {
         selectedDataRepo={selectedDataRepo} patients={patients}
         fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient}
         selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading} setModalShow={setServerModalShow} 
+        collectData={collectData} loading={loading} setModalShow={setServerModalShow}
         selectedMeasure={selectedMeasure}
-        groups={groups}/>
+        groups={groups} />
       <br />
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
-                         servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}
-                         selectedMeasureEvaluation={selectedMeasureEvaluation} submitData={submitData}
-                         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
-                         //Scoring now captured within evaluate measure card:
-                         populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring} />
+        servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}
+        selectedMeasureEvaluation={selectedMeasureEvaluation} submitData={submitData}
+        evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
+        //Scoring now captured within evaluate measure card:
+        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving}
@@ -621,15 +627,15 @@ const App: React.FC = () => {
         setModalShow={setServerModalShow} />
 
       <br />
-      <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare} 
-      items={testComparatorMap} compareTestResults={compareTestResults} loading={loading} 
-      startDate={startDate} endDate={endDate}/>
+      <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}
+        items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
+        startDate={startDate} endDate={endDate} />
 
       <Results results={results} />
-          
+
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
-      
+
       <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
         setUsername={setUsername} password={password} setPassword={setPassword} />
       <br />
