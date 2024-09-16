@@ -1,5 +1,5 @@
 import { Constants } from '../constants/Constants';
-import { Group } from '../models/Group';
+import { PatientGroup } from '../models/PatientGroup';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
@@ -24,8 +24,8 @@ export class GroupFetch extends AbstractDataFetch {
         return this.url + Constants.groupUrlEnding;
     }
 
-    protected processReturnedData(data: any): Map<string, Group> {
-        let groupMap = new Map<string, Group>;
+    protected processReturnedData(data: any): Map<string, PatientGroup> {
+        let groupMap = new Map<string, PatientGroup>();
 
         let entries = data.entry;
         if (!entries || entries.length === 0) {
@@ -33,7 +33,7 @@ export class GroupFetch extends AbstractDataFetch {
         }
 
         for (let entry of entries) {
-            if (entry.resource.resourceType == "Group") {
+            if (entry.resource.resourceType === "Group") {
                 let url: string = entry.resource.extension[0].valueCanonical;
                 let measureName: string = url.split('/')[url.split('/').length - 1]
 

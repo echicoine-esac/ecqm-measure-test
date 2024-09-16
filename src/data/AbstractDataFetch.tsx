@@ -10,6 +10,7 @@ export enum FetchType {
     COLLECT_DATA = 'Collect Data',
     SUBMIT_DATA = 'Submit Data',
     POST_MEASURE = 'Post Measure Report',
+    MEASURE_REPORT = 'Measure Report',
     GROUP = 'Group'
 };
 

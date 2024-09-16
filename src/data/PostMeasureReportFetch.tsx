@@ -32,7 +32,7 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        return Constants.dataSubmitted;
+        return JSON.stringify(data, undefined, 2);
     }
 
     submitData = async (token: string): Promise<string> => {

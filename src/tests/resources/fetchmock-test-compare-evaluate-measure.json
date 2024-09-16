@@ -1,0 +1,151 @@
+{
+  "resourceType": "MeasureReport",
+  "contained": [ {
+    "resourceType": "Observation",
+    "id": "91485530-c15a-47d9-82f7-8475f421d513",
+    "extension": [ {
+      "url": "http://hl7.org/fhir/StructureDefinition/cqf-measureInfo",
+      "extension": [ {
+        "url": "measure",
+        "valueCanonical": "https://madie.cms.gov/Measure/AlaraCTClinicalFHIR"
+      } ]
+    } ],
+    "status": "final",
+    "code": {
+      "coding": [ {
+        "system": "http://terminology.hl7.org/CodeSystem/measure-data-usage",
+        "code": "supplemental-data"
+      } ]
+    },
+    "valueCodeableConcept": {
+      "coding": [ {
+        "code": "F"
+      } ]
+    }
+  } ],
+  "extension": [ {
+    "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-MeasureReport.population.description",
+    "valueString": "This measure provides a standardized method for monitoring the performance of diagnostic CT to discourage unnecessarily high radiation doses, a risk factor for cancer, while preserving image quality. It is expressed as a % of patients with CT exams that are out-of-range based on having either excessive radiation dose or inadequate image quality relative to evidence-based thresholds based on the clinical indication for the exam. All diagnostic CT exams of specified anatomic sites performed in inpatient, outpatient and ambulatory care settings are eligible. This measure is not telehealth eligible. This eCQM requires the use of additional software to access primary data elements stored within radiology electronic health records and translate them into data elements that can be ingested by this eCQM. Additional details are included in the Guidance field."
+  }, {
+    "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-MeasureReport.supplementalDataElement.reference",
+    "valueReference": {
+      "extension": [ {
+        "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+        "valueString": "sde-sex"
+      } ],
+      "reference": "#91485530-c15a-47d9-82f7-8475f421d513"
+    }
+  } ],
+  "status": "complete",
+  "type": "individual",
+  "measure": "https://madie.cms.gov/Measure/AlaraCTClinicalFHIR|0.4.000",
+  "subject": {
+    "reference": "Patient/e8029124-d760-40eb-b25a-703e447a3e4d"
+  },
+  "date": "2024-09-16T17:26:09+00:00",
+  "period": {
+    "start": "2025-01-01T00:00:00+00:00",
+    "end": "2025-12-31T23:59:59+00:00"
+  },
+  "group": [ {
+    "id": "664397f9a7a1805d3b73742d",
+    "extension": [ {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-cqfm-denominator-membership",
+      "valueString": "0"
+    }, {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-cqfm-numerator-membership",
+      "valueString": "0"
+    } ],
+    "population": [ {
+      "id": "2D0D08DB-219D-4C41-AB53-DE21F006D602",
+      "extension": [ {
+        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-MeasureReport.population.description",
+        "valueString": "Patients aged 18 years and older at the start of the measurement period that have an eligible CT scan with Dose and Image Quality Category performed during the measurement period"
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/measure-population",
+          "code": "initial-population",
+          "display": "Initial Population"
+        } ]
+      },
+      "count": 1
+    }, {
+      "id": "BCE3902C-1D78-41A4-A6C6-7913CD71D5F3",
+      "extension": [ {
+        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-MeasureReport.population.description",
+        "valueString": "Equals Initial population where an eligible CT scan has a Calculated Global Noise value and a Calculated CT Size-Adjusted Dose value"
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/measure-population",
+          "code": "denominator",
+          "display": "Denominator"
+        } ]
+      },
+      "count": 0
+    }, {
+      "id": "3C6FDFA9-8CE2-43E8-97C5-1E8D87F6CBC4",
+      "extension": [ {
+        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-MeasureReport.population.description",
+        "valueString": "Patients with one or more eligible CT scans that has a CT Dose and Image Quality Category = full body"
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/measure-population",
+          "code": "denominator-exclusion",
+          "display": "Denominator Exclusion"
+        } ]
+      },
+      "count": 1
+    }, {
+      "id": "1F700B85-7AB2-4BEE-BC8C-6C08CEF5E660",
+      "extension": [ {
+        "url": "http://hl7.org/fhir/5.0/StructureDefinition/extension-MeasureReport.population.description",
+        "valueString": "Patients with one or more eligible CT scans with calculated CT Size-Adjusted Dose greater than or equal to a threshold specific to the CT Dose and Image Quality Category, or Calculated CT Global Noise value greater than or equal to a threshold specific to the CT Dose and Image Quality Category"
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/measure-population",
+          "code": "numerator",
+          "display": "Numerator"
+        } ]
+      },
+      "count": 0
+    } ]
+  } ],
+  "evaluatedResource": [ {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+      "valueString": "2D0D08DB-219D-4C41-AB53-DE21F006D602"
+    }, {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+      "valueString": "BCE3902C-1D78-41A4-A6C6-7913CD71D5F3"
+    }, {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+      "valueString": "3C6FDFA9-8CE2-43E8-97C5-1E8D87F6CBC4"
+    }, {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+      "valueString": "1F700B85-7AB2-4BEE-BC8C-6C08CEF5E660"
+    } ],
+    "reference": "Observation/2a8f86ff-6bf8-4e09-aa03-dc018014c2c5"
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+      "valueString": "2D0D08DB-219D-4C41-AB53-DE21F006D602"
+    }, {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+      "valueString": "BCE3902C-1D78-41A4-A6C6-7913CD71D5F3"
+    }, {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+      "valueString": "3C6FDFA9-8CE2-43E8-97C5-1E8D87F6CBC4"
+    }, {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+      "valueString": "1F700B85-7AB2-4BEE-BC8C-6C08CEF5E660"
+    }, {
+      "url": "http://hl7.org/fhir/us/davinci-deqm/StructureDefinition/extension-criteriaReference",
+      "valueString": "sde-sex"
+    } ],
+    "reference": "Patient/e8029124-d760-40eb-b25a-703e447a3e4d"
+  } ]
+}

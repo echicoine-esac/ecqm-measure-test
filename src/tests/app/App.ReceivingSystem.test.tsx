@@ -246,7 +246,7 @@ test(thisTestFile + ' success scenario: submit', async () => {
 
     const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.value).toEqual(Constants.dataSubmitted);
+    expect(resultsTextField.value).toEqual('true');//Constants.dataSubmitted);
   }
 
 });

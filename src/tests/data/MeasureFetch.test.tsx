@@ -22,7 +22,7 @@ test('get measures mock', async () => {
         JSON.stringify(mockJsonMeasureData)
         , { method: 'GET' });
     let measureList: Measure[] = await measureFetch.fetchData('');
-    expect(measureList.length).toEqual(15);
+    expect(measureList.length).toEqual(64);
     fetchMock.restore();
 });
 

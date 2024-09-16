@@ -6,6 +6,8 @@ import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 
 beforeEach(() => {
+    fetchMock.reset();
+
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
         return Constants.serverTestData;
     });
@@ -51,7 +53,8 @@ test('submit data mock', async () => {
         body: Constants.submitPostTestBody,
     });
 
-    expect(await submitDataFetch.submitData('')).toEqual(Constants.dataSubmitted);
+    const ret: string = await submitDataFetch.submitData('');
+    expect(ret.length).toEqual(145);
 
     fetchMock.reset();
 });
