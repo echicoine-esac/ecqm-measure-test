@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import './App.css';
 import DataRepository from './components/DataRepository';
 import KnowledgeRepository from './components/KnowledgeRepository';
 import LoginModal from './components/LoginModal';
 import MeasureEvaluation from "./components/MeasureEvaluation";
-import Populations from './components/Populations';
 import ReceivingSystem from './components/ReceivingSystem';
 import ReportingPeriod from './components/ReportingPeriod';
 import Results from './components/Results';
@@ -20,18 +19,17 @@ import { PatientFetch } from './data/PatientFetch';
 import { PostMeasureReportFetch } from './data/PostMeasureReportFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
 import logo from './icf_logo.png';
-import { PatientGroup } from './models/PatientGroup';
 import { Measure } from './models/Measure';
 import { Patient } from './models/Patient';
-import { Server } from './models/Server';
-import { OAuthHandler } from './oauth/OAuthHandler';
-import { PatientGroupUtils } from './utils/PatientGroupUtils';
-import { HashParamUtils } from './utils/HashParamUtils';
-import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
-import { ServerUtils } from './utils/ServerUtils';
+import { PatientGroup } from './models/PatientGroup';
 import { PopulationScoring } from './models/PopulationScoring';
 import { GroupElement } from './models/Scoring';
-import { CodeableConcept } from './models/CodeableConcept';
+import { Server } from './models/Server';
+import { OAuthHandler } from './oauth/OAuthHandler';
+import { HashParamUtils } from './utils/HashParamUtils';
+import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
+import { PatientGroupUtils } from './utils/PatientGroupUtils';
+import { ServerUtils } from './utils/ServerUtils';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -47,6 +45,15 @@ const App: React.FC = () => {
 
   // Selected States
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
+
+  const setSelectedMeasureCaller = (measureName: SetStateAction<string>) => {
+    //reset our test comparator:
+    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+
+    setSelectedMeasure(measureName);
+  };
+
+
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
   const [selectedKnowledgeRepo, setSelectedKnowledgeRepo] = useState<Server>({
     id: '',
@@ -594,7 +601,7 @@ const App: React.FC = () => {
       <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
         servers={servers} fetchMeasures={fetchMeasures}
         selectedKnowledgeRepo={selectedKnowledgeRepo}
-        measures={measures} setSelectedMeasure={setSelectedMeasure}
+        measures={measures} setSelectedMeasure={setSelectedMeasureCaller}
         selectedMeasure={selectedMeasure}
         getDataRequirements={getDataRequirements} loading={loading}
         setModalShow={setServerModalShow} />
