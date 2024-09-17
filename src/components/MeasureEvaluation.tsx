@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Button, OverlayTrigger, Spinner, Tooltip} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Server} from '../models/Server';
@@ -13,7 +13,7 @@ interface props {
   setSelectedMeasureEvaluation: React.Dispatch<React.SetStateAction<Server>>;
   selectedMeasureEvaluation: Server | undefined;
   submitData: () => void;
-  evaluateMeasure: () => void;
+  evaluateMeasure: (b: boolean) => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -26,6 +26,14 @@ interface props {
 const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation, 
   selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow,
   showPopulations, populationScoring, measureScoringType }) => {
+
+
+    const [bypassGroupCheck, setBypassGroupCheck] = useState<boolean>(false);
+
+    const bypassHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setBypassGroupCheck(event.target.checked);
+    };
+
     return (
       <div className='card'>
         <div className='card-header'>
@@ -67,6 +75,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
                       </OverlayTrigger>
                   </div>
               </div>
+
               <Populations populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType}/>
               <div className='row'>
                 <div className='col-md-5 order-md-2'>
@@ -103,10 +112,24 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
                         Loading...
                     </Button>
                   ):(
+                    <div>
                     <Button  data-testid='mea-eva-evaluate-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
-                      onClick={(e) => evaluateMeasure()}>
+                      onClick={(e) => evaluateMeasure(bypassGroupCheck)}>
                         Evaluate Measure
                     </Button>
+                    <div>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={bypassGroupCheck}
+                          onChange={bypassHandler}> 
+                          </input>
+                        {' Validate ALL Patient data on selected Data Repository server (If left unchecked, Group will be used as subject).'} 
+                        <br></br>
+                        {bypassGroupCheck && ' NOTE: Large amounts of Patient data may cause 504 timeout if complexity is too great.'}
+                      </label>
+                    </div>
+                    </div>
                   )}
                 </div>
               </div>

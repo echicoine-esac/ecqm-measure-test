@@ -41,7 +41,7 @@ const App: React.FC = () => {
   const [servers, setServers] = useState<Array<Server | undefined>>([]);
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<Patient | undefined>>([]);
-  const [groups, setGroups] = useState<Map<string, PatientGroup> | undefined>(undefined);
+  const [patientGroups, setPatientGroups] = useState<Map<string, PatientGroup> | undefined>(undefined);
 
   // Selected States
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
@@ -248,7 +248,7 @@ const App: React.FC = () => {
 
       let groupsMap: Map<string, PatientGroup> = await groupFetch.fetchData(accessToken);
 
-      setGroups(groupsMap);
+      setPatientGroups(groupsMap);
 
       const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
       setPatients(await patientFetch.fetchData(accessToken));
@@ -261,7 +261,7 @@ const App: React.FC = () => {
   };
 
   // Function for calling the server to perform the measure evaluation
-  const evaluateMeasure = async () => {
+  const evaluateMeasure = async (bypassGroupCheck: boolean) => {
     resetResults();
     clearPopulationCounts();
 
@@ -289,13 +289,19 @@ const App: React.FC = () => {
       setMeasureScoring(measureObj.scoring.coding[0].code);
     }
 
-    // Set the loading state since this call can take a while to return
-    setLoading(true);
+    const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
+
+    if (!selectedPatient && !patientGroup && !bypassGroupCheck) {
+      setResults(Constants.evaluateMeasure_noGroupFound);
+      return;
+    }
 
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluation,
-      selectedPatient, selectedMeasure, startDate, endDate)
+      selectedPatient, selectedMeasure, startDate, endDate, patientGroup, bypassGroupCheck)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
+    // Set the loading state since this call can take a while to return
+    setLoading(true);
 
     try {
       let evaluateMeasureResult = await evaluateMeasureFetch.fetchData(accessToken);
@@ -533,8 +539,8 @@ const App: React.FC = () => {
 
     //Patient Group data:
     const patientCompareList: Patient[] = [];
-    if (groups && groups.has(selectedMeasure)) {
-      const selectedMeasureGroup: PatientGroup | undefined = groups.get(selectedMeasure);
+    if (patientGroups?.has(selectedMeasure)) {
+      const selectedMeasureGroup: PatientGroup | undefined = patientGroups.get(selectedMeasure);
       //Whether its one Patient selected or the user intends all patients,
       //build a list by verifying Group has the Patient in it.
       if (selectedMeasureGroup && selectedPatient &&
@@ -551,7 +557,7 @@ const App: React.FC = () => {
     }
 
     if (patientCompareList.length === 0) {
-      setResults(Constants.testCompare_NoGroup);
+      setResults(Constants.evaluateMeasure_noGroupFound);
       return;
     }
 
@@ -612,7 +618,7 @@ const App: React.FC = () => {
         selectedPatient={selectedPatient}
         collectData={collectData} loading={loading} setModalShow={setServerModalShow}
         selectedMeasure={selectedMeasure}
-        groups={groups} />
+        groups={patientGroups} />
       <br />
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
         servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}
