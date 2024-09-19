@@ -204,7 +204,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   {/* Measure */}
                   <li>
                     {selectedMeasure ? '☑' : '☐'} Measure
-                    {selectedMeasure && (
+                    {selectedKnowledgeRepositoryServer?.baseUrl && selectedMeasure && (
                       <span> <a target='_blank' href={selectedKnowledgeRepositoryServer?.baseUrl + 'Measure/' + selectedMeasure}>({selectedMeasure})</a></span>
                     )}
                   </li>
@@ -219,8 +219,8 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
 
                   {/* Patient Group */}
                   <li>
-                    {selectedPatientGroup ? '☑' : '☐'} Patient Group
-                    {selectedDataRepoServer?.baseUrl && (
+                    {selectedPatientGroup?.id ? '☑' : '☐'} Patient Group
+                    {selectedPatientGroup?.id && selectedDataRepoServer?.baseUrl && (
                       <span> <a target='_blank' href={selectedDataRepoServer?.baseUrl + 'Group/' + selectedPatientGroup?.id}>(Group/{selectedPatientGroup?.id})</a></span>
                     )}
                   </li>
