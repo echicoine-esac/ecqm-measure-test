@@ -300,7 +300,7 @@ const App: React.FC = () => {
     }
 
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluation,
-      selectedPatient, selectedMeasure, startDate, endDate, patientGroup, useSubject)
+       selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
     // Set the loading state since this call can take a while to return
@@ -419,7 +419,7 @@ const App: React.FC = () => {
 
 
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
-      startDate, endDate, selectedPatient, patientGroup, useSubject)
+      startDate, endDate, useSubject, selectedPatient, patientGroup)
 
     let message = 'Calling ' + collectDataFetch.getUrl() + '...';
     setResults(message);

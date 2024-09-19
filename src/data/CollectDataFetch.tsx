@@ -20,9 +20,10 @@ export class CollectDataFetch extends AbstractDataFetch {
         selectedMeasure: string,
         startDate: string,
         endDate: string,
+        useSubject: boolean,
         selectedPatient?: Patient,
-        patientGroup?: PatientGroup | undefined,
-        useSubject?: boolean) {
+        patientGroup?: PatientGroup | undefined
+    ) {
 
         super();
         this.type = FetchType.COLLECT_DATA;
@@ -55,9 +56,10 @@ export class CollectDataFetch extends AbstractDataFetch {
         this.selectedMeasure = selectedMeasure;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.useSubject = useSubject;
+
         if (selectedPatient) this.selectedPatient = selectedPatient;
         if (patientGroup) this.patientGroup = patientGroup;
-        if (useSubject) this.useSubject = useSubject;
 
     }
 

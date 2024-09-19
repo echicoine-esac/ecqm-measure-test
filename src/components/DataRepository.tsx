@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { PatientFetch } from '../data/PatientFetch';
 import { PatientGroup, Member } from '../models/PatientGroup';
@@ -25,18 +25,30 @@ interface props {
 
 }
 
-const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients, fetchPatients,
-  setSelectedPatient, selectedPatient, collectData, loading, setModalShow, selectedMeasure, groups, setSelectedPatientGroup }) => {
-
+const DataRepository: React.FC<props> = ({
+  showDataRepo,
+  setShowDataRepo,
+  servers,
+  selectedDataRepo,
+  patients,
+  fetchPatients,
+  setSelectedPatient,
+  selectedPatient,
+  collectData,
+  loading,
+  setModalShow,
+  selectedMeasure,
+  groups,
+  setSelectedPatientGroup,
+}) => {
   const [patientFilter, setPatientFilter] = useState<string>('');
-
   const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
+  const [filteredPatients, setFilteredPatients] = useState<Array<Patient | undefined>>([]);
+  const [patientGroup, setPatientGroup] = useState<PatientGroup | undefined>();
 
   const useGroupAsSubjectHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUseGroupAsSubject(event.target.checked);
   };
-
-  let patientGroup: PatientGroup | undefined;
 
   const buildSubjectText = (): string => {
     if (selectedPatient?.id) {
@@ -48,30 +60,36 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
     }
   };
 
-  const filteredPatients = patients.filter((patient) => {
-    const patDisplay = PatientFetch.buildUniquePatientIdentifier(patient);
-    patientGroup = selectedMeasure ? groups?.get(selectedMeasure) : undefined;
-    let groupingCondition: boolean = true;
+  useEffect(() => {
+    // Update filtered patients and patient group based on selectedMeasure
+    const updatedPatientGroup = selectedMeasure ? groups?.get(selectedMeasure) : undefined;
+    setPatientGroup(updatedPatientGroup);
 
-    //sometimes can be undefined
-    if (patientGroup) {
-      let members: Member[] = patientGroup.member;
-      let patFound: boolean = false;
-      for (let member of members) {
-        if (member.entity.reference.split('Patient/')[1] === patient?.id) {
-          patFound = true;
-          break;
+    const filteredPatients = patients.filter((patient) => {
+      const patDisplay = PatientFetch.buildUniquePatientIdentifier(patient);
+      let groupingCondition: boolean = true;
+
+      if (updatedPatientGroup) {
+        let members: Member[] = updatedPatientGroup.member;
+        let patFound: boolean = false;
+        for (let member of members) {
+          if (member.entity.reference.split('Patient/')[1] === patient?.id) {
+            patFound = true;
+            break;
+          }
         }
+        groupingCondition = patFound;
       }
-      groupingCondition = patFound;
-    } else {
-      setSelectedPatientGroup(undefined);
-    }
 
-    setSelectedPatientGroup(patientGroup);
+      return groupingCondition && patDisplay?.toLowerCase().includes(patientFilter.toLowerCase());
+    });
 
-    return groupingCondition && patDisplay?.toLowerCase().includes(patientFilter.toLowerCase());
-  });
+    setFilteredPatients(filteredPatients);
+
+    // Update the selected patient group outside the rendering phase
+    setSelectedPatientGroup(updatedPatientGroup);
+  }, [patients, selectedMeasure, patientFilter, groups, setSelectedPatientGroup]);
+
 
   return (
     <div className='card'>

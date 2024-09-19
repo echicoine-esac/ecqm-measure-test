@@ -6,7 +6,7 @@ import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
 
-const selectedPatient = {display: 'John Doe', id: 'selectedPatient'};
+const selectedPatient = { display: 'John Doe', id: 'selectedPatient' };
 
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
@@ -21,6 +21,7 @@ test('required properties check', async () => {
             'selectedMeasure',
             'startDate',
             'endDate',
+            true,
             selectedPatient);
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedDataRepo'))
@@ -31,6 +32,7 @@ test('required properties check', async () => {
             '',
             'startDate',
             'endDate',
+            true,
             selectedPatient);
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'selectedMeasure'))
@@ -41,6 +43,7 @@ test('required properties check', async () => {
             'selectedMeasure',
             '',
             'endDate',
+            true,
             selectedPatient);
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'startDate'))
@@ -51,6 +54,7 @@ test('required properties check', async () => {
             'selectedMeasure',
             'startDate',
             '',
+            true,
             selectedPatient);
     } catch (error: any) {
         expect(error.message).toEqual(StringUtils.format(Constants.missingProperty, 'endDate'))
@@ -65,6 +69,7 @@ test('get CollectData mock', async () => {
         'selectedMeasure',
         'startDate',
         'endDate',
+        true,
         selectedPatient);
     const mockJsonCollectDataData = jsonTestCollectDataData;
     fetchMock.once(collectDataFetch.getUrl(),
@@ -79,13 +84,14 @@ test('get CollectData mock', async () => {
 
 test('get CollectData mock error', async () => {
     const dataServer: Server = Constants.serverTestData[0];
-    
+
     const errorMsg = 'this is a test'
     let errorCatch = '';
     const collectDataFetch = new CollectDataFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate',
+        true,
         selectedPatient);
     fetchMock.once(collectDataFetch.getUrl(), { throws: new Error(errorMsg) });
 
@@ -95,7 +101,7 @@ test('get CollectData mock error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient to retrieve Collect Data caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=Patient/selectedPatient&reportType=subject-list to retrieve Collect Data caused: Error: this is a test');
 
     fetchMock.restore();
 
@@ -104,24 +110,25 @@ test('get CollectData mock error', async () => {
 test('test urlformat', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
-    let collectDataFetch = await new CollectDataFetch(dataServer,
+    let collectDataFetch = new CollectDataFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate',
+        true,
         selectedPatient);
     expect(collectDataFetch.getUrl())
-        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=selectedPatient');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=Patient/selectedPatient&reportType=subject-list');
 });
 
 test('test urlformat without patient', async () => {
     const dataServer: Server = Constants.serverTestData[0];
-    
-    let collectDataFetch = await new CollectDataFetch(dataServer,
+
+    let collectDataFetch = new CollectDataFetch(dataServer,
         'selectedMeasure',
         'startDate',
         'endDate',
-        {display: '', id: ''});
+        false,
+        { display: '', id: '' });
     expect(collectDataFetch.getUrl())
-        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate');
+        .toEqual('http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&reportType=subject-list');
 });
- 

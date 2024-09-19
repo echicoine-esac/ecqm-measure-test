@@ -22,6 +22,8 @@ import jsonTestPatientsData from '../resources/fetchmock-patients.json';
 
 const thisTestFile = "Measure Evaluation";
 
+const useSubject = true;
+
 const mockPatientTotalCountJSON = `{
   "resourceType": "Bundle",
   "id": "604e7395-8850-4a15-a2f2-67a1d334b2d0",
@@ -175,10 +177,11 @@ test(thisTestFile + ' success scenario: evaluate data', async () => {
 
     //mock returned measure evaluation data
     const evaluateDataFetch = new EvaluateMeasureFetch(dataServers[0],
-      mockPatientList[0],
       mockMeasureList[0].name,
       startDate,
-      endDate);
+      endDate,
+      useSubject,
+      mockPatientList[0]);
     const mockJsonResultsData = jsonTestMeasureEvaluationData;
     fetchMock.once(evaluateDataFetch.getUrl(),
       JSON.stringify(mockJsonResultsData)
@@ -284,6 +287,7 @@ test(thisTestFile + ' success scenario: submit data', async () => {
       mockMeasureList[0].name,
       startDate,
       endDate,
+      useSubject,
       mockPatientList[0]);
     const mockJsonCollectDataData = jsonTestCollectDataData;
     fetchMock.once(collectDataFetch.getUrl(),
@@ -322,9 +326,9 @@ test(thisTestFile + ' success scenario: submit data', async () => {
     });
     fetchMock.restore();
     const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
- 
+
     const swCon: boolean = resultsTextField.value.startsWith(Constants.dataSubmitted);
-    
+
     expect(swCon).toEqual(true);
   }
 });
@@ -532,10 +536,11 @@ test(thisTestFile + ' fail scenario: evaluate data without selecting Server', as
 
     //mock returned measure evaluation data
     const evaluateDataFetch = new EvaluateMeasureFetch(dataServers[0],
-      mockPatientList[0],
       mockMeasureList[0].name,
       startDate,
-      endDate);
+      endDate,
+      useSubject,
+      mockPatientList[0]);
     const mockJsonResultsData = jsonTestMeasureEvaluationData;
     fetchMock.once(evaluateDataFetch.getUrl(),
       JSON.stringify(mockJsonResultsData)

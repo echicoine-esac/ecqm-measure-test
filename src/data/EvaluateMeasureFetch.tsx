@@ -1,5 +1,4 @@
 import { Constants } from '../constants/Constants';
-import { Measure } from '../models/Measure';
 import { Patient } from '../models/Patient';
 import { PatientGroup } from '../models/PatientGroup';
 import { GroupElement } from '../models/Scoring';
@@ -24,12 +23,13 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     useSubject: boolean = false;
 
     constructor(selectedServer: Server | undefined,
-        selectedPatient: Patient | undefined,
         selectedMeasure: string,
         startDate: string,
         endDate: string,
+        useSubject: boolean,
+        selectedPatient?: Patient,
         patientGroup?: PatientGroup | undefined,
-        useSubject?: boolean) {
+    ) {
 
         super();
         this.type = FetchType.EVALUATE_MEASURE;
@@ -57,17 +57,19 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
                 }
             }
         }
-        if (selectedServer) this.selectedServer = selectedServer;
-        if (selectedPatient) this.selectedPatient = selectedPatient;
-        if (selectedMeasure) this.selectedMeasure = selectedMeasure;
-        if (startDate) this.startDate = startDate;
-        if (endDate) this.endDate = endDate;
+
+        this.selectedServer = selectedServer;
+        this.selectedMeasure = selectedMeasure;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.useSubject = useSubject;
+
         if (patientGroup) this.patientGroup = patientGroup;
-        if (useSubject) this.useSubject = useSubject;
+        if (selectedPatient) this.selectedPatient = selectedPatient;
 
     }
 
- 
+
 
     public getUrl(): string {
 

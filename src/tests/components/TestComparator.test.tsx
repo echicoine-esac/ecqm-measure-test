@@ -100,8 +100,8 @@ test(thisTestFile + ': renders properly', async () => {
         }
 
         //Evaluate Measure mock
-        const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, patientList[patientIdx],
-            MEASURE_NAME, periodStart, periodEnd);
+        const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer,
+            MEASURE_NAME, periodStart, periodEnd, true, patientList[patientIdx]);
         const mockJsonEvaluateMeasureData = jsonTestEvalMeasure;
         fetchMock.once(evaluateMeasuresFetch.getUrl(),
             JSON.stringify(mockJsonEvaluateMeasureData)
