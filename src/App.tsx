@@ -638,7 +638,9 @@ const App: React.FC = () => {
         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
         //Scoring now captured within evaluate measure card:
         populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring}
-        selectedPatient={selectedPatient} patientGroup={selectedPatientGroup} />
+        selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
+        //used for href to subject
+        selectedDataRepo={selectedDataRepo} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving}

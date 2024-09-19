@@ -22,14 +22,16 @@ interface props {
   showPopulations: boolean;
   populationScoring: PopulationScoring[] | undefined;
   measureScoringType: string;
-  patientGroup?: PatientGroup | undefined;
-  selectedPatient?: Patient | undefined;
+  patientGroup?: PatientGroup;
+  selectedPatient?: Patient;
+  selectedDataRepo: Server | undefined;
 }
 
 // MeasureEvaluation component displays the fields for selecting and using the measure evaluation system
 const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation,
   selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow,
-  showPopulations, populationScoring, measureScoringType, selectedPatient, patientGroup }) => {
+  showPopulations, populationScoring, measureScoringType, selectedPatient, patientGroup,
+  selectedDataRepo }) => {
 
 
   const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
@@ -142,7 +144,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
                 onChange={useGroupAsSubjectHandler}
                 disabled={loading}>
               </input>
-              {' subject=' + buildSubjectText()}
+              {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank'>{buildSubjectText()}</a>
             </label>
             }
             {(!useGroupAsSubject || buildSubjectText().length === 0) && (

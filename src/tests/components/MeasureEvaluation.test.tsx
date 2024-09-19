@@ -36,8 +36,10 @@ test('MeasureEvaluation expect functions to be called properly', async () => {
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
         setModalShow={jest.fn()}
-
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} 
+        populationScoring={populationScoring}
+        showPopulations={showPopulations}
+        measureScoringType={measureScoringType}
+        selectedDataRepo={servers[0]}
     />);
 
     const serverDropdown: HTMLSelectElement = screen.getByTestId('mea-eva-server-dropdown');
@@ -79,8 +81,10 @@ test('MeasureEvaluation expect spinner buttons to show with loading set to true'
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
         setModalShow={jest.fn()}
-
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} 
+        populationScoring={populationScoring}
+        showPopulations={showPopulations}
+        measureScoringType={measureScoringType}
+        selectedDataRepo={servers[0]}
     />);
 
     const submitDataButtonSpinner: HTMLButtonElement = screen.getByTestId('mea-eva-submit-button-spinner');
@@ -115,8 +119,10 @@ test('MeasureEvaluation hide/show functionality', async () => {
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
         setModalShow={jest.fn()}
-
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} 
+        populationScoring={populationScoring}
+        showPopulations={showPopulations}
+        measureScoringType={measureScoringType}
+        selectedDataRepo={servers[0]}
     />);
 
     const showHideButton: HTMLButtonElement = screen.getByTestId('mea-eva-hide-section-button');
@@ -135,7 +141,7 @@ test('MeasureEvaluation hide/show functionality 2', async () => {
     const setSelectedMeasureEvaluation = jest.fn();
     const submitData = jest.fn();
     const evaluateMeasure = jest.fn();
-    
+
     const showPopulations: boolean = false;
     const populationScoring: PopulationScoring[] = [];
     const measureScoringType: string = '';
@@ -150,8 +156,8 @@ test('MeasureEvaluation hide/show functionality 2', async () => {
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
         setModalShow={jest.fn()}
-
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} 
+        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType}
+        selectedDataRepo={servers[0]}
     />);
 
     const showHideButton: HTMLButtonElement = screen.getByTestId('mea-eva-show-section-button');

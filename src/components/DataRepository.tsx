@@ -199,7 +199,7 @@ const DataRepository: React.FC<props> = ({
                   onChange={useGroupAsSubjectHandler}
                   disabled={loading}>
                 </input>
-                {' subject=' + buildSubjectText()}
+                {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank'>{buildSubjectText()}</a>
               </label>
             }
             {(!useGroupAsSubject || buildSubjectText().length === 0) && (
