@@ -45,16 +45,8 @@ const App: React.FC = () => {
 
   // Selected States
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
-
-  const setSelectedMeasureCaller = (measureName: SetStateAction<string>) => {
-    //reset our test comparator:
-    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
-
-    setSelectedMeasure(measureName);
-  };
-
-
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
+  const [selectedPatientGroup, setSelectedPatientGroup] = useState<PatientGroup | undefined>(undefined);
   const [selectedKnowledgeRepo, setSelectedKnowledgeRepo] = useState<Server>({
     id: '',
     baseUrl: '',
@@ -129,6 +121,17 @@ const App: React.FC = () => {
 
   const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonManager>>(new Map());
 
+
+  const setSelectedMeasureCaller = (measureName: SetStateAction<string>) => {
+    //reset our test comparator:
+    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+
+    //reset our selectedPatient
+    setSelectedPatient(undefined);
+
+    //set the selected measure:
+    setSelectedMeasure(measureName);
+  };
 
   //tells us when app is busy loading and not to disrupt variable assignment
   const reportErrorToUser = ((source: string, err: any) => {
@@ -261,7 +264,7 @@ const App: React.FC = () => {
   };
 
   // Function for calling the server to perform the measure evaluation
-  const evaluateMeasure = async (bypassGroupCheck: boolean) => {
+  const evaluateMeasure = async (useSubject: boolean) => {
     resetResults();
     clearPopulationCounts();
 
@@ -291,13 +294,13 @@ const App: React.FC = () => {
 
     const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
 
-    if (!selectedPatient && !patientGroup && !bypassGroupCheck) {
+    if (!selectedPatient && !patientGroup && useSubject) {
       setResults(Constants.evaluateMeasure_noGroupFound);
       return;
     }
 
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluation,
-      selectedPatient, selectedMeasure, startDate, endDate, patientGroup, bypassGroupCheck)
+      selectedPatient, selectedMeasure, startDate, endDate, patientGroup, useSubject)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
     // Set the loading state since this call can take a while to return
@@ -388,7 +391,7 @@ const App: React.FC = () => {
   };
 
   // Function for calling the server to collect the data for a measure
-  const collectData = async () => {
+  const collectData = async (useSubject: boolean) => {
     resetResults();
 
     setShowPopulations(false);
@@ -403,12 +406,20 @@ const App: React.FC = () => {
       return;
     }
 
+    const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
+
+    if (!selectedPatient && !patientGroup && useSubject) {
+      setResults(Constants.evaluateMeasure_noGroupFound);
+      return;
+    }
+
+
     // Set loading to true for spinner
     setLoading(true);
 
 
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
-      startDate, endDate, selectedPatient)
+      startDate, endDate, selectedPatient, patientGroup, useSubject)
 
     let message = 'Calling ' + collectDataFetch.getUrl() + '...';
     setResults(message);
@@ -618,14 +629,16 @@ const App: React.FC = () => {
         selectedPatient={selectedPatient}
         collectData={collectData} loading={loading} setModalShow={setServerModalShow}
         selectedMeasure={selectedMeasure}
-        groups={patientGroups} />
+        groups={patientGroups}
+        setSelectedPatientGroup={setSelectedPatientGroup} />
       <br />
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
         servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}
         selectedMeasureEvaluation={selectedMeasureEvaluation} submitData={submitData}
         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
         //Scoring now captured within evaluate measure card:
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring} />
+        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring}
+        selectedPatient={selectedPatient} patientGroup={selectedPatientGroup} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving}

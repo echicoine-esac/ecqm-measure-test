@@ -21,7 +21,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     startDate: string = '';
     endDate: string = '';
     patientGroup: PatientGroup | undefined;
-    bypassGroupCheck: boolean = false;
+    useSubject: boolean = false;
 
     constructor(selectedServer: Server | undefined,
         selectedPatient: Patient | undefined,
@@ -29,7 +29,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         startDate: string,
         endDate: string,
         patientGroup?: PatientGroup | undefined,
-        bypassGroupCheck?: boolean) {
+        useSubject?: boolean) {
 
         super();
         this.type = FetchType.EVALUATE_MEASURE;
@@ -50,7 +50,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
             throw new Error(StringUtils.format(Constants.missingProperty, 'endDate'));
         }
 
-        if (!bypassGroupCheck) {
+        if (useSubject) {
             if (!selectedPatient || selectedPatient.id === '') {
                 if (!patientGroup || patientGroup.id === '') {
                     throw new Error(StringUtils.format(Constants.missingProperty, 'Patient or Group'));
@@ -63,22 +63,22 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         if (startDate) this.startDate = startDate;
         if (endDate) this.endDate = endDate;
         if (patientGroup) this.patientGroup = patientGroup;
-        if (bypassGroupCheck) this.bypassGroupCheck = bypassGroupCheck;
+        if (useSubject) this.useSubject = useSubject;
 
     }
 
+ 
+
     public getUrl(): string {
-        // '{0}/Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&reportType=subject-list';
 
         let subject = '';
-        if (this.selectedPatient?.id) {
-            subject = 'Patient/' + this.selectedPatient.id;
-        } else if (this.patientGroup) {
-            subject = 'Group/' + this.patientGroup.id;
-        }
-
-        if (this.bypassGroupCheck && !this.selectedPatient?.id) {
-            return StringUtils.format(Constants.evaluateMeasureWithSubjectFetchURL.replace('&subject={4}', ''),
+        if (this.useSubject) {
+            if (this.selectedPatient?.id) {
+                subject = 'Patient/' + this.selectedPatient.id;
+            } else if (this.patientGroup) {
+                subject = 'Group/' + this.patientGroup.id;
+            }
+            return StringUtils.format(Constants.evaluateMeasureWithSubjectFetchURL,
                 this.selectedServer?.baseUrl,
                 this.selectedMeasure,
                 this.startDate,
@@ -87,14 +87,14 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
             );
         }
 
-
-        return StringUtils.format(Constants.evaluateMeasureWithSubjectFetchURL,
+        //useSubject not true, return url without subject line
+        return StringUtils.format(Constants.evaluateMeasureWithSubjectFetchURL.replace('&subject={4}', ''),
             this.selectedServer?.baseUrl,
             this.selectedMeasure,
             this.startDate,
-            this.endDate,
-            subject
+            this.endDate
         );
+
     }
 
     protected processReturnedData(data: any) {

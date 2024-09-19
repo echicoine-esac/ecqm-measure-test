@@ -5,6 +5,7 @@ import { PatientFetch } from '../data/PatientFetch';
 import { PatientGroup, Member } from '../models/PatientGroup';
 import { Patient } from '../models/Patient';
 import { Server } from '../models/Server';
+import { Constants } from '../constants/Constants';
 
 interface props {
   showDataRepo: boolean;
@@ -15,37 +16,60 @@ interface props {
   fetchPatients: (dataRepo: Server) => void;
   setSelectedPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>;
   selectedPatient: Patient | undefined;
-  collectData: () => void;
+  collectData: (b: boolean) => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
   selectedMeasure?: string;
-  groups?: Map<string, PatientGroup>;
+  groups?: Map<string, PatientGroup>
+  setSelectedPatientGroup: React.Dispatch<React.SetStateAction<PatientGroup | undefined>>;
+
 }
 
-const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient, collectData, loading, setModalShow, selectedMeasure, groups }) => {
+const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients, fetchPatients,
+  setSelectedPatient, selectedPatient, collectData, loading, setModalShow, selectedMeasure, groups, setSelectedPatientGroup }) => {
+
   const [patientFilter, setPatientFilter] = useState<string>('');
+
+  const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
+
+  const useGroupAsSubjectHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUseGroupAsSubject(event.target.checked);
+  };
+
+  let patientGroup: PatientGroup | undefined;
+
+  const buildSubjectText = (): string => {
+    if (selectedPatient?.id) {
+      return 'Patient/' + selectedPatient.id;
+    } else if (patientGroup?.id) {
+      return 'Group/' + patientGroup.id;
+    } else {
+      return '';
+    }
+  };
 
   const filteredPatients = patients.filter((patient) => {
     const patDisplay = PatientFetch.buildUniquePatientIdentifier(patient);
-
+    patientGroup = selectedMeasure ? groups?.get(selectedMeasure) : undefined;
     let groupingCondition: boolean = true;
 
-    if (selectedMeasure) {
-      let group: PatientGroup | undefined = groups?.get(selectedMeasure);
-
-      //sometimes can be undefined
-      if (group) {
-        let members: Member[] = group.member;
-        let patFound: boolean = false;
-        for (let member of members) {
-          if (member.entity.reference.split('Patient/')[1] === patient?.id) {
-            patFound = true;
-            break;
-          }
+    //sometimes can be undefined
+    if (patientGroup) {
+      let members: Member[] = patientGroup.member;
+      let patFound: boolean = false;
+      for (let member of members) {
+        if (member.entity.reference.split('Patient/')[1] === patient?.id) {
+          patFound = true;
+          break;
         }
-        groupingCondition = patFound;
       }
+      groupingCondition = patFound;
+    } else {
+      setSelectedPatientGroup(undefined);
     }
+
+    setSelectedPatientGroup(patientGroup);
+
     return groupingCondition && patDisplay?.toLowerCase().includes(patientFilter.toLowerCase());
   });
 
@@ -143,10 +167,28 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                   className='w-100 btn btn-primary btn-lg'
                   id='evaluate'
                   disabled={loading}
-                  onClick={(e) => collectData()}>
+                  onClick={(e) => collectData(useGroupAsSubject)}>
                   Collect Data</Button>
               )}
             </div>
+          </div>
+          <div className='row-md-1 ml-auto'>
+            {buildSubjectText().length > 0 &&
+              <label>
+                <input
+                  type="checkbox"
+                  checked={useGroupAsSubject}
+                  onChange={useGroupAsSubjectHandler}
+                  disabled={loading}>
+                </input>
+                {' subject=' + buildSubjectText()}
+              </label>
+            }
+            {(!useGroupAsSubject || buildSubjectText().length === 0) && (
+              <div>
+                {Constants.largeDataNOTE}
+              </div>
+            )}
           </div>
         </div>
       ) : (

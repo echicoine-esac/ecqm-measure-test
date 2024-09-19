@@ -43,6 +43,7 @@ export class GroupFetch extends AbstractDataFetch {
                     member: entry.resource.member
                 }
 
+                // console.log(measureName + ' has a Group file.')
                 groupMap.set(measureName, group)
             }
         }
