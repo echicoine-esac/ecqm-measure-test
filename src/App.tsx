@@ -67,7 +67,7 @@ const App: React.FC = () => {
     clientSecret: '',
     scope: ''
   });
-  const [selectedMeasureEvaluation, setSelectedMeasureEvaluation] = useState<Server>({
+  const [selectedMeasureEvaluationServer, setSelectedMeasureEvaluation] = useState<Server>({
     id: '',
     baseUrl: '',
     authUrl: '',
@@ -269,7 +269,7 @@ const App: React.FC = () => {
     clearPopulationCounts();
 
     // Make sure all required elements are set
-    if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
+    if (!selectedMeasureEvaluationServer || selectedMeasureEvaluationServer.baseUrl === '') {
       setResults(Constants.error_measureEvaluationServer);
       return;
     }
@@ -299,7 +299,7 @@ const App: React.FC = () => {
       return;
     }
 
-    const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluation,
+    const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
        selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
@@ -444,7 +444,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (!selectedMeasureEvaluation) {
+    if (!selectedMeasureEvaluationServer) {
       setResults(Constants.error_measureEvaluationServer);
       return;
     }
@@ -457,7 +457,7 @@ const App: React.FC = () => {
     setLoading(true);
 
     try {
-      setResults(await new SubmitDataFetch(selectedMeasureEvaluation,
+      setResults(await new SubmitDataFetch(selectedMeasureEvaluationServer,
         selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
@@ -520,7 +520,7 @@ const App: React.FC = () => {
     // Make sure all required elements are set
     let missingData = '';
 
-    if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
+    if (!selectedMeasureEvaluationServer || selectedMeasureEvaluationServer.baseUrl === '') {
       missingData = Constants.error_measureEvaluationServer + '\n';
     }
 
@@ -582,7 +582,7 @@ const App: React.FC = () => {
         //patient belongs to this group, proceed:
         const mcMan = new MeasureComparisonManager(patientEntry,
           measureObj,
-          selectedMeasureEvaluation,
+          selectedMeasureEvaluationServer,
           startDate, endDate,
           accessToken);
 
@@ -634,7 +634,7 @@ const App: React.FC = () => {
       <br />
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
         servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}
-        selectedMeasureEvaluation={selectedMeasureEvaluation} submitData={submitData}
+        selectedMeasureEvaluation={selectedMeasureEvaluationServer} submitData={submitData}
         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
         //Scoring now captured within evaluate measure card:
         populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring}
@@ -651,7 +651,9 @@ const App: React.FC = () => {
       <br />
       <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}
         items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
-        startDate={startDate} endDate={endDate} />
+        startDate={startDate} endDate={endDate} selectedDataRepoServer={selectedDataRepo}  
+        selectedPatientGroup={selectedPatientGroup} selectedMeasureEvaluationServer={selectedMeasureEvaluationServer}
+        selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}/>
 
       <Results results={results} />
 

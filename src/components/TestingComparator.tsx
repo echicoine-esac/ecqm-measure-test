@@ -6,6 +6,8 @@ import ReactToPrint from 'react-to-print';
 import { Constants } from '../constants/Constants';
 import { Patient } from '../models/Patient';
 import { MeasureComparisonManager } from '../utils/MeasureComparisonManager';
+import { PatientGroup } from '../models/PatientGroup';
+import { Server } from '../models/Server';
 
 
 interface props {
@@ -16,6 +18,11 @@ interface props {
   loading: boolean;
   startDate: string;
   endDate: string;
+  selectedPatientGroup: PatientGroup | undefined;
+  selectedDataRepoServer: Server | undefined;
+  selectedMeasureEvaluationServer: Server | undefined;
+  selectedMeasure: string | undefined;
+  selectedKnowledgeRepositoryServer: Server | undefined;
 }
 
 /**
@@ -38,7 +45,12 @@ interface props {
  * @returns 
  */
 const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items,
-  compareTestResults, loading, startDate, endDate }) => {
+  compareTestResults, loading, startDate, endDate, selectedPatientGroup, selectedDataRepoServer,
+  selectedMeasureEvaluationServer, selectedMeasure, selectedKnowledgeRepositoryServer }) => {
+
+
+  const requiredDataPresent = selectedPatientGroup && selectedDataRepoServer && selectedMeasureEvaluationServer && selectedMeasure && selectedKnowledgeRepositoryServer;
+
   const convertToID = (str: any | undefined): string => {
     let strIn: string = '' + str;
     return (strIn.replace(' ', ''));
@@ -180,8 +192,47 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
 
 
             ) : (
+
+
+
               <div>
-                <p>{Constants.testComparisonInstruction}</p>
+                {Constants.testComparisonInstruction}
+                <br></br>
+                <br></br>
+                <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+
+                  {/* Measure */}
+                  <li>
+                    {selectedMeasure ? '☑' : '☐'} Measure
+                    {selectedMeasure && (
+                      <span> <a target='_blank' href={selectedKnowledgeRepositoryServer?.baseUrl + 'Measure/' + selectedMeasure}>({selectedMeasure})</a></span>
+                    )}
+                  </li>
+
+                  {/* Data Repository Server */}
+                  <li>
+                    {selectedDataRepoServer?.baseUrl ? '☑' : '☐'} Data Repository Server
+                    {selectedDataRepoServer?.baseUrl && (
+                      <span> <a target='_blank' href={selectedDataRepoServer?.baseUrl}>({selectedDataRepoServer.baseUrl})</a></span>
+                    )}
+                  </li>
+
+                  {/* Patient Group */}
+                  <li>
+                    {selectedPatientGroup ? '☑' : '☐'} Patient Group
+                    {selectedDataRepoServer?.baseUrl && (
+                      <span> <a target='_blank' href={selectedDataRepoServer?.baseUrl + 'Group/' + selectedPatientGroup?.id}>(Group/{selectedPatientGroup?.id})</a></span>
+                    )}
+                  </li>
+
+                  {/* Measure Evaluation Server */}
+                  <li>
+                    {selectedMeasureEvaluationServer?.baseUrl ? '☑' : '☐'} Measure Evaluation Server
+                    {selectedMeasureEvaluationServer?.baseUrl && (
+                      <span> <a target='_blank' href={selectedMeasureEvaluationServer?.baseUrl}>({selectedMeasureEvaluationServer.baseUrl})</a></span>
+                    )}
+                  </li>
+                </ul>
               </div>
             )}
             {/* Sort array by discrepancy so matches are bottom of list. Convert boolean to 1/0, compare by basic int: */}
@@ -291,7 +342,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   data-testid='test-compare-collect-data-button'
                   className='w-100 btn btn-primary btn-lg'
                   id='evaluate'
-                  disabled={loading}
+                  disabled={loading || !requiredDataPresent}
                   onClick={(e) => compareTestResults()}
                 >
                   Generate Test Comparison Summary</Button>

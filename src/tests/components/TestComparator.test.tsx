@@ -135,7 +135,10 @@ test(thisTestFile + ': renders properly', async () => {
 
     render(<TestingComparator showTestCompare={true} setShowTestCompare={setShowTestCompare}
         items={testComparatorMap} compareTestResults={compareTestResults} loading={loadingFlag}
-        startDate={periodStart} endDate={periodEnd} />);
+        startDate={periodStart} endDate={periodEnd}  
+        selectedDataRepoServer={dataServer} selectedPatientGroup={undefined}
+        selectedMeasureEvaluationServer={dataServer} selectedMeasure={MEASURE_NAME}
+        selectedKnowledgeRepositoryServer={dataServer} />);
 
     // const groupID1 = '2D0D08DB-219D-4C41-AB53-DE21F006D602';
 

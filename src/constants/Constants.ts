@@ -47,7 +47,7 @@ export class Constants {
     public static readonly measurePostedFetchDataError = 'There was an error posting the measure';
 
     public static readonly evaluateMeasure_noGroupFound = 'When no Patient is selected, this operation attempts to use Group data. No Patient Group data could be established for the selected Measure. Select an individual Patient from the Patient dropdown and attempt operation again.';
-    public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with existing MeasureReports. To begin, select a Measure, select a Data Repository Server for Patient and MeasureReport data, select a Patient (NOTE: for bulk processing of all Patients, leave unselected), and select a Measure Evaluation Server.';
+    public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with existing MeasureReports and displays a summary of discrepancies and matches. To begin, verify the following items are established:';
     
     public static readonly largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
 
