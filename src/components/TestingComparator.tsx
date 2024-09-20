@@ -127,7 +127,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
             {items.size > 0 ? (
 
               <div>
-                <Table style={{ width: '100%', border: 'none' }}>
+                <Table style={{ width: '100%', border: 'none', margin: '0' }}>
                   <thead>
                     <tr>
                       <th colSpan={2} className="text-center">
@@ -245,7 +245,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
               .map(([key, value]) => (
                 value.fetchedMeasureReportGroups.length > 0 && value.fetchedEvaluatedMeasureGroups.length > 0 ? (
 
-                  <table className="table mt-4" key={key.display + key.id} style={{ width: '100%', border: '2px solid lightgrey' }}>
+                  <table className="table" key={key.display + key.id} style={{ width: '100%', border: '1px solid lightgrey', margin: '0px' }}>
                     <thead>
                       <tr>
                         <th colSpan={2}>
