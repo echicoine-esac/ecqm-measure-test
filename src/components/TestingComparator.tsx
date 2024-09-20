@@ -131,7 +131,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <thead>
                     <tr>
                       <th colSpan={2} className="text-center">
-                        <h4 data-testid={'test-comp-title'}>{title}</h4>
+                        <h5 data-testid={'test-comp-title'}>{title}</h5>
                       </th>
                     </tr>
                   </thead>
@@ -245,7 +245,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
               .map(([key, value]) => (
                 value.fetchedMeasureReportGroups.length > 0 && value.fetchedEvaluatedMeasureGroups.length > 0 ? (
 
-                  <table className="table" key={key.display + key.id} style={{ width: '100%', border: '1px solid lightgrey', margin: '0px' }}>
+                  <table className="table" key={key.display + key.id} style={{ width: '100%', border: '1px solid lightgrey', margin: '0px'}}>
                     <thead>
                       <tr>
                         <th colSpan={2}>
@@ -253,14 +253,14 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                             <thead>
                               <tr>
                                 <th style={{ width: '50%', textAlign: 'left', border: 'none' }}>
-                                  <h4 data-testid={'test-comp-patient-display' + convertToID(key.id)}>{key.display}</h4>
+                                  <h5 data-testid={'test-comp-patient-display' + convertToID(key.id)}>{key.display}</h5>
                                   <h6 data-testid={'test-comp-patient-id' + convertToID(key.id)}>ID: {key.id}</h6>
                                 </th>
                                 <th style={{ width: '50%', textAlign: 'left', border: 'none' }}>
                                   <h6>Comparison Result:</h6>
-                                  <h3 data-testid={'test-comp-result-' + convertToID(key.id)} className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}>
+                                  <h5 data-testid={'test-comp-result-' + convertToID(key.id)} className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}>
                                     {value.discrepancyExists ? 'Discrepancy' : 'Match'}
-                                  </h3>
+                                  </h5>
                                 </th>
                               </tr>
                             </thead>
