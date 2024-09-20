@@ -205,7 +205,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <li>
                     {selectedMeasure ? '☑' : '☐'} Measure
                     {selectedKnowledgeRepositoryServer?.baseUrl && selectedMeasure && (
-                      <span> <a target='_blank' href={selectedKnowledgeRepositoryServer?.baseUrl + 'Measure/' + selectedMeasure}>({selectedMeasure})</a></span>
+                      <span> <a target='_blank' rel='noreferrer' href={selectedKnowledgeRepositoryServer?.baseUrl + 'Measure/' + selectedMeasure}>({selectedMeasure})</a></span>
                     )}
                   </li>
 
@@ -213,7 +213,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <li>
                     {selectedDataRepoServer?.baseUrl ? '☑' : '☐'} Data Repository Server
                     {selectedDataRepoServer?.baseUrl && (
-                      <span> <a target='_blank' href={selectedDataRepoServer?.baseUrl}>({selectedDataRepoServer.baseUrl})</a></span>
+                      <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl}>({selectedDataRepoServer.baseUrl})</a></span>
                     )}
                   </li>
 
@@ -221,7 +221,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <li>
                     {selectedPatientGroup?.id ? '☑' : '☐'} Patient Group
                     {selectedPatientGroup?.id && selectedDataRepoServer?.baseUrl && (
-                      <span> <a target='_blank' href={selectedDataRepoServer?.baseUrl + 'Group/' + selectedPatientGroup?.id}>(Group/{selectedPatientGroup?.id})</a></span>
+                      <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl + 'Group/' + selectedPatientGroup?.id}>(Group/{selectedPatientGroup?.id})</a></span>
                     )}
                   </li>
 
@@ -229,7 +229,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <li>
                     {selectedMeasureEvaluationServer?.baseUrl ? '☑' : '☐'} Measure Evaluation Server
                     {selectedMeasureEvaluationServer?.baseUrl && (
-                      <span> <a target='_blank' href={selectedMeasureEvaluationServer?.baseUrl}>({selectedMeasureEvaluationServer.baseUrl})</a></span>
+                      <span> <a target='_blank' rel='noreferrer' href={selectedMeasureEvaluationServer?.baseUrl}>({selectedMeasureEvaluationServer.baseUrl})</a></span>
                     )}
                   </li>
                 </ul>
@@ -271,7 +271,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                     <tbody>
                       <tr>
                         <td style={{ width: '50%', border: 'none' }}>
-                          <a target='_blank' href={value.evaluatedMeasureURL}>
+                          <a target='_blank' rel='noreferrer' href={value.evaluatedMeasureURL}>
                             <h6>This Evaluation: </h6>
                           </a>
                           <table className="table" style={{ border: '1px solid lightgrey' }}>
@@ -288,7 +288,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                         </td>
 
                         <td style={{ width: '50%' }}>
-                          <a target='_blank' href={value.measureReportURL}>
+                          <a target='_blank' rel='noreferrer' href={value.measureReportURL}>
                             <h6>Previous Measure Report:</h6>
                           </a>
                           <table className="table" style={{ border: '1px solid lightgrey' }}>
