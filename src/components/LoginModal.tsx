@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
-import {Button, Form, Modal} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Server} from '../models/Server';
+import React from 'react';
+import { Button, Form, Modal } from 'react-bootstrap';
 
 // Props for LoginModal
 interface props {

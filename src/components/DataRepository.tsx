@@ -26,21 +26,10 @@ interface props {
 }
 
 const DataRepository: React.FC<props> = ({
-  showDataRepo,
-  setShowDataRepo,
-  servers,
-  selectedDataRepo,
-  patients,
-  fetchPatients,
-  setSelectedPatient,
-  selectedPatient,
-  collectData,
-  loading,
-  setModalShow,
-  selectedMeasure,
-  groups,
-  setSelectedPatientGroup,
-}) => {
+  showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients,
+  fetchPatients, setSelectedPatient, selectedPatient, collectData, loading,
+  setModalShow, selectedMeasure, groups, setSelectedPatientGroup }) => {
+    
   const [patientFilter, setPatientFilter] = useState<string>('');
   const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
   const [filteredPatients, setFilteredPatients] = useState<Array<Patient | undefined>>([]);

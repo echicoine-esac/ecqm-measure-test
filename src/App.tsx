@@ -44,8 +44,24 @@ const App: React.FC = () => {
   const [patientGroups, setPatientGroups] = useState<Map<string, PatientGroup> | undefined>(undefined);
 
   // Selected States
+
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
+  const setSelectedMeasureCaller = (measureName: SetStateAction<string>) => {
+    //reset our test comparator when new measure is selected:
+    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+    //reset our selectedPatient to ensure patient data lines up with measure
+    setSelectedPatient(undefined);
+    //set the selected measure:
+    setSelectedMeasure(measureName);
+  };
+
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
+  const setSelectedPatientCaller = (patient: SetStateAction<Patient | undefined>) => {
+    //reset our test comparator when new patient is selected:
+    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+    setSelectedPatient(patient);
+  };
+
   const [selectedPatientGroup, setSelectedPatientGroup] = useState<PatientGroup | undefined>(undefined);
   const [selectedKnowledgeRepo, setSelectedKnowledgeRepo] = useState<Server>({
     id: '',
@@ -67,7 +83,7 @@ const App: React.FC = () => {
     clientSecret: '',
     scope: ''
   });
-  const [selectedMeasureEvaluationServer, setSelectedMeasureEvaluation] = useState<Server>({
+  const [selectedMeasureEvaluationServer, setSelectedMeasureEvaluationServer] = useState<Server>({
     id: '',
     baseUrl: '',
     authUrl: '',
@@ -122,24 +138,11 @@ const App: React.FC = () => {
   const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonManager>>(new Map());
 
 
-  const setSelectedMeasureCaller = (measureName: SetStateAction<string>) => {
-    //reset our test comparator:
-    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
-
-    //reset our selectedPatient
-    setSelectedPatient(undefined);
-
-    //set the selected measure:
-    setSelectedMeasure(measureName);
-  };
-
   //tells us when app is busy loading and not to disrupt variable assignment
   const reportErrorToUser = ((source: string, err: any) => {
     const message = err.message;
     setResults(message);
   });
-
-
 
   useEffect(() => {
     HashParamUtils.buildHashParams();
@@ -200,7 +203,7 @@ const App: React.FC = () => {
     resetResults();
 
     setLoading(true);
-    if (!knowledgeRepo || !knowledgeRepo.hasOwnProperty('id')) {
+    if (!knowledgeRepo?.hasOwnProperty('id')) {
       setSelectedKnowledgeRepo(knowledgeRepo);
       setShowPopulations(false);
       HashParamUtils.clearCachedValues();
@@ -266,6 +269,8 @@ const App: React.FC = () => {
   // Function for calling the server to perform the measure evaluation
   const evaluateMeasure = async (useSubject: boolean) => {
     resetResults();
+    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+    
     clearPopulationCounts();
 
     // Make sure all required elements are set
@@ -625,7 +630,7 @@ const App: React.FC = () => {
       <br />
       <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
         selectedDataRepo={selectedDataRepo} patients={patients}
-        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient}
+        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatientCaller}
         selectedPatient={selectedPatient}
         collectData={collectData} loading={loading} setModalShow={setServerModalShow}
         selectedMeasure={selectedMeasure}
@@ -633,7 +638,7 @@ const App: React.FC = () => {
         setSelectedPatientGroup={setSelectedPatientGroup} />
       <br />
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
-        servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}
+        servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluationServer}
         selectedMeasureEvaluation={selectedMeasureEvaluationServer} submitData={submitData}
         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
         //Scoring now captured within evaluate measure card:
@@ -653,7 +658,8 @@ const App: React.FC = () => {
         items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
         startDate={startDate} endDate={endDate} selectedDataRepoServer={selectedDataRepo}  
         selectedPatientGroup={selectedPatientGroup} selectedMeasureEvaluationServer={selectedMeasureEvaluationServer}
-        selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}/>
+        selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}
+        selectedPatient={selectedPatient}/>
 
       <Results results={results} />
 

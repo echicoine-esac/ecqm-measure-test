@@ -2,7 +2,7 @@ import { PatientGroup } from "../models/PatientGroup";
 import { Patient } from "../models/Patient";
 
 export class PatientGroupUtils {
-    public static patientExistsInGroup(patientEntry: Patient, selectedMeasureGroup: PatientGroup): boolean {
+    public static patientExistsInGroup(patientEntry: Patient | undefined, selectedMeasureGroup: PatientGroup | undefined): boolean {
         if (!patientEntry?.id || !selectedMeasureGroup?.member) {
             return false;
         }
