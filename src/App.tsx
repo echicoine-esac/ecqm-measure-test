@@ -148,17 +148,23 @@ const App: React.FC = () => {
     HashParamUtils.buildHashParams();
 
     // Get selected server from session since we will be redirected back to here
-    let selectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
-    if (selectedKnowledgeRepo) {
-      setSelectedKnowledgeRepo(JSON.parse(selectedKnowledgeRepo));
-      // If we got access Code but not token then call fetchMeasures again to finish the workflow
-      fetchMeasures(JSON.parse(selectedKnowledgeRepo));
+    let previouslySelectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
+    if (previouslySelectedKnowledgeRepo && previouslySelectedKnowledgeRepo !== 'undefined' && previouslySelectedKnowledgeRepo?.length > 0) {
+      let sessionString;
+      try{
+        sessionString = JSON.parse(previouslySelectedKnowledgeRepo);
+        setSelectedKnowledgeRepo(sessionString);
+        // If we got access Code but not token then call fetchMeasures again to finish the workflow
+        fetchMeasures(sessionString);
+      } catch (error: any) {
+        //sessionString likely 'undefined' 
+        return;
+      }
     }
 
     // Only call to get the servers when the list is empty
     if (servers.length === 0) {
-      initializeServers().then(r => {
-      });
+      initializeServers();
     }
 
     // Remove the code from the URL
@@ -208,6 +214,8 @@ const App: React.FC = () => {
       setShowPopulations(false);
       HashParamUtils.clearCachedValues();
       setLoading(false);
+      setMeasures([]);
+      setSelectedMeasure('');
       return;
     }
 
@@ -243,13 +251,24 @@ const App: React.FC = () => {
 
   // Function for retrieving the patients from the selected server
   const fetchPatients = async (dataRepo: Server) => {
-    resetResults();
+    setLoading(true);
 
+    if (!dataRepo?.baseUrl) {
+      setLoading(false);
+      setPatients([]);
+      setSelectedPatient(undefined);
+      setSelectedPatientGroup(undefined);
+      setPatientGroups(undefined);
+      setSelectedDataRepo(dataRepo);
+      return;
+    }
+
+    resetResults();
     setSelectedDataRepo(dataRepo);
     setShowPopulations(false);
 
     try {
-      setLoading(true);
+       
       const groupFetch = new GroupFetch(dataRepo.baseUrl);
 
       let groupsMap: Map<string, PatientGroup> = await groupFetch.fetchData(accessToken);

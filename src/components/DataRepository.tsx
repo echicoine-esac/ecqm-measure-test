@@ -29,7 +29,7 @@ const DataRepository: React.FC<props> = ({
   showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients,
   fetchPatients, setSelectedPatient, selectedPatient, collectData, loading,
   setModalShow, selectedMeasure, groups, setSelectedPatientGroup }) => {
-    
+
   const [patientFilter, setPatientFilter] = useState<string>('');
   const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
   const [filteredPatients, setFilteredPatients] = useState<Array<Patient | undefined>>([]);
@@ -48,6 +48,18 @@ const DataRepository: React.FC<props> = ({
       return '';
     }
   };
+
+  const buildSelectedSubjectText = (): string => {
+    if (selectedPatient?.id) {
+      return selectedPatient.display;
+    } else if (patientGroup?.id) {
+      return 'Group/' + patientGroup.id;
+    } else {
+      return '';
+    }
+  };
+
+  const selectedSubject = useGroupAsSubject && buildSelectedSubjectText().length > 0 ? buildSelectedSubjectText() + ' on ' + selectedDataRepo?.baseUrl : selectedDataRepo?.baseUrl ? 'ALL Patients on ' + selectedDataRepo?.baseUrl : 'None (no Data Repository selected)';
 
   useEffect(() => {
     // Update filtered patients and patient group based on selectedMeasure
@@ -77,7 +89,9 @@ const DataRepository: React.FC<props> = ({
 
     // Update the selected patient group outside the rendering phase
     setSelectedPatientGroup(updatedPatientGroup);
-  }, [patients, selectedMeasure, patientFilter, groups, setSelectedPatientGroup]);
+  },
+    //dependency array (when useEffect will trigger:)
+    [patients, selectedMeasure, patientFilter, groups, setSelectedPatientGroup]);
 
 
   return (
@@ -89,7 +103,7 @@ const DataRepository: React.FC<props> = ({
             <div className='col-md-8 order-md-2 text-muted' />
           ) : (
             <div className='col-md-8 order-md-2 text-muted'>
-              Selected Patient: {selectedPatient?.display}
+              Selected Subject: {selectedSubject}
             </div>
           )}
           <div className='col-md-1 order-md-3'>
@@ -120,7 +134,7 @@ const DataRepository: React.FC<props> = ({
           </div>
           <div className='row'>
             <div className='col-md-5 order-md-1'>
-              <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo!.baseUrl}
+              <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo?.baseUrl}
                 onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                 {servers.map((server, index) => (
@@ -191,7 +205,7 @@ const DataRepository: React.FC<props> = ({
                 {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank' rel='noreferrer'>{buildSubjectText()}</a>
               </label>
             }
-            {(!useGroupAsSubject || buildSubjectText().length === 0) && (
+            {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedDataRepo?.baseUrl) && (
               <div>
                 {Constants.largeDataNOTE}
               </div>

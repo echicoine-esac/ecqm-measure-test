@@ -76,7 +76,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
           </div>
           <div className='row'>
             <div className='col-md-5 order-md-1'>
-              <select data-testid='mea-eva-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedMeasureEvaluation!.baseUrl}
+              <select data-testid='mea-eva-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedMeasureEvaluation?.baseUrl}
                 onChange={(e) => setSelectedMeasureEvaluation(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                 {servers.map((server, index) => (
@@ -147,7 +147,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
               {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank' rel='noreferrer'>{buildSubjectText()}</a>
             </label>
             }
-            {(!useGroupAsSubject || buildSubjectText().length === 0) && (
+            {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedMeasureEvaluation?.baseUrl) && (
               <div>
                 {Constants.largeDataNOTE}
               </div>
