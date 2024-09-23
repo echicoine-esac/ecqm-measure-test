@@ -130,7 +130,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
             {items.size > 0 ? (
 
               <div>
-                <Table size='sm' >
+                <Table size='sm' style={{ marginBottom: '0px' }}>
                   <thead className="text-center">
                     <tr>
                       <th colSpan={3} style={{ width: '100%', border: 'none', padding: '0px' }}>
@@ -140,75 +140,84 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   </thead>
                   <tbody>
                     <tr>
-                      <td style={{ border: 'none', verticalAlign: 'top', borderRight: '1px solid lightgrey' }}>
-                        <tr>
-                          <td className="text-start" style={{ minWidth: '215px', border: 'none' }}>
-                            Patients Evaluated:
-                          </td>
-                          <td data-testid={'test-comp-pat-eval-count'} style={{ minWidth: '10px', width: '100%', border: 'none' }}>{items.size}</td>
-                        </tr>
-                        <tr>
-                          <td className="text-start" style={{ minWidth: '215px', border: 'none' }}>
-                            Discrepancies Found:
-                          </td>
-                          <td data-testid={'test-comp-disc-found-count'} style={{ minWidth: '10px', width: '100%', border: 'none' }}>{trueCount}</td>
-                        </tr>
-                        <tr>
-                          <td className="text-start" style={{ minWidth: '215px', border: 'none' }}>
-                            Matching Data Found:
-                          </td>
-                          <td data-testid={'test-comp-match-count'} style={{ minWidth: '10px', width: '100%', border: 'none' }}>{falseCount}</td>
-                        </tr>
+                      <td style={{ borderRight: '1px solid lightgrey', borderBottom: 'none' }}>
+                        <Table size='sm' borderless>
+                          <tbody>
+                            <tr>
+                              <td className="text-start" style={{ minWidth: '215px' }}>
+                                Patients Evaluated:
+                              </td>
+                              <td data-testid={'test-comp-pat-eval-count'} style={{ minWidth: '10px', width: '100%' }}>{items.size}</td>
+                            </tr>
+                            <tr>
+                              <td className="text-start" style={{ minWidth: '215px' }}>
+                                Discrepancies Found:
+                              </td>
+                              <td data-testid={'test-comp-disc-found-count'} style={{ minWidth: '10px', width: '100%' }}>{trueCount}</td>
+                            </tr>
+                            <tr>
+                              <td className="text-start" style={{ minWidth: '215px' }}>
+                                Matching Data Found:
+                              </td>
+                              <td data-testid={'test-comp-match-count'} style={{ minWidth: '10px', width: '100%' }}>{falseCount}</td>
+                            </tr>
+                          </tbody>
+                        </Table>
                       </td>
-                      <td style={{ border: 'none', verticalAlign: 'top', borderRight: '1px solid lightgrey' }}>
-                        <tr>
-                          <td className="text-start" style={{ minWidth: '180px', border: 'none' }}>
-                            Period Start Date:
-                          </td>
-                          <td data-testid={'test-comp-start-date'} style={{ minWidth: '130px', width: '100%', border: 'none' }}>{startDate}</td>
-                        </tr>
-                        <tr>
-                          <td className="text-start" style={{ minWidth: '180px', border: 'none' }}>
-                            Period End Date:
-                          </td>
-                          <td data-testid={'test-comp-end-date'} style={{ minWidth: '130px', width: '100%', border: 'none' }}>{endDate}</td>
-                        </tr>
-                        <tr>
-                          <td className="text-start" style={{ minWidth: '180px', border: 'none' }}>
-                            Comparison Date:
-                          </td>
-                          <td data-testid={'test-comp-now-date'} style={{ minWidth: '130px', width: '100%', border: 'none' }}>{getNow()}</td>
-                        </tr>
+                      <td style={{ borderRight: '1px solid lightgrey', borderBottom: 'none' }}>
+                        <Table size='sm' borderless>
+                          <tbody>
+                            <tr>
+                              <td className="text-start" style={{ minWidth: '180px' }}>
+                                Period Start Date:
+                              </td>
+                              <td data-testid={'test-comp-start-date'} style={{ minWidth: '130px', width: '100%' }}>{startDate}</td>
+                            </tr>
+                            <tr>
+                              <td className="text-start" style={{ minWidth: '180px' }}>
+                                Period End Date:
+                              </td>
+                              <td data-testid={'test-comp-end-date'} style={{ minWidth: '130px', width: '100%' }}>{endDate}</td>
+                            </tr>
+                            <tr>
+                              <td className="text-start" style={{ minWidth: '180px' }}>
+                                Comparison Date:
+                              </td>
+                              <td data-testid={'test-comp-now-date'} style={{ minWidth: '130px', width: '100%' }}>{getNow()}</td>
+                            </tr>
+                          </tbody>
+                        </Table>
                       </td>
-                      <td style={{ border: 'none', verticalAlign: 'top' }}>
-                        <tr>
-                          <td className="text-start" style={{ minWidth: '215px', border: 'none' }}>
-                            Knowledge Repository:
-                          </td>
-                          <td data-testid={'test-comp-knowledge-repo-server'} style={{ width: '100%', border: 'none' }}><a href={selectedKnowledgeRepositoryServer?.baseUrl}>{selectedKnowledgeRepositoryServer?.baseUrl}</a></td>
-                        </tr>
-                        <tr>
-                          <td className="text-start" style={{ minWidth: '215px', border: 'none' }}>
-                            Data Repository:
-                          </td>
-                          <td data-testid={'test-comp-data-repo-server'} style={{ width: '100%', border: 'none' }}><a href={selectedDataRepoServer?.baseUrl}>{selectedDataRepoServer?.baseUrl}</a></td>
-                        </tr>
-                        <tr>
-                          <td className="text-start" style={{ minWidth: '215px', border: 'none' }}>
-                            Measure Evaluation:
-                          </td>
-                          <td data-testid={'test-comp-measure-eval-server'} style={{ width: '100%', border: 'none' }}><a href={selectedMeasureEvaluationServer?.baseUrl}>{selectedMeasureEvaluationServer?.baseUrl}</a></td>
-                        </tr>
+                      <td style={{ borderBottom: 'none' }}>
+                        <Table size='sm' borderless>
+                          <tbody>
+                            <tr>
+                              <td className="text-start" style={{ minWidth: '215px' }}>
+                                Knowledge Repository:
+                              </td>
+                              <td data-testid={'test-comp-knowledge-repo-server'} style={{ width: '100%' }}><a href={selectedKnowledgeRepositoryServer?.baseUrl}>{selectedKnowledgeRepositoryServer?.baseUrl}</a></td>
+                            </tr>
+                            <tr>
+                              <td className="text-start" style={{ minWidth: '215px' }}>
+                                Data Repository:
+                              </td>
+                              <td data-testid={'test-comp-data-repo-server'} style={{ width: '100%' }}><a href={selectedDataRepoServer?.baseUrl}>{selectedDataRepoServer?.baseUrl}</a></td>
+                            </tr>
+                            <tr>
+                              <td className="text-start" style={{ minWidth: '215px' }}>
+                                Measure Evaluation:
+                              </td>
+                              <td data-testid={'test-comp-measure-eval-server'} style={{ width: '100%' }}><a href={selectedMeasureEvaluationServer?.baseUrl}>{selectedMeasureEvaluationServer?.baseUrl}</a></td>
+                            </tr>
+                          </tbody>
+                        </Table>
                       </td>
                     </tr>
                   </tbody>
                 </Table>
               </div>
 
-
             ) : (
-
-
 
               <div>
                 {Constants.testComparisonInstruction}
@@ -271,14 +280,14 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
               .map(([key, value]) => (
                 value.fetchedMeasureReportGroups.length > 0 && value.fetchedEvaluatedMeasureGroups.length > 0 ? (
 
-                  <Table size='sm' className="table" key={key.display + key.id} style={{ width: '100%', border: '1px solid lightgrey', marginBottom: '25px' }}>
+                  <Table size='sm' className="table" key={key.display + key.id} style={{ width: '100%', border: '1px solid lightgrey', marginBottom: '0px' }}>
                     <thead style={{ background: '#F7F7F7', border: '1px solid lightgrey' }}>
                       <tr>
-                        <th style={{ width: '50%', textAlign: 'left', border: 'none', padding: '10px' }}>
+                        <th style={{ width: '50%', textAlign: 'left',  padding: '10px' }}>
                           <h5 data-testid={'test-comp-patient-display' + convertToID(key.id)}>{key.display}</h5>
                           <h6 data-testid={'test-comp-patient-id' + convertToID(key.id)}>ID: {key.id}</h6>
                         </th>
-                        <th style={{ width: '50%', textAlign: 'left', border: 'none', padding: '10px' }}>
+                        <th style={{ width: '50%', textAlign: 'left',  padding: '10px' }}>
                           <h6>Comparison Result:</h6>
                           <h5 data-testid={'test-comp-result-' + convertToID(key.id)} className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}>
                             {value.discrepancyExists ? 'Discrepancy' : 'Match'}
@@ -286,45 +295,64 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                         </th>
                       </tr>
                     </thead>
-                    <tbody style={{ border: 'none' }}>
+                    <tbody>
                       <tr>
-                        <td style={{ padding: '8px', border: 'none' }}>
-                          <a target='_blank' rel='noreferrer' href={value.evaluatedMeasureURL}>
-                            <h6>This Evaluation: </h6>
-                          </a>
-                          {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
-                            // mark text in bold if discrepancy exists for this field
-                            <tr key={index} className={`${group.discrepancy && 'fw-bold'}`}>
-                              <td style={{ width: '100%' }} data-testid={'test-comp-this-eval-group-code-' + index}>{group.code.coding[0].code}</td>
-                              <td style={{ width: '100%' }} data-testid={'test-comp-this-eval-group-count-' + index}>{group.count}</td>
-                            </tr>
-                          ))}
-                          <tr>
-                            <td style={{ width: '100%' }} >
-                            <div style={{ fontSize: '11px' }}>
-                                {value.evaluatedMeasureURL}
-                              </div>
-                            </td>
-                          </tr>
+                        <td style={{ padding: '8px' }}>
+                          <Table size='sm' borderless>
+                            <thead>
+                              <tr>
+                                <th>
+                                  <a target='_blank' rel='noreferrer' href={value.evaluatedMeasureURL}>
+                                    <h6>This Evaluation: </h6>
+                                  </a>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
+                                // mark text in bold if discrepancy exists for this field
+                                <tr style={{ border: '1px solid lightgrey' }} key={index} className={group.discrepancy ? 'fw-bold' : ''}>
+                                  <td style={{ width: '100%', paddingLeft: '10px'}} data-testid={'test-comp-this-eval-group-code-' + index}>{group.code.coding[0].code}</td>
+                                  <td style={{ width: '100%', paddingRight: '15px' }} data-testid={'test-comp-this-eval-group-count-' + index}>{group.count}</td>
+                                </tr>
+                              ))}
+                              <tr>
+                                <td style={{ width: '100%' }} >
+                                  <div style={{ fontSize: '11px' }}>
+                                    {value.evaluatedMeasureURL}
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </Table>
                         </td>
-
-                        <td style={{ padding: '8px', border: 'none' }}>
-                          <a target='_blank' rel='noreferrer' href={value.measureReportURL}>
-                            <h6>Previous Measure Report:</h6>
-                          </a>
-                          {value.fetchedMeasureReportGroups.map((group, index) => (
-                            <tr key={index} className={`${group.discrepancy && 'fw-bold'}`}>
-                              <td style={{ width: '100%' }} data-testid={'test-comp-prev-eval-group-code-' + index}>{group.code.coding[0].code}</td>
-                              <td style={{ width: '100%' }} data-testid={'test-comp-prev-eval-group-count-' + index}>{group.count}</td>
-                            </tr>
-                          ))}
-                          <tr>
-                            <td style={{ width: '100%' }} >
-                              <div style={{ fontSize: '11px' }}>
-                                {value.measureReportURL}
-                              </div>
-                            </td>
-                          </tr>
+                        <td style={{ padding: '8px' }}>
+                          <Table size='sm' borderless>
+                            <thead>
+                              <tr>
+                                <th>
+                                  <a target='_blank' rel='noreferrer' href={value.measureReportURL}>
+                                    <h6>Previous Measure Report:</h6>
+                                  </a>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {value.fetchedMeasureReportGroups.map((group, index) => (
+                                <tr style={{ border: '1px solid lightgrey'}} key={index} className={group.discrepancy ? 'fw-bold' : ''}>
+                                  <td style={{ width: '100%', paddingLeft: '10px' }} data-testid={'test-comp-prev-eval-group-code-' + index}>{group.code.coding[0].code}</td>
+                                  <td style={{ width: '100%', paddingRight: '15px' }} data-testid={'test-comp-prev-eval-group-count-' + index}>{group.count}</td>
+                                </tr>
+                              ))}
+                              <tr>
+                                <td style={{ width: '100%' }} >
+                                  <div style={{ fontSize: '11px' }}>
+                                    {value.measureReportURL}
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </Table>
                         </td>
                       </tr>
                     </tbody>

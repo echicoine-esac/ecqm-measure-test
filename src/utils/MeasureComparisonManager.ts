@@ -91,6 +91,8 @@ export class MeasureComparisonManager {
                 sortedArray1[i].code.coding[0].code !== sortedArray2[i].code.coding[0].code ||
                 sortedArray1[i].count !== sortedArray2[i].count
             ) {
+                sortedArray1[i].discrepancy = true;
+                sortedArray2[i].discrepancy = true;
                 return true;
             }
         }
