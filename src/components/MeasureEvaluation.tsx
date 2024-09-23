@@ -130,7 +130,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
                 </Button>
               ) : (
                 <Button data-testid='mea-eva-evaluate-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
-                  onClick={(e) => evaluateMeasure(useGroupAsSubject)}>
+                  onClick={(e) => evaluateMeasure(useGroupAsSubject && buildSubjectText().length > 0)}>
                   Evaluate Measure
                 </Button>
               )}

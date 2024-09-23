@@ -174,7 +174,7 @@ const DataRepository: React.FC<props> = ({
                   className='w-100 btn btn-primary btn-lg'
                   id='evaluate'
                   disabled={loading}
-                  onClick={(e) => collectData(useGroupAsSubject)}>
+                  onClick={(e) => collectData(useGroupAsSubject && buildSubjectText().length > 0)}>
                   Collect Data</Button>
               )}
             </div>
