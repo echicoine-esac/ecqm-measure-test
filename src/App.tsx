@@ -144,36 +144,44 @@ const App: React.FC = () => {
     setResults(message);
   });
 
-  useEffect(() => {
+
+  const resumeOAuthFlow = async (previouslySelectedKnowledgeRepo: string) => {
+    //remove the entry:
+    sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
+
+    //ensure generatedStateCode
     HashParamUtils.buildHashParams();
 
-    // Get selected server from session since we will be redirected back to here
-    let previouslySelectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
-    if (previouslySelectedKnowledgeRepo && previouslySelectedKnowledgeRepo !== 'undefined' && previouslySelectedKnowledgeRepo?.length > 0) {
-      let sessionString;
-      try{
-        sessionString = JSON.parse(previouslySelectedKnowledgeRepo);
-        setSelectedKnowledgeRepo(sessionString);
-        // If we got access Code but not token then call fetchMeasures again to finish the workflow
-        fetchMeasures(sessionString);
-      } catch (error: any) {
-        //sessionString likely 'undefined' 
-        return;
-      }
-    }
-
-    // Only call to get the servers when the list is empty
-    if (servers.length === 0) {
-      initializeServers();
+    //attempt to set the knowledge repo and fetchMeasures (resume flow)
+    let sessionString;
+    try {
+      sessionString = JSON.parse(previouslySelectedKnowledgeRepo);
+      setSelectedKnowledgeRepo(sessionString);
+      // Call fetchMeasures again to finish the workflow
+      await fetchMeasures(sessionString);
+    } catch (error: any) {
+      //sessionString likely 'undefined' 
+      HashParamUtils.removeCodeParam();
+      return;
     }
 
     // Remove the code from the URL
     HashParamUtils.removeCodeParam();
 
-    // console.log('HashParamUtils.getAccessCode' + ': ' + HashParamUtils.getAccessCode());
-    // console.log('HashParamUtils.getGeneratedStateCode' + ': ' + HashParamUtils.getGeneratedStateCode());
-    // console.log('HashParamUtils.getStateCode' + ': ' + HashParamUtils.getStateCode());
+  }
 
+  useEffect(() => {
+    // Only call to get the servers when the list is empty
+    if (servers.length === 0) {
+      initializeServers();
+    }
+
+    // Get selected oauth server from session  (likely redirected back to here if selectedKnowledgeRepo has value)
+    let previouslySelectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
+    if (previouslySelectedKnowledgeRepo && previouslySelectedKnowledgeRepo !== 'undefined' && previouslySelectedKnowledgeRepo?.length > 0) {
+      resumeOAuthFlow(previouslySelectedKnowledgeRepo);
+    }
+  // eslint-disable-next-line 
   }, []);
 
   useEffect(() => {
@@ -268,7 +276,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     try {
-       
+
       const groupFetch = new GroupFetch(dataRepo.baseUrl);
 
       let groupsMap: Map<string, PatientGroup> = await groupFetch.fetchData(accessToken);
@@ -289,7 +297,7 @@ const App: React.FC = () => {
   const evaluateMeasure = async (useSubject: boolean) => {
     resetResults();
     setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
-    
+
     clearPopulationCounts();
 
     // Make sure all required elements are set
@@ -324,7 +332,7 @@ const App: React.FC = () => {
     }
 
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
-       selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
+      selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
     // Set the loading state since this call can take a while to return
@@ -675,10 +683,10 @@ const App: React.FC = () => {
       <br />
       <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}
         items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
-        startDate={startDate} endDate={endDate} selectedDataRepoServer={selectedDataRepo}  
+        startDate={startDate} endDate={endDate} selectedDataRepoServer={selectedDataRepo}
         selectedPatientGroup={selectedPatientGroup} selectedMeasureEvaluationServer={selectedMeasureEvaluationServer}
         selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}
-        selectedPatient={selectedPatient}/>
+        selectedPatient={selectedPatient} />
 
       <Results results={results} />
 
