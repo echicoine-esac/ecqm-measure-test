@@ -53,6 +53,10 @@ const App: React.FC = () => {
     setSelectedPatient(undefined);
     //set the selected measure:
     setSelectedMeasure(measureName);
+
+    setShowPopulations(false);
+
+    resetResults();
   };
 
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
@@ -688,7 +692,7 @@ const App: React.FC = () => {
         selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}
         selectedPatient={selectedPatient} />
 
-      <Results results={results} />
+      <Results results={results}/>
 
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />

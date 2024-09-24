@@ -134,7 +134,7 @@ const DataRepository: React.FC<props> = ({
           </div>
           <div className='row'>
             <div className='col-md-5 order-md-1'>
-              <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo?.baseUrl}
+              <select disabled={loading} data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo?.baseUrl}
                 onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                 {servers.map((server, index) => (
@@ -146,11 +146,11 @@ const DataRepository: React.FC<props> = ({
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>
               }>
-                <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
+                <Button disabled={loading} variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
               </OverlayTrigger>
             </div>
             <div className='col-md-6 order-md-2'>
-              <select data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
+              <select disabled={loading} data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
                 onChange={(e) => {
                   const selectedPatientId = e.target.value;
                   const selectedPatientObject = patients.find(

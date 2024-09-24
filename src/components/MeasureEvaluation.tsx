@@ -76,7 +76,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
           </div>
           <div className='row'>
             <div className='col-md-5 order-md-1'>
-              <select data-testid='mea-eva-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedMeasureEvaluation?.baseUrl}
+              <select disabled={loading} data-testid='mea-eva-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedMeasureEvaluation?.baseUrl}
                 onChange={(e) => setSelectedMeasureEvaluation(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                 {servers.map((server, index) => (
@@ -88,7 +88,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>
               }>
-                <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
+                <Button disabled={loading} variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
               </OverlayTrigger>
             </div>
           </div>
