@@ -692,7 +692,7 @@ const App: React.FC = () => {
         selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}
         selectedPatient={selectedPatient} />
 
-      <Results results={results}/>
+      <Results results={results} selectedMeasure={selectedMeasure}/>
 
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
