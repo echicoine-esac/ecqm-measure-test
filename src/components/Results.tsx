@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Light from 'react-syntax-highlighter';
-
 //NOTE: Careful with which style gets imported (can break Jest). Follow similar import structure:
-import nnfx from 'react-syntax-highlighter/dist/cjs/styles/hljs/nnfx';
-import xt256 from 'react-syntax-highlighter/dist/cjs/styles/hljs/xt256';
+import lightfair from 'react-syntax-highlighter/dist/cjs/styles/hljs/lightfair';
+import nnfxDark from 'react-syntax-highlighter/dist/cjs/styles/hljs/nnfx-dark';
+
 
 // Props for Results panel
 interface props {
@@ -70,7 +70,7 @@ const Results: React.FC<props> = ({ results, selectedMeasure }) => {
               wrapLongLines={true}
               language="json"
               useInlineStyles={resultsTextIsJson}
-              style={isDarkTheme ? xt256 : nnfx}
+              style={isDarkTheme ? nnfxDark : lightfair}
               customStyle={{
                 height: resultsTextIsJson ? '600px' : 'auto',
                 borderRadius: '4px',
