@@ -166,7 +166,7 @@ const DataRepository: React.FC<props> = ({
                   </option>
                 ))}
               </select>
-              <input type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
+              <input disabled={loading} type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
                 onChange={(e) => setPatientFilter(e.target.value)} />
             </div>
             <div className='col-md-5 order-md-2'>

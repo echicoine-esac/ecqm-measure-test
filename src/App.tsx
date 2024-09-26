@@ -30,7 +30,6 @@ import { HashParamUtils } from './utils/HashParamUtils';
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
-import Populations from './components/Populations';
 
 const App: React.FC = () => {
   // Define the state variables

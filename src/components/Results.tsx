@@ -110,7 +110,7 @@ const Results: React.FC<props> = ({ results, selectedMeasure, showPopulations, p
                   height: resultsTextIsJson ? '600px' : 'auto',
                   borderRadius: '4px',
                   fontFamily: '"Courier New", Courier, monospace',
-                  fontSize: '14pt',
+                  fontSize: '11pt',
                   margin: '0px'
                 }}>
                 {results}
