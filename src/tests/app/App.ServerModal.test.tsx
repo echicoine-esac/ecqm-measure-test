@@ -30,6 +30,9 @@ beforeEach(() => {
 
 });
 
+beforeAll(() => {
+  global.URL.createObjectURL = jest.fn();
+});
 
 //SERVER MODAL
 test(thisTestFile + ': success scenario: create new server button opens modal', async () => {
@@ -169,8 +172,8 @@ test(thisTestFile + ': fail scenario: createServer throws error', async () => {
     fireEvent.click(submitButtonField);
   });
 
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-  expect(resultsTextField.value).toEqual(RESPONSE_ERROR_BAD_REQUEST);
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+  expect(resultsTextField.textContent).toEqual(RESPONSE_ERROR_BAD_REQUEST);
   createServerJest.mockRestore();
 });
 

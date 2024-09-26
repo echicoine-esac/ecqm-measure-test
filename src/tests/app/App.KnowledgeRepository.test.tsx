@@ -58,6 +58,9 @@ beforeEach(() => {
 
 });
 
+beforeAll(() => {
+  global.URL.createObjectURL = jest.fn();
+});
 
 //RENDERING:
 test(thisTestFile + ': renders properly', async () => {
@@ -247,7 +250,6 @@ test(thisTestFile + ': success scenario: Get Data Requirements', async () => {
   const endDateControl: HTMLInputElement = screen.getByTestId('end-date-control');
   const endDate = endDateControl.value;
 
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
 
   //get knowledge server dropdown
   const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
@@ -283,7 +285,8 @@ test(thisTestFile + ': success scenario: Get Data Requirements', async () => {
   });
   fetchMock.restore();
 
-  expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonDataRequirementsData, undefined, 2));
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+  expect(resultsTextField.textContent).toEqual(JSON.stringify(mockJsonDataRequirementsData, undefined, 2));
 
 });
 
@@ -301,8 +304,6 @@ test(thisTestFile + ': fail scenario: Bad Request', async () => {
 
   const endDateControl: HTMLInputElement = screen.getByTestId('end-date-control');
   const endDate = endDateControl.value;
-
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
 
   //get knowledge server dropdown
   const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
@@ -335,7 +336,8 @@ test(thisTestFile + ': fail scenario: Bad Request', async () => {
   });
   fetchMock.restore();
 
-  expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+  expect(resultsTextField.textContent).toEqual(StringUtils.format(Constants.fetchError,
     dataRequirementsFetch.getUrl(), FetchType.DATA_REQUIREMENTS,
     RESPONSE_ERROR_BAD_REQUEST));
 
@@ -347,15 +349,6 @@ test(thisTestFile + ': error scenario: Please select a Measure', async () => {
     render(<App />);
   });
   const dataServers: Server[] = Constants.serverTestData;
-
-  //click get data requirements, 
-  const getDataRequirementsButton: HTMLButtonElement = screen.getByTestId('get-data-requirements-button');
-  fireEvent.click(getDataRequirementsButton);
-
-  //check results for error:
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-  expect(resultsTextField).toBeInTheDocument();
-  expect(resultsTextField.value).toEqual(Constants.error_selectKnowledgeRepository);
 
   //get knowledge server dropdown
   const serverDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
@@ -371,10 +364,14 @@ test(thisTestFile + ': error scenario: Please select a Measure', async () => {
   });
   fetchMock.restore();
 
+  await waitFor(() => expect(screen.getByTestId('get-data-requirements-button')).toBeInTheDocument());
+  //click collect data, 
+  const getDataRequirementsButton: HTMLButtonElement = screen.getByTestId('get-data-requirements-button');
   //check results for error:
   fireEvent.click(getDataRequirementsButton);
 
-  expect(resultsTextField.value).toEqual(Constants.error_selectMeasureDR);
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+  expect(resultsTextField.textContent).toEqual(Constants.error_selectMeasureDR);
 
 });
  

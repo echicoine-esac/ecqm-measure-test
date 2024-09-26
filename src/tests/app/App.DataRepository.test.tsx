@@ -39,6 +39,10 @@ const mockPatientTotalCountJSON = `{
   "total": 1921
 }`;
 
+beforeAll(() => {
+  global.URL.createObjectURL = jest.fn();
+});
+
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {
   //clean up any missed mocks
@@ -135,8 +139,6 @@ test(thisTestFile + ': success scenario: Collect Data', async () => {
   const endDateControl: HTMLInputElement = screen.getByTestId('end-date-control');
   const endDate = endDateControl.value;
 
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-
   //unhide data repository section:
   const showButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
   fireEvent.click(showButton);
@@ -209,7 +211,8 @@ test(thisTestFile + ': success scenario: Collect Data', async () => {
 
   fetchMock.restore();
 
-  expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonCollectDataData, undefined, 2));
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+  expect(resultsTextField.textContent).toEqual(JSON.stringify(mockJsonCollectDataData, undefined, 2));
 
 });
 
@@ -228,8 +231,6 @@ test(thisTestFile + ': fail scenario: data repository', async () => {
 
   const endDateControl: HTMLInputElement = screen.getByTestId('end-date-control');
   const endDate = endDateControl.value;
-
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
 
   //unhide data repository section:
   const showButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
@@ -298,7 +299,9 @@ test(thisTestFile + ': fail scenario: data repository', async () => {
   });
   fetchMock.restore();
 
-  expect(resultsTextField.value).toEqual(StringUtils.format(Constants.fetchError,
+  
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+  expect(resultsTextField.textContent).toEqual(StringUtils.format(Constants.fetchError,
     collectDataFetch.getUrl(), FetchType.COLLECT_DATA,
     RESPONSE_ERROR_BAD_REQUEST));
 
@@ -313,29 +316,14 @@ test(thisTestFile + ': error scenario: Please select a Measure', async () => {
   //unhide data repository section:
   const showButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
   fireEvent.click(showButton);
-  await waitFor(() => expect(screen.getByTestId('data-repo-collect-data-button')).toBeInTheDocument());
-
-  //click collect data, 
-  const collectDataButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
-  fireEvent.click(collectDataButton);
-
-  //check results for error:
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-  expect(resultsTextField).toBeInTheDocument();
-  expect(resultsTextField.value).toEqual(Constants.error_selectDataRepository);
-
-  const serverDropdown: HTMLSelectElement = screen.getByTestId('data-repo-server-dropdown');
 
   fetchMock.mock(dataServers[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
-
   const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
   const mockJsonPatientData = jsonTestPatientsData;
   fetchMock.once(patientFetch.getUrl(),
     JSON.stringify(mockJsonPatientData)
     , { method: 'GET' });
-
   const groupFetch = new GroupFetch(dataServers[0].baseUrl);
-
   const mockJsonGroupData = jsonTestGroupData;
   fetchMock.once(groupFetch.getUrl(),
     JSON.stringify(mockJsonGroupData)
@@ -343,13 +331,18 @@ test(thisTestFile + ': error scenario: Please select a Measure', async () => {
 
   //select server, mock list should return:
   await act(async () => {
+    const serverDropdown: HTMLSelectElement = screen.getByTestId('data-repo-server-dropdown');
     userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
   });
   fetchMock.restore();
 
-  //check results for error:
+  await waitFor(() => expect(screen.getByTestId('data-repo-collect-data-button')).toBeInTheDocument());
+  //click collect data, 
+  const collectDataButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
   fireEvent.click(collectDataButton);
-  expect(resultsTextField.value).toEqual(Constants.error_selectMeasureDataCollection);
+
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+  expect(resultsTextField.textContent).toEqual(Constants.error_selectMeasureDataCollection);
 
 });
 

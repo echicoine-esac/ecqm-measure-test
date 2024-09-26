@@ -57,6 +57,9 @@ beforeEach(() => {
 
 });
 
+beforeAll(() => {
+  global.URL.createObjectURL = jest.fn();
+});
 
 //RENDERING: 
 test(thisTestFile + ' renders properly', async () => {
@@ -93,9 +96,9 @@ test(thisTestFile + ' fail scenario: submit without any selection', async () => 
   const submitButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
   fireEvent.click(submitButton);
 
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
   expect(resultsTextField).toBeInTheDocument();
-  expect(resultsTextField.value).toEqual(Constants.error_generateMeasureReport);
+  expect(resultsTextField.textContent).toEqual(Constants.error_generateMeasureReport);
 });
 
 
@@ -215,8 +218,8 @@ test(thisTestFile + ' success scenario: submit', async () => {
       await fireEvent.click(evaluateButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-    expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+    expect(resultsTextField.textContent).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
 
   }
 
@@ -246,9 +249,9 @@ test(thisTestFile + ' success scenario: submit', async () => {
     });
     fetchMock.restore();
 
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.value).toEqual('true');//Constants.dataSubmitted);
+    expect(resultsTextField.textContent).toEqual('true');//Constants.dataSubmitted);
   }
 
 });
@@ -370,8 +373,8 @@ test(thisTestFile + ' fail scenario: submit', async () => {
       await fireEvent.click(evaluateButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-    expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+    expect(resultsTextField.textContent).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
 
   }
 
@@ -403,9 +406,9 @@ test(thisTestFile + ' fail scenario: submit', async () => {
     });
     fetchMock.restore();
 
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.value).toEqual('Using http://localhost:8080/1/MeasureReport/ to retrieve Post Measure Report caused: Error: this is a test');
+    expect(resultsTextField.textContent).toEqual('Using http://localhost:8080/1/MeasureReport/ to retrieve Post Measure Report caused: Error: this is a test');
   }
 
 });
@@ -529,8 +532,8 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
       await fireEvent.click(evaluateButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-    expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+    expect(resultsTextField.textContent).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
 
   }
 
@@ -548,9 +551,9 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
     });
     fetchMock.restore();
 
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.value).toEqual('Missing required property: selectedReceiving');
+    expect(resultsTextField.textContent).toEqual('Missing required property: selectedReceiving');
   }
 
 });

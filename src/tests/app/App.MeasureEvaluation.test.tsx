@@ -61,6 +61,10 @@ beforeEach(() => {
 
 });
 
+beforeAll(() => {
+  global.URL.createObjectURL = jest.fn();
+});
+
 //RENDERING: 
 test(thisTestFile + 'renders properly', async () => {
   await act(async () => {
@@ -192,8 +196,8 @@ test(thisTestFile + ' success scenario: evaluate data', async () => {
       await fireEvent.click(evaluateButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-    expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+    expect(resultsTextField.textContent).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
 
   }
 });
@@ -325,9 +329,9 @@ test(thisTestFile + ' success scenario: submit data', async () => {
       await fireEvent.click(submitButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
 
-    const swCon: boolean = resultsTextField.value.startsWith(Constants.dataSubmitted);
+    const swCon: boolean | undefined = resultsTextField?.textContent?.startsWith(Constants.dataSubmitted);
 
     expect(swCon).toEqual(true);
   }
@@ -433,9 +437,9 @@ test(thisTestFile + ' fail scenario: submit data', async () => {
       await fireEvent.click(submitButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
 
-    expect(resultsTextField.value).toEqual('Missing required property: collectedData');
+    expect(resultsTextField.textContent).toEqual('Missing required property: collectedData');
   }
 });
 
@@ -551,9 +555,9 @@ test(thisTestFile + ' fail scenario: evaluate data without selecting Server', as
       await fireEvent.click(evaluateButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
 
-    expect(resultsTextField.value).toEqual(Constants.error_measureEvaluationServer);
+    expect(resultsTextField.textContent).toEqual(Constants.error_measureEvaluationServer);
 
   }
 
