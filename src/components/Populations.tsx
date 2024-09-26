@@ -3,9 +3,9 @@ import { PopulationScoring } from '../models/PopulationScoring';
 
 // Props for Populations
 interface props {
-  showPopulations: boolean;
+  showPopulations: boolean | undefined;
   populationScoring: PopulationScoring[] | undefined;
-  measureScoringType: string;
+  measureScoringType: string | undefined;
 }
 
 // Populations component displays the population cards
@@ -21,18 +21,16 @@ const Populations: React.FC<props> = ({ showPopulations, populationScoring, meas
   return (
     <div>
       {showPopulations ? (
-        <div style={{ textAlign: 'start', marginTop: '20px' }}>
+        <div style={{ textAlign: 'start'}}>
           <h5 data-testid={'pops-measure-score-type'}>
             {'Measure Scoring Type: '}
             {measureScoringType && measureScoringType.length > 0 ? measureScoringType : 'N/A'}
           </h5>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-
-
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px'}}>
             {populationScoring && Array.from(populationScoring)
               .map((scoring, index) => (
                 <div key={index + scoring.groupID} style={{ flexBasis: widthPercentage }}>
-                  <table className="table mt-4" style={{ width: '100%', border: '2px solid lightgrey' }}>
+                  <table className="table mt-4" style={{ width: '100%', border: '2px solid lightgrey', background: 'white'  }}>
                     <thead style={{ background: '#F7F7F7' }}>
                       <tr>
                         <th>

@@ -60,6 +60,7 @@ beforeEach(() => {
 
 beforeAll(() => {
   global.URL.createObjectURL = jest.fn();
+  window.HTMLElement.prototype.scrollIntoView = jest.fn();
 });
 
 //RENDERING:

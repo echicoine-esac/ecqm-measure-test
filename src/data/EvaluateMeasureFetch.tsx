@@ -100,11 +100,27 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        let measureData: EvaluateMeasureResult = {
-            jsonBody: data,
-            measureGroups: data.group
+        if (!Array.isArray(data?.group)){
+            try {
+                let measureEvalData: EvaluateMeasureResult = {
+                    jsonBody: JSON.stringify(data, undefined, 2),
+                    measureGroups: undefined
+                }
+
+                return measureEvalData;
+
+              } catch (error: any) {
+                 console.log(error);
+                 return undefined;
+              }
         }
-        return measureData;
+
+
+        let measureEvalData: EvaluateMeasureResult = {
+            jsonBody: data,
+            measureGroups: Array.isArray(data?.group) ? data.group : undefined
+        }
+        return measureEvalData;
     }
 
 }

@@ -30,6 +30,7 @@ import { HashParamUtils } from './utils/HashParamUtils';
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
+import Populations from './components/Populations';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -127,7 +128,7 @@ const App: React.FC = () => {
   const [loginModalShow, setLoginModalShow] = useState<boolean>(false);
 
   // Population states
-  const [measureScoring, setMeasureScoring] = useState<string>('');
+  const [measureScoringType, setMeasureScoring] = useState<string>('');
   const [populationScoring, setPopulationScoring] = useState<PopulationScoring[]>([]);
 
 
@@ -185,7 +186,7 @@ const App: React.FC = () => {
     if (previouslySelectedKnowledgeRepo && previouslySelectedKnowledgeRepo !== 'undefined' && previouslySelectedKnowledgeRepo?.length > 0) {
       resumeOAuthFlow(previouslySelectedKnowledgeRepo);
     }
-  // eslint-disable-next-line 
+    // eslint-disable-next-line 
   }, []);
 
   useEffect(() => {
@@ -338,7 +339,7 @@ const App: React.FC = () => {
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
       selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
 
-    setResults(Constants.preFetchMessage + evaluateMeasureFetch.getUrl() + '...') ;
+    setResults(Constants.preFetchMessage + evaluateMeasureFetch.getUrl() + '...');
 
     // Set the loading state since this call can take a while to return
     setLoading(true);
@@ -346,15 +347,31 @@ const App: React.FC = () => {
     try {
       let evaluateMeasureResult = await evaluateMeasureFetch.fetchData(accessToken);
 
+      if (!evaluateMeasureResult) {
+        setResults('Operation returned with erroneous data structure.');
+        setShowPopulations(false);
+        setLoading(false);
+        return;
+      }
+
       // Handle the error case where an OperationOutcome was returned instead of a MeasureReport
       if (evaluateMeasureResult.jsonBody.resourceType === 'OperationOutcome') {
-        setResults(JSON.stringify(evaluateMeasureResult, undefined, 2));
+        setResults('Operation returned with unexpected error:\n\n' + JSON.stringify(evaluateMeasureResult, undefined, 2));
+        setShowPopulations(false);
+        setLoading(false);
+        return;
       } else {
         const retJSON = JSON.stringify(evaluateMeasureResult.jsonBody, undefined, 2);
         setMeasureReport(retJSON);
         setResults(retJSON);
         // Iterate through the population names to set the state
         const measureGroups: GroupElement[] = evaluateMeasureResult.measureGroups;
+        if (!measureGroups) {
+          setResults('Operation returned with unexpected data structure: \n' + evaluateMeasureResult.jsonBody);
+          setShowPopulations(false);
+          setLoading(false);
+          return;
+        }
 
         let populationScoringCollection: PopulationScoring[] = [];
 
@@ -671,8 +688,7 @@ const App: React.FC = () => {
         servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluationServer}
         selectedMeasureEvaluation={selectedMeasureEvaluationServer} submitData={submitData}
         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
-        //Scoring now captured within evaluate measure card:
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring}
+
         selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
         //used for href to subject
         selectedDataRepo={selectedDataRepo} />
@@ -691,7 +707,13 @@ const App: React.FC = () => {
         selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}
         selectedPatient={selectedPatient} />
 
-      <Results results={results} selectedMeasure={selectedMeasure}/>
+
+
+      <Results results={results} selectedMeasure={selectedMeasure}
+        //Populations now captured within results card:
+        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} />
+
+
 
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />

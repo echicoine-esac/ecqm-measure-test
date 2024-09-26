@@ -1,9 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MeasureEvaluation from '../../components/MeasureEvaluation';
-import { ServerUtils } from '../../utils/ServerUtils';
 import { Constants } from '../../constants/Constants';
-import { PopulationScoring } from '../../models/PopulationScoring';
+import { ServerUtils } from '../../utils/ServerUtils';
 
 beforeEach(() => {
     jest.spyOn(ServerUtils, 'getServerList').mockImplementation(async () => {
@@ -22,10 +21,6 @@ test('MeasureEvaluation expect functions to be called properly', async () => {
     const submitData = jest.fn();
     const evaluateMeasure = jest.fn();
 
-    const showPopulations: boolean = false;
-    const populationScoring: PopulationScoring[] = [];
-    const measureScoringType: string = '';
-
     render(<MeasureEvaluation
         showMeasureEvaluation={showMeasureEvaluation}
         setShowMeasureEvaluation={setShowMeasureEvaluation}
@@ -36,9 +31,7 @@ test('MeasureEvaluation expect functions to be called properly', async () => {
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
         setModalShow={jest.fn()}
-        populationScoring={populationScoring}
-        showPopulations={showPopulations}
-        measureScoringType={measureScoringType}
+
         selectedDataRepo={servers[0]}
     />);
 
@@ -67,10 +60,6 @@ test('MeasureEvaluation expect spinner buttons to show with loading set to true'
     const submitData = jest.fn();
     const evaluateMeasure = jest.fn();
 
-    const showPopulations: boolean = false;
-    const populationScoring: PopulationScoring[] = [];
-    const measureScoringType: string = '';
-
     render(<MeasureEvaluation
         showMeasureEvaluation={showMeasureEvaluation}
         setShowMeasureEvaluation={setShowMeasureEvaluation}
@@ -81,9 +70,7 @@ test('MeasureEvaluation expect spinner buttons to show with loading set to true'
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
         setModalShow={jest.fn()}
-        populationScoring={populationScoring}
-        showPopulations={showPopulations}
-        measureScoringType={measureScoringType}
+
         selectedDataRepo={servers[0]}
     />);
 
@@ -105,10 +92,6 @@ test('MeasureEvaluation hide/show functionality', async () => {
     const submitData = jest.fn();
     const evaluateMeasure = jest.fn();
 
-    const showPopulations: boolean = false;
-    const populationScoring: PopulationScoring[] = [];
-    const measureScoringType: string = '';
-
     render(<MeasureEvaluation
         showMeasureEvaluation={showMeasureEvaluation}
         setShowMeasureEvaluation={setShowMeasureEvaluation}
@@ -119,9 +102,7 @@ test('MeasureEvaluation hide/show functionality', async () => {
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
         setModalShow={jest.fn()}
-        populationScoring={populationScoring}
-        showPopulations={showPopulations}
-        measureScoringType={measureScoringType}
+
         selectedDataRepo={servers[0]}
     />);
 
@@ -142,10 +123,6 @@ test('MeasureEvaluation hide/show functionality 2', async () => {
     const submitData = jest.fn();
     const evaluateMeasure = jest.fn();
 
-    const showPopulations: boolean = false;
-    const populationScoring: PopulationScoring[] = [];
-    const measureScoringType: string = '';
-
     render(<MeasureEvaluation
         showMeasureEvaluation={showMeasureEvaluation}
         setShowMeasureEvaluation={setShowMeasureEvaluation}
@@ -156,7 +133,6 @@ test('MeasureEvaluation hide/show functionality 2', async () => {
         evaluateMeasure={evaluateMeasure}
         loading={loadingFlag}
         setModalShow={jest.fn()}
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType}
         selectedDataRepo={servers[0]}
     />);
 

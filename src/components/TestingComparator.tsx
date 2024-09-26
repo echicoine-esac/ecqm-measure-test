@@ -51,7 +51,11 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
   selectedMeasureEvaluationServer, selectedMeasure, selectedKnowledgeRepositoryServer, selectedPatient }) => {
 
 
-  const requiredDataPresent = selectedPatientGroup && selectedDataRepoServer && selectedMeasureEvaluationServer && selectedMeasure && selectedKnowledgeRepositoryServer;
+  const requiredDataPresent = selectedPatientGroup 
+  && selectedDataRepoServer?.baseUrl
+  && selectedMeasureEvaluationServer?.baseUrl 
+  && selectedMeasure 
+  && selectedKnowledgeRepositoryServer?.baseUrl;
 
   const convertToID = (str: any | undefined): string => {
     let strIn: string = '' + str;
@@ -234,7 +238,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   </li>
 
                   {/* Data Repository Server */}
-                  <li  data-testid='test-compare-checklist-data-repo-server'>
+                  <li data-testid='test-compare-checklist-data-repo-server'>
                     {selectedDataRepoServer?.baseUrl ? '☑' : '☐'} Data Repository Server
                     {selectedDataRepoServer?.baseUrl && (
                       <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl}>({selectedDataRepoServer.baseUrl})</a></span>
@@ -283,11 +287,11 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <Table size='sm' className="table" key={key.display + key.id} style={{ width: '100%', border: '1px solid lightgrey', marginBottom: '0px' }}>
                     <thead style={{ background: '#F7F7F7', border: '1px solid lightgrey' }}>
                       <tr>
-                        <th style={{ width: '50%', textAlign: 'left',  padding: '10px' }}>
+                        <th style={{ width: '50%', textAlign: 'left', padding: '10px' }}>
                           <h5 data-testid={'test-comp-patient-display' + convertToID(key.id)}>{key.display}</h5>
                           <h6 data-testid={'test-comp-patient-id' + convertToID(key.id)}>ID: {key.id}</h6>
                         </th>
-                        <th style={{ width: '50%', textAlign: 'left',  padding: '10px' }}>
+                        <th style={{ width: '50%', textAlign: 'left', padding: '10px' }}>
                           <h6>Comparison Result:</h6>
                           <h5 data-testid={'test-comp-result-' + convertToID(key.id)} className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}>
                             {value.discrepancyExists ? 'Discrepancy' : 'Match'}
@@ -312,7 +316,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                               {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
                                 // mark text in bold if discrepancy exists for this field
                                 <tr style={{ border: '1px solid lightgrey' }} key={index} className={group.discrepancy ? 'fw-bold' : ''}>
-                                  <td style={{ width: '100%', paddingLeft: '10px'}} data-testid={'test-comp-this-eval-group-code-' + index}>{group.code.coding[0].code}</td>
+                                  <td style={{ width: '100%', paddingLeft: '10px' }} data-testid={'test-comp-this-eval-group-code-' + index}>{group.code.coding[0].code}</td>
                                   <td style={{ width: '100%', paddingRight: '15px' }} data-testid={'test-comp-this-eval-group-count-' + index}>{group.count}</td>
                                 </tr>
                               ))}
@@ -339,7 +343,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                             </thead>
                             <tbody>
                               {value.fetchedMeasureReportGroups.map((group, index) => (
-                                <tr style={{ border: '1px solid lightgrey'}} key={index} className={group.discrepancy ? 'fw-bold' : ''}>
+                                <tr style={{ border: '1px solid lightgrey' }} key={index} className={group.discrepancy ? 'fw-bold' : ''}>
                                   <td style={{ width: '100%', paddingLeft: '10px' }} data-testid={'test-comp-prev-eval-group-code-' + index}>{group.code.coding[0].code}</td>
                                   <td style={{ width: '100%', paddingRight: '15px' }} data-testid={'test-comp-prev-eval-group-count-' + index}>{group.count}</td>
                                 </tr>

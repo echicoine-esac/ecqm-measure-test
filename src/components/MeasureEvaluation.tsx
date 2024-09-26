@@ -1,12 +1,10 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Server } from '../models/Server';
-import Populations from './Populations';
-import { PopulationScoring } from '../models/PopulationScoring';
 import { Constants } from '../constants/Constants';
-import { PatientGroup } from '../models/PatientGroup';
 import { Patient } from '../models/Patient';
+import { PatientGroup } from '../models/PatientGroup';
+import { Server } from '../models/Server';
 
 // Props for MeasureEvaluation
 interface props {
@@ -19,9 +17,6 @@ interface props {
   evaluateMeasure: (b: boolean) => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
-  showPopulations: boolean;
-  populationScoring: PopulationScoring[] | undefined;
-  measureScoringType: string;
   patientGroup?: PatientGroup;
   selectedPatient?: Patient;
   selectedDataRepo: Server | undefined;
@@ -29,8 +24,7 @@ interface props {
 
 // MeasureEvaluation component displays the fields for selecting and using the measure evaluation system
 const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation,
-  selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow,
-  showPopulations, populationScoring, measureScoringType, selectedPatient, patientGroup,
+  selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow, selectedPatient, patientGroup,
   selectedDataRepo }) => {
 
 
@@ -49,7 +43,6 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
       return '';
     }
   };
-
 
   return (
     <div className='card'>
@@ -93,7 +86,7 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
             </div>
           </div>
 
-          <Populations populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} />
+          
           <div className='row'>
             <div className='col-md-5 order-md-2'>
               <br />
