@@ -45,7 +45,7 @@ export class MeasureComparisonManager {
         this.selectedMeasureEvaluation = selectedMeasureEvaluation;
         this.startDate = startDate;
         this.endDate = endDate;
-        
+
     }
 
 
@@ -56,19 +56,19 @@ export class MeasureComparisonManager {
      */
     public async fetchGroups() {
         try {
-            
+
             const measureReportFetch = new MeasureReportFetch(this.selectedMeasureEvaluation,
                 this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate);
             this.measureReportURL = measureReportFetch.getUrl();
-            
+
             //MeasureReport fetch filters by date manually (period.start/period.end) comes back as entry array
             this.fetchedMeasureReportGroups = ScoringUtils.extractBundleMeasureReportGroupData(await measureReportFetch.fetchData(this.accessToken));
 
 
             const evaluateMeasureFetch = new EvaluateMeasureFetch(this.selectedMeasureEvaluation,
-                this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate);
+                this.selectedMeasure.name, this.startDate, this.endDate, true, this.selectedPatient);
             this.evaluatedMeasureURL = evaluateMeasureFetch.getUrl();
-             
+
             //evaluate measure comes back as a single MeasureReport
             this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonBody);
 
@@ -77,7 +77,7 @@ export class MeasureComparisonManager {
             console.log(error);
         }
     }
- 
+
 
     private compareMeasureGroups(): boolean {
         if (this.fetchedEvaluatedMeasureGroups.length !== this.fetchedMeasureReportGroups.length) {
@@ -91,6 +91,8 @@ export class MeasureComparisonManager {
                 sortedArray1[i].code.coding[0].code !== sortedArray2[i].code.coding[0].code ||
                 sortedArray1[i].count !== sortedArray2[i].count
             ) {
+                sortedArray1[i].discrepancy = true;
+                sortedArray2[i].discrepancy = true;
                 return true;
             }
         }

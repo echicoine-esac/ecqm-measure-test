@@ -21,6 +21,7 @@ test('expect functions to be called when selecting items in dropdown', async () 
 
     const fetchPatients = jest.fn();
     const setSelectedPatient = jest.fn();
+    const setSelectedPatientGroup = jest.fn();
 
     render(<DataRepository
         showDataRepo={showDataRepo}
@@ -34,6 +35,7 @@ test('expect functions to be called when selecting items in dropdown', async () 
         collectData={jest.fn()}
         loading={loadingFlag}
         setModalShow={jest.fn()}
+        setSelectedPatientGroup={setSelectedPatientGroup}
     />);
 
     //select first server
@@ -59,6 +61,7 @@ test('expect spinner to show when loading is true', async () => {
 
     const fetchPatients = jest.fn();
     const setSelectedPatient = jest.fn();
+    const setSelectedPatientGroup = jest.fn();
 
     render(<DataRepository
         showDataRepo={showDataRepo}
@@ -72,6 +75,7 @@ test('expect spinner to show when loading is true', async () => {
         collectData={jest.fn()}
         loading={loadingFlag}
         setModalShow={jest.fn()}
+        setSelectedPatientGroup={setSelectedPatientGroup}
     />);
 
     const evaluateButtonWithSpinner: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button-spinner');
@@ -86,10 +90,10 @@ test('hide section', async () => {
     const showDataRepo: boolean = false;
 
     const setShowDataRepo = jest.fn();
-    const setSelectedDataRepo = jest.fn();
     const fetchPatients = jest.fn();
     const setSelectedPatient = jest.fn();
     const collectData = jest.fn();
+    const setSelectedPatientGroup = jest.fn();
 
 
     render(<DataRepository
@@ -104,6 +108,7 @@ test('hide section', async () => {
         collectData={collectData}
         loading={loadingFlag}
         setModalShow={jest.fn()}
+        setSelectedPatientGroup={setSelectedPatientGroup}
     />);
 
     const hideShowButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
@@ -119,10 +124,10 @@ test('show section', async () => {
     const showDataRepo: boolean = true;
 
     const setShowDataRepo = jest.fn();
-    const setSelectedDataRepo = jest.fn();
     const fetchPatients = jest.fn();
     const setSelectedPatient = jest.fn();
     const collectData = jest.fn();
+    const setSelectedPatientGroup = jest.fn();
 
     render(<DataRepository
         showDataRepo={showDataRepo}
@@ -136,6 +141,7 @@ test('show section', async () => {
         collectData={collectData}
         loading={loadingFlag}
         setModalShow={jest.fn()}
+        setSelectedPatientGroup={setSelectedPatientGroup}
     />);
 
     const evaluateButton: HTMLButtonElement = screen.getByTestId('data-repo-hide-section-button');

@@ -1,22 +1,19 @@
 import { act, render, screen } from '@testing-library/react';
-import TestingComparator from '../../components/TestingComparator';
-import { Patient } from '../../models/Patient';
-import { MeasureComparisonManager } from '../../utils/MeasureComparisonManager';
-
-import jsonTestEvalMeasure from '../resources/fetchmock-test-compare-evaluate-measure.json';
-import jsonTestMeasureReport from '../resources/fetchmock-test-compare-measure-report.json';
-import jsonTestPatientsData from '../resources/fetchmock-test-compare-patients.json';
-
-import jsonTestMeasureData from '../resources/fetchmock-measure.json';
-
 import fetchMock from 'fetch-mock';
+import TestingComparator from '../../components/TestingComparator';
 import { Constants } from '../../constants/Constants';
 import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
 import { MeasureFetch } from '../../data/MeasureFetch';
 import { MeasureReportFetch } from '../../data/MeasureReportFetch';
 import { PatientFetch } from '../../data/PatientFetch';
 import { Measure } from '../../models/Measure';
+import { Patient } from '../../models/Patient';
 import { Server } from '../../models/Server';
+import { MeasureComparisonManager } from '../../utils/MeasureComparisonManager';
+import jsonTestMeasureData from '../resources/fetchmock-measure.json';
+import jsonTestEvalMeasure from '../resources/fetchmock-test-compare-evaluate-measure.json';
+import jsonTestMeasureReport from '../resources/fetchmock-test-compare-measure-report.json';
+import jsonTestPatientsData from '../resources/fetchmock-test-compare-patients.json';
 
 const thisTestFile = "Test Comparator";
 
@@ -61,8 +58,6 @@ test(thisTestFile + ': renders properly', async () => {
     let patientList: Array<Patient | undefined> = [];
 
     await act(async () => {
-
-
         //Patient total count mock (used in url formation for Patient fetch)
         fetchMock.mock(baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
         const patientFetch = await PatientFetch.createInstance(baseUrl);
@@ -91,7 +86,6 @@ test(thisTestFile + ': renders properly', async () => {
             }
         }
 
-
         for (const patient of patientList) {
             if (patient?.id === PATIENT_ID) {
                 patientIdx = patientList.indexOf(patient);
@@ -100,8 +94,8 @@ test(thisTestFile + ': renders properly', async () => {
         }
 
         //Evaluate Measure mock
-        const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer, patientList[patientIdx],
-            MEASURE_NAME, periodStart, periodEnd);
+        const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer,
+            MEASURE_NAME, periodStart, periodEnd, true, patientList[patientIdx]);
         const mockJsonEvaluateMeasureData = jsonTestEvalMeasure;
         fetchMock.once(evaluateMeasuresFetch.getUrl(),
             JSON.stringify(mockJsonEvaluateMeasureData)
@@ -135,7 +129,10 @@ test(thisTestFile + ': renders properly', async () => {
 
     render(<TestingComparator showTestCompare={true} setShowTestCompare={setShowTestCompare}
         items={testComparatorMap} compareTestResults={compareTestResults} loading={loadingFlag}
-        startDate={periodStart} endDate={periodEnd} />);
+        startDate={periodStart} endDate={periodEnd}
+        selectedDataRepoServer={dataServer} selectedPatientGroup={undefined}
+        selectedMeasureEvaluationServer={dataServer} selectedMeasure={MEASURE_NAME}
+        selectedKnowledgeRepositoryServer={dataServer} selectedPatient={patientList[patientIdx]} />);
 
     // const groupID1 = '2D0D08DB-219D-4C41-AB53-DE21F006D602';
 

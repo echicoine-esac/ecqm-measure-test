@@ -41,20 +41,32 @@ const App: React.FC = () => {
   const [servers, setServers] = useState<Array<Server | undefined>>([]);
   const [measures, setMeasures] = useState<Array<Measure | undefined>>([]);
   const [patients, setPatients] = useState<Array<Patient | undefined>>([]);
-  const [groups, setGroups] = useState<Map<string, PatientGroup> | undefined>(undefined);
+  const [patientGroups, setPatientGroups] = useState<Map<string, PatientGroup> | undefined>(undefined);
 
   // Selected States
+
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
-
   const setSelectedMeasureCaller = (measureName: SetStateAction<string>) => {
-    //reset our test comparator:
+    //reset our test comparator when new measure is selected:
     setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
-
+    //reset our selectedPatient to ensure patient data lines up with measure
+    setSelectedPatient(undefined);
+    //set the selected measure:
     setSelectedMeasure(measureName);
+
+    setShowPopulations(false);
+
+    resetResults();
   };
 
-
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
+  const setSelectedPatientCaller = (patient: SetStateAction<Patient | undefined>) => {
+    //reset our test comparator when new patient is selected:
+    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+    setSelectedPatient(patient);
+  };
+
+  const [selectedPatientGroup, setSelectedPatientGroup] = useState<PatientGroup | undefined>(undefined);
   const [selectedKnowledgeRepo, setSelectedKnowledgeRepo] = useState<Server>({
     id: '',
     baseUrl: '',
@@ -75,7 +87,7 @@ const App: React.FC = () => {
     clientSecret: '',
     scope: ''
   });
-  const [selectedMeasureEvaluation, setSelectedMeasureEvaluation] = useState<Server>({
+  const [selectedMeasureEvaluationServer, setSelectedMeasureEvaluationServer] = useState<Server>({
     id: '',
     baseUrl: '',
     authUrl: '',
@@ -137,31 +149,43 @@ const App: React.FC = () => {
   });
 
 
+  const resumeOAuthFlow = async (previouslySelectedKnowledgeRepo: string) => {
+    //remove the entry:
+    sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
 
-  useEffect(() => {
+    //ensure generatedStateCode
     HashParamUtils.buildHashParams();
 
-    // Get selected server from session since we will be redirected back to here
-    let selectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
-    if (selectedKnowledgeRepo) {
-      setSelectedKnowledgeRepo(JSON.parse(selectedKnowledgeRepo));
-      // If we got access Code but not token then call fetchMeasures again to finish the workflow
-      fetchMeasures(JSON.parse(selectedKnowledgeRepo));
-    }
-
-    // Only call to get the servers when the list is empty
-    if (servers.length === 0) {
-      initializeServers().then(r => {
-      });
+    //attempt to set the knowledge repo and fetchMeasures (resume flow)
+    let sessionString;
+    try {
+      sessionString = JSON.parse(previouslySelectedKnowledgeRepo);
+      setSelectedKnowledgeRepo(sessionString);
+      // Call fetchMeasures again to finish the workflow
+      await fetchMeasures(sessionString);
+    } catch (error: any) {
+      //sessionString likely 'undefined' 
+      HashParamUtils.removeCodeParam();
+      return;
     }
 
     // Remove the code from the URL
     HashParamUtils.removeCodeParam();
 
-    // console.log('HashParamUtils.getAccessCode' + ': ' + HashParamUtils.getAccessCode());
-    // console.log('HashParamUtils.getGeneratedStateCode' + ': ' + HashParamUtils.getGeneratedStateCode());
-    // console.log('HashParamUtils.getStateCode' + ': ' + HashParamUtils.getStateCode());
+  }
 
+  useEffect(() => {
+    // Only call to get the servers when the list is empty
+    if (servers.length === 0) {
+      initializeServers();
+    }
+
+    // Get selected oauth server from session  (likely redirected back to here if selectedKnowledgeRepo has value)
+    let previouslySelectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
+    if (previouslySelectedKnowledgeRepo && previouslySelectedKnowledgeRepo !== 'undefined' && previouslySelectedKnowledgeRepo?.length > 0) {
+      resumeOAuthFlow(previouslySelectedKnowledgeRepo);
+    }
+  // eslint-disable-next-line 
   }, []);
 
   useEffect(() => {
@@ -197,11 +221,13 @@ const App: React.FC = () => {
     resetResults();
 
     setLoading(true);
-    if (!knowledgeRepo || !knowledgeRepo.hasOwnProperty('id')) {
+    if (!knowledgeRepo?.hasOwnProperty('id')) {
       setSelectedKnowledgeRepo(knowledgeRepo);
       setShowPopulations(false);
       HashParamUtils.clearCachedValues();
       setLoading(false);
+      setMeasures([]);
+      setSelectedMeasure('');
       return;
     }
 
@@ -237,18 +263,29 @@ const App: React.FC = () => {
 
   // Function for retrieving the patients from the selected server
   const fetchPatients = async (dataRepo: Server) => {
-    resetResults();
+    setLoading(true);
 
+    if (!dataRepo?.baseUrl) {
+      setLoading(false);
+      setPatients([]);
+      setSelectedPatient(undefined);
+      setSelectedPatientGroup(undefined);
+      setPatientGroups(undefined);
+      setSelectedDataRepo(dataRepo);
+      return;
+    }
+
+    resetResults();
     setSelectedDataRepo(dataRepo);
     setShowPopulations(false);
 
     try {
-      setLoading(true);
+
       const groupFetch = new GroupFetch(dataRepo.baseUrl);
 
       let groupsMap: Map<string, PatientGroup> = await groupFetch.fetchData(accessToken);
 
-      setGroups(groupsMap);
+      setPatientGroups(groupsMap);
 
       const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
       setPatients(await patientFetch.fetchData(accessToken));
@@ -261,12 +298,14 @@ const App: React.FC = () => {
   };
 
   // Function for calling the server to perform the measure evaluation
-  const evaluateMeasure = async () => {
+  const evaluateMeasure = async (useSubject: boolean) => {
     resetResults();
+    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+
     clearPopulationCounts();
 
     // Make sure all required elements are set
-    if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
+    if (!selectedMeasureEvaluationServer || selectedMeasureEvaluationServer.baseUrl === '') {
       setResults(Constants.error_measureEvaluationServer);
       return;
     }
@@ -289,13 +328,19 @@ const App: React.FC = () => {
       setMeasureScoring(measureObj.scoring.coding[0].code);
     }
 
-    // Set the loading state since this call can take a while to return
-    setLoading(true);
+    const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
 
-    const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluation,
-      selectedPatient, selectedMeasure, startDate, endDate)
+    if (!selectedPatient && !patientGroup && useSubject) {
+      setResults(Constants.evaluateMeasure_noGroupFound);
+      return;
+    }
+
+    const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
+      selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
 
     setResults('Calling ' + evaluateMeasureFetch.getUrl());
+    // Set the loading state since this call can take a while to return
+    setLoading(true);
 
     try {
       let evaluateMeasureResult = await evaluateMeasureFetch.fetchData(accessToken);
@@ -382,7 +427,7 @@ const App: React.FC = () => {
   };
 
   // Function for calling the server to collect the data for a measure
-  const collectData = async () => {
+  const collectData = async (useSubject: boolean) => {
     resetResults();
 
     setShowPopulations(false);
@@ -397,12 +442,20 @@ const App: React.FC = () => {
       return;
     }
 
+    const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
+
+    if (!selectedPatient && !patientGroup && useSubject) {
+      setResults(Constants.evaluateMeasure_noGroupFound);
+      return;
+    }
+
+
     // Set loading to true for spinner
     setLoading(true);
 
 
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
-      startDate, endDate, selectedPatient)
+      startDate, endDate, useSubject, selectedPatient, patientGroup)
 
     let message = 'Calling ' + collectDataFetch.getUrl() + '...';
     setResults(message);
@@ -427,7 +480,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (!selectedMeasureEvaluation) {
+    if (!selectedMeasureEvaluationServer) {
       setResults(Constants.error_measureEvaluationServer);
       return;
     }
@@ -440,7 +493,7 @@ const App: React.FC = () => {
     setLoading(true);
 
     try {
-      setResults(await new SubmitDataFetch(selectedMeasureEvaluation,
+      setResults(await new SubmitDataFetch(selectedMeasureEvaluationServer,
         selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
@@ -503,7 +556,7 @@ const App: React.FC = () => {
     // Make sure all required elements are set
     let missingData = '';
 
-    if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
+    if (!selectedMeasureEvaluationServer || selectedMeasureEvaluationServer.baseUrl === '') {
       missingData = Constants.error_measureEvaluationServer + '\n';
     }
 
@@ -533,8 +586,8 @@ const App: React.FC = () => {
 
     //Patient Group data:
     const patientCompareList: Patient[] = [];
-    if (groups && groups.has(selectedMeasure)) {
-      const selectedMeasureGroup: PatientGroup | undefined = groups.get(selectedMeasure);
+    if (patientGroups?.has(selectedMeasure)) {
+      const selectedMeasureGroup: PatientGroup | undefined = patientGroups.get(selectedMeasure);
       //Whether its one Patient selected or the user intends all patients,
       //build a list by verifying Group has the Patient in it.
       if (selectedMeasureGroup && selectedPatient &&
@@ -551,7 +604,7 @@ const App: React.FC = () => {
     }
 
     if (patientCompareList.length === 0) {
-      setResults(Constants.testCompare_NoGroup);
+      setResults(Constants.evaluateMeasure_noGroupFound);
       return;
     }
 
@@ -565,7 +618,7 @@ const App: React.FC = () => {
         //patient belongs to this group, proceed:
         const mcMan = new MeasureComparisonManager(patientEntry,
           measureObj,
-          selectedMeasureEvaluation,
+          selectedMeasureEvaluationServer,
           startDate, endDate,
           accessToken);
 
@@ -608,18 +661,22 @@ const App: React.FC = () => {
       <br />
       <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
         selectedDataRepo={selectedDataRepo} patients={patients}
-        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatient}
+        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatientCaller}
         selectedPatient={selectedPatient}
         collectData={collectData} loading={loading} setModalShow={setServerModalShow}
         selectedMeasure={selectedMeasure}
-        groups={groups} />
+        groups={patientGroups}
+        setSelectedPatientGroup={setSelectedPatientGroup} />
       <br />
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
-        servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluation}
-        selectedMeasureEvaluation={selectedMeasureEvaluation} submitData={submitData}
+        servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluationServer}
+        selectedMeasureEvaluation={selectedMeasureEvaluationServer} submitData={submitData}
         evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
         //Scoring now captured within evaluate measure card:
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring} />
+        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoring}
+        selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
+        //used for href to subject
+        selectedDataRepo={selectedDataRepo} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving}
@@ -630,9 +687,12 @@ const App: React.FC = () => {
       <br />
       <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}
         items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
-        startDate={startDate} endDate={endDate} />
+        startDate={startDate} endDate={endDate} selectedDataRepoServer={selectedDataRepo}
+        selectedPatientGroup={selectedPatientGroup} selectedMeasureEvaluationServer={selectedMeasureEvaluationServer}
+        selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}
+        selectedPatient={selectedPatient} />
 
-      <Results results={results} />
+      <Results results={results}/>
 
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />

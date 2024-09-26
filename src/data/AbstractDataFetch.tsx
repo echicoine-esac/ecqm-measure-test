@@ -34,6 +34,10 @@ export abstract class AbstractDataFetch {
 
         await fetch(this.getUrl(), this.requestOptions)
             .then((response) => {
+                if (response?.status === 504){
+                    throw new Error('504 (Gateway Timeout)')
+                }
+
                 responseStatusText = response?.statusText;
                 return response.json();
             })
@@ -50,14 +54,6 @@ export abstract class AbstractDataFetch {
         return ret;
     };
 
-    isJsonString = (data: any): boolean => {
-        try {
-            JSON.stringify(data, undefined, 2);
-        } catch (e) {
-            return false;
-        }
-        return true;
-    }
 }
 
 

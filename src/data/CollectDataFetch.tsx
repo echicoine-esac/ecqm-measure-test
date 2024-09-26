@@ -1,8 +1,9 @@
 import { Constants } from '../constants/Constants';
+import { Patient } from '../models/Patient';
+import { PatientGroup } from '../models/PatientGroup';
+import { Server } from '../models/Server';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
-import {Server} from '../models/Server';
-import { Patient } from '../models/Patient';
 
 export class CollectDataFetch extends AbstractDataFetch {
     type: FetchType;
@@ -12,12 +13,17 @@ export class CollectDataFetch extends AbstractDataFetch {
     startDate: string = '';
     endDate: string = '';
     selectedPatient: Patient | undefined;
+    patientGroup: PatientGroup | undefined;
+    useSubject: boolean = false;
 
     constructor(selectedDataRepo: Server | undefined,
         selectedMeasure: string,
         startDate: string,
         endDate: string,
-        selectedPatient?: Patient) {
+        useSubject: boolean,
+        selectedPatient?: Patient,
+        patientGroup?: PatientGroup | undefined
+    ) {
 
         super();
         this.type = FetchType.COLLECT_DATA;
@@ -38,26 +44,60 @@ export class CollectDataFetch extends AbstractDataFetch {
             throw new Error(StringUtils.format(Constants.missingProperty, 'endDate'));
         }
 
+        if (useSubject) {
+            if (!selectedPatient || selectedPatient.id === '') {
+                if (!patientGroup || patientGroup.id === '') {
+                    throw new Error(StringUtils.format(Constants.missingProperty, 'Patient or Group'));
+                }
+            }
+        }
+
         this.selectedDataRepo = selectedDataRepo;
         this.selectedMeasure = selectedMeasure;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.useSubject = useSubject;
+
         if (selectedPatient) this.selectedPatient = selectedPatient;
+        if (patientGroup) this.patientGroup = patientGroup;
+
     }
 
     public getUrl(): string {
-        let ret = this.selectedDataRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
-            '/$collect-data?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
 
-        if (this.selectedPatient !== undefined && this.selectedPatient.id) {
-            ret = ret + '&subject=' + this.selectedPatient.id;
+        let subject = '';
+        if (this.useSubject) {
+            if (this.selectedPatient?.id) {
+                subject = 'Patient/' + this.selectedPatient.id;
+            } else if (this.patientGroup) {
+                subject = 'Group/' + this.patientGroup.id;
+            }
+            return StringUtils.format(Constants.collectDataWithSubjectFetchURL,
+                this.selectedDataRepo?.baseUrl,
+                this.selectedMeasure,
+                this.startDate,
+                this.endDate,
+                subject
+            );
         }
-        return ret;
+
+        //useSubject not true, return url without subject line
+        return StringUtils.format(Constants.collectDataWithSubjectFetchURL.replace('&subject={4}', ''),
+            this.selectedDataRepo?.baseUrl,
+            this.selectedMeasure,
+            this.startDate,
+            this.endDate
+        );
+
     }
 
     protected processReturnedData(data: any) {
-        const ret: string = JSON.stringify(data, undefined, 2)
-        return ret;
+        try {
+            const ret: string = JSON.stringify(data, undefined, 2)
+            return ret;
+        } catch (error: any) {
+            return data;
+        }
     }
 
 }

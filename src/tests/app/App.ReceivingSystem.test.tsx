@@ -178,13 +178,14 @@ test(thisTestFile + ' success scenario: submit', async () => {
     });
     fetchMock.restore();
 
-    const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
-    userEvent.selectOptions(patientDropdown, expectedDisplayName);
-
+    //first select measure
     const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
     userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
+
+    //now select patient
+    const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
+    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 
 
@@ -199,10 +200,11 @@ test(thisTestFile + ' success scenario: submit', async () => {
 
     //mock returned measure evaluation data
     const evaluateDataFetch = new EvaluateMeasureFetch(dataServers[0],
-      mockPatientList[0],
       mockMeasureList[0].name,
       startDate,
-      endDate);
+      endDate,
+      true,
+      mockPatientList[0]);
     const mockJsonResultsData = jsonTestMeasureEvaluationData;
     fetchMock.once(evaluateDataFetch.getUrl(),
       JSON.stringify(mockJsonResultsData)
@@ -331,13 +333,14 @@ test(thisTestFile + ' fail scenario: submit', async () => {
     });
     fetchMock.restore();
 
-    const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
-    userEvent.selectOptions(patientDropdown, expectedDisplayName);
-
+    //first select measure
     const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
     userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
+
+    //now select patient
+    const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
+    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 
 
@@ -352,10 +355,11 @@ test(thisTestFile + ' fail scenario: submit', async () => {
 
     //mock returned measure evaluation data
     const evaluateDataFetch = new EvaluateMeasureFetch(dataServers[0],
-      mockPatientList[0],
       mockMeasureList[0].name,
       startDate,
-      endDate);
+      endDate,
+      true,
+      mockPatientList[0]);
     const mockJsonResultsData = jsonTestMeasureEvaluationData;
     fetchMock.once(evaluateDataFetch.getUrl(),
       JSON.stringify(mockJsonResultsData)
@@ -488,13 +492,14 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
     });
     fetchMock.restore();
 
-    const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
-    userEvent.selectOptions(patientDropdown, expectedDisplayName);
-
+    //first select measure
     const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
     userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
+
+    //now select patient
+    const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
+    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 
 
@@ -509,10 +514,11 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
 
     //mock returned measure evaluation data
     const evaluateDataFetch = new EvaluateMeasureFetch(dataServers[0],
-      mockPatientList[0],
       mockMeasureList[0].name,
       startDate,
-      endDate);
+      endDate,
+      true,
+      mockPatientList[0]);
     const mockJsonResultsData = jsonTestMeasureEvaluationData;
     fetchMock.once(evaluateDataFetch.getUrl(),
       JSON.stringify(mockJsonResultsData)

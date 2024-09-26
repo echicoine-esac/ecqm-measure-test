@@ -21,14 +21,9 @@ export class Constants {
     public static readonly error_selectReceivingSystemServer = 'Please select a Data Repository server to use';
     public static readonly error_selectMeasureToSubmit = 'Please select a Measure to collect the data for';
 
-    public static readonly evaluateMeasureFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&reportType=subject-list';
-    // public static readonly evaluateMeasureWithPatientFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject';
-    public static readonly evaluateMeasureWithPatientFetchURL = '{0}Measure/{1}/$evaluate-measure?subject={2}&periodStart={3}&periodEnd={4}';
+    public static readonly collectDataWithSubjectFetchURL = '{0}Measure/{1}/$collect-data?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';
 
-    // Expected: "http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?subject=selectedPatient&periodStart=startDate&periodEnd=endDate"
-    // Received: "http://localhost:8080/1/Measure/selectedMeasure/$evaluate-measure?periodStart=startDate&periodEnd=endDate&subject=selectedPatient&reportType=subject"
-
-
+    public static readonly evaluateMeasureWithSubjectFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';
 
     public static readonly measureReportFetchURL_byEvaluatedResource = '{0}MeasureReport?evaluated-resource=Patient/{1}';
     public static readonly measureReportFetchURL_byMeasure = '{0}MeasureReport?evaluated-resource=Patient/{1}&measure=Measure/{2}';
@@ -43,7 +38,6 @@ export class Constants {
 
     public static readonly groupUrlEnding = 'Group';
 
-
     public static readonly error_selectKnowledgeRepository = 'Please select a Knowledge Repository server to use';
 
     public static readonly dataSubmitted = 'Data Submitted';
@@ -52,9 +46,12 @@ export class Constants {
     public static readonly measurePosted = 'Measure Posted';
     public static readonly measurePostedFetchDataError = 'There was an error posting the measure';
 
-    public static readonly testCompare_NoGroup = 'No Patient Group files could be established for the selected Measure.';
-    public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with existing MeasureReports. To begin, select a Measure, select a Data Repository Server for Patient and MeasureReport data, select a Patient (NOTE: for bulk processing of all Patients, leave unselected), and select a Measure Evaluation Server.';
+    public static readonly evaluateMeasure_noGroupFound = 'When no Patient is selected, this operation attempts to use Group data. No Patient Group data could be established for the selected Measure. Select an individual Patient from the Patient dropdown and attempt operation again.';
+    public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with existing MeasureReports and displays a summary of discrepancies and matches. To begin, verify the following items are established:';
+    
+    public static readonly largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
 
+    
     //testing purposes:
     public static readonly serverTestData: Server[] = [
         {

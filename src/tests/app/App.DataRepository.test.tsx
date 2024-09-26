@@ -19,6 +19,8 @@ import jsonTestGroupData from '../resources/fetchmock-group.json';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
 
+const useSubject = true;
+
 const thisTestFile = "Data Repository";
 
 const RESPONSE_ERROR_BAD_REQUEST = 'Bad Request';
@@ -176,20 +178,24 @@ test(thisTestFile + ': success scenario: Collect Data', async () => {
   });
   fetchMock.restore();
 
-  const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
+  //first select measure
+  const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
+  userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
 
+  //now select patient
+  const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
   const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
   userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
-  const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
-  userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
 
   //mock returned data repo data
   const collectDataFetch = new CollectDataFetch(dataServers[0],
     mockMeasureList[0].name,
     startDate,
     endDate,
+    useSubject,
     mockPatientList[0]);
+
   const mockJsonCollectDataData = jsonTestCollectDataData;
   fetchMock.once(collectDataFetch.getUrl(),
     JSON.stringify(mockJsonCollectDataData)
@@ -200,6 +206,7 @@ test(thisTestFile + ': success scenario: Collect Data', async () => {
     const collectDataButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
     fireEvent.click(collectDataButton);
   });
+
   fetchMock.restore();
 
   expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonCollectDataData, undefined, 2));
@@ -266,18 +273,21 @@ test(thisTestFile + ': fail scenario: data repository', async () => {
   });
   fetchMock.restore();
 
+  //first select measure
+  const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
+  userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
+
+  //now select patient
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
   const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
   userEvent.selectOptions(patientDropdown, expectedDisplayName);
-
-  const knowledgeRepoMeasureDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-measure-dropdown');
-  userEvent.selectOptions(knowledgeRepoMeasureDropdown, mockMeasureList[0].name);
 
   //mock returned data repo data
   const collectDataFetch = new CollectDataFetch(dataServers[0],
     mockMeasureList[0].name,
     startDate,
     endDate,
+    useSubject,
     mockPatientList[0]);
   fetchMock.once(collectDataFetch.getUrl(), 400);
 

@@ -1,10 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { PatientFetch } from '../data/PatientFetch';
 import { PatientGroup, Member } from '../models/PatientGroup';
 import { Patient } from '../models/Patient';
 import { Server } from '../models/Server';
+import { Constants } from '../constants/Constants';
 
 interface props {
   showDataRepo: boolean;
@@ -15,27 +16,62 @@ interface props {
   fetchPatients: (dataRepo: Server) => void;
   setSelectedPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>;
   selectedPatient: Patient | undefined;
-  collectData: () => void;
+  collectData: (b: boolean) => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
   selectedMeasure?: string;
-  groups?: Map<string, PatientGroup>;
+  groups?: Map<string, PatientGroup>
+  setSelectedPatientGroup: React.Dispatch<React.SetStateAction<PatientGroup | undefined>>;
+
 }
 
-const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients, fetchPatients, setSelectedPatient, selectedPatient, collectData, loading, setModalShow, selectedMeasure, groups }) => {
+const DataRepository: React.FC<props> = ({
+  showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients,
+  fetchPatients, setSelectedPatient, selectedPatient, collectData, loading,
+  setModalShow, selectedMeasure, groups, setSelectedPatientGroup }) => {
+
   const [patientFilter, setPatientFilter] = useState<string>('');
+  const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
+  const [filteredPatients, setFilteredPatients] = useState<Array<Patient | undefined>>([]);
+  const [patientGroup, setPatientGroup] = useState<PatientGroup | undefined>();
 
-  const filteredPatients = patients.filter((patient) => {
-    const patDisplay = PatientFetch.buildUniquePatientIdentifier(patient);
+  const useGroupAsSubjectHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUseGroupAsSubject(event.target.checked);
+  };
 
-    let groupingCondition: boolean = true;
+  const buildSubjectText = (): string => {
+    if (selectedPatient?.id) {
+      return 'Patient/' + selectedPatient.id;
+    } else if (patientGroup?.id) {
+      return 'Group/' + patientGroup.id;
+    } else {
+      return '';
+    }
+  };
 
-    if (selectedMeasure) {
-      let group: PatientGroup | undefined = groups?.get(selectedMeasure);
+  const buildSelectedSubjectText = (): string => {
+    if (selectedPatient?.id) {
+      return selectedPatient.display;
+    } else if (patientGroup?.id) {
+      return 'Group/' + patientGroup.id;
+    } else {
+      return '';
+    }
+  };
 
-      //sometimes can be undefined
-      if (group) {
-        let members: Member[] = group.member;
+  const selectedSubject = useGroupAsSubject && buildSelectedSubjectText().length > 0 ? buildSelectedSubjectText() + ' on ' + selectedDataRepo?.baseUrl : selectedDataRepo?.baseUrl ? 'ALL Patients on ' + selectedDataRepo?.baseUrl : 'None (no Data Repository selected)';
+
+  useEffect(() => {
+    // Update filtered patients and patient group based on selectedMeasure
+    const updatedPatientGroup = selectedMeasure ? groups?.get(selectedMeasure) : undefined;
+    setPatientGroup(updatedPatientGroup);
+
+    const filteredPatients = patients.filter((patient) => {
+      const patDisplay = PatientFetch.buildUniquePatientIdentifier(patient);
+      let groupingCondition: boolean = true;
+
+      if (updatedPatientGroup) {
+        let members: Member[] = updatedPatientGroup.member;
         let patFound: boolean = false;
         for (let member of members) {
           if (member.entity.reference.split('Patient/')[1] === patient?.id) {
@@ -45,9 +81,18 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
         }
         groupingCondition = patFound;
       }
-    }
-    return groupingCondition && patDisplay?.toLowerCase().includes(patientFilter.toLowerCase());
-  });
+
+      return groupingCondition && patDisplay?.toLowerCase().includes(patientFilter.toLowerCase());
+    });
+
+    setFilteredPatients(filteredPatients);
+
+    // Update the selected patient group outside the rendering phase
+    setSelectedPatientGroup(updatedPatientGroup);
+  },
+    //dependency array (when useEffect will trigger:)
+    [patients, selectedMeasure, patientFilter, groups, setSelectedPatientGroup]);
+
 
   return (
     <div className='card'>
@@ -58,7 +103,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
             <div className='col-md-8 order-md-2 text-muted' />
           ) : (
             <div className='col-md-8 order-md-2 text-muted'>
-              Selected Patient: {selectedPatient?.display}
+              Selected Subject: {selectedSubject}
             </div>
           )}
           <div className='col-md-1 order-md-3'>
@@ -89,7 +134,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
           </div>
           <div className='row'>
             <div className='col-md-5 order-md-1'>
-              <select data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo!.baseUrl}
+              <select disabled={loading} data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo?.baseUrl}
                 onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                 {servers.map((server, index) => (
@@ -101,11 +146,11 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>
               }>
-                <Button variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
+                <Button disabled={loading} variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
               </OverlayTrigger>
             </div>
             <div className='col-md-6 order-md-2'>
-              <select data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
+              <select disabled={loading} data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
                 onChange={(e) => {
                   const selectedPatientId = e.target.value;
                   const selectedPatientObject = patients.find(
@@ -121,7 +166,7 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                   </option>
                 ))}
               </select>
-              <input type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
+              <input disabled={loading} type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
                 onChange={(e) => setPatientFilter(e.target.value)} />
             </div>
             <div className='col-md-5 order-md-2'>
@@ -143,10 +188,28 @@ const DataRepository: React.FC<props> = ({ showDataRepo, setShowDataRepo, server
                   className='w-100 btn btn-primary btn-lg'
                   id='evaluate'
                   disabled={loading}
-                  onClick={(e) => collectData()}>
+                  onClick={(e) => collectData(useGroupAsSubject && buildSubjectText().length > 0)}>
                   Collect Data</Button>
               )}
             </div>
+          </div>
+          <div className='row-md-1 ml-auto'>
+            {buildSubjectText().length > 0 &&
+              <label>
+                <input
+                  type="checkbox"
+                  checked={useGroupAsSubject}
+                  onChange={useGroupAsSubjectHandler}
+                  disabled={loading}>
+                </input>
+                {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank' rel='noreferrer'>{buildSubjectText()}</a>
+              </label>
+            }
+            {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedDataRepo?.baseUrl) && (
+              <div>
+                {Constants.largeDataNOTE}
+              </div>
+            )}
           </div>
         </div>
       ) : (
