@@ -226,7 +226,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                 <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
 
                   {/* Measure */}
-                  <li>
+                  <li data-testid='test-compare-checklist-measure'>
                     {selectedMeasure ? '☑' : '☐'} Measure
                     {selectedKnowledgeRepositoryServer?.baseUrl && selectedMeasure && (
                       <span> <a target='_blank' rel='noreferrer' href={selectedKnowledgeRepositoryServer?.baseUrl + 'Measure/' + selectedMeasure}>({selectedMeasure})</a></span>
@@ -234,7 +234,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   </li>
 
                   {/* Data Repository Server */}
-                  <li>
+                  <li  data-testid='test-compare-checklist-data-repo-server'>
                     {selectedDataRepoServer?.baseUrl ? '☑' : '☐'} Data Repository Server
                     {selectedDataRepoServer?.baseUrl && (
                       <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl}>({selectedDataRepoServer.baseUrl})</a></span>
@@ -242,7 +242,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   </li>
 
                   {/* Patient Group */}
-                  <li>
+                  <li data-testid='test-compare-checklist-patient-group'>
                     {selectedPatientGroup?.id ? '☑' : '☐'} Patient Group
                     {selectedPatientGroup?.id && selectedDataRepoServer?.baseUrl && (
                       <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl + 'Group/' + selectedPatientGroup?.id}>(Group/{selectedPatientGroup?.id})</a></span>
@@ -261,7 +261,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   }
 
                   {/* Measure Evaluation Server */}
-                  <li>
+                  <li data-testid='test-compare-checklist-measure-eval-server'>
                     {selectedMeasureEvaluationServer?.baseUrl ? '☑' : '☐'} Measure Evaluation Server
                     {selectedMeasureEvaluationServer?.baseUrl && (
                       <span> <a target='_blank' rel='noreferrer' href={selectedMeasureEvaluationServer?.baseUrl}>({selectedMeasureEvaluationServer.baseUrl})</a></span>
@@ -380,7 +380,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
             <div className='col-md-5 order-md-2'>
               <br />
               {loading ? (
-                <Button data-testid='test-compare-collect-data-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
+                <Button data-testid='test-compare-generate-summary-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
                   <Spinner
                     as='span'
                     variant='light'
@@ -392,7 +392,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                 </Button>
               ) : (
                 <Button
-                  data-testid='test-compare-collect-data-button'
+                  data-testid='test-compare-generate-summary-button'
                   className='w-100 btn btn-primary btn-lg'
                   id='evaluate'
                   disabled={loading || !requiredDataPresent}
