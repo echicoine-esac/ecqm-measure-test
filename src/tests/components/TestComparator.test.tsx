@@ -1,22 +1,19 @@
 import { act, render, screen } from '@testing-library/react';
-import TestingComparator from '../../components/TestingComparator';
-import { Patient } from '../../models/Patient';
-import { MeasureComparisonManager } from '../../utils/MeasureComparisonManager';
-
-import jsonTestEvalMeasure from '../resources/fetchmock-test-compare-evaluate-measure.json';
-import jsonTestMeasureReport from '../resources/fetchmock-test-compare-measure-report.json';
-import jsonTestPatientsData from '../resources/fetchmock-test-compare-patients.json';
-
-import jsonTestMeasureData from '../resources/fetchmock-measure.json';
-
 import fetchMock from 'fetch-mock';
+import TestingComparator from '../../components/TestingComparator';
 import { Constants } from '../../constants/Constants';
 import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
 import { MeasureFetch } from '../../data/MeasureFetch';
 import { MeasureReportFetch } from '../../data/MeasureReportFetch';
 import { PatientFetch } from '../../data/PatientFetch';
 import { Measure } from '../../models/Measure';
+import { Patient } from '../../models/Patient';
 import { Server } from '../../models/Server';
+import { MeasureComparisonManager } from '../../utils/MeasureComparisonManager';
+import jsonTestMeasureData from '../resources/fetchmock-measure.json';
+import jsonTestEvalMeasure from '../resources/fetchmock-test-compare-evaluate-measure.json';
+import jsonTestMeasureReport from '../resources/fetchmock-test-compare-measure-report.json';
+import jsonTestPatientsData from '../resources/fetchmock-test-compare-patients.json';
 
 const thisTestFile = "Test Comparator";
 
@@ -61,8 +58,6 @@ test(thisTestFile + ': renders properly', async () => {
     let patientList: Array<Patient | undefined> = [];
 
     await act(async () => {
-
-
         //Patient total count mock (used in url formation for Patient fetch)
         fetchMock.mock(baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
         const patientFetch = await PatientFetch.createInstance(baseUrl);
@@ -90,7 +85,6 @@ test(thisTestFile + ': renders properly', async () => {
                 break;
             }
         }
-
 
         for (const patient of patientList) {
             if (patient?.id === PATIENT_ID) {
