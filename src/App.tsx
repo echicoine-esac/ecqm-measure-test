@@ -338,7 +338,7 @@ const App: React.FC = () => {
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
       selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
 
-    setResults('Fetching from: ' + evaluateMeasureFetch.getUrl() + '...') ;
+    setResults(Constants.preFetchMessage + evaluateMeasureFetch.getUrl() + '...') ;
 
     // Set the loading state since this call can take a while to return
     setLoading(true);
@@ -414,7 +414,7 @@ const App: React.FC = () => {
     const dataRequirementsFetch = new DataRequirementsFetch(selectedKnowledgeRepo,
       selectedMeasure, startDate, endDate)
 
-    setResults('Fetching from: ' + dataRequirementsFetch.getUrl() + '...');
+    setResults(Constants.preFetchMessage + dataRequirementsFetch.getUrl() + '...');
 
     try {
       setResults(await dataRequirementsFetch.fetchData(accessToken));
@@ -457,7 +457,7 @@ const App: React.FC = () => {
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
       startDate, endDate, useSubject, selectedPatient, patientGroup)
 
-    setResults('Fetching from: ' + collectDataFetch.getUrl() + '...');
+    setResults(Constants.preFetchMessage + collectDataFetch.getUrl() + '...');
 
     // Call the FHIR server to collect the data
     try {

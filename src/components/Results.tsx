@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Prism from 'react-syntax-highlighter/dist/cjs/prism';
-import atomDark from 'react-syntax-highlighter/dist/cjs/styles/prism/atom-dark';
-import coy from 'react-syntax-highlighter/dist/cjs/styles/prism/coy';
+import Light from 'react-syntax-highlighter';
+
+//NOTE: Careful with which style gets imported (can break Jest). Follow similar import structure:
+import nnfx from 'react-syntax-highlighter/dist/cjs/styles/hljs/nnfx';
+import xt256 from 'react-syntax-highlighter/dist/cjs/styles/hljs/xt256';
 
 // Props for Results panel
 interface props {
@@ -9,16 +11,10 @@ interface props {
   selectedMeasure?: string;
 }
 
-type FHIRResource = {
-  resourceType?: string;
-  id?: string;
-  [key: string]: any;
-};
-
 // Results component displays the status messages
 const Results: React.FC<props> = ({ results, selectedMeasure }) => {
   // State to handle the dark theme toggle
-  const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   const defaultFileName = selectedMeasure ?
     selectedMeasure + '-export.json' :
@@ -66,41 +62,41 @@ const Results: React.FC<props> = ({ results, selectedMeasure }) => {
   return (
     <div>
       {results && results.length > 0 && (
-        < div className='row mt-4' style={{ background: '#F7F7F7', border: '1px solid lightgrey', margin: '2px', borderRadius: '4px' }}>
+        < div className='row mt-4' style={{ background: '#F7F7F7', border: '1px solid lightgrey', margin: '2px', borderRadius: '4px', paddingTop: resultsTextIsJson ? '15px' : '0px' }}>
           <div className='col-md-12 order-md-1'>
-            Results:
-            <Prism
+            <Light
               data-testid='results-text'
               wrapLines={true}
               wrapLongLines={true}
-              language={resultsTextIsJson ? "json" : undefined}
-              style={isDarkTheme ? atomDark : coy}
+              language="json"
+              useInlineStyles={resultsTextIsJson}
+              style={isDarkTheme ? xt256 : nnfx}
               customStyle={{
-                height: '600px',
+                height: resultsTextIsJson ? '600px' : 'auto',
                 borderRadius: '4px',
                 fontFamily: '"Courier New", Courier, monospace',
+                fontSize: '14pt',
                 margin: '0px'
               }}>
               {results}
-            </Prism>
+            </Light>
+            {resultsTextIsJson && (
+              <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
+                <label style={{ marginRight: 'auto', display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type='checkbox'
+                    checked={isDarkTheme}
+                    onChange={() => setIsDarkTheme(!isDarkTheme)}
+                    style={{ marginRight: '8px' }}></input>
+                  Dark theme
+                </label>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
-              <label style={{ marginRight: 'auto', display: 'flex', alignItems: 'center' }}>
-                <input
-                  type='checkbox'
-                  checked={isDarkTheme}
-                  onChange={() => setIsDarkTheme(!isDarkTheme)}
-                  style={{ marginRight: '8px' }}></input>
-                Dark theme
-              </label>
-
-              {resultsTextIsJson && (
                 <a href={href ?? '#'} download={hrefFileName}>
                   Download {hrefFileName}
                 </a>
-              )}
-            </div>
 
+              </div>
+            )}
 
           </div>
         </div >
