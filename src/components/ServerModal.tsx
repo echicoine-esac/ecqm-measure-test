@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Constants } from '../constants/Constants';
 
 // Props for ServerModal
-interface props {
+interface Props {
     modalShow: boolean;
     setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
     createServer: (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
@@ -12,7 +12,7 @@ interface props {
 }
 
 // ServerModal component collects the information for adding an endpoint
-const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) => {
+const ServerModal: React.FC<Props> = ({modalShow, setModalShow, createServer}) => {
     const [baseUrl, setBaseUrl] = useState<string>('');
     const [authUrl, setAuthUrl] = useState<string>('');
     const [tokenUrl, setTokenUrl] = useState<string>('');

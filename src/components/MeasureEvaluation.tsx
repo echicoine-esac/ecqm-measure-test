@@ -7,7 +7,7 @@ import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 
 // Props for MeasureEvaluation
-interface props {
+interface Props {
   showMeasureEvaluation: boolean;
   setShowMeasureEvaluation: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
@@ -23,7 +23,7 @@ interface props {
 }
 
 // MeasureEvaluation component displays the fields for selecting and using the measure evaluation system
-const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation,
+const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation,
   selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow, selectedPatient, patientGroup,
   selectedDataRepo }) => {
 

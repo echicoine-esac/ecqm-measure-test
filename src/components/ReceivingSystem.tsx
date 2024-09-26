@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Server } from '../models/Server';
 
 // Props for ReceivingSystem
-interface props {
+interface Props {
   showReceiving: boolean;
   setShowReceiving: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
@@ -16,7 +16,7 @@ interface props {
 }
 
 // ReceivingSystem component displays the fields for selecting and using the receiving system
-const ReceivingSystem: React.FC<props> = ({ showReceiving, setShowReceiving, servers, setSelectedReceiving,
+const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, servers, setSelectedReceiving,
   selectedReceiving, postMeasureReport, loading, setModalShow }) => {
   return (
     <div className='card'>

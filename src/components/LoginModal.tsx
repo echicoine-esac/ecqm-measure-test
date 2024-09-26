@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 
 // Props for LoginModal
-interface props {
+interface Props {
     modalShow: boolean;
     setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
     username: string;
@@ -13,7 +13,7 @@ interface props {
 }
 
 // LoginModal component collects the information for logging into an OAuth system
-const LoginModal: React.FC<props> = ({modalShow, setModalShow, username, setUsername, password,
+const LoginModal: React.FC<Props> = ({modalShow, setModalShow, username, setUsername, password,
                                          setPassword}) => {
 
     const usernameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

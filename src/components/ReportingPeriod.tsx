@@ -2,7 +2,7 @@ import React from 'react';
 import {Form} from 'react-bootstrap';
 
 // Props for ReportingPeriod
-interface props {
+interface Props {
   startDate: string;
   endDate: string;
   setStartDate: (text: string) => void;
@@ -10,7 +10,7 @@ interface props {
 }
 
 // ReportingPeriod component displays the reporting period card and fields
-const ReportingPeriod: React.FC<props> = ({ startDate, endDate, setStartDate, setEndDate }) => {
+const ReportingPeriod: React.FC<Props> = ({ startDate, endDate, setStartDate, setEndDate }) => {
     return (
       <div className='card'>
         <div className='card-header'>

@@ -5,7 +5,7 @@ import { Measure } from '../models/Measure';
 import { Server } from '../models/Server';
 
 // Props for KnowledgeRepository
-interface props {
+interface Props {
   showKnowledgeRepo: boolean;
   setShowKnowledgeRepo: React.Dispatch<React.SetStateAction<boolean>>;
   servers: any;
@@ -22,7 +22,7 @@ interface props {
 
 
 // KnowledgeRepository component displays the fields for selecting and using the Knowledge Repository
-const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowledgeRepo, servers,
+const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowledgeRepo, servers,
   fetchMeasures, selectedKnowledgeRepo, measures, setSelectedMeasure,
   selectedMeasure, getDataRequirements, loading, setModalShow }) => {
 

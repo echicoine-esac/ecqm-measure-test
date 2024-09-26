@@ -2,14 +2,14 @@ import React from 'react';
 import { PopulationScoring } from '../models/PopulationScoring';
 
 // Props for Populations
-interface props {
+interface Props {
   showPopulations: boolean | undefined;
   populationScoring: PopulationScoring[] | undefined;
   measureScoringType: string | undefined;
 }
 
 // Populations component displays the population cards
-const Populations: React.FC<props> = ({ showPopulations, populationScoring, measureScoringType }) => {
+const Populations: React.FC<Props> = ({ showPopulations, populationScoring, measureScoringType }) => {
 
   const convertToID = (str: any | undefined): string => {
     let strIn: string = '' + str;

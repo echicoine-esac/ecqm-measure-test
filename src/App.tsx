@@ -656,12 +656,12 @@ const App: React.FC = () => {
 
   return (
     <div className="container">
-      <div className="row">
-        <div className="py-5 text-center col-md-1">
+      <div className="row text-center col-md-11" style={{marginTop: '20px'}}>
+        <div className="text-center col-md-1">
           <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72" />
         </div>
-        <div className="py-5 text-center col-md-11">
-          <h2>eCQM Testing Tool</h2>
+        <div className="text-center col-md-11">
+          <h2 style={{marginTop: '20px'}}>eCQM Testing Tool</h2>
         </div>
       </div>
       <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />

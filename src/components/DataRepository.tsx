@@ -7,7 +7,7 @@ import { Patient } from '../models/Patient';
 import { Server } from '../models/Server';
 import { Constants } from '../constants/Constants';
 
-interface props {
+interface Props {
   showDataRepo: boolean;
   setShowDataRepo: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
@@ -25,7 +25,7 @@ interface props {
 
 }
 
-const DataRepository: React.FC<props> = ({
+const DataRepository: React.FC<Props> = ({
   showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients,
   fetchPatients, setSelectedPatient, selectedPatient, collectData, loading,
   setModalShow, selectedMeasure, groups, setSelectedPatientGroup }) => {

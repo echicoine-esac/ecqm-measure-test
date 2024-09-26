@@ -8,7 +8,7 @@ import Populations from './Populations';
 
 
 // Props for Results panel
-interface props {
+interface Props {
   results: string;
   selectedMeasure?: string;
   showPopulations?: boolean | undefined;
@@ -18,7 +18,7 @@ interface props {
 }
 
 // Results component displays the status messages
-const Results: React.FC<props> = ({ results, selectedMeasure, showPopulations, populationScoring, measureScoringType }) => {
+const Results: React.FC<Props> = ({ results, selectedMeasure, showPopulations, populationScoring, measureScoringType }) => {
   // State to handle the dark theme toggle
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 

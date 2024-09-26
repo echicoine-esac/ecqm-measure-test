@@ -11,7 +11,7 @@ import { Server } from '../models/Server';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 
 
-interface props {
+interface Props {
   showTestCompare: boolean;
   setShowTestCompare: React.Dispatch<React.SetStateAction<boolean>>;
   items: Map<Patient, MeasureComparisonManager>;
@@ -46,7 +46,7 @@ interface props {
  * @param param0 
  * @returns 
  */
-const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items,
+const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompare, items,
   compareTestResults, loading, startDate, endDate, selectedPatientGroup, selectedDataRepoServer,
   selectedMeasureEvaluationServer, selectedMeasure, selectedKnowledgeRepositoryServer, selectedPatient }) => {
 
