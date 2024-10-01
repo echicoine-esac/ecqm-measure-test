@@ -1,11 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState } from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
-import { PatientFetch } from '../data/PatientFetch';
-import { PatientGroup, Member } from '../models/PatientGroup';
-import { Patient } from '../models/Patient';
-import { Server } from '../models/Server';
 import { Constants } from '../constants/Constants';
+import { Patient } from '../models/Patient';
+import { Member, PatientGroup } from '../models/PatientGroup';
+import { Server } from '../models/Server';
+import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 
 interface Props {
   showDataRepo: boolean;
@@ -67,7 +67,7 @@ const DataRepository: React.FC<Props> = ({
     setPatientGroup(updatedPatientGroup);
 
     const filteredPatients = patients.filter((patient) => {
-      const patDisplay = PatientFetch.buildUniquePatientIdentifier(patient);
+      const patDisplay = PatientGroupUtils.buildUniquePatientIdentifier(patient);
       let groupingCondition: boolean = true;
 
       if (updatedPatientGroup) {
@@ -162,7 +162,7 @@ const DataRepository: React.FC<Props> = ({
                 <option value=''>Select a Patient...</option>
                 {filteredPatients.map((patient, index) => (
                   <option key={index} value={patient?.id || ''}>
-                    {PatientFetch.buildUniquePatientIdentifier(patient)}
+                    {PatientGroupUtils.buildUniquePatientIdentifier(patient)}
                   </option>
                 ))}
               </select>

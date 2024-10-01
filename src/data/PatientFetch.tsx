@@ -1,7 +1,7 @@
 import { Constants } from '../constants/Constants';
 import { BundleEntry } from '../models/BundleEntry';
-import { PatientGroup } from '../models/PatientGroup';
 import { Patient } from '../models/Patient';
+import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
@@ -53,72 +53,54 @@ export class PatientFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        let patients: Patient[];
+        let patients: Patient[] = [];
+        if (Array.isArray(data?.entry) && data?.entry?.length > 0) {
 
-        if (this.isGroup(data)) {
-            patients = this.processAsGroup(data);
-        } else {
-            let entries = data.entry;
-            if (!entries || entries.length === 0) {
-                return [];
+            for (const entry of data.entry) {
+                const displayName = this.getDisplayName(entry);
+
+                if (displayName.length > 0 && entry?.resource?.id) {
+                    patients.push({
+                        display: displayName,
+                        id: entry.resource.id,
+                    });
+                }
             }
-            patients = entries.map((entry: BundleEntry) => {
-                return {
-                    display: entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family,
-                    id: entry.resource.id,
-                };
-
-            });
         }
 
         return patients.sort((a, b) => {
-            const patientA = PatientFetch.buildUniquePatientIdentifier(a) + '';
-            const patientB = PatientFetch.buildUniquePatientIdentifier(b) + '';
+            const patientA = PatientGroupUtils.buildUniquePatientIdentifier(a) + '';
+            const patientB = PatientGroupUtils.buildUniquePatientIdentifier(b) + '';
             return patientA.localeCompare(patientB);
         });
     }
 
-    protected isGroup(data: any): boolean {
-        if (data && data.resourceType === "Group") {
-            return true;
-        }
-        return false;
-    }
+    protected getDisplayName(entry: BundleEntry) {
+        if (!entry) return '';
 
-    protected processAsGroup(data: any): Patient[] {
-        const result: Patient[] = [];
+        let firstName = '';
+        let lastName = '';
 
-        if (data && data.resourceType === "Group" && Array.isArray(data.member)) {
-
-            let patientGroup: PatientGroup = {
-                id: data.id,
-                extension: data.extension,
-                member: data.member
+        if (Array.isArray(entry?.resource?.name) && entry.resource.name.length > 0) {
+            if (entry.resource.name[0]?.given?.length > 0) {
+                firstName = entry.resource.name[0].given[0];
             }
 
-
-            data.member.forEach((member: { entity: { display: any; reference: string; }; }) => {
-                if (member.entity?.display) {
-                    result.push({
-                        display: member.entity.display,
-                        id: member.entity.reference.split("Patient/")[1],
-                        group: patientGroup
-                    });
-                }
-            });
-        }
-
-        return result;
-    }
-
-    public static buildUniquePatientIdentifier(patient: Patient | undefined) {
-        if (patient) {
-            if (patient.id?.length >= 6) {
-                return patient.display + " - " + patient.id.substring(0, 6) + "...";
-            } else {
-                return patient.display + " - " + patient.id;
+            if (entry.resource.name[0]?.family) {
+                lastName = entry.resource.name[0].family;
             }
         }
-    };
+
+        let displayName = '';
+        if (!firstName && !lastName) {
+            return '';
+        } else if (firstName && lastName) {
+            displayName = `${firstName} ${lastName}`;
+        } else {
+            displayName = firstName || lastName;
+        }
+
+        return displayName;
+    }
 
 }

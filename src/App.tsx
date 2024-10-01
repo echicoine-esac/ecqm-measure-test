@@ -220,6 +220,11 @@ const App: React.FC = () => {
   const fetchMeasures = async (knowledgeRepo: Server) => {
     resetResults();
 
+    if (knowledgeRepo !== selectedKnowledgeRepo){
+      setMeasures([]);
+      setSelectedMeasure('');
+    }
+
     setLoading(true);
     if (!knowledgeRepo?.hasOwnProperty('id')) {
       setSelectedKnowledgeRepo(knowledgeRepo);

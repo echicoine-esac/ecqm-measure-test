@@ -57,7 +57,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
         // Call the FHIR server to submit the data
         let responseStatusText = '';
 
-        await fetch(await this.getUrl(), requestOptions)
+        await fetch(this.getUrl(), requestOptions)
             .then((response) => {
                 responseStatusText = response?.statusText;
                 return response.json()

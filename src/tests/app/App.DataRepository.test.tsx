@@ -18,6 +18,7 @@ import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
 import jsonTestGroupData from '../resources/fetchmock-group.json';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
+import { PatientGroupUtils } from '../../utils/PatientGroupUtils';
 
 const useSubject = true;
 
@@ -114,7 +115,7 @@ test(thisTestFile + ': renders properly', async () => {
     expect(patientDropdown.options.length === 22).toBeTruthy()
   );
 
-  const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[1]) + '';
+  const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[1]) + '';
   userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
   //click Collect Data
@@ -187,7 +188,7 @@ test(thisTestFile + ': success scenario: Collect Data', async () => {
 
   //now select patient
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-  const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+  const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
   userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
 
@@ -281,7 +282,7 @@ test(thisTestFile + ': fail scenario: data repository', async () => {
 
   //now select patient
   const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-  const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+  const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
   userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
   //mock returned data repo data
@@ -300,7 +301,7 @@ test(thisTestFile + ': fail scenario: data repository', async () => {
   });
   fetchMock.restore();
 
-  
+
   const resultsTextField: HTMLElement = screen.getByTestId('results-text');
   expect(resultsTextField.textContent).toEqual(StringUtils.format(Constants.fetchError,
     collectDataFetch.getUrl(), FetchType.COLLECT_DATA,

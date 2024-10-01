@@ -28,6 +28,7 @@ export class Constants {
     public static readonly evaluateMeasureWithSubjectFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';
 
     public static readonly measureReportFetchURL_byEvaluatedResource = '{0}MeasureReport?evaluated-resource=Patient/{1}';
+    
     public static readonly measureReportFetchURL_byMeasure = '{0}MeasureReport?evaluated-resource=Patient/{1}&measure=Measure/{2}';
 
     public static readonly defaultStartDate = '2025-01-01';
@@ -38,7 +39,7 @@ export class Constants {
 
     public static readonly measureUrlEnding = 'Measure?_count=200';
 
-    public static readonly groupUrlEnding = 'Group';
+    public static readonly groupUrlEnding = 'Group?type=person';
 
     public static readonly error_selectKnowledgeRepository = 'Please select a Knowledge Repository server to use';
 

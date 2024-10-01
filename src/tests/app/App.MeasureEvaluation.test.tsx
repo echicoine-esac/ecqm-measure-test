@@ -14,6 +14,7 @@ import { Patient } from '../../models/Patient';
 import { Server } from '../../models/Server';
 import jsonTestMeasureEvaluationData from '../../tests/resources/fetchmock-measure-evaluation.json';
 import { HashParamUtils } from '../../utils/HashParamUtils';
+import { PatientGroupUtils } from '../../utils/PatientGroupUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
 import jsonTestGroupData from '../resources/fetchmock-group.json';
@@ -166,7 +167,7 @@ test(thisTestFile + ' success scenario: evaluate data', async () => {
 
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
 
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
     userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 
@@ -284,7 +285,7 @@ test(thisTestFile + ' success scenario: submit data', async () => {
 
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
 
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
     userEvent.selectOptions(patientDropdown, expectedDisplayName);
 
     //mock returned data repo data
@@ -321,7 +322,7 @@ test(thisTestFile + ' success scenario: submit data', async () => {
     const submitDataFetch = new SubmitDataFetch(dataServers[0], mockMeasureList[0].name, JSON.stringify(jsonTestCollectDataData));
     fetchMock.once(submitDataFetch.getUrl(), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/fhir+json' },
       body: Constants.submitPostTestBody,
     });
 
@@ -412,7 +413,7 @@ test(thisTestFile + ' fail scenario: submit data', async () => {
 
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
 
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
     userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 
@@ -429,7 +430,7 @@ test(thisTestFile + ' fail scenario: submit data', async () => {
     const submitDataFetch = new SubmitDataFetch(dataServers[0], mockMeasureList[0].name, 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/fhir+json' },
       body: Constants.submitPostTestBody,
     });
 
@@ -526,7 +527,7 @@ test(thisTestFile + ' fail scenario: evaluate data without selecting Server', as
 
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
 
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
     userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 

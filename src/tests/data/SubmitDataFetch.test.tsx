@@ -49,7 +49,7 @@ test('submit data mock', async () => {
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/fhir+json' },
         body: Constants.submitPostTestBody,
     });
 

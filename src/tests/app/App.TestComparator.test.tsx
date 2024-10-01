@@ -12,6 +12,7 @@ import { Measure } from '../../models/Measure';
 import { Patient } from '../../models/Patient';
 import { Server } from '../../models/Server';
 import { HashParamUtils } from '../../utils/HashParamUtils';
+import { PatientGroupUtils } from '../../utils/PatientGroupUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestEvalMeasure from '../resources/fetchmock-test-compare-evaluate-measure.json';
@@ -187,7 +188,7 @@ test(thisTestFile + ' success scenario: generate a valid test comparison summary
 
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
 
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
     userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 
