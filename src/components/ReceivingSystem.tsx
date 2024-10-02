@@ -43,7 +43,7 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
           </div>
           <div className='row'>
             <div className='col-md-5 order-md-1'>
-              <select disabled={loading} data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedReceiving!.baseUrl}
+              <select disabled={loading} data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedReceiving?.baseUrl}
                 onChange={(e) => setSelectedReceiving(servers[e.target.selectedIndex - 1]!)}>
                 <option value=''>Select a Server...</option>
                 {servers.map((server, index) => (

@@ -1,7 +1,7 @@
 import { Server } from '../models/Server';
 
 export class Constants {
-    public static readonly preFetchMessage = 'Fetching data from ';
+    public static readonly preFetchMessage = 'Fetching data from:\n\r';
 
     public static readonly missingProperty = 'Missing required property: {0}';
     public static readonly unreachableURL = 'The target URL is unreachable: '
