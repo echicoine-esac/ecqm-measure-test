@@ -1,6 +1,7 @@
 import { Server } from '../models/Server';
 
 export class Constants {
+    public static readonly upArrow = '↑';
     public static readonly preFetchMessage = 'Fetching data from:\n\r';
 
     public static readonly missingProperty = 'Missing required property: {0}';
@@ -28,7 +29,7 @@ export class Constants {
     public static readonly evaluateMeasureWithSubjectFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';
 
     public static readonly measureReportFetchURL_byEvaluatedResource = '{0}MeasureReport?evaluated-resource=Patient/{1}';
-    
+
     public static readonly measureReportFetchURL_byMeasure = '{0}MeasureReport?evaluated-resource=Patient/{1}&measure=Measure/{2}';
 
     public static readonly defaultStartDate = '2025-01-01';
@@ -51,10 +52,10 @@ export class Constants {
 
     public static readonly evaluateMeasure_noGroupFound = 'When no Patient is selected, this operation attempts to use Group data. No Patient Group data could be established for the selected Measure. Select an individual Patient from the Patient dropdown and attempt operation again.';
     public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with existing MeasureReports and displays a summary of discrepancies and matches. To begin, verify the following items are established:';
-    
+
     public static readonly largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
 
-    
+
     //testing purposes:
     public static readonly serverTestData: Server[] = [
         {

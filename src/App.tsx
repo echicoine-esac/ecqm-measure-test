@@ -7,6 +7,7 @@ import MeasureEvaluation from "./components/MeasureEvaluation";
 import ReceivingSystem from './components/ReceivingSystem';
 import ReportingPeriod from './components/ReportingPeriod';
 import Results from './components/Results';
+import SectionalResults from './components/SectionalResults';
 import ServerModal from './components/ServerModal';
 import TestingComparator from './components/TestingComparator';
 import { Constants } from './constants/Constants';
@@ -30,7 +31,6 @@ import { HashParamUtils } from './utils/HashParamUtils';
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
-import SectionalResults from './components/SectionalResults';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -150,6 +150,26 @@ const App: React.FC = () => {
   const [accessToken, setAccessToken] = useState<string>('');
 
   const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonManager>>(new Map());
+
+  const [showScrollToTopButton, setShowScrollToTopButton] = useState(false);
+
+  //Simple scroll to top button:
+  const checkScrollTop = () => {
+    if (!showScrollToTopButton && window.scrollY > 300) {
+      setShowScrollToTopButton(true);
+    } else if (showScrollToTopButton && window.scrollY <= 300) {
+      setShowScrollToTopButton(false);
+    }
+  };
+  const scrollTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  useEffect(() => {
+    window.addEventListener('scroll', checkScrollTop);
+    return () => {
+      window.removeEventListener('scroll', checkScrollTop);
+    };
+  }, [showScrollToTopButton]);
 
   const enum Section {
     KNOWLEDGE_REPO,
@@ -760,6 +780,33 @@ const App: React.FC = () => {
       <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
         setUsername={setUsername} password={password} setPassword={setPassword} />
       <br />
+
+
+      {/* Scroll-to-top button */}
+      <button
+        onClick={scrollTop}
+        style={{
+          display: showScrollToTopButton ? 'flex' : 'none',
+          position: 'fixed',
+          bottom: '10px',
+          right: '10px',
+          backgroundColor: '#0D6EFD',
+          color: 'white',
+          border: 'none',
+          padding: '10px',
+          borderRadius: '50%',
+          cursor: 'pointer',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 100,
+          fontSize: '24px',
+          transition: 'opacity 0.3s',
+          width: '60px'
+        }}
+      >
+        {Constants.upArrow}
+      </button>
+
     </div>
   );
 }
