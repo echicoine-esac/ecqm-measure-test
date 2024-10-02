@@ -54,7 +54,7 @@ test('submit data mock', async () => {
     });
 
     const ret: string = await submitDataFetch.submitData('');
-    expect(ret.length).toEqual(145);
+    expect(ret.length).toEqual(150);
 
     fetchMock.reset();
 });

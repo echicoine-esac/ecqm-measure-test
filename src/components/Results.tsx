@@ -5,6 +5,7 @@ import lightfair from 'react-syntax-highlighter/dist/cjs/styles/hljs/lightfair';
 import nnfxDark from 'react-syntax-highlighter/dist/cjs/styles/hljs/nnfx-dark';
 import { PopulationScoring } from '../models/PopulationScoring';
 import Populations from './Populations';
+import { Constants } from '../constants/Constants';
 
 
 // Props for Results panel
@@ -74,15 +75,23 @@ const Results: React.FC<Props> = ({ results, selectedMeasure, showPopulations, p
   const [attentionBorder, setAttentionBorder] = useState(false);
   const scrollToResultsDiv = () => {
     if (resultsDivRef.current) {
-      resultsDivRef.current.scrollIntoView({ behavior: 'smooth' });
-
+      setTimeout(() => {
+        resultsDivRef?.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 0);
       //only flash red if the message is informational (not json)
       setAttentionBorder(true);
       setTimeout(() => {
         setAttentionBorder(false);
-      }, 1000);
+      }, 500);
     }
   };
+  
+
+  const errorAttentionFrame = '2px solid red';
+  const successAttentionFrame = '2px solid green';
+  const normalStateAttentionFrame = '1px solid lightgrey'
+  const attentionCondition = !resultsTextIsJson ?  errorAttentionFrame : successAttentionFrame;
+  const borderStyle = attentionBorder && !results.startsWith(Constants.preFetchMessage) ?  attentionCondition  : normalStateAttentionFrame;
 
   return (
     <div>
@@ -90,8 +99,8 @@ const Results: React.FC<Props> = ({ results, selectedMeasure, showPopulations, p
 
         <div ref={resultsDivRef} className='row mt-4'
           style={{
-            background: '#F7F7F7', border: attentionBorder ? '1px solid red' : '1px solid lightgrey',
-            transition: 'border 1s', margin: '2px', borderRadius: '4px', paddingTop: resultsTextIsJson ? '15px' : '0px'
+            background: '#F7F7F7', border: borderStyle,
+            transition: 'border 2s', margin: '2px', borderRadius: '4px', paddingTop: resultsTextIsJson ? '15px' : '0px'
           }}>
 
           <Populations populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} />

@@ -62,7 +62,7 @@ test('get group mock function error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using foo/Group to retrieve Group caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using foo/Group?type=person to retrieve Group caused: Error: this is a test');
 
     fetchMock.restore();
 
@@ -80,7 +80,7 @@ test('get group mock return error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using foo/Group to retrieve Group caused: Bad Request');
+    expect(errorCatch).toEqual('Using foo/Group?type=person to retrieve Group caused: Bad Request');
 
     fetchMock.restore();
 });
@@ -88,6 +88,6 @@ test('get group mock return error', async () => {
 test('test urlformat', async () => {
     let groupFetch = new GroupFetch(url);
     expect(groupFetch.getUrl())
-        .toEqual('foo/Group');
+        .toEqual('foo/Group?type=person');
 });
 

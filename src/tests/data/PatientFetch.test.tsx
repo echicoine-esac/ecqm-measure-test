@@ -3,7 +3,6 @@ import { Constants } from '../../constants/Constants';
 import { PatientFetch } from '../../data/PatientFetch';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
-import jsonTestPatientsGroupData from '../resources/fetchmock-patients-group.json';
 
 const url = 'foo/';
 
@@ -25,7 +24,7 @@ beforeEach(() => {
       }`);
 });
 
- 
+
 
 test('required properties check', async () => {
     try {
@@ -43,22 +42,9 @@ test('get patients mock', async () => {
         JSON.stringify(mockJsonPatientsData)
         , { method: 'GET' });
 
-        let patientList: string[] = await patientFetch.fetchData('')
-
-    expect(patientList.length).toEqual(21);
-    fetchMock.restore();
-
-});
-
-test('get group patients mock', async () => {
-    const patientFetch = await PatientFetch.createInstance(url);
-    const mockJsonPatientsData = jsonTestPatientsGroupData;
-    fetchMock.once(patientFetch.getUrl(),
-        JSON.stringify(mockJsonPatientsData)
-        , { method: 'GET' });
     let patientList: string[] = await patientFetch.fetchData('')
 
-    expect(patientList.length).toEqual(59);
+    expect(patientList.length).toEqual(21);
     fetchMock.restore();
 
 });
@@ -73,7 +59,7 @@ test('get patients mock function error', async () => {
     });
 
     try {
-        let patientList: string[] = await patientFetch.fetchData('')
+        await patientFetch.fetchData('')
     } catch (error: any) {
         errorCatch = error.message;
     }

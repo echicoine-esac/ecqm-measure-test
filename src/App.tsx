@@ -30,6 +30,7 @@ import { HashParamUtils } from './utils/HashParamUtils';
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
+import SectionalResults from './components/SectionalResults';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -108,8 +109,17 @@ const App: React.FC = () => {
     scope: ''
   });
 
-  // Then set the state for the results
+  //Output text field holding results of various operations
   const [results, setResults] = useState<string>('');
+  const setResultsCaller = ((message: string) => {
+    resetResults();
+    setResults(message);
+  });
+
+  const [dataRepoResults, setDataRepoResults] = useState<string>('');
+  const [knowledgeRepoResults, setKnowledgeRepoResults] = useState<string>('');
+  const [measureEvalResults, setMeasureEvalResults] = useState<string>('');
+  const [recSysResults, setRecSysResults] = useState<string>('');
 
   // Show states
   const [loading, setLoading] = useState<boolean>(false);
@@ -127,7 +137,7 @@ const App: React.FC = () => {
   const [loginModalShow, setLoginModalShow] = useState<boolean>(false);
 
   // Population states
-  const [measureScoringType, setMeasureScoring] = useState<string>('');
+  const [measureScoringType, setMeasureScoringType] = useState<string>('');
   const [populationScoring, setPopulationScoring] = useState<PopulationScoring[]>([]);
 
 
@@ -141,13 +151,36 @@ const App: React.FC = () => {
 
   const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonManager>>(new Map());
 
+  const enum Section {
+    KNOWLEDGE_REPO,
+    DATA_REPO,
+    MEASURE_EVAL,
+    REC_SYS,
+  }
 
-  //tells us when app is busy loading and not to disrupt variable assignment
-  const reportErrorToUser = ((source: string, err: any) => {
-    const message = err.message;
-    setResults(message);
+  const setSectionalResults = ((message: string, section: Section) => {
+    switch (section) {
+      case Section.KNOWLEDGE_REPO: {
+        setKnowledgeRepoResults(message);
+        return;
+      }
+      case Section.DATA_REPO: {
+        setDataRepoResults(message);
+        return;
+      }
+      case Section.MEASURE_EVAL: {
+        setMeasureEvalResults(message);
+        return;
+      }
+      case Section.REC_SYS: {
+        setRecSysResults(message);
+        return;
+      }
+      default: {
+        setResultsCaller(message);
+      }
+    }
   });
-
 
   const resumeOAuthFlow = async (previouslySelectedKnowledgeRepo: string) => {
     //remove the entry:
@@ -202,6 +235,10 @@ const App: React.FC = () => {
 
   const resetResults = () => {
     setResults('');
+    setDataRepoResults('');
+    setKnowledgeRepoResults('');
+    setMeasureEvalResults('');
+    setRecSysResults('');
   }
 
   // Uses the GraphQL API to create a server
@@ -211,7 +248,7 @@ const App: React.FC = () => {
       await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
       setServers(await ServerUtils.getServerList());
     } catch (error: any) {
-      reportErrorToUser('createServer', error);
+      setResultsCaller(error.message);
     }
   }
 
@@ -220,7 +257,7 @@ const App: React.FC = () => {
   const fetchMeasures = async (knowledgeRepo: Server) => {
     resetResults();
 
-    if (knowledgeRepo !== selectedKnowledgeRepo){
+    if (knowledgeRepo !== selectedKnowledgeRepo) {
       setMeasures([]);
       setSelectedMeasure('');
     }
@@ -261,7 +298,7 @@ const App: React.FC = () => {
     try {
       setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken));
     } catch (error: any) {
-      reportErrorToUser('fetchMeasures', error);
+      setSectionalResults(error.message, Section.KNOWLEDGE_REPO);
     }
     setLoading(false);
   };
@@ -269,6 +306,7 @@ const App: React.FC = () => {
   // Function for retrieving the patients from the selected server
   const fetchPatients = async (dataRepo: Server) => {
     setLoading(true);
+    resetResults();
 
     if (!dataRepo?.baseUrl) {
       setLoading(false);
@@ -280,7 +318,6 @@ const App: React.FC = () => {
       return;
     }
 
-    resetResults();
     setSelectedDataRepo(dataRepo);
     setShowPopulations(false);
 
@@ -297,7 +334,7 @@ const App: React.FC = () => {
 
 
     } catch (error: any) {
-      reportErrorToUser('fetchPatients', error);
+      setSectionalResults(error.message, Section.DATA_REPO);
     }
     setLoading(false);
   };
@@ -311,7 +348,7 @@ const App: React.FC = () => {
 
     // Make sure all required elements are set
     if (!selectedMeasureEvaluationServer || selectedMeasureEvaluationServer.baseUrl === '') {
-      setResults(Constants.error_measureEvaluationServer);
+      setMeasureEvalResults(Constants.error_measureEvaluationServer);
       return;
     }
 
@@ -327,23 +364,23 @@ const App: React.FC = () => {
     }
 
     if (!measureObj) {
-      setResults(Constants.error_selectMeasure);
+      setMeasureEvalResults(Constants.error_selectMeasure);
       return;
     } else if (measureObj.scoring) {
-      setMeasureScoring(measureObj.scoring.coding[0].code);
+      setMeasureScoringType(measureObj.scoring.coding[0].code);
     }
 
     const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
 
     if (!selectedPatient && !patientGroup && useSubject) {
-      setResults(Constants.evaluateMeasure_noGroupFound);
+      setMeasureEvalResults(Constants.evaluateMeasure_noGroupFound);
       return;
     }
 
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
       selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
 
-    setResults(Constants.preFetchMessage + evaluateMeasureFetch.getUrl() + '...');
+    setSectionalResults(Constants.preFetchMessage + evaluateMeasureFetch.getUrl() + '...', Section.MEASURE_EVAL);
 
     // Set the loading state since this call can take a while to return
     setLoading(true);
@@ -352,7 +389,7 @@ const App: React.FC = () => {
       let evaluateMeasureResult = await evaluateMeasureFetch.fetchData(accessToken);
 
       if (!evaluateMeasureResult) {
-        setResults('Operation returned with erroneous data structure.');
+        setSectionalResults('Operation returned with erroneous data structure.', Section.MEASURE_EVAL);
         setShowPopulations(false);
         setLoading(false);
         return;
@@ -360,18 +397,18 @@ const App: React.FC = () => {
 
       // Handle the error case where an OperationOutcome was returned instead of a MeasureReport
       if (evaluateMeasureResult.jsonBody.resourceType === 'OperationOutcome') {
-        setResults('Operation returned with unexpected error:\n\n' + JSON.stringify(evaluateMeasureResult, undefined, 2));
+        setResultsCaller('Operation returned with unexpected error:\n\n' + JSON.stringify(evaluateMeasureResult, undefined, 2));
         setShowPopulations(false);
         setLoading(false);
         return;
       } else {
         const retJSON = JSON.stringify(evaluateMeasureResult.jsonBody, undefined, 2);
         setMeasureReport(retJSON);
-        setResults(retJSON);
+        setResultsCaller(retJSON);
         // Iterate through the population names to set the state
         const measureGroups: GroupElement[] = evaluateMeasureResult.measureGroups;
         if (!measureGroups) {
-          setResults('Operation returned with unexpected data structure: \n' + evaluateMeasureResult.jsonBody);
+          setResultsCaller('Operation returned with unexpected data structure: \n' + evaluateMeasureResult.jsonBody);
           setShowPopulations(false);
           setLoading(false);
           return;
@@ -407,7 +444,7 @@ const App: React.FC = () => {
 
       setLoading(false);
     } catch (error: any) {
-      reportErrorToUser('evaluateMeasure', error);
+      setSectionalResults(error.message, Section.MEASURE_EVAL);
       setLoading(false);
     }
   };
@@ -420,11 +457,11 @@ const App: React.FC = () => {
 
     // Make sure all required elements are set
     if (!selectedKnowledgeRepo || selectedKnowledgeRepo.baseUrl === '') {
-      setResults(Constants.error_selectKnowledgeRepository);
+      setSectionalResults(Constants.error_selectKnowledgeRepository, Section.KNOWLEDGE_REPO);
       return;
     }
     if (selectedMeasure === '') {
-      setResults(Constants.error_selectMeasureDR);
+      setSectionalResults(Constants.error_selectMeasureDR, Section.KNOWLEDGE_REPO);
       return;
     }
 
@@ -435,13 +472,13 @@ const App: React.FC = () => {
     const dataRequirementsFetch = new DataRequirementsFetch(selectedKnowledgeRepo,
       selectedMeasure, startDate, endDate)
 
-    setResults(Constants.preFetchMessage + dataRequirementsFetch.getUrl() + '...');
+    setSectionalResults(Constants.preFetchMessage + dataRequirementsFetch.getUrl() + '...', Section.KNOWLEDGE_REPO);
 
     try {
-      setResults(await dataRequirementsFetch.fetchData(accessToken));
+      setResultsCaller(await dataRequirementsFetch.fetchData(accessToken));
       setLoading(false);
     } catch (error: any) {
-      reportErrorToUser('getDataRequirements', error);
+      setSectionalResults(error.message, Section.KNOWLEDGE_REPO);
       setLoading(false);
     }
 
@@ -455,18 +492,18 @@ const App: React.FC = () => {
 
     // Make sure all required elements are set
     if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
-      setResults(Constants.error_selectDataRepository);
+      setSectionalResults(Constants.error_selectDataRepository, Section.DATA_REPO);
       return;
     }
     if (selectedMeasure === '') {
-      setResults(Constants.error_selectMeasureDataCollection);
+      setSectionalResults(Constants.error_selectMeasureDataCollection, Section.DATA_REPO);
       return;
     }
 
     const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
 
     if (!selectedPatient && !patientGroup && useSubject) {
-      setResults(Constants.evaluateMeasure_noGroupFound);
+      setSectionalResults(Constants.evaluateMeasure_noGroupFound, Section.DATA_REPO);
       return;
     }
 
@@ -478,16 +515,16 @@ const App: React.FC = () => {
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
       startDate, endDate, useSubject, selectedPatient, patientGroup)
 
-    setResults(Constants.preFetchMessage + collectDataFetch.getUrl() + '...');
+    setSectionalResults(Constants.preFetchMessage + collectDataFetch.getUrl() + '...', Section.DATA_REPO);
 
     // Call the FHIR server to collect the data
     try {
       const retJSON = await collectDataFetch.fetchData(accessToken);
       setCollectedData(retJSON);
-      setResults(retJSON);
+      setResultsCaller(retJSON);
       setLoading(false);
     } catch (error: any) {
-      reportErrorToUser('collectData', error);
+      setSectionalResults(error.message, Section.DATA_REPO);
       setLoading(false);
     }
 
@@ -501,11 +538,11 @@ const App: React.FC = () => {
 
     // Make sure all required elements are set
     if (!selectedMeasureEvaluationServer) {
-      setResults(Constants.error_measureEvaluationServer);
+      setSectionalResults(Constants.error_measureEvaluationServer, Section.MEASURE_EVAL);
       return;
     }
     if (!selectedMeasure) {
-      setResults(Constants.error_selectMeasureToSubmit);
+      setSectionalResults(Constants.error_selectMeasureToSubmit, Section.MEASURE_EVAL);
       return;
     }
 
@@ -513,11 +550,11 @@ const App: React.FC = () => {
     setLoading(true);
 
     try {
-      setResults(await new SubmitDataFetch(selectedMeasureEvaluationServer,
+      setResultsCaller(await new SubmitDataFetch(selectedMeasureEvaluationServer,
         selectedMeasure, collectedData).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
-      reportErrorToUser('submitData', error);
+      setSectionalResults(error.message, Section.MEASURE_EVAL);
       setLoading(false);
     }
   };
@@ -530,11 +567,11 @@ const App: React.FC = () => {
 
     // Make sure all required elements are set
     if (!selectedReceiving) {
-      setResults(Constants.error_receivingSystemServer);
+      setSectionalResults(Constants.error_receivingSystemServer, Section.REC_SYS);
       return;
     }
     if (!measureReport) {
-      setResults(Constants.error_generateMeasureReport);
+      setSectionalResults(Constants.error_generateMeasureReport, Section.REC_SYS);
       return;
     }
 
@@ -542,11 +579,11 @@ const App: React.FC = () => {
     setLoading(true);
 
     try {
-      setResults(await new PostMeasureReportFetch(selectedReceiving,
+      setResultsCaller(await new PostMeasureReportFetch(selectedReceiving,
         measureReport).submitData(accessToken));
       setLoading(false);
     } catch (error: any) {
-      reportErrorToUser('postMeasure', error);
+      setSectionalResults(error.message, Section.REC_SYS);
       setLoading(false);
     }
   };
@@ -561,7 +598,7 @@ const App: React.FC = () => {
     }];
     setPopulationScoring(populationScoringInstance);
     resetResults();
-    setMeasureScoring('');
+    setMeasureScoringType('');
     setShowPopulations(false);
   }
 
@@ -600,7 +637,7 @@ const App: React.FC = () => {
     }
 
     if (missingData.length > 0) {
-      setResults(missingData);
+      setResultsCaller(missingData);
       return;
     }
 
@@ -624,7 +661,7 @@ const App: React.FC = () => {
     }
 
     if (patientCompareList.length === 0) {
-      setResults(Constants.evaluateMeasure_noGroupFound);
+      setResultsCaller(Constants.evaluateMeasure_noGroupFound);
       return;
     }
 
@@ -653,20 +690,19 @@ const App: React.FC = () => {
     }
 
     //setting this Map triggers the ui in TestingComparator to automatically present the data
+    resetResults();
     setTestComparatorMap(newTestComparatorMap);
-
-    setResults('');
     setLoading(false);
   };
 
   return (
     <div className="container">
-      <div className="row text-center col-md-11" style={{marginTop: '20px'}}>
+      <div className="row text-center col-md-11" style={{ marginTop: '20px' }}>
         <div className="text-center col-md-1">
           <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72" />
         </div>
         <div className="text-center col-md-11">
-          <h2 style={{marginTop: '20px'}}>eCQM Testing Tool</h2>
+          <h2 style={{ marginTop: '20px' }}>eCQM Testing Tool</h2>
         </div>
       </div>
       <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
@@ -678,6 +714,7 @@ const App: React.FC = () => {
         selectedMeasure={selectedMeasure}
         getDataRequirements={getDataRequirements} loading={loading}
         setModalShow={setServerModalShow} />
+      <SectionalResults results={knowledgeRepoResults} />
       <br />
       <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
         selectedDataRepo={selectedDataRepo} patients={patients}
@@ -687,6 +724,7 @@ const App: React.FC = () => {
         selectedMeasure={selectedMeasure}
         groups={patientGroups}
         setSelectedPatientGroup={setSelectedPatientGroup} />
+      <SectionalResults results={dataRepoResults} />
       <br />
       <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
         servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluationServer}
@@ -696,13 +734,14 @@ const App: React.FC = () => {
         selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
         //used for href to subject
         selectedDataRepo={selectedDataRepo} />
+      <SectionalResults results={measureEvalResults} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={selectedReceiving}
         postMeasureReport={postMeasureReport} loading={loading}
         setModalShow={setServerModalShow} />
-
+      <SectionalResults results={recSysResults} />
       <br />
       <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}
         items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
@@ -711,13 +750,9 @@ const App: React.FC = () => {
         selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}
         selectedPatient={selectedPatient} />
 
-
-
       <Results results={results} selectedMeasure={selectedMeasure}
         //Populations now captured within results card:
         populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} />
-
-
 
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
