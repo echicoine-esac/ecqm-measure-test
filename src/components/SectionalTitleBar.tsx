@@ -15,15 +15,15 @@ const SectionalTitleBar: React.FC<Props> = ({ title, showSection, selectedSubjec
   return (
     <div className='row' style={{ display: 'flex', flexWrap: 'nowrap' }}>
       <div style={{
-        width: '340px',
+        width: 'auto',
         display: 'flex',
-        justifyContent: 'left',  // Horizontally center
-        alignItems: 'center',      // Vertically center
+        justifyContent: 'left',
+        alignItems: 'center',
       }}
         className='col-md-3 order-md-1'>
-        <h6 style={{ fontSize: '13pt', textAlign: 'center' }}>
+        <h5 style={{ fontSize: '14pt', textAlign: 'left' }}>
           {title}
-        </h6>
+        </h5>
       </div>
 
       <div data-testid={dataTestID + 'selected-div'} style={{ textAlign: 'right', paddingTop: '10px', flexGrow: 1, flexShrink: 1, minWidth: 0 }} className='col-md-8 order-md-2 text-muted'>

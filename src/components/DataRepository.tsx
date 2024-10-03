@@ -60,7 +60,7 @@ const DataRepository: React.FC<Props> = ({
     }
   };
 
-  const allPatientsSubject = selectedDataRepo?.baseUrl ? 'ALL Patients on ' + selectedDataRepo?.baseUrl : '';
+  const allPatientsSubject = selectedDataRepo?.baseUrl && patients && patients.length > 0 ? 'ALL Patients on ' + selectedDataRepo?.baseUrl : '';
   
   const selectedSubject: string = useGroupAsSubject && 
   buildSelectedSubjectText().length > 0 ? buildSelectedSubjectText() : allPatientsSubject;
