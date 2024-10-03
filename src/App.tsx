@@ -19,7 +19,8 @@ import { MeasureFetch } from './data/MeasureFetch';
 import { PatientFetch } from './data/PatientFetch';
 import { PostMeasureReportFetch } from './data/PostMeasureReportFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
-import logo from './icf_logo.png';
+import appLogo from './ecqmTestingToolLogo.png';
+import icfLogo from './icf_logo.png';
 import { Measure } from './models/Measure';
 import { Patient } from './models/Patient';
 import { PatientGroup } from './models/PatientGroup';
@@ -717,14 +718,14 @@ const App: React.FC = () => {
 
   return (
     <div className="container">
-      <div className="row text-center col-md-11" style={{ marginTop: '20px' }}>
+      <div className="row text-center col-md-11" style={{ marginTop: '20px', padding: '0px', height: '65px' }}>
         <div className="text-center col-md-1">
           <a href="http://www.icf.com">
-          <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo"  />
+            <img className="d-block mx-auto mb-4" src={icfLogo} alt="ICF Logo" />
           </a>
         </div>
-        <div className="text-center col-md-11">
-          <h2 style={{ marginTop: '20px' }}>eCQM Testing Tool</h2>
+        <div className="col-md-11">
+          <img className="d-block mx-auto mb-4" src={appLogo} alt="eCQM Testing Tool" width='180px' />
         </div>
       </div>
       <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
