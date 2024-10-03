@@ -105,8 +105,8 @@ const ServerModal: React.FC<Props> = ({modalShow, setModalShow, createServer}) =
     }
 
     return (
-        <Modal size='lg' centered show={modalShow}>
-            <Form data-testid='server-model-form' noValidate validated={validated} onSubmit={submitServer}>
+        <Modal size='lg' centered show={modalShow} style={{margin: '0px', transition: 'opacity 0.3s'}}>
+            <Form style={{padding: '10px'}} data-testid='server-model-form' noValidate validated={validated} onSubmit={submitServer}>
                 <Modal.Header><h2>Add server endpoint</h2></Modal.Header>
                 <Modal.Body>
                     <div className='row'>
