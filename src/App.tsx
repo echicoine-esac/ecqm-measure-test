@@ -161,7 +161,7 @@ const App: React.FC = () => {
       setShowScrollToTopButton(false);
     }
   };
-  const scrollTop = () => {
+  const scrollScreenToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   useEffect(() => {
@@ -719,7 +719,9 @@ const App: React.FC = () => {
     <div className="container">
       <div className="row text-center col-md-11" style={{ marginTop: '20px' }}>
         <div className="text-center col-md-1">
-          <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo" width="72" height="72" />
+          <a href="http://www.icf.com">
+          <img className="d-block mx-auto mb-4" src={logo} alt="ICF Logo"  />
+          </a>
         </div>
         <div className="text-center col-md-11">
           <h2 style={{ marginTop: '20px' }}>eCQM Testing Tool</h2>
@@ -782,9 +784,8 @@ const App: React.FC = () => {
       <br />
 
 
-      {/* Scroll-to-top button */}
       <button
-        onClick={scrollTop}
+        onClick={scrollScreenToTop}
         style={{
           display: showScrollToTopButton ? 'flex' : 'none',
           position: 'fixed',

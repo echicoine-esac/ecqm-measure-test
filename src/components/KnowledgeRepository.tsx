@@ -52,7 +52,7 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
         </div>
       </div>
       {showKnowledgeRepo ? (
-        <div className='card-body'>
+        <div className='card-body' style={{ transition: 'all .1s' }}>
           <div className='row'>
             <div className='col-md-6 order-md-1'>
               <label>Knowledge Repository Server</label>

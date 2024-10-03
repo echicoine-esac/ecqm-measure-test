@@ -120,7 +120,7 @@ const DataRepository: React.FC<Props> = ({
         </div>
       </div>
       {showDataRepo ? (
-        <div className='card-body'>
+        <div className='card-body' style={{ transition: 'all .1s' }}>
           <div className='row'>
             <div className='col-md-6 order-md-1'>
               <label>Data Repository Server</label>

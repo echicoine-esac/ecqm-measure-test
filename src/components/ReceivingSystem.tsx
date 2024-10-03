@@ -35,7 +35,7 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
         )}
       </div>
       {showReceiving ? (
-        <div className='card-body'>
+        <div className='card-body' style={{ transition: 'all .1s' }}>
           <div className='row'>
             <div className='col-md-6 order-md-1'>
               <label>Receiving System Server</label>

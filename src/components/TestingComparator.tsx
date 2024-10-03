@@ -51,11 +51,11 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
   selectedMeasureEvaluationServer, selectedMeasure, selectedKnowledgeRepositoryServer, selectedPatient }) => {
 
 
-  const requiredDataPresent = selectedPatientGroup 
-  && selectedDataRepoServer?.baseUrl
-  && selectedMeasureEvaluationServer?.baseUrl 
-  && selectedMeasure 
-  && selectedKnowledgeRepositoryServer?.baseUrl;
+  const requiredDataPresent = selectedPatientGroup
+    && selectedDataRepoServer?.baseUrl
+    && selectedMeasureEvaluationServer?.baseUrl
+    && selectedMeasure
+    && selectedKnowledgeRepositoryServer?.baseUrl;
 
   const convertToID = (str: any | undefined): string => {
     let strIn: string = '' + str;
@@ -128,7 +128,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
       </div>
 
       {showTestCompare ? (
-        <div className='card-body'>
+        <div className='card-body' style={{ transition: 'all .1s' }}>
 
           <div ref={componentRef}>
             {items.size > 0 ? (

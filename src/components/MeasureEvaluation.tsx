@@ -61,7 +61,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
         )}
       </div>
       {showMeasureEvaluation ? (
-        <div className='card-body'>
+        <div className='card-body' style={{ transition: 'all .1s' }}>
           <div className='row'>
             <div className='col-md-6 order-md-1'>
               <label>Measure Evaluation Server</label>
@@ -86,7 +86,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
             </div>
           </div>
 
-          
+
           <div className='row'>
             <div className='col-md-5 order-md-2'>
               <br />
