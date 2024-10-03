@@ -6,10 +6,12 @@ interface Props {
   showSection: boolean;
   dataTestID: string;
   setshowSection: (visible: boolean) => void;
+
   selectedSubject?: string;
+  selectedSubjectTitling?: string;
 }
 
-const SectionalTitleBar: React.FC<Props> = ({ title, showSection, selectedSubject, dataTestID, setshowSection }) => {
+const SectionalTitleBar: React.FC<Props> = ({ title, showSection, selectedSubject, dataTestID, setshowSection, selectedSubjectTitling }) => {
   return (
     <div className='row' style={{ display: 'flex', flexWrap: 'nowrap' }}>
       <div style={{
@@ -24,14 +26,14 @@ const SectionalTitleBar: React.FC<Props> = ({ title, showSection, selectedSubjec
         </h6>
       </div>
 
-      <div style={{ paddingTop: '10px', flexGrow: 1, flexShrink: 1, minWidth: 0 }} className='col-md-8 order-md-2 text-muted'>
-        {!showSection && selectedSubject && 'Subject: ' + selectedSubject}
+      <div data-testid={dataTestID + 'selected-div'} style={{ textAlign: 'right', paddingTop: '10px', flexGrow: 1, flexShrink: 1, minWidth: 0 }} className='col-md-8 order-md-2 text-muted'>
+        {!showSection && selectedSubject && selectedSubjectTitling && (selectedSubjectTitling + ': ' + selectedSubject)}
       </div>
 
       <div style={{ width: 'auto' }} className='col-md-1 order-md-3'>
         {showSection ? (
           <Button
-            data-testid={dataTestID + '-hide-section-button'}
+            data-testid={dataTestID + 'hide-section-button'}
             className='btn btn-primary btn-lg float-right'
             onClick={(e) => setshowSection(false)}
           >
