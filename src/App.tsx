@@ -587,7 +587,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (!selectedReceiving) {
+    if (!selectedReceiving?.baseUrl) {
       setSectionalResults(Constants.error_receivingSystemServer, Section.REC_SYS);
       return;
     }

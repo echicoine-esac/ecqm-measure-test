@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Light from 'react-syntax-highlighter';
 import { Constants } from '../constants/Constants';
 
 // Props for Results panel
@@ -39,27 +38,25 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
         <div ref={resultsDivRef} className='row mt-1'
           style={{
             background: '#F7F7F7', border: borderStyle,
-            transition: 'border 2s', margin: '2px', borderRadius: '4px', paddingTop: '0px'
+            transition: 'border 1s', margin: '0px', borderRadius: '4px', padding: '6px'
           }}>
 
           <div className='col-md-12 order-md-1'>
             <div style={{ height: 'auto', width: 'auto', border: '0px' }}>
 
-              <Light
-                data-testid='results-text'
-                wrapLines={true}
-                wrapLongLines={true}
-                language="json"
-                useInlineStyles={false}
-                customStyle={{
+              <label
+                data-testid="results-text"
+                style={{
                   height: 'auto',
                   borderRadius: '4px',
-                  fontFamily: '"Courier New", Courier, monospace',
-                  fontSize: '11pt',
-                  margin: '0px'
+                  fontSize: '13pt',
+                  margin: '0px',
+                  display: 'block',
+                  whiteSpace: 'pre-wrap',
+                  color: !results.startsWith(Constants.preFetchMessage) ? 'red' : 'black',
                 }}>
                 {results}
-              </Light>
+              </label>
             </div>
           </div>
         </div >
