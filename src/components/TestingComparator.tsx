@@ -9,6 +9,7 @@ import { MeasureComparisonManager } from '../utils/MeasureComparisonManager';
 import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
+import SectionalTitleBar from './SectionalTitleBar';
 
 
 interface Props {
@@ -103,28 +104,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
       }
     `}</style>
       <div className='card-header'>
-        <div className='row'>
-          <div className='col-md-3'>Test Comparator</div>
-          <div className='col-md-1 ml-auto'>
-            {showTestCompare ? (
-              <Button
-                data-testid='test-compare-hide-section-button'
-                className='btn btn-primary btn-lg float-right'
-                onClick={() => setShowTestCompare(false)}
-              >
-                Hide
-              </Button>
-            ) : (
-              <Button
-                data-testid='test-compare-show-section-button'
-                className='btn btn-primary btn-lg float-right'
-                onClick={() => setShowTestCompare(true)}
-              >
-                Show
-              </Button>
-            )}
-          </div>
-        </div>
+        <SectionalTitleBar dataTestID='test-compare-' setshowSection={setShowTestCompare} showSection={showTestCompare} title='Test Comparator' />
       </div>
 
       {showTestCompare ? (

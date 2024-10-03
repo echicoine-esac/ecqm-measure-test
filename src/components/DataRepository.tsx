@@ -6,6 +6,7 @@ import { Patient } from '../models/Patient';
 import { Member, PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
+import SectionalTitleBar from './SectionalTitleBar';
 
 interface Props {
   showDataRepo: boolean;
@@ -59,7 +60,7 @@ const DataRepository: React.FC<Props> = ({
     }
   };
 
-  const selectedSubject = useGroupAsSubject && buildSelectedSubjectText().length > 0 ? buildSelectedSubjectText() + ' on ' + selectedDataRepo?.baseUrl : selectedDataRepo?.baseUrl ? 'ALL Patients on ' + selectedDataRepo?.baseUrl : 'None (no Data Repository selected)';
+  const selectedSubject: string = useGroupAsSubject && buildSelectedSubjectText().length > 0 ? buildSelectedSubjectText() + ' on ' + selectedDataRepo?.baseUrl : selectedDataRepo?.baseUrl ? 'ALL Patients on ' + selectedDataRepo?.baseUrl : 'None (no Data Repository selected)';
 
   useEffect(() => {
     // Update filtered patients and patient group based on selectedMeasure
@@ -97,27 +98,7 @@ const DataRepository: React.FC<Props> = ({
   return (
     <div className='card'>
       <div className='card-header'>
-        <div className='row'>
-          <div className='col-md-3 order-md-1'>Data Extraction Service/Data Repository</div>
-          {showDataRepo ? (
-            <div className='col-md-8 order-md-2 text-muted' />
-          ) : (
-            <div className='col-md-8 order-md-2 text-muted'>
-              Selected Subject: {selectedSubject}
-            </div>
-          )}
-          <div className='col-md-1 order-md-3'>
-            {showDataRepo ? (
-              <Button data-testid='data-repo-hide-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowDataRepo(false)}>
-                Hide
-              </Button>
-            ) : (
-              <Button data-testid='data-repo-show-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowDataRepo(true)}>
-                Show
-              </Button>
-            )}
-          </div>
-        </div>
+        <SectionalTitleBar dataTestID='data-repo-' setshowSection={setShowDataRepo} showSection={showDataRepo} title='Data Extraction Service/Data Repository' selectedSubject={selectedSubject} />
       </div>
       {showDataRepo ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>

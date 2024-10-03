@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Server } from '../models/Server';
+import SectionalTitleBar from './SectionalTitleBar';
 
 // Props for ReceivingSystem
 interface Props {
@@ -21,18 +22,7 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
   return (
     <div className='card'>
       <div className='card-header'>
-        Receiving System
-        {showReceiving ? (
-          <Button data-testid='rec-sys-hide-section-button' className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowReceiving(false)}>
-            Hide
-          </Button>
-        ) : (
-          <Button data-testid='rec-sys-show-section-button' className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowReceiving(true)}>
-            Show
-          </Button>
-        )}
+        <SectionalTitleBar dataTestID='rec-sys-' setshowSection={setShowReceiving} showSection={showReceiving} title='Receiving System' />
       </div>
       {showReceiving ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>

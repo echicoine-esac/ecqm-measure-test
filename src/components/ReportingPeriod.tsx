@@ -13,8 +13,19 @@ interface Props {
 const ReportingPeriod: React.FC<Props> = ({ startDate, endDate, setStartDate, setEndDate }) => {
   return (
     <div className='card'>
-      <div className='card-header'>
-        Reporting Period
+      <div className='card-header' style={{height: '63.71px'}}>
+        <div className='row' style={{ height: '47px', display: 'flex', flexWrap: 'nowrap' }}>
+          <div style={{
+            width: '340px',
+            display: 'flex',
+            justifyContent: 'left',  // Horizontally center
+            alignItems: 'center',      // Vertically center
+          }} className='col-md-3 order-md-1'>
+            <h6 style={{ fontSize: '13pt', textAlign: 'center' }}>
+              Reporting Period
+            </h6>
+          </div>
+        </div>
       </div>
       <div className='card-body' style={{ transition: 'all .1s' }}>
         <div className='row'>

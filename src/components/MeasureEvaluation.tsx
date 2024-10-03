@@ -5,6 +5,7 @@ import { Constants } from '../constants/Constants';
 import { Patient } from '../models/Patient';
 import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
+import SectionalTitleBar from './SectionalTitleBar';
 
 // Props for MeasureEvaluation
 interface Props {
@@ -47,18 +48,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
   return (
     <div className='card'>
       <div className='card-header'>
-        Measure Evaluation Service
-        {showMeasureEvaluation ? (
-          <Button data-testid='mea-eva-hide-section-button' className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowMeasureEvaluation(false)}>
-            Hide
-          </Button>
-        ) : (
-          <Button data-testid='mea-eva-show-section-button' className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowMeasureEvaluation(true)}>
-            Show
-          </Button>
-        )}
+        <SectionalTitleBar dataTestID='mea-eva-' setshowSection={setShowMeasureEvaluation} showSection={showMeasureEvaluation} title='Measure Evaluation Service' />
       </div>
       {showMeasureEvaluation ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>

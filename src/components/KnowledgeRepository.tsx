@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { Measure } from '../models/Measure';
 import { Server } from '../models/Server';
+import SectionalTitleBar from './SectionalTitleBar';
 
 // Props for KnowledgeRepository
 interface Props {
@@ -29,27 +30,7 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
   return (
     <div className='card'>
       <div className='card-header'>
-        <div className='row'>
-          <div className='col-md-3 order-md-1'>Knowledge Repository</div>
-          {showKnowledgeRepo ? (
-            <div className='col-md-8 order-md-2 text-muted' />
-          ) : (
-            <div data-testid='selected-measure-div' className='col-md-8 order-md-2 text-muted'>
-              Selected Measure: {selectedMeasure}
-            </div>
-          )}
-          <div className='col-md-1 order-md-3'>
-            {showKnowledgeRepo ? (
-              <Button data-testid='knowledge-repo-hide-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowKnowledgeRepo(false)}>
-                Hide
-              </Button>
-            ) : (
-              <Button data-testid='knowledge-repo-show-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowKnowledgeRepo(true)}>
-                Show
-              </Button>
-            )}
-          </div>
-        </div>
+        <SectionalTitleBar dataTestID='knowledge-repo-' setshowSection={setShowKnowledgeRepo} showSection={showKnowledgeRepo} title='Knowledge Repository' />
       </div>
       {showKnowledgeRepo ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>
