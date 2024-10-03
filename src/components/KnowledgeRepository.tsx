@@ -30,7 +30,8 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='knowledge-repo-' setshowSection={setShowKnowledgeRepo} showSection={showKnowledgeRepo} title='Knowledge Repository' />
+        <SectionalTitleBar dataTestID='knowledge-repo-' setshowSection={setShowKnowledgeRepo} showSection={showKnowledgeRepo}
+          title='Knowledge Repository' selectedSubjectTitling='Selected Measure' selectedSubject={selectedMeasure} />
       </div>
       {showKnowledgeRepo ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>

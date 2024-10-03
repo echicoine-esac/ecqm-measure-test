@@ -98,7 +98,9 @@ const DataRepository: React.FC<Props> = ({
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='data-repo-' setshowSection={setShowDataRepo} showSection={showDataRepo} title='Data Extraction Service/Data Repository' selectedSubject={selectedSubject} />
+        <SectionalTitleBar dataTestID='data-repo-' setshowSection={setShowDataRepo} showSection={showDataRepo}
+          title='Data Extraction Service/Data Repository'
+          selectedSubjectTitling='Selected Subject' selectedSubject={selectedSubject} />
       </div>
       {showDataRepo ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>

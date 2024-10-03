@@ -112,7 +112,7 @@ test('expect functions to be called when selecting items in dropdown', async () 
     />);
 
     //Selected Measure should hide if showKnowledgeRepo is true
-    const measureDiv: HTMLDivElement = screen.getByTestId('selected-measure-div');
+    const measureDiv: HTMLDivElement = screen.getByTestId('knowledge-repo-selected-div');
     expect(measureDiv.innerHTML).toEqual('Selected Measure: ' + measureDivText);
 
 });
