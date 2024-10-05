@@ -716,6 +716,7 @@ const App: React.FC = () => {
         const mcMan = new MeasureComparisonManager(patientEntry,
           measureObj,
           selectedMeasureEvaluationServer,
+          selectedDataRepo,
           startDate, endDate,
           accessToken);
 

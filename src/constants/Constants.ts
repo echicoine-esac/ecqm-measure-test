@@ -53,11 +53,12 @@ export class Constants {
     public static readonly measurePostedFetchDataError = 'There was an error posting the measure report.';
 
     public static readonly evaluateMeasure_noGroupFound = 'When no Patient is selected, this operation attempts to use Group data. No Patient Group data could be established for the selected Measure. Select an individual Patient from the Patient dropdown and attempt operation again.';
-    public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with existing MeasureReports and displays a summary of discrepancies and matches. To begin, verify the following items are established:';
+
+    public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with previous MeasureReports and displays a summary of discrepancies and matches. The existing MeasureReports are pulled from the Data Repository server, and the current Measure Evaluation will be executed against the selected Measure Evaluation Server. To begin, verify the following items are established:';
 
     public static readonly largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
 
-     
+
     //testing purposes:
     public static readonly serverTestData: Server[] = [
         {
