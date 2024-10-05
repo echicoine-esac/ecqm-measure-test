@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Constants } from '../constants/Constants';
 
 // Props for Results panel
@@ -9,58 +9,64 @@ interface Props {
 // Results component displays the status messages
 const SectionalResults: React.FC<Props> = ({ results }) => {
 
-  useEffect(() => {
-    drawAttentionToResults();
-  }, [results]);
-
+  //we use this panel to inform the user an input error, but also if a fetch is occurring as well:
+  const isError = !results.startsWith(Constants.preFetchMessage);
 
   //scroll results into view when it changes:
   const resultsDivRef = useRef<HTMLDivElement | null>(null);
-  const [attentionBorder, setAttentionBorder] = useState(false);
-  const drawAttentionToResults = () => {
-    if (resultsDivRef.current) {
-      setAttentionBorder(true);
-      setTimeout(() => {
-        setAttentionBorder(false);
-      }, 500);
-    }
-  };
 
 
-  const errorAttentionFrame = '2px solid red';
-  const normalStateAttentionFrame = '1px solid lightgrey'
-  const borderStyle = attentionBorder && !results.startsWith(Constants.preFetchMessage) ? errorAttentionFrame : normalStateAttentionFrame;
 
   return (
     <div>
       {results && results.length > 0 && (
-
-        <div ref={resultsDivRef} className='row mt-1'
+        <div
+          ref={resultsDivRef}
+          className='row mt-1'
           style={{
-            background: '#F7F7F7', border: borderStyle,
-            transition: 'border 2s', margin: '0px', borderRadius: '4px', padding: '6px'
-          }}>
-
+            background: isError ? '#ce5454' : '#F7F7F7',
+            border: 'solid 1px lightgrey',
+            margin: '0px',
+            borderRadius: '4px',
+            padding: '6px',
+            maxWidth: '97.6%',
+            display: 'inline-block',
+            position: 'relative',
+            top: '-8px',
+            left: '15px',
+            zIndex: '-1',
+          }}
+        >
           <div className='col-md-12 order-md-1'>
-            <div style={{ height: 'auto', width: 'auto', border: '0px' }}>
-
+            <div
+              style={{
+                height: 'auto',
+                width: 'auto',
+                border: '0px',
+                display: 'inline-block',
+              }}
+            >
               <h6
                 data-testid="results-text"
                 style={{
                   height: 'auto',
                   borderRadius: '4px',
+                  fontSize: '13pt',
                   margin: '0px',
                   display: 'block',
                   whiteSpace: 'pre-wrap',
-                  color: !results.startsWith(Constants.preFetchMessage) ? 'red' : 'black',
-                }}>
+                  color: isError ? 'white' : 'black',
+                }}
+              >
                 {results}
               </h6>
             </div>
           </div>
-        </div >
+        </div>
       )}
-    </div >
+    </div>
+
+
   );
 };
 
