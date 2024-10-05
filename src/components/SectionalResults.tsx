@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Constants } from '../constants/Constants';
 
 // Props for Results panel
