@@ -2,6 +2,7 @@ import { Constants } from '../constants/Constants';
 import { Patient } from '../models/Patient';
 import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
@@ -92,15 +93,13 @@ export class CollectDataFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        try {
-            const ret: string = this.makeJsonDataSubmittable(JSON.stringify(data, undefined, 2));
-            return ret;
-        } catch (error: any) {
-            return data;
-        }
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.makeJsonDataSubmittable(data), 
+            'Collect Data', 
+            this.selectedDataRepo?.baseUrl);
     }
 
-    /**
+      /**
      * Current bugs in hapi-fhir: 
      * - Data returned using $collect-data associates ids in the name entry for each resource. These names are used in 
      *   SubmitDataProvider as 'OperationParam' identifiers, which are validating by whole string only, which means 
@@ -118,8 +117,7 @@ export class CollectDataFetch extends AbstractDataFetch {
      * @param jsonString 
      * @returns 
      */
-    private makeJsonDataSubmittable(jsonString: string): string {
-        let jsonData = JSON.parse(jsonString);
+      private makeJsonDataSubmittable(jsonData: any): string {
         if (jsonData.parameter && Array.isArray(jsonData.parameter)) {
             jsonData.parameter.forEach((entry: any) => {
 
@@ -144,6 +142,7 @@ export class CollectDataFetch extends AbstractDataFetch {
                 }
             });
         }
+
         return JSON.stringify(jsonData, null, 2);
     }
 }

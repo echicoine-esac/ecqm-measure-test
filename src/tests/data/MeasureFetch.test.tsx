@@ -21,7 +21,7 @@ test('get measures mock', async () => {
     fetchMock.once(measureFetch.getUrl(),
         JSON.stringify(mockJsonMeasureData)
         , { method: 'GET' });
-    let measureList: Measure[] = await measureFetch.fetchData('');
+    let measureList: Measure[] = (await measureFetch.fetchData('')).operationData;
     expect(measureList.length).toEqual(64);
     fetchMock.restore();
 });
@@ -36,7 +36,7 @@ test('get measures mock error', async () => {
     });
 
     try {
-        let measureList: string[] = await measureFetch.fetchData('');
+        let measureList: string[] = (await measureFetch.fetchData('')).operationData;
     } catch (error: any) {
         errorCatch = error.message;
     }
@@ -48,7 +48,7 @@ test('get measures mock error', async () => {
 });
 
 test('test url format', async () => {
-    let measureFetch = await new MeasureFetch(url);
+    let measureFetch = new MeasureFetch(url);
     expect(measureFetch.getUrl())
         .toEqual('foo/Measure?_count=200');
 });

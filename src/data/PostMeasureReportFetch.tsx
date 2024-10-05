@@ -2,6 +2,8 @@ import { Constants } from '../constants/Constants';
 import { StringUtils } from '../utils/StringUtils';
 import { Server } from '../models/Server';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
+import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 
 export class PostMeasureReportFetch extends AbstractDataFetch {
     type: FetchType;
@@ -32,18 +34,24 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        return JSON.stringify(data, undefined, 2);
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            data,
+            'Post Measure Report',
+            this.selectedReceiving?.baseUrl);
     }
 
-    submitData = async (token: string): Promise<string> => {
+    submitData = async (token: string): Promise<OutcomeTracker> => {
+
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/fhir+json',
-                "Authorization": `Bearer ${token}`},
+            headers: {
+                'Content-Type': 'application/fhir+json',
+                "Authorization": `Bearer ${token}`
+            },
             body: this.measureReport
         };
 
-        let ret = '';
+        let ret: any;
 
         // Call the FHIR server to submit the data
         let responseStatusText = '';
@@ -54,20 +62,24 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
                 return response.json()
             })
             .then((data) => {
-                ret = this.processReturnedData(data);
+                ret = data;
             })
             .catch((error) => {
                 let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
-                if (responseStatusText.length > 0 && responseStatusText !== 'OK' ){
+                if (responseStatusText.length > 0 && responseStatusText !== 'OK') {
                     message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, responseStatusText);
                 }
                 throw new Error(message);
             });
-        return ret;
+
+        return this.processReturnedData(ret);
     }
 
-    fetchData = async (): Promise<string> => {
-        return Constants.measurePostedFetchDataError;
+    fetchData = async (): Promise<OutcomeTracker> => {
+        return {
+            outcomeMessage: 'This function has not been implemented into PostMeasureReportFetch.  Use submitData instead.',
+            outcomeType: Outcome.NONE
+        }
     }
 }
 

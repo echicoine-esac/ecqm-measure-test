@@ -1,7 +1,10 @@
 export type CodeableConcept = {
-  coding: [{
-    system: string;
-    code: string;
-    display?: string;
-  }]
+  coding: Coding[];
+  text?: string;
+};
+
+export type Coding = {
+  system?: string;
+  code: string;
+  display?: string;
 };

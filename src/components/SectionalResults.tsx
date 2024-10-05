@@ -36,8 +36,7 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
             top: '-8px',
             left: '15px',
             zIndex: '-1',
-          }}
-        >
+          }}>
           <div className='col-md-12 order-md-1'>
             <div
               style={{
@@ -45,8 +44,7 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
                 width: 'auto',
                 border: '0px',
                 display: 'inline-block',
-              }}
-            >
+              }}>
               <h6
                 data-testid="results-text"
                 style={{
@@ -57,8 +55,7 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
                   display: 'block',
                   whiteSpace: 'pre-wrap',
                   color: isError ? 'white' : 'black',
-                }}
-              >
+                }}>
                 {results}
               </h6>
             </div>

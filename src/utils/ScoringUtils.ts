@@ -22,8 +22,7 @@ export class ScoringUtils {
 
     public static extractMeasureReportGroupData(data: any): PopulationElement[] {
         let mgArr: PopulationElement[] = [];
-        if (!data || !data.group) {
-            console.log(data);
+        if (!data.group) {
             return [];
         }
         for (const group of data.group) {

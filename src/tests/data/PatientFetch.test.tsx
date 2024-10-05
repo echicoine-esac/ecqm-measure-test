@@ -42,7 +42,7 @@ test('get patients mock', async () => {
         JSON.stringify(mockJsonPatientsData)
         , { method: 'GET' });
 
-    let patientList: string[] = await patientFetch.fetchData('')
+    let patientList: string[] = await (await patientFetch.fetchData('')).operationData
 
     expect(patientList.length).toEqual(21);
     fetchMock.restore();

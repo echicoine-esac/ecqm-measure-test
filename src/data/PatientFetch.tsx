@@ -1,6 +1,7 @@
 import { Constants } from '../constants/Constants';
 import { BundleEntry } from '../models/BundleEntry';
 import { Patient } from '../models/Patient';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
@@ -66,13 +67,17 @@ export class PatientFetch extends AbstractDataFetch {
                     });
                 }
             }
-        }
 
-        return patients.sort((a, b) => {
-            const patientA = PatientGroupUtils.buildUniquePatientIdentifier(a) + '';
-            const patientB = PatientGroupUtils.buildUniquePatientIdentifier(b) + '';
-            return patientA.localeCompare(patientB);
-        });
+            patients.sort((a, b) => {
+                const patientA = PatientGroupUtils.buildUniquePatientIdentifier(a) + '';
+                const patientB = PatientGroupUtils.buildUniquePatientIdentifier(b) + '';
+                return patientA.localeCompare(patientB);
+            });
+
+        }
+        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Patient Fetch', this.url,
+            patients
+        );
     }
 
     protected getDisplayName(entry: BundleEntry) {

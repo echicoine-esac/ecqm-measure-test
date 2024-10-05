@@ -18,12 +18,12 @@ Amplify.configure(awsExports);
  * advantage of instances of this class.
  */
 export class MeasureComparisonManager {
-    private selectedPatient: Patient | undefined;
-    public selectedMeasure: Measure;
-    private selectedMeasureEvaluation: Server | undefined;
-    private startDate: string = '';
-    private endDate: string = '';
-    private accessToken: string = '';
+    selectedPatient: Patient | undefined;
+    selectedMeasure: Measure;
+    selectedMeasureEvaluation: Server | undefined;
+    startDate: string = '';
+    endDate: string = '';
+    accessToken: string = '';
 
     public fetchedEvaluatedMeasureGroups: PopulationElement[] = [];
     public fetchedMeasureReportGroups: PopulationElement[] = [];
@@ -48,7 +48,6 @@ export class MeasureComparisonManager {
 
     }
 
-
     /**
      * Attempts to first evaluate measure against selected patient using specific eval server.
      * Next, using the measure information a MeasureReport fetch is ran to gather existing evaluations
@@ -62,15 +61,16 @@ export class MeasureComparisonManager {
             this.measureReportURL = measureReportFetch.getUrl();
 
             //MeasureReport fetch filters by date manually (period.start/period.end) comes back as entry array
-            this.fetchedMeasureReportGroups = ScoringUtils.extractBundleMeasureReportGroupData(await measureReportFetch.fetchData(this.accessToken));
+            this.fetchedMeasureReportGroups = ScoringUtils.extractBundleMeasureReportGroupData((await measureReportFetch.fetchData(this.accessToken)).operationData);
 
 
             const evaluateMeasureFetch = new EvaluateMeasureFetch(this.selectedMeasureEvaluation,
                 this.selectedMeasure.name, this.startDate, this.endDate, true, this.selectedPatient);
+
             this.evaluatedMeasureURL = evaluateMeasureFetch.getUrl();
 
             //evaluate measure comes back as a single MeasureReport
-            this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonBody);
+            this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonRawData);
 
             this.discrepancyExists = this.compareMeasureGroups();
         } catch (error: any) {

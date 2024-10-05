@@ -22,14 +22,10 @@ const Populations: React.FC<Props> = ({ showPopulations, populationScoring, meas
     <div>
       {showPopulations ? (
         <div style={{ textAlign: 'start'}}>
-          <h5 data-testid={'pops-measure-score-type'}>
-            {'Measure Scoring Type: '}
-            {measureScoringType && measureScoringType.length > 0 ? measureScoringType : 'N/A'}
-          </h5>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px'}}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '0px'}}>
             {populationScoring && Array.from(populationScoring)
               .map((scoring, index) => (
-                <div key={index + scoring.groupID} style={{ flexBasis: widthPercentage }}>
+                <div key={index + scoring.groupID} style={{ flexBasis: widthPercentage}}>
                   <table className="table mt-4" style={{ width: '100%', border: '2px solid lightgrey', background: 'white'  }}>
                     <thead style={{ background: '#F7F7F7' }}>
                       <tr>
@@ -37,9 +33,9 @@ const Populations: React.FC<Props> = ({ showPopulations, populationScoring, meas
                           <h6 data-testid={'pops-group-id-' + convertToID(scoring.groupID)}>{'Group ID: ' + scoring.groupID}</h6>
                         </th>
                         <th>
-                          <h5 data-testid={'pops-group-score-type-' + convertToID(scoring?.groupScoring?.coding[0]?.code)}>
+                          <h5 data-testid={'pops-group-score-type-' + convertToID(scoring?.groupScoring?.coding[0].code)}>
                             {scoring.groupScoring &&
-                              'Scoring Type: ' + scoring.groupScoring.coding[0].code}
+                              'Scoring Type: ' + scoring?.groupScoring?.coding[0].code}
                           </h5>
                         </th>
                       </tr>
@@ -58,6 +54,10 @@ const Populations: React.FC<Props> = ({ showPopulations, populationScoring, meas
               ))
             }
           </div>
+          <h6 style={{marginBottom: '15px'}} data-testid={'pops-measure-score-type'}>
+            {'Measure Scoring Type: '}
+            {measureScoringType && measureScoringType.length > 0 ? measureScoringType : 'N/A'}
+          </h6>
         </div>
       ) : (
         <div />

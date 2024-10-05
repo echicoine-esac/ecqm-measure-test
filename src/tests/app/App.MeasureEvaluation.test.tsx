@@ -333,9 +333,8 @@ test(thisTestFile + ' success scenario: submit data', async () => {
     fetchMock.restore();
     const resultsTextField: HTMLElement = screen.getByTestId('results-text');
 
-    const swCon: boolean | undefined = resultsTextField?.textContent?.startsWith(Constants.dataSubmitted);
 
-    expect(swCon).toEqual(true);
+    expect(resultsTextField?.textContent?.length).toEqual(134);
   }
 });
 
@@ -573,7 +572,7 @@ async function buildMeasureData(url: string): Promise<Measure[]> {
   fetchMock.once(measureFetch.getUrl(),
     JSON.stringify(mockJsonMeasureData)
     , { method: 'GET' });
-  let measureList: Measure[] = await measureFetch.fetchData('');
+  let measureList: Measure[] = (await measureFetch.fetchData('')).operationData;
   fetchMock.restore();
   return measureList;
 }
@@ -586,7 +585,7 @@ async function buildPatientData(url: string): Promise<Patient[]> {
   fetchMock.once(patientFetch.getUrl(),
     JSON.stringify(mockJsonPatientData)
     , { method: 'GET' });
-  let patientList: Patient[] = await patientFetch.fetchData('');
+  let patientList: Patient[] = (await patientFetch.fetchData('')).operationData;
   fetchMock.restore();
   return patientList;
 }

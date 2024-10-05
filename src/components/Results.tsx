@@ -3,14 +3,15 @@ import Light from 'react-syntax-highlighter';
 //NOTE: Careful with which style gets imported (can break Jest). Follow similar import structure:
 import lightfair from 'react-syntax-highlighter/dist/cjs/styles/hljs/lightfair';
 import nnfxDark from 'react-syntax-highlighter/dist/cjs/styles/hljs/nnfx-dark';
+import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 import { PopulationScoring } from '../models/PopulationScoring';
 import Populations from './Populations';
-import { Constants } from '../constants/Constants';
 
 
 // Props for Results panel
 interface Props {
-  results: string;
+  // results: string;
+  outcome: OutcomeTracker | undefined;
   selectedMeasure?: string;
   showPopulations?: boolean | undefined;
   populationScoring?: PopulationScoring[] | undefined;
@@ -19,7 +20,9 @@ interface Props {
 }
 
 // Results component displays the status messages
-const Results: React.FC<Props> = ({ results, selectedMeasure, showPopulations, populationScoring, measureScoringType }) => {
+const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, populationScoring, measureScoringType, outcome }) => {
+  const results = outcome?.jsonFormattedString ? outcome?.jsonFormattedString : '';
+
   // State to handle the dark theme toggle
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
@@ -70,43 +73,73 @@ const Results: React.FC<Props> = ({ results, selectedMeasure, showPopulations, p
 
   const hrefFileName = buildHrefFileName();
 
-  //scroll results into view when it changes:
   const resultsDivRef = useRef<HTMLDivElement | null>(null);
-  const [attentionBorder, setAttentionBorder] = useState(false);
   const scrollToResultsDiv = () => {
     if (resultsDivRef.current) {
-      setTimeout(() => {
-        resultsDivRef?.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 0);
-      //only flash red if the message is informational (not json)
-      setAttentionBorder(true);
-      setTimeout(() => {
-        setAttentionBorder(false);
-      }, 500);
+      resultsDivRef?.current?.scrollIntoView({ behavior: 'smooth' });
     }
   };
-  
 
-  const errorAttentionFrame = '2px solid red';
-  const successAttentionFrame = '2px solid green';
-  const normalStateAttentionFrame = '1px solid lightgrey'
-  const attentionCondition = !resultsTextIsJson ?  errorAttentionFrame : successAttentionFrame;
-  const borderStyle = attentionBorder && !results.startsWith(Constants.preFetchMessage) ?  attentionCondition  : normalStateAttentionFrame;
+  const getOutcomeFontColor = () => {
+    if (!outcome) return 'black';
+    if (outcome.outcomeType === Outcome.FAIL) {
+      return 'red';
+    } else if (outcome.outcomeType === Outcome.SUCCESS) {
+      return 'green';
+    } else if (outcome.outcomeType === Outcome.INFO) {
+      return 'black'
+    } else {
+      return 'black';
+    }
+  }
+
+
 
   return (
     <div>
+
       {results && results.length > 0 && (
 
         <div ref={resultsDivRef} className='row mt-4'
           style={{
-            background: '#F7F7F7', border: borderStyle,
-            transition: 'border 2s', margin: '2px', borderRadius: '4px', paddingTop: resultsTextIsJson ? '15px' : '0px'
+            background: '#F7F7F7', border: '1px solid lightgrey',
+            transition: 'border 2s', margin: '2px', borderRadius: '4px', paddingTop: resultsTextIsJson && !outcome?.outcomeMessage.length ? '15px' : '0px'
           }}>
+
+          {outcome && outcome.outcomeMessage.length > 0 && (
+
+            <div ref={resultsDivRef} className='row mt-1'
+              style={{
+                background: '#F7F7F7', border: 'none',
+                transition: 'border 1s', margin: '0px', borderRadius: '4px', padding: '0px'
+              }}>
+
+              <div className='col-md-12 order-md-1'>
+                <div style={{ height: 'auto', width: 'auto', border: '0px' }}>
+
+                  <h6
+                    data-testid="outcome-results-text"
+                    style={{
+                      height: 'auto',
+                      borderRadius: '4px',
+                      // fontSize: '14pt',
+                      marginTop: '10px',
+                      marginBottom: '5px',
+                      display: 'block',
+                      whiteSpace: 'pre-wrap',
+                      color: getOutcomeFontColor()
+                    }}>
+                    {outcome.outcomeMessage}
+                  </h6>
+                </div>
+              </div>
+            </div >
+          )}
 
           <Populations populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} />
 
           <div className='col-md-12 order-md-1'>
-            <div style={{ height: 'auto', width: 'auto', border: resultsTextIsJson ? '1px solid lightgrey' : '0px'}}>
+            <div style={{ height: 'auto', width: 'auto', border: resultsTextIsJson ? '1px solid lightgrey' : '0px' }}>
 
               <Light
                 data-testid='results-text'
@@ -136,10 +169,12 @@ const Results: React.FC<Props> = ({ results, selectedMeasure, showPopulations, p
                   Dark theme
                 </label>
 
-                <a href={href ?? '#'} download={hrefFileName}>
-                  Download {hrefFileName}
-                </a>
-
+                {!hrefFileName.startsWith('OperationOutcome') &&
+                  <a href={href ?? '#'} download={hrefFileName}>
+                    Download {hrefFileName}
+                  </a>
+                }
+                
               </div>
             )}
 
