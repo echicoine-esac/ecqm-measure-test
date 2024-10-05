@@ -22,6 +22,7 @@ import { SubmitDataFetch } from './data/SubmitDataFetch';
 import appLogo from './ecqmTestingToolLogo.png';
 import icfLogo from './icf_logo.png';
 import { Measure } from './models/Measure';
+import { Outcome, OutcomeTracker } from './models/OutcomeTracker';
 import { Patient } from './models/Patient';
 import { PatientGroup } from './models/PatientGroup';
 import { PopulationScoring } from './models/PopulationScoring';
@@ -111,10 +112,11 @@ const App: React.FC = () => {
   });
 
   //Output text field holding results of various operations
-  const [results, setResults] = useState<string>('');
-  const setResultsCaller = ((message: string) => {
+  const [outcomeTracker, setOutcomeTracker] = useState<OutcomeTracker | undefined>();
+
+  const setResultsCaller = ((outcomeTracker: OutcomeTracker) => {
     resetResults();
-    setResults(message);
+    setOutcomeTracker(outcomeTracker);
   });
 
   const [dataRepoResults, setDataRepoResults] = useState<string>('');
@@ -179,7 +181,10 @@ const App: React.FC = () => {
     REC_SYS,
   }
 
-  const setSectionalResults = ((message: string, section: Section) => {
+  const setSectionalResults = ((message: string, section: Section, outcome?: Outcome) => {
+    if (outcome) {
+      message = outcome + "_" + message;
+    }
     switch (section) {
       case Section.KNOWLEDGE_REPO: {
         setKnowledgeRepoResults(message);
@@ -198,7 +203,10 @@ const App: React.FC = () => {
         return;
       }
       default: {
-        setResultsCaller(message);
+        setResultsCaller({
+          outcomeMessage: message,
+          outcomeType: Outcome.NONE,
+        });
       }
     }
   });
@@ -255,11 +263,15 @@ const App: React.FC = () => {
   }
 
   const resetResults = () => {
-    setResults('');
+    setOutcomeTracker({
+      outcomeMessage: '',
+      outcomeType: Outcome.NONE
+    })
     setDataRepoResults('');
     setKnowledgeRepoResults('');
     setMeasureEvalResults('');
     setRecSysResults('');
+    setOutcomeTracker(undefined);
   }
 
   // Uses the GraphQL API to create a server
@@ -269,7 +281,12 @@ const App: React.FC = () => {
       await ServerUtils.createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
       setServers(await ServerUtils.getServerList());
     } catch (error: any) {
-      setResultsCaller(error.message);
+      setResultsCaller({
+        outcomeMessage: "An error occurred while attempting to add a server to the system:",
+        outcomeType: Outcome.FAIL,
+        //uses jsonString to convey error:
+        jsonString: error.message
+      });
     }
   }
 
@@ -317,7 +334,7 @@ const App: React.FC = () => {
       }
     }
     try {
-      setMeasures(await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken));
+      setMeasures((await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken)).operationData);
     } catch (error: any) {
       setSectionalResults(error.message, Section.KNOWLEDGE_REPO);
     }
@@ -346,12 +363,12 @@ const App: React.FC = () => {
 
       const groupFetch = new GroupFetch(dataRepo.baseUrl);
 
-      let groupsMap: Map<string, PatientGroup> = await groupFetch.fetchData(accessToken);
+      let groupsMap: Map<string, PatientGroup> = (await groupFetch.fetchData(accessToken)).operationData;
 
       setPatientGroups(groupsMap);
 
       const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
-      setPatients(await patientFetch.fetchData(accessToken));
+      setPatients((await patientFetch.fetchData(accessToken)).operationData);
 
 
     } catch (error: any) {
@@ -387,8 +404,8 @@ const App: React.FC = () => {
     if (!measureObj) {
       setMeasureEvalResults(Constants.error_selectMeasure);
       return;
-    } else if (measureObj.scoring) {
-      setMeasureScoringType(measureObj.scoring.coding[0].code);
+    } else if (measureObj.scoring?.coding) {
+      setMeasureScoringType(measureObj?.scoring?.coding[0].code);
     }
 
     const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
@@ -407,58 +424,53 @@ const App: React.FC = () => {
     setLoading(true);
 
     try {
-      let evaluateMeasureResult = await evaluateMeasureFetch.fetchData(accessToken);
+      let evaluateMeasureOutcomeTracker: OutcomeTracker = await evaluateMeasureFetch.fetchData(accessToken);
 
-      if (!evaluateMeasureResult) {
+      if (!evaluateMeasureOutcomeTracker) {
         setSectionalResults('Operation returned with erroneous data structure.', Section.MEASURE_EVAL);
         setShowPopulations(false);
         setLoading(false);
         return;
       }
+      setResultsCaller(evaluateMeasureOutcomeTracker);
 
-      // Handle the error case where an OperationOutcome was returned instead of a MeasureReport
-      if (evaluateMeasureResult.jsonBody.resourceType === 'OperationOutcome') {
-        setResultsCaller('Operation returned with unexpected error:\n\n' + JSON.stringify(evaluateMeasureResult, undefined, 2));
+      // Iterate through the population names to set the state
+      const measureGroups: GroupElement[] = evaluateMeasureOutcomeTracker.operationData;
+
+      if (!measureGroups) {
         setShowPopulations(false);
         setLoading(false);
         return;
-      } else {
-        const retJSON = JSON.stringify(evaluateMeasureResult.jsonBody, undefined, 2);
-        setMeasureReport(retJSON);
-        setResultsCaller(retJSON);
-        // Iterate through the population names to set the state
-        const measureGroups: GroupElement[] = evaluateMeasureResult.measureGroups;
-        if (!measureGroups) {
-          setResultsCaller('Operation returned with unexpected data structure: \n' + evaluateMeasureResult.jsonBody);
-          setShowPopulations(false);
-          setLoading(false);
-          return;
-        }
-
-        let populationScoringCollection: PopulationScoring[] = [];
-
-        // //used for testing
-        // const scoringConcept: CodeableConcept = {
-        //   coding: [{
-        //     system: "http://terminology.hl7.org/CodeSystem/measure-scoring",
-        //     code: "proportion",
-        //     display: "Proportion"
-        //   }]
-        // };
-
-        for (const group of measureGroups) {
-          const groupElement: GroupElement = group;
-
-          populationScoringCollection.push({
-            groupID: groupElement.id,
-            groupScoring: evaluateMeasureResult.jsonBody.scoring ? evaluateMeasureResult.jsonBody.scoring.coding[0].code : undefined,
-            groupPopulations: group.population
-          })
-        }
-
-        setPopulationScoring(populationScoringCollection);
-
       }
+
+      if (evaluateMeasureOutcomeTracker.jsonString) {
+        setMeasureReport(evaluateMeasureOutcomeTracker.jsonString);
+      }
+
+      let populationScoringCollection: PopulationScoring[] = [];
+
+      // //used for testing
+      // const scoringConcept: CodeableConcept = {
+      //   coding: [{
+      //     system: "http://terminology.hl7.org/CodeSystem/measure-scoring",
+      //     code: "proportion",
+      //     display: "Proportion"
+      //   }]
+      // };
+
+      for (const group of measureGroups) {
+        const groupElement: GroupElement = group;
+
+        populationScoringCollection.push({
+          groupID: groupElement.id,
+          groupScoring: evaluateMeasureOutcomeTracker.jsonData?.scoring ?
+            evaluateMeasureOutcomeTracker.jsonData?.scoring.coding[0].code : undefined,
+          groupPopulations: group.population
+        })
+      }
+
+      setPopulationScoring(populationScoringCollection);
+
 
       // Show the populations
       setShowPopulations(true);
@@ -497,6 +509,7 @@ const App: React.FC = () => {
 
     try {
       setResultsCaller(await dataRequirementsFetch.fetchData(accessToken));
+
       setLoading(false);
     } catch (error: any) {
       setSectionalResults(error.message, Section.KNOWLEDGE_REPO);
@@ -540,9 +553,17 @@ const App: React.FC = () => {
 
     // Call the FHIR server to collect the data
     try {
-      const retJSON = await collectDataFetch.fetchData(accessToken);
-      setCollectedData(retJSON);
-      setResultsCaller(retJSON);
+      const collectDataOutcomeTracker = await collectDataFetch.fetchData(accessToken);
+
+
+
+      if (collectDataOutcomeTracker.jsonString) {
+        console.log(collectDataOutcomeTracker.jsonString);
+        setCollectedData(collectDataOutcomeTracker.jsonString);
+      }
+
+      setResultsCaller(collectDataOutcomeTracker);
+
       setLoading(false);
     } catch (error: any) {
       setSectionalResults(error.message, Section.DATA_REPO);
@@ -573,6 +594,7 @@ const App: React.FC = () => {
     try {
       setResultsCaller(await new SubmitDataFetch(selectedMeasureEvaluationServer,
         selectedMeasure, collectedData).submitData(accessToken));
+
       setLoading(false);
     } catch (error: any) {
       setSectionalResults(error.message, Section.MEASURE_EVAL);
@@ -658,7 +680,7 @@ const App: React.FC = () => {
     }
 
     if (missingData.length > 0) {
-      setResultsCaller(missingData);
+      // setResultsCaller(missingData);
       return;
     }
 
@@ -682,7 +704,7 @@ const App: React.FC = () => {
     }
 
     if (patientCompareList.length === 0) {
-      setResultsCaller(Constants.evaluateMeasure_noGroupFound);
+      // setResultsCaller(Constants.evaluateMeasure_noGroupFound);
       return;
     }
 
@@ -773,9 +795,11 @@ const App: React.FC = () => {
         selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}
         selectedPatient={selectedPatient} />
 
-      <Results results={results} selectedMeasure={selectedMeasure}
+      <Results selectedMeasure={selectedMeasure}
         //Populations now captured within results card:
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} />
+        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType}
+        outcome={outcomeTracker}
+      />
 
       <br />
       <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />

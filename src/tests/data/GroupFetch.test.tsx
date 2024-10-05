@@ -25,7 +25,7 @@ test('get group mock', async () => {
         JSON.stringify(mockJsonGroupsData)
         , { method: 'GET' });
 
-    let groupList: Map<string, PatientGroup> = await groupFetch.fetchData('');
+    let groupList: Map<string, PatientGroup> = (await groupFetch.fetchData('')).operationData;
 
     expect(groupList.size).toEqual(6);
     fetchMock.restore();
@@ -40,7 +40,7 @@ test('get empty group mock', async () => {
         JSON.stringify(mockJsonGroupsData)
         , { method: 'GET' });
 
-    let groupList: Map<string, PatientGroup> = await groupFetch.fetchData('');
+    let groupList: Map<string, PatientGroup> = (await groupFetch.fetchData('')).operationData;
 
     expect(groupList.size).toEqual(0);
     fetchMock.restore();

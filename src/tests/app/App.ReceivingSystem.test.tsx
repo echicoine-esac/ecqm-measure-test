@@ -100,7 +100,7 @@ test(thisTestFile + ' fail scenario: submit without any selection', async () => 
 
   const resultsTextField: HTMLElement = screen.getByTestId('results-text');
   expect(resultsTextField).toBeInTheDocument();
-  expect(resultsTextField.textContent).toEqual(Constants.error_generateMeasureReport);
+  expect(resultsTextField.textContent).toEqual(Constants.error_receivingSystemServer);
 });
 
 
@@ -253,7 +253,7 @@ test(thisTestFile + ' success scenario: submit', async () => {
 
     const resultsTextField: HTMLElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.textContent).toEqual('true');//Constants.dataSubmitted);
+    expect(resultsTextField.textContent).toEqual('true');
   }
 
 });
@@ -555,7 +555,7 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
 
     const resultsTextField: HTMLElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.textContent).toEqual('Missing required property: selectedReceiving');
+    expect(resultsTextField.textContent).toEqual(Constants.error_receivingSystemServer);
   }
 
 });
@@ -568,7 +568,7 @@ async function buildMeasureData(url: string): Promise<Measure[]> {
   fetchMock.once(measureFetch.getUrl(),
     JSON.stringify(mockJsonMeasureData)
     , { method: 'GET' });
-  let measureList: Measure[] = await measureFetch.fetchData('');
+  let measureList: Measure[] = (await measureFetch.fetchData('')).operationData;
   fetchMock.restore();
   return measureList;
 }
@@ -581,7 +581,7 @@ async function buildPatientData(url: string): Promise<Patient[]> {
   fetchMock.once(patientFetch.getUrl(),
     JSON.stringify(mockJsonPatientData)
     , { method: 'GET' });
-  let patientList: Patient[] = await patientFetch.fetchData('');
+  let patientList: Patient[] = (await patientFetch.fetchData('')).operationData;
   fetchMock.restore();
   return patientList;
 }

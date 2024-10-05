@@ -1,4 +1,5 @@
 import { Constants } from '../constants/Constants';
+import { OutcomeTracker } from '../models/OutcomeTracker';
 import { StringUtils } from '../utils/StringUtils';
 
 export enum FetchType {
@@ -19,9 +20,9 @@ export abstract class AbstractDataFetch {
     requestOptions: any;
 
     abstract getUrl(): string;
-    protected abstract processReturnedData(data: any): any;
+    protected abstract processReturnedData(data: any): OutcomeTracker;
 
-    fetchData = async (token: string): Promise<any> => {
+    fetchData = async (token: string): Promise<OutcomeTracker> => {
         let ret: any;
 
         // Add any token provided to the header

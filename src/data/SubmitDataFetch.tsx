@@ -1,6 +1,8 @@
 import { Constants } from '../constants/Constants';
-import { StringUtils } from '../utils/StringUtils';
+import { OutcomeTracker } from '../models/OutcomeTracker';
 import { Server } from '../models/Server';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
+import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
 export class SubmitDataFetch extends AbstractDataFetch {
@@ -40,19 +42,23 @@ export class SubmitDataFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        const ret: string = JSON.stringify(data, undefined, 2)
-        return Constants.dataSubmitted + '\n\r' + ret;
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            data,
+            'Submit Data',
+            this.selectedMeasureEvaluation?.baseUrl);
     }
 
-    submitData = async (token: string): Promise<string> => {
+    submitData = async (token: string): Promise<OutcomeTracker> => {
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/fhir+json',
-                "Authorization": `Bearer ${token}`},
+            headers: {
+                'Content-Type': 'application/fhir+json',
+                'Authorization': `Bearer ${token}`,
+            },
             body: this.collectedData
         };
 
-        let ret = '';
+        let ret: any;
 
         // Call the FHIR server to submit the data
         let responseStatusText = '';
@@ -63,21 +69,22 @@ export class SubmitDataFetch extends AbstractDataFetch {
                 return response.json()
             })
             .then((data) => {
-                ret = this.processReturnedData(data);
+                ret = data;
             })
             .catch((error) => {
                 let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
-                if (responseStatusText.length > 0 && responseStatusText !== 'OK' ){
+                if (responseStatusText.length > 0 && responseStatusText !== 'OK') {
                     message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, responseStatusText);
                 }
                 throw new Error(message);
             });
-        return ret;
+        return this.processReturnedData(ret);
     }
 
-    fetchData = async (): Promise<string> => {
-        return Constants.submitDataFetchDataError;
+    fetchData = async (): Promise<OutcomeTracker> => {
+        return Constants.emptyOutcomeTracker;
     }
+
 }
 
 

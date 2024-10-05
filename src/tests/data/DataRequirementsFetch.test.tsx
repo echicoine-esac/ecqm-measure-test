@@ -66,7 +66,7 @@ test('get DataRequirements mock', async () => {
     fetchMock.once(dataRequirementsFetch.getUrl(),
         JSON.stringify(mockJsonDataRequirementsData)
         , { method: 'GET' });
-    let collectedData: string = await dataRequirementsFetch.fetchData('')
+    let collectedData: string = await (await dataRequirementsFetch.fetchData('')).operationData
     expect(collectedData).toEqual(JSON.stringify(mockJsonDataRequirementsData, undefined, 2));
 
     fetchMock.restore();

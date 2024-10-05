@@ -53,8 +53,8 @@ test('submit data mock', async () => {
         body: Constants.submitPostTestBody,
     });
 
-    const ret: string = await submitDataFetch.submitData('');
-    expect(ret.length).toEqual(150);
+    const ret: string | undefined = (await submitDataFetch.submitData('')).jsonString;
+    expect(ret?.length).toEqual(134);
 
     fetchMock.reset();
 });

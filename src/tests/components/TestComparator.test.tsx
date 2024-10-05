@@ -68,7 +68,7 @@ test(thisTestFile + ': renders properly', async () => {
             JSON.stringify(mockJsonPatientsData)
             , { method: 'GET' });
 
-        patientList = await patientFetch.fetchData('')
+        patientList = (await patientFetch.fetchData('')).operationData
 
         //Measure list mock
         const measureFetch = new MeasureFetch(baseUrl);
@@ -76,7 +76,7 @@ test(thisTestFile + ': renders properly', async () => {
         fetchMock.once(measureFetch.getUrl(),
             JSON.stringify(mockJsonMeasureData)
             , { method: 'GET' });
-        let measureList: Measure[] = await measureFetch.fetchData('');
+        let measureList: Measure[] = (await measureFetch.fetchData('')).operationData;
 
         let measureIdx: number = 0;
         for (const measureEntry of measureList) {

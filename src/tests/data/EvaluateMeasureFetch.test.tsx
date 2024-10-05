@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 import { Constants } from '../../constants/Constants';
-import { EvaluateMeasureFetch, EvaluateMeasureResult } from '../../data/EvaluateMeasureFetch';
+import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
 import { Server } from '../../models/Server';
 import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
@@ -75,9 +75,9 @@ test('get evaluate measures mock', async () => {
     fetchMock.once(evaluateMeasuresFetch.getUrl(),
         JSON.stringify(mockJsonResultsData)
         , { method: 'GET' });
-    let measureData: EvaluateMeasureResult = await evaluateMeasuresFetch.fetchData('');
+    let measureData = (await evaluateMeasuresFetch.fetchData('')).jsonData;
     fetchMock.restore();
-    expect(JSON.stringify(measureData.jsonBody, undefined, 2))
+    expect(JSON.stringify(measureData, undefined, 2))
         .toEqual(JSON.stringify(mockJsonResultsData, undefined, 2))
 });
 
