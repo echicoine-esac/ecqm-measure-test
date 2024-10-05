@@ -206,10 +206,10 @@ test(thisTestFile + ' success scenario: generate a valid test comparison summary
   //Test Comparator:
   {
     //verify selections on screen completed the checklist:
-    expect(screen.getByTestId('test-compare-checklist-measure').innerHTML).toEqual('☑ Measure<span> <a target=\"_blank\" rel=\"noreferrer\" href=\"http://localhost:8080/1/Measure/AlaraCTClinicalFHIR\">(AlaraCTClinicalFHIR)</a></span>');
-    expect(screen.getByTestId('test-compare-checklist-data-repo-server').innerHTML).toEqual('☑ Data Repository Server<span> <a target=\"_blank\" rel=\"noreferrer\" href=\"http://localhost:8080/1/\">(http://localhost:8080/1/)</a></span>');
-    expect(screen.getByTestId('test-compare-checklist-patient-group').innerHTML).toEqual('☑ Patient Group<span> <a target=\"_blank\" rel=\"noreferrer\" href=\"http://localhost:8080/1/Group/17595\">(Group/17595)</a></span>');
-    expect(screen.getByTestId('test-compare-checklist-measure-eval-server').innerHTML).toEqual('☑ Measure Evaluation Server<span> <a target=\"_blank\" rel=\"noreferrer\" href=\"http://localhost:8080/1/\">(http://localhost:8080/1/)</a></span>');
+    expect(screen.getByTestId('test-compare-checklist-measure').innerHTML).toEqual('☑ Measure<span> <a target=\"_blank\" rel=\"noreferrer\" href=\"http://localhost:8080/1/Measure/AlaraCTClinicalFHIR\">(AlaraCTClinicalFHIR)↗</a></span>');
+    expect(screen.getByTestId('test-compare-checklist-data-repo-server').innerHTML).toEqual('☑ Data Repository Server<span> <a target=\"_blank\" rel=\"noreferrer\" href=\"http://localhost:8080/1/\">(http://localhost:8080/1/)↗</a></span>');
+    expect(screen.getByTestId('test-compare-checklist-patient-group').innerHTML).toEqual('☑ Patient Group<span> <a target=\"_blank\" rel=\"noreferrer\" href=\"http://localhost:8080/1/Group/17595\">(Group/17595)↗</a></span>');
+    expect(screen.getByTestId('test-compare-checklist-measure-eval-server').innerHTML).toEqual('☑ Measure Evaluation Server<span> <a target=\"_blank\" rel=\"noreferrer\" href=\"http://localhost:8080/1/\">(http://localhost:8080/1/)↗</a></span>');
 
     //Evaluate Measure mock
     const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServers[0],

@@ -1,4 +1,3 @@
-import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 import { Server } from '../models/Server';
 
 export class Constants {
@@ -16,7 +15,7 @@ export class Constants {
     public static readonly error_selectMeasureDR = 'Please select a Measure to get the data requirements for';
     public static readonly error_selectDataRepository = 'Please select a Data Repository server to use';
     public static readonly error_selectPatient = 'Please select a Patient to use';
-    public static readonly error_selectMeasureDataCollection = 'Please select a Measure to collect the data for';
+    
     public static readonly error_generateMeasureReport = 'Please evaluate a Measure to generate a MeasureReport to post';
 
     public static readonly error_url = 'Please provide a valid URL: ';
@@ -24,9 +23,7 @@ export class Constants {
     public static readonly error_urlEndsWith = 'Must end with /';
 
     public static readonly error_selectReceivingSystemServer = 'Please select a Data Repository server to use';
-    public static readonly error_selectMeasureToSubmit = 'Please select a Measure to collect the data for';
 
-    public static readonly collectDataWithSubjectFetchURL = '{0}Measure/{1}/$collect-data?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';
 
     public static readonly evaluateMeasureWithSubjectFetchURL = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';
 
@@ -58,6 +55,16 @@ export class Constants {
 
     public static readonly largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
 
+
+    //COLLECT DATA:
+    public static readonly error_collectData_selectMeasure = 'Please select a Measure to collect the data for.';
+    
+
+    public static readonly fetchURL_collectDataWithSubject = '{0}Measure/{1}/$collect-data?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';
+
+    //SUBMIT DATA:
+    public static readonly error_submitData_selectMeasure = 'Please select a Measure to submit.';
+    public static readonly error_submitData_collectData = 'Please Collect Data for selected Measure.';
 
     //testing purposes:
     public static readonly serverTestData: Server[] = [

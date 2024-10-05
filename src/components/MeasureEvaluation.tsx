@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { Constants } from '../constants/Constants';
 import { Patient } from '../models/Patient';
@@ -21,12 +21,13 @@ interface Props {
   patientGroup?: PatientGroup;
   selectedPatient?: Patient;
   selectedDataRepo: Server | undefined;
+  collectedData?: string | undefined
 }
 
 // MeasureEvaluation component displays the fields for selecting and using the measure evaluation system
 const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation,
   selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow, selectedPatient, patientGroup,
-  selectedDataRepo }) => {
+  selectedDataRepo, collectedData }) => {
 
 
   const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
@@ -44,6 +45,25 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
       return '';
     }
   };
+
+  const [href, setHref] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    let objectUrl: string | undefined = undefined;
+    if (collectedData) {
+      // Create a Blob and generate an object URL
+      const blob = new Blob([collectedData], { type: "application/json" });
+      objectUrl = URL.createObjectURL(blob);
+      setHref(objectUrl);
+    }
+
+    // Cleanup: Revoke the previous URL when results change or component unmounts
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        setHref(undefined);
+      }
+    };
+  }, [collectedData]);
 
   return (
     <div className='card'>
@@ -76,10 +96,19 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
             </div>
           </div>
 
+          {/* checklist style indicator regardin stored collectedData */}
+          <div className='mt-3' style={{paddingBottom:'0px'}}>
+            <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+
+              <li data-testid='mea-eva-checklist-measure'>
+                {collectedData ? '☑' : '☐'} {href ? <a target='_blank' rel='noreferrer' href={href}>Collected Data for Submission↗</a> : 'Collected Data for Submission'}
+              </li>
+
+            </ul>
+          </div>
 
           <div className='row'>
             <div className='col-md-5 order-md-2'>
-              <br />
               {loading ? (
                 <Button data-testid='mea-eva-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner
@@ -99,7 +128,6 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
               )}
             </div>
             <div className='col-md-5 order-md-2'>
-              <br />
               {loading ? (
                 <Button data-testid='mea-eva-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner
@@ -127,7 +155,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
                 onChange={useGroupAsSubjectHandler}
                 disabled={loading}>
               </input>
-              {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank' rel='noreferrer'>{buildSubjectText()}</a>
+              {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank' rel='noreferrer'>{buildSubjectText()}↗</a>
             </label>
             }
             {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedMeasureEvaluation?.baseUrl) && (

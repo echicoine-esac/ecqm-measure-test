@@ -99,7 +99,7 @@ test(thisTestFile + ': scenario: Please select a Measure message renders the res
   fireEvent.click(collectDataButton);
 
   const resultsTextField: HTMLElement = screen.getByTestId('results-text');
-  expect(resultsTextField.textContent).toEqual(Constants.error_selectMeasureDataCollection);
+  expect(resultsTextField.textContent).toEqual(Constants.error_collectData_selectMeasure);
 
 });
 

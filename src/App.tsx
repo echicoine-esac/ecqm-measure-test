@@ -54,12 +54,15 @@ const App: React.FC = () => {
     setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
     //reset our selectedPatient to ensure patient data lines up with measure
     setSelectedPatient(undefined);
+    //reset scoring:
+    setShowPopulations(false);
+    //reset any results panel:
+    resetResults();
+    //reset stored data:
+    setCollectedData('');
+    setMeasureReport('');
     //set the selected measure:
     setSelectedMeasure(measureName);
-
-    setShowPopulations(false);
-
-    resetResults();
   };
 
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
@@ -385,11 +388,10 @@ const App: React.FC = () => {
     clearPopulationCounts();
 
     // Make sure all required elements are set
-    if (!selectedMeasureEvaluationServer || selectedMeasureEvaluationServer.baseUrl === '') {
+    if (!selectedMeasureEvaluationServer?.baseUrl) {
       setMeasureEvalResults(Constants.error_measureEvaluationServer);
       return;
     }
-
 
     //Establish the Measure object
     let measureObj: Measure | undefined;
@@ -418,7 +420,7 @@ const App: React.FC = () => {
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
       selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
 
-    setSectionalResults(Constants.preFetchMessage + evaluateMeasureFetch.getUrl() + '...', Section.MEASURE_EVAL);
+    setSectionalResults(Constants.preFetchMessage + evaluateMeasureFetch.getUrl(), Section.MEASURE_EVAL);
 
     // Set the loading state since this call can take a while to return
     setLoading(true);
@@ -505,7 +507,7 @@ const App: React.FC = () => {
     const dataRequirementsFetch = new DataRequirementsFetch(selectedKnowledgeRepo,
       selectedMeasure, startDate, endDate)
 
-    setSectionalResults(Constants.preFetchMessage + dataRequirementsFetch.getUrl() + '...', Section.KNOWLEDGE_REPO);
+    setSectionalResults(Constants.preFetchMessage + dataRequirementsFetch.getUrl(), Section.KNOWLEDGE_REPO);
 
     try {
       setResultsCaller(await dataRequirementsFetch.fetchData(accessToken));
@@ -530,7 +532,7 @@ const App: React.FC = () => {
       return;
     }
     if (selectedMeasure === '') {
-      setSectionalResults(Constants.error_selectMeasureDataCollection, Section.DATA_REPO);
+      setSectionalResults(Constants.error_collectData_selectMeasure, Section.DATA_REPO);
       return;
     }
 
@@ -549,7 +551,7 @@ const App: React.FC = () => {
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
       startDate, endDate, useSubject, selectedPatient, patientGroup)
 
-    setSectionalResults(Constants.preFetchMessage + collectDataFetch.getUrl() + '...', Section.DATA_REPO);
+    setSectionalResults(Constants.preFetchMessage + collectDataFetch.getUrl(), Section.DATA_REPO);
 
     // Call the FHIR server to collect the data
     try {
@@ -576,12 +578,18 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (!selectedMeasureEvaluationServer) {
+    if (!selectedMeasureEvaluationServer?.baseUrl) {
       setSectionalResults(Constants.error_measureEvaluationServer, Section.MEASURE_EVAL);
       return;
     }
+
     if (!selectedMeasure) {
-      setSectionalResults(Constants.error_selectMeasureToSubmit, Section.MEASURE_EVAL);
+      setSectionalResults(Constants.error_submitData_selectMeasure, Section.MEASURE_EVAL);
+      return;
+    }
+    
+    if (collectedData?.length === 0) {
+      setSectionalResults(Constants.error_submitData_collectData, Section.MEASURE_EVAL);
       return;
     }
 
@@ -650,36 +658,7 @@ const App: React.FC = () => {
     resetResults();
     setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
 
-    // Make sure all required elements are set
-    let missingData = '';
-
-    if (!selectedMeasureEvaluationServer || selectedMeasureEvaluationServer.baseUrl === '') {
-      missingData = Constants.error_measureEvaluationServer + '\n';
-    }
-
-    //Establish the Measure object
-    let measureObj: Measure | undefined;
-    if (selectedMeasure !== '') {
-      for (let measure of measures) {
-        if (measure!.name === selectedMeasure) {
-          measureObj = measure;
-        }
-      }
-    }
-
-    if (!measureObj) {
-      missingData += Constants.error_selectMeasure + '\n';
-    }
-
-    //Data Repository server
-    if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
-      missingData += Constants.error_selectDataRepository + '\n';
-    }
-
-    if (missingData.length > 0) {
-      // setResultsCaller(missingData);
-      return;
-    }
+    //validation of required fields done via checklist which enables/disables generate button
 
     //Patient Group data:
     const patientCompareList: Patient[] = [];
@@ -701,7 +680,6 @@ const App: React.FC = () => {
     }
 
     if (patientCompareList.length === 0) {
-      // setResultsCaller(Constants.evaluateMeasure_noGroupFound);
       return;
     }
 
@@ -709,6 +687,16 @@ const App: React.FC = () => {
     const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
     setLoading(true);
     clearPopulationCounts();
+
+    //Establish the Measure object
+    let measureObj: Measure | undefined;
+    if (selectedMeasure !== '') {
+      for (let measure of measures) {
+        if (measure!.name === selectedMeasure) {
+          measureObj = measure;
+        }
+      }
+    }
 
     if (measureObj) {
       for (const patientEntry of patientCompareList) {
@@ -776,14 +764,15 @@ const App: React.FC = () => {
 
         selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
         //used for href to subject
-        selectedDataRepo={selectedDataRepo} />
+        selectedDataRepo={selectedDataRepo} 
+        collectedData={collectedData}/>
       <SectionalResults results={measureEvalResults} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
         servers={servers} setSelectedReceiving={setSelectedReceiving}
         selectedReceiving={selectedReceiving}
         postMeasureReport={postMeasureReport} loading={loading}
-        setModalShow={setServerModalShow} />
+        setModalShow={setServerModalShow} selectedMeasureReport={measureReport} />
       <SectionalResults results={recSysResults} />
       <br />
       <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}

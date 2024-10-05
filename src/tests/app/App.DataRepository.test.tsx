@@ -344,7 +344,7 @@ test(thisTestFile + ': error scenario: Please select a Measure', async () => {
   fireEvent.click(collectDataButton);
 
   const resultsTextField: HTMLElement = screen.getByTestId('results-text');
-  expect(resultsTextField.textContent).toEqual(Constants.error_selectMeasureDataCollection);
+  expect(resultsTextField.textContent).toEqual(Constants.error_collectData_selectMeasure);
 
 });
 

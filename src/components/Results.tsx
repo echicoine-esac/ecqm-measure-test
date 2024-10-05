@@ -93,8 +93,6 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
     }
   }
 
-
-
   return (
     <div>
 
@@ -122,7 +120,6 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
                     style={{
                       height: 'auto',
                       borderRadius: '4px',
-                      // fontSize: '14pt',
                       marginTop: '10px',
                       marginBottom: '5px',
                       display: 'block',
