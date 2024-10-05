@@ -344,15 +344,23 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
                   </Table>
 
                 ) : (
-                  <div key={key.display + key.id}>
-                    <div className="row mt-4">
-                      <h5>{key.display} - {key.id}</h5>
-                      <h6 className='text-danger'>
-                        Processing Error</h6>
+                  <div key={key.display + key.id}
+                    style={{  border: '1px solid lightgrey', borderRadius: '4px', padding: '8px', marginBottom: '10px' }}>
+                    <div className="row">
+                      <h5><strong style={{ color: 'red' }}>SKIPPED: </strong>{key.display + ' (' + key.id + ')'}</h5>
                     </div>
                     <div data-testid={'test-comp-processing-error' + convertToID(key.display + '-' + key.id)}>
-                      {value.fetchedMeasureReportGroups.length === 0 && <h6>MeasureReport not found for: {key.display} - {key.id} using selected Data Repository Server.</h6>}
-                      {value.fetchedEvaluatedMeasureGroups.length === 0 && <h6>Measure Evaluation was unsuccesful for: {key.display} - {key.id}.<br></br>Please verify results with Measure Evaluation Service.</h6>}
+                      Test comparison could not complete for this Patient due to the following discrepancies: <br />
+                      {value.fetchedMeasureReportGroups.length === 0 && (
+                        <div style={{ padding: '5px' }}>
+                          <strong style={{ marginLeft: '10px' }}> • MeasureReport: </strong> No MeasureReports were retrieved from the selected Data Repository Server.
+                        </div>
+                      )}
+                      {value.fetchedEvaluatedMeasureGroups.length === 0 && (
+                        <div style={{ padding: '5px' }}>
+                          <strong style={{ marginLeft: '10px' }}> • Measure Evaluation: </strong> Measure Evaluation failed with the selected Measure Evaluation Server.
+                        </div>
+                      )}
                     </div>
                   </div>
                 )

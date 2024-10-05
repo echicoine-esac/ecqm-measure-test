@@ -20,7 +20,8 @@ Amplify.configure(awsExports);
 export class MeasureComparisonManager {
     selectedPatient: Patient | undefined;
     selectedMeasure: Measure;
-    selectedMeasureEvaluation: Server | undefined;
+    selectedMeasureEvaluationServer: Server | undefined;
+    selectedDataRepoServer: Server | undefined;
     startDate: string = '';
     endDate: string = '';
     accessToken: string = '';
@@ -35,14 +36,16 @@ export class MeasureComparisonManager {
 
     constructor(selectedPatient: Patient | undefined,
         selectedMeasure: Measure,
-        selectedMeasureEvaluation: Server,
+        selectedMeasureEvaluationServer: Server,
+        selectedDataRepoServer: Server,
         startDate: string,
         endDate: string,
         accessToken: string
     ) {
         this.selectedPatient = selectedPatient;
         this.selectedMeasure = selectedMeasure;
-        this.selectedMeasureEvaluation = selectedMeasureEvaluation;
+        this.selectedMeasureEvaluationServer = selectedMeasureEvaluationServer;
+        this.selectedDataRepoServer = selectedDataRepoServer;
         this.startDate = startDate;
         this.endDate = endDate;
 
@@ -56,7 +59,7 @@ export class MeasureComparisonManager {
     public async fetchGroups() {
         try {
 
-            const measureReportFetch = new MeasureReportFetch(this.selectedMeasureEvaluation,
+            const measureReportFetch = new MeasureReportFetch(this.selectedDataRepoServer,
                 this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate);
             this.measureReportURL = measureReportFetch.getUrl();
 
@@ -64,7 +67,7 @@ export class MeasureComparisonManager {
             this.fetchedMeasureReportGroups = ScoringUtils.extractBundleMeasureReportGroupData((await measureReportFetch.fetchData(this.accessToken)).operationData);
 
 
-            const evaluateMeasureFetch = new EvaluateMeasureFetch(this.selectedMeasureEvaluation,
+            const evaluateMeasureFetch = new EvaluateMeasureFetch(this.selectedMeasureEvaluationServer,
                 this.selectedMeasure.name, this.startDate, this.endDate, true, this.selectedPatient);
 
             this.evaluatedMeasureURL = evaluateMeasureFetch.getUrl();

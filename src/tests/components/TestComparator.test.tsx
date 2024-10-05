@@ -113,7 +113,7 @@ test(thisTestFile + ': renders properly', async () => {
 
         //MeasureComparisonManager instance:
         const mcMan: MeasureComparisonManager = new MeasureComparisonManager(patientList[patientIdx],
-            measureList[measureIdx], dataServer, periodStart, periodEnd, '');
+            measureList[measureIdx], dataServer, dataServer, periodStart, periodEnd, '');
         await mcMan.fetchGroups();
 
         if (patientList[patientIdx]) {
