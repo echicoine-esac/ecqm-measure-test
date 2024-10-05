@@ -1,8 +1,8 @@
 export type OutcomeTracker = {
   outcomeType: Outcome;
   outcomeMessage: string;
-  jsonString?: string;
-  jsonData?: any;
+  jsonFormattedString?: string;
+  jsonRawData?: any;
   operationData?: any;
 };
 export enum Outcome {

@@ -1,5 +1,5 @@
 import { Constants } from '../constants/Constants';
-import { OutcomeTracker } from '../models/OutcomeTracker';
+import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 import { Server } from '../models/Server';
 import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { StringUtils } from '../utils/StringUtils';
@@ -82,7 +82,10 @@ export class SubmitDataFetch extends AbstractDataFetch {
     }
 
     fetchData = async (): Promise<OutcomeTracker> => {
-        return Constants.emptyOutcomeTracker;
+        return {
+            outcomeMessage: 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.',
+            outcomeType: Outcome.NONE
+        };
     }
 
 }

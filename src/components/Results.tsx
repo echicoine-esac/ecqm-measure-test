@@ -21,7 +21,7 @@ interface Props {
 
 // Results component displays the status messages
 const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, populationScoring, measureScoringType, outcome }) => {
-  const results = outcome?.jsonString ? outcome?.jsonString : '';
+  const results = outcome?.jsonFormattedString ? outcome?.jsonFormattedString : '';
   
   // State to handle the dark theme toggle
   const [isDarkTheme, setIsDarkTheme] = useState(false);

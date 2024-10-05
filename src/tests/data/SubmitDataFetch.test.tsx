@@ -39,8 +39,10 @@ test('required properties check', async () => {
 test('fetchData and processData override', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
-    expect(await new SubmitDataFetch(dataServer,
+    expect(
+        (await new SubmitDataFetch(dataServer,
         'selectedMeasure', 'collectedData').fetchData())
+        .outcomeMessage)
         .toEqual(Constants.submitDataFetchDataError);
 });
 
@@ -53,7 +55,7 @@ test('submit data mock', async () => {
         body: Constants.submitPostTestBody,
     });
 
-    const ret: string | undefined = (await submitDataFetch.submitData('')).jsonString;
+    const ret: string | undefined = (await submitDataFetch.submitData('')).jsonFormattedString;
     expect(ret?.length).toEqual(134);
 
     fetchMock.reset();

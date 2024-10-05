@@ -3,19 +3,28 @@ import { OperationOutcome } from "../models/OperationOutcome";
 import { Outcome, OutcomeTracker } from "../models/OutcomeTracker";
 
 export class OutcomeTrackerUtils {
+    /**
+     * Builds an OutcomeTracker given specific data.
+     * jsonData can either be the raw data returned from the fetch, or a formatted json string
+     * @param jsonData 
+     * @param operationName 
+     * @param serverUrl 
+     * @param optionalData 
+     * @returns 
+     */
     public static buildOutcomeTracker(jsonData: any, operationName: string, serverUrl: string | undefined, optionalData?: any): OutcomeTracker {
 
         try {
             let jsonString = '';
 
-            // Check if jsonData is a string, if so, parse it
-            let data = jsonData;
-            if (typeof jsonData === 'string') {
-                data = JSON.parse(jsonData)
-                jsonString = jsonData;
-            } else {
-                jsonString = JSON.stringify(jsonData, undefined, 2);
-            }
+           // Check if jsonData is a string, if so, parse it
+           let data = jsonData;
+           if (typeof jsonData === 'string') {
+               data = JSON.parse(jsonData)
+               jsonString = jsonData;
+           } else {
+               jsonString = JSON.stringify(jsonData, undefined, 2);
+           }
 
             const outcome = OutcomeTrackerUtils.getOutcome(data);
 
@@ -24,8 +33,8 @@ export class OutcomeTrackerUtils {
             return {
                 outcomeMessage: operationMessage,
                 outcomeType: outcome,
-                jsonString: jsonString,
-                jsonData: data,
+                jsonFormattedString: jsonString,
+                jsonRawData: data,
                 operationData: optionalData
             }
         } catch (error: any) {
@@ -49,7 +58,7 @@ export class OutcomeTrackerUtils {
         return '';
     }
 
-    static getOutcome(data: any): Outcome {
+    private static getOutcome(data: any): Outcome {
         let outcome = Outcome.SUCCESS;
         //check for OperationOutcome
         if (data?.resourceType?.toString() === Constants.operationOutcomeResourceType) {

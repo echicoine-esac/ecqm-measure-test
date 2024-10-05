@@ -70,7 +70,7 @@ export class MeasureComparisonManager {
             this.evaluatedMeasureURL = evaluateMeasureFetch.getUrl();
 
             //evaluate measure comes back as a single MeasureReport
-            this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonData);
+            this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonRawData);
 
             this.discrepancyExists = this.compareMeasureGroups();
         } catch (error: any) {

@@ -285,7 +285,7 @@ const App: React.FC = () => {
         outcomeMessage: "An error occurred while attempting to add a server to the system:",
         outcomeType: Outcome.FAIL,
         //uses jsonString to convey error:
-        jsonString: error.message
+        jsonFormattedString: error.message
       });
     }
   }
@@ -443,8 +443,8 @@ const App: React.FC = () => {
         return;
       }
 
-      if (evaluateMeasureOutcomeTracker.jsonString) {
-        setMeasureReport(evaluateMeasureOutcomeTracker.jsonString);
+      if (evaluateMeasureOutcomeTracker.jsonFormattedString) {
+        setMeasureReport(evaluateMeasureOutcomeTracker.jsonFormattedString);
       }
 
       let populationScoringCollection: PopulationScoring[] = [];
@@ -463,8 +463,8 @@ const App: React.FC = () => {
 
         populationScoringCollection.push({
           groupID: groupElement.id,
-          groupScoring: evaluateMeasureOutcomeTracker.jsonData?.scoring ?
-            evaluateMeasureOutcomeTracker.jsonData?.scoring.coding[0].code : undefined,
+          groupScoring: evaluateMeasureOutcomeTracker.jsonRawData?.scoring ?
+            evaluateMeasureOutcomeTracker.jsonRawData?.scoring.coding[0].code : undefined,
           groupPopulations: group.population
         })
       }
@@ -555,11 +555,8 @@ const App: React.FC = () => {
     try {
       const collectDataOutcomeTracker = await collectDataFetch.fetchData(accessToken);
 
-
-
-      if (collectDataOutcomeTracker.jsonString) {
-        console.log(collectDataOutcomeTracker.jsonString);
-        setCollectedData(collectDataOutcomeTracker.jsonString);
+      if (collectDataOutcomeTracker.jsonFormattedString) {
+        setCollectedData(collectDataOutcomeTracker.jsonFormattedString);
       }
 
       setResultsCaller(collectDataOutcomeTracker);

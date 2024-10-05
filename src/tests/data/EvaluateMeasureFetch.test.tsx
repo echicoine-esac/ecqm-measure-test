@@ -75,7 +75,7 @@ test('get evaluate measures mock', async () => {
     fetchMock.once(evaluateMeasuresFetch.getUrl(),
         JSON.stringify(mockJsonResultsData)
         , { method: 'GET' });
-    let measureData = (await evaluateMeasuresFetch.fetchData('')).jsonData;
+    let measureData = (await evaluateMeasuresFetch.fetchData('')).jsonRawData;
     fetchMock.restore();
     expect(JSON.stringify(measureData, undefined, 2))
         .toEqual(JSON.stringify(mockJsonResultsData, undefined, 2))

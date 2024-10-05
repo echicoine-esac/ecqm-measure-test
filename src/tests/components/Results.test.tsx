@@ -6,11 +6,20 @@ beforeAll(() => {
   window.HTMLElement.prototype.scrollIntoView = jest.fn();
 });
 test('results text renders and accepts value', () => {
-  const resultsText = 'text-results-text';
+  const outcomeText = 'outcome-text';
+  const resultsText = 'results-text';
   render(<Results outcome={
-    {outcomeMessage: resultsText, outcomeType: Outcome.NONE}
+    {
+      outcomeMessage: outcomeText, 
+      outcomeType: Outcome.NONE,
+      jsonFormattedString: resultsText
+    }
     } />);
   const resultsTextField: HTMLElement = screen.getByTestId('results-text');
   expect(resultsTextField).toBeInTheDocument();
   expect(resultsTextField.textContent).toEqual(resultsText);
+
+  const outcomeTextField: HTMLElement = screen.getByTestId('outcome-results-text');
+  expect(outcomeTextField).toBeInTheDocument();
+  expect(outcomeTextField.textContent).toEqual(outcomeText);
 }); 

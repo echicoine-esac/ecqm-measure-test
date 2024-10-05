@@ -57,10 +57,7 @@ export class Constants {
 
     public static readonly largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
 
-    public static readonly emptyOutcomeTracker: OutcomeTracker = {
-        outcomeMessage: '',
-        outcomeType: Outcome.NONE
-    }
+     
     //testing purposes:
     public static readonly serverTestData: Server[] = [
         {

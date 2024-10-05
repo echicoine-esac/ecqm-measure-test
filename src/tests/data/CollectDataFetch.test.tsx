@@ -5,7 +5,6 @@ import { Server } from '../../models/Server';
 import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
-import { JsonUtils } from '../../utils/JsonUtils';
 
 const selectedPatient = { display: 'John Doe', id: 'selectedPatient' };
 
@@ -76,8 +75,8 @@ test('get CollectData mock', async () => {
     fetchMock.once(collectDataFetch.getUrl(),
         JSON.stringify(mockJsonCollectDataData)
         , { method: 'GET' });
-    let collectedData: string | undefined = await (await collectDataFetch.fetchData('')).jsonString
-    expect(collectedData).toEqual(JsonUtils.makeJsonDataSubmittable(JSON.stringify(mockJsonCollectDataData, undefined, 2)));
+    let collectedData: string | undefined = await (await collectDataFetch.fetchData('')).jsonFormattedString
+    expect(collectedData).toEqual(JSON.stringify(mockJsonCollectDataData, undefined, 2));
 
     fetchMock.restore();
 

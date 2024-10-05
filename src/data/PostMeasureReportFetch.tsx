@@ -3,7 +3,7 @@ import { StringUtils } from '../utils/StringUtils';
 import { Server } from '../models/Server';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
-import { OutcomeTracker } from '../models/OutcomeTracker';
+import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 
 export class PostMeasureReportFetch extends AbstractDataFetch {
     type: FetchType;
@@ -76,7 +76,10 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
     }
 
     fetchData = async (): Promise<OutcomeTracker> => {
-        return Constants.emptyOutcomeTracker;
+        return {
+            outcomeMessage: 'This function has not been implemented into PostMeasureReportFetch.  Use submitData instead.',
+            outcomeType: Outcome.NONE
+        }
     }
 }
 
