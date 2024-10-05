@@ -1,6 +1,6 @@
-import { Constants } from "../constants/Constants";
-import { OperationOutcome } from "../models/OperationOutcome";
-import { Outcome, OutcomeTracker } from "../models/OutcomeTracker";
+import { Constants } from '../constants/Constants';
+import { OperationOutcome } from '../models/OperationOutcome';
+import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 
 export class OutcomeTrackerUtils {
     /**
@@ -47,13 +47,13 @@ export class OutcomeTrackerUtils {
 
     private static getOutcomeMessage(outcome: Outcome, operationName: string, serverUrl: string | undefined): string {
         if (outcome === Outcome.SUCCESS) {
-            return operationName + ' using ' + serverUrl + ' successfully returned with:';
+            return 'SUCCESS: ' + operationName + ' with ' + serverUrl + ' completed successfully:';
         } else if (outcome === Outcome.INFO) {
-            return operationName + ' using ' + serverUrl + ' returned with:';
+            return 'INFO: ' + operationName + ' with ' + serverUrl + ':';
         } else if (outcome === Outcome.WARNING) {
-            return operationName + ' using ' + serverUrl + ' had a warning:';
+            return 'WARNING: ' + operationName + ' with ' + serverUrl + ' had warning(s):';
         } else if (outcome === Outcome.FAIL) {
-            return operationName + ' using ' + serverUrl + ' failed and returned with:';
+            return 'FAIL: ' + operationName + ' with ' + serverUrl + ' failed:';
         }
         return '';
     }
