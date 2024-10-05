@@ -38,25 +38,24 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
         <div ref={resultsDivRef} className='row mt-1'
           style={{
             background: '#F7F7F7', border: borderStyle,
-            transition: 'border 1s', margin: '0px', borderRadius: '4px', padding: '6px'
+            transition: 'border 2s', margin: '0px', borderRadius: '4px', padding: '6px'
           }}>
 
           <div className='col-md-12 order-md-1'>
             <div style={{ height: 'auto', width: 'auto', border: '0px' }}>
 
-              <label
+              <h6
                 data-testid="results-text"
                 style={{
                   height: 'auto',
                   borderRadius: '4px',
-                  fontSize: '13pt',
                   margin: '0px',
                   display: 'block',
                   whiteSpace: 'pre-wrap',
                   color: !results.startsWith(Constants.preFetchMessage) ? 'red' : 'black',
                 }}>
                 {results}
-              </label>
+              </h6>
             </div>
           </div>
         </div >

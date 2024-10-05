@@ -22,7 +22,7 @@ interface Props {
 // Results component displays the status messages
 const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, populationScoring, measureScoringType, outcome }) => {
   const results = outcome?.jsonFormattedString ? outcome?.jsonFormattedString : '';
-  
+
   // State to handle the dark theme toggle
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
@@ -93,7 +93,7 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
     }
   }
 
-  
+
 
   return (
     <div>
@@ -169,10 +169,12 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
                   Dark theme
                 </label>
 
-                <a href={href ?? '#'} download={hrefFileName}>
-                  Download {hrefFileName}
-                </a>
-
+                {!hrefFileName.startsWith('OperationOutcome') &&
+                  <a href={href ?? '#'} download={hrefFileName}>
+                    Download {hrefFileName}
+                  </a>
+                }
+                
               </div>
             )}
 
