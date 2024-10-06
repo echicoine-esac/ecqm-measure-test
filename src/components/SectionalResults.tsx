@@ -106,8 +106,8 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
                   wordBreak: 'break-all',
                   color: isError ? 'white' : 'black',
                   fontWeight: isError ? undefined : 'normal',
-                  lineHeight: isError ? undefined : '1.5',
-                  fontSize: '9pt'
+                  lineHeight: isError ? undefined : '1.3',
+                  fontSize: '12pt'
                 }}>
                 {parseAndStyleResults(results)}
               </h6>
