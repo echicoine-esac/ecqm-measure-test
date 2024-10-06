@@ -77,7 +77,7 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
 
     fetchData = async (): Promise<OutcomeTracker> => {
         return {
-            outcomeMessage: 'This function has not been implemented into PostMeasureReportFetch.  Use submitData instead.',
+            outcomeMessage: Constants.functionNotImplemented,
             outcomeType: Outcome.NONE
         }
     }

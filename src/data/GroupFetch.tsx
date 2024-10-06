@@ -25,7 +25,7 @@ export class GroupFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        return this.url + Constants.groupUrlEnding;
+        return this.url + Constants.fetch_groups;
     }
 
     protected processReturnedData(data: any): OutcomeTracker {

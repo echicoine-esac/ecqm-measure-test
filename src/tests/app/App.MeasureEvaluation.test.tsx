@@ -440,7 +440,7 @@ test(thisTestFile + ' fail scenario: submit data', async () => {
     fetchMock.restore();
     const resultsTextField: HTMLElement = screen.getByTestId('results-text');
 
-    expect(resultsTextField.textContent).toEqual('Please Collect Data for selected Measure.');
+    expect(resultsTextField.textContent).toEqual(Constants.error_submitData_collectData);
   }
 });
 

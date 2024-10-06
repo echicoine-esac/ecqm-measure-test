@@ -4,6 +4,7 @@ import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { Measure } from '../models/Measure';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
+import { Constants } from '../constants/Constants';
 
 // Props for KnowledgeRepository
 interface Props {
@@ -31,7 +32,7 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
     <div className='card'>
       <div className='card-header'>
         <SectionalTitleBar dataTestID='knowledge-repo-' setshowSection={setShowKnowledgeRepo} showSection={showKnowledgeRepo}
-          title='Knowledge Repository' selectedSubjectTitling='Selected Measure' selectedSubject={selectedMeasure} />
+          title={Constants.title_knowledge_repo} selectedSubjectTitling='Selected Measure' selectedSubject={selectedMeasure} />
       </div>
       {showKnowledgeRepo ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>

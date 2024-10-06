@@ -104,7 +104,8 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
       }
     `}</style>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='test-compare-' setshowSection={setShowTestCompare} showSection={showTestCompare} title='Test Comparator' />
+        <SectionalTitleBar dataTestID='test-compare-' setshowSection={setShowTestCompare} showSection={showTestCompare}
+          title={Constants.title_test_comparator} />
       </div>
 
       {showTestCompare ? (
@@ -345,7 +346,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
 
                 ) : (
                   <div key={key.display + key.id}
-                    style={{  border: '1px solid lightgrey', borderRadius: '4px', padding: '8px', marginBottom: '10px' }}>
+                    style={{ border: '1px solid lightgrey', borderRadius: '4px', padding: '8px', marginBottom: '10px' }}>
                     <div className="row">
                       <h5><strong style={{ color: 'red' }}>SKIPPED: </strong>{key.display + ' (' + key.id + ')'}</h5>
                     </div>

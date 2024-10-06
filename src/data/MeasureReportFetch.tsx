@@ -51,7 +51,7 @@ export class MeasureReportFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        return StringUtils.format(Constants.measureReportFetchURL_byMeasure,
+        return StringUtils.format(Constants.fetch_measureReportByMeasure,
             this.selectedServer?.baseUrl,
             this.selectedPatient?.id,
             this.selectedMeasure);

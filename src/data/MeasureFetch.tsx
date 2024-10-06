@@ -23,7 +23,7 @@ export class MeasureFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        return this.url + Constants.measureUrlEnding;
+        return this.url + Constants.fetch_measures;
     }
 
     protected processReturnedData(data: any): OutcomeTracker {

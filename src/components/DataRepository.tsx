@@ -61,9 +61,9 @@ const DataRepository: React.FC<Props> = ({
   };
 
   const allPatientsSubject = selectedDataRepo?.baseUrl && patients && patients.length > 0 ? 'ALL Patients on ' + selectedDataRepo?.baseUrl : '';
-  
-  const selectedSubject: string = useGroupAsSubject && 
-  buildSelectedSubjectText().length > 0 ? buildSelectedSubjectText() : allPatientsSubject;
+
+  const selectedSubject: string = useGroupAsSubject &&
+    buildSelectedSubjectText().length > 0 ? buildSelectedSubjectText() : allPatientsSubject;
 
   useEffect(() => {
     // Update filtered patients and patient group based on selectedMeasure
@@ -102,7 +102,7 @@ const DataRepository: React.FC<Props> = ({
     <div className='card'>
       <div className='card-header'>
         <SectionalTitleBar dataTestID='data-repo-' setshowSection={setShowDataRepo} showSection={showDataRepo}
-          title='Data Extraction Service/Data Repository'
+          title={Constants.title_data_repo}
           selectedSubjectTitling='Subject' selectedSubject={selectedSubject} />
       </div>
       {showDataRepo ? (
@@ -193,7 +193,7 @@ const DataRepository: React.FC<Props> = ({
             }
             {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedDataRepo?.baseUrl) && (
               <div>
-                {Constants.largeDataNOTE}
+                {Constants.label_largeDataNOTE}
               </div>
             )}
           </div>

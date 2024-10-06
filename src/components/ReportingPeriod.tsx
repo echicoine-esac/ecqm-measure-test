@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
+import { Constants } from '../constants/Constants';
 
 // Props for ReportingPeriod
 interface Props {
@@ -22,7 +23,7 @@ const ReportingPeriod: React.FC<Props> = ({ startDate, endDate, setStartDate, se
             alignItems: 'center',      // Vertically center
           }} className='col-md-3 order-md-1'>
             <h6 style={{ fontSize: '14pt', textAlign: 'center' }}>
-              Reporting Period
+              {Constants.title_reportingPeriod}
             </h6>
           </div>
         </div>

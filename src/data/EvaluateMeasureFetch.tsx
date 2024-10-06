@@ -77,7 +77,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
             } else if (this.patientGroup) {
                 subject = 'Group/' + this.patientGroup.id;
             }
-            return StringUtils.format(Constants.evaluateMeasureWithSubjectFetchURL,
+            return StringUtils.format(Constants.fetch_evaluateMeasureWithSubject,
                 this.selectedMeasureEvaluationServer?.baseUrl,
                 this.selectedMeasure,
                 this.startDate,
@@ -87,7 +87,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         }
 
         //useSubject not true, return url without subject line
-        return StringUtils.format(Constants.evaluateMeasureWithSubjectFetchURL.replace('&subject={4}', ''),
+        return StringUtils.format(Constants.fetch_evaluateMeasureWithSubject.replace('&subject={4}', ''),
             this.selectedMeasureEvaluationServer?.baseUrl,
             this.selectedMeasure,
             this.startDate,

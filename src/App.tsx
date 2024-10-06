@@ -414,7 +414,7 @@ const App: React.FC = () => {
     const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
 
     if (!selectedPatient && !patientGroup && useSubject) {
-      setMeasureEvalResults(Constants.evaluateMeasure_noGroupFound);
+      setMeasureEvalResults(Constants.error_patientGroup);
       return;
     }
 
@@ -540,7 +540,7 @@ const App: React.FC = () => {
     const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
 
     if (!selectedPatient && !patientGroup && useSubject) {
-      setSectionalResults(Constants.evaluateMeasure_noGroupFound, Section.DATA_REPO);
+      setSectionalResults(Constants.error_patientGroup, Section.DATA_REPO);
       return;
     }
 

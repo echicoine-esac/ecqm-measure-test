@@ -68,7 +68,8 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='mea-eva-' setshowSection={setShowMeasureEvaluation} showSection={showMeasureEvaluation} title='Measure Evaluation Service' />
+        <SectionalTitleBar dataTestID='mea-eva-' setshowSection={setShowMeasureEvaluation} showSection={showMeasureEvaluation}
+          title={Constants.title_measure_evaluation} />
       </div>
       {showMeasureEvaluation ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>
@@ -97,7 +98,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
           </div>
 
           {/* checklist style indicator regardin stored collectedData */}
-          <div className='mt-3' style={{paddingBottom:'0px'}}>
+          <div className='mt-3' style={{ paddingBottom: '0px' }}>
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
 
               <li data-testid='mea-eva-checklist-measure'>
@@ -160,7 +161,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
             }
             {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedMeasureEvaluation?.baseUrl) && (
               <div>
-                {Constants.largeDataNOTE}
+                {Constants.label_largeDataNOTE}
               </div>
             )}
           </div>

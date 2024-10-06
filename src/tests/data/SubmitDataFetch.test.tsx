@@ -43,7 +43,7 @@ test('fetchData and processData override', async () => {
         (await new SubmitDataFetch(dataServer,
         'selectedMeasure', 'collectedData').fetchData())
         .outcomeMessage)
-        .toEqual(Constants.submitDataFetchDataError);
+        .toEqual(Constants.functionNotImplemented);
 });
 
 test('submit data mock', async () => {

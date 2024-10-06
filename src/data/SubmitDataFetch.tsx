@@ -83,7 +83,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
 
     fetchData = async (): Promise<OutcomeTracker> => {
         return {
-            outcomeMessage: 'This function has not been implemented into SubmitDataFetch.  Use submitData instead.',
+            outcomeMessage: Constants.functionNotImplemented,
             outcomeType: Outcome.NONE
         };
     }

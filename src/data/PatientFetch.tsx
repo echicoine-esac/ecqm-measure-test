@@ -38,12 +38,12 @@ export class PatientFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        return this.url + Constants.patientUrlEnding + this.totalPatients;
+        return this.url + Constants.fetch_patients + this.totalPatients;
     }
 
     private async getPatientTotalCount(url: string): Promise<number> {
         let patientCount = 0;
-        await fetch(url + Constants.patientTotalCountUrlEnding, this.requestOptions)
+        await fetch(url + Constants.fetch_patientTotalCount, this.requestOptions)
             .then((response) => {
                 return response.json();
             })

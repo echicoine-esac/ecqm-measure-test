@@ -3,6 +3,7 @@ import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
+import { Constants } from '../constants/Constants';
 
 // Props for ReceivingSystem
 interface Props {
@@ -22,30 +23,31 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
   selectedReceiving, postMeasureReport, loading, setModalShow, selectedMeasureReport }) => {
 
 
-    const [href, setHref] = useState<string | undefined>(undefined);
-    useEffect(() => {
-      let objectUrl: string | undefined = undefined;
-      if (selectedMeasureReport) {
-        // Create a Blob and generate an object URL
-        const blob = new Blob([selectedMeasureReport], { type: "application/json" });
-        objectUrl = URL.createObjectURL(blob);
-        setHref(objectUrl);
+  const [href, setHref] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    let objectUrl: string | undefined = undefined;
+    if (selectedMeasureReport) {
+      // Create a Blob and generate an object URL
+      const blob = new Blob([selectedMeasureReport], { type: "application/json" });
+      objectUrl = URL.createObjectURL(blob);
+      setHref(objectUrl);
+    }
+
+    // Cleanup: Revoke the previous URL when results change or component unmounts
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        setHref(undefined)
       }
-  
-      // Cleanup: Revoke the previous URL when results change or component unmounts
-      return () => {
-        if (objectUrl) {
-          URL.revokeObjectURL(objectUrl);
-          setHref(undefined)
-        }
-      };
-    }, [selectedMeasureReport]);
-  
+    };
+  }, [selectedMeasureReport]);
+
 
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='rec-sys-' setshowSection={setShowReceiving} showSection={showReceiving} title='Receiving System' />
+        <SectionalTitleBar dataTestID='rec-sys-' setshowSection={setShowReceiving} showSection={showReceiving}
+          title={Constants.title_receiving_system} />
       </div>
       {showReceiving ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>
@@ -74,7 +76,7 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
           </div>
 
           {/* checklist style indicator regardin stored measurereport */}
-          <div className='mt-3' style={{paddingBottom:'0px'}}>
+          <div className='mt-3' style={{ paddingBottom: '0px' }}>
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
 
               <li data-testid='rec-sys-checklist-measure'>
@@ -84,7 +86,7 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
             </ul>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-2' style={{marginTop:'0px'}}>
+            <div className='col-md-5 order-md-2' style={{ marginTop: '0px' }}>
               {loading ? (
                 <Button data-testid='rec-sys-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner
