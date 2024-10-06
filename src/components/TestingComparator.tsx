@@ -60,7 +60,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
 
   const convertToID = (str: any | undefined): string => {
     let strIn: string = '' + str;
-    return (strIn.replace(' ', ''));
+    return (strIn.replaceAll(' ', ''));
   }
   const componentRef = useRef(null);
   const title = 'Test Comparison Summary for ' + items.get(Array.from(items.keys())[0])?.selectedMeasure.name;

@@ -2,6 +2,15 @@ import { Constants } from '../constants/Constants';
 import { OperationOutcome } from '../models/OperationOutcome';
 import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 
+
+export enum Section {
+    REPORTING_PERIOD,
+    KNOWLEDGE_REPO,
+    DATA_REPO,
+    MEASURE_EVAL,
+    REC_SYS,
+}
+
 export class OutcomeTrackerUtils {
     /**
      * Builds an OutcomeTracker given specific data.
@@ -17,14 +26,14 @@ export class OutcomeTrackerUtils {
         try {
             let jsonString = '';
 
-           // Check if jsonData is a string, if so, parse it
-           let data = jsonData;
-           if (typeof jsonData === 'string') {
-               data = JSON.parse(jsonData)
-               jsonString = jsonData;
-           } else {
-               jsonString = JSON.stringify(jsonData, undefined, 2);
-           }
+            // Check if jsonData is a string, if so, parse it
+            let data = jsonData;
+            if (typeof jsonData === 'string') {
+                data = JSON.parse(jsonData)
+                jsonString = jsonData;
+            } else {
+                jsonString = JSON.stringify(jsonData, undefined, 2);
+            }
 
             const outcome = OutcomeTrackerUtils.getOutcome(data);
 
@@ -53,7 +62,7 @@ export class OutcomeTrackerUtils {
         } else if (outcome === Outcome.WARNING) {
             return 'WARNING: ' + operationName + ' with ' + serverUrl + ' had warning(s):';
         } else if (outcome === Outcome.FAIL) {
-            return 'FAIL: ' + operationName + ' with ' + serverUrl + ' failed:';
+            return 'FAIL: ' + operationName + ' with ' + serverUrl + ' returned with error(s):';
         }
         return '';
     }
@@ -71,6 +80,10 @@ export class OutcomeTrackerUtils {
                     outcome = Outcome.WARNING;
                 } else if (entry.severity === 'information') {
                     outcome = Outcome.INFO;
+                }
+
+                if (outcome !== Outcome.SUCCESS) {
+                    break;
                 }
             }
         }

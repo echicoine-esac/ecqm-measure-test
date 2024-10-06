@@ -33,6 +33,7 @@ import { HashParamUtils } from './utils/HashParamUtils';
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
+import { Section } from './utils/OutcomeTrackerUtils';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -178,13 +179,6 @@ const App: React.FC = () => {
     };
   }, [showScrollToTopButton]);
 
-  const enum Section {
-    KNOWLEDGE_REPO,
-    DATA_REPO,
-    MEASURE_EVAL,
-    REC_SYS,
-  }
-
   const setSectionalResults = ((message: string, section: Section, outcome?: Outcome) => {
     if (outcome) {
       message = outcome + "_" + message;
@@ -325,9 +319,8 @@ const App: React.FC = () => {
         setAccessToken('');
       }
 
-    } else {
-      if (knowledgeRepo?.authUrl && knowledgeRepo?.authUrl !== '') {
-
+    } else if (knowledgeRepo?.authUrl) {
+      if (knowledgeRepo?.authUrl !== '') {
         //initiate authentication sequence 
         try {
           await OAuthHandler.getAccessCode(knowledgeRepo);
@@ -338,7 +331,7 @@ const App: React.FC = () => {
       }
     }
     try {
-      setMeasures((await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken)).operationData);
+      setMeasures((await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken, setResultsCaller)).operationData);
     } catch (error: any) {
       setSectionalResults(error.message, Section.KNOWLEDGE_REPO);
     }
@@ -421,13 +414,11 @@ const App: React.FC = () => {
     const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
       selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
 
-    setSectionalResults(Constants.preFetchMessage + evaluateMeasureFetch.getUrl(), Section.MEASURE_EVAL);
-
     // Set the loading state since this call can take a while to return
     setLoading(true);
 
     try {
-      let evaluateMeasureOutcomeTracker: OutcomeTracker = await evaluateMeasureFetch.fetchData(accessToken);
+      let evaluateMeasureOutcomeTracker: OutcomeTracker = await evaluateMeasureFetch.fetchData(accessToken, setSectionalResults, Section.MEASURE_EVAL);
 
       if (!evaluateMeasureOutcomeTracker) {
         setSectionalResults('Operation returned with erroneous data structure.', Section.MEASURE_EVAL);
@@ -508,11 +499,8 @@ const App: React.FC = () => {
     const dataRequirementsFetch = new DataRequirementsFetch(selectedKnowledgeRepo,
       selectedMeasure, startDate, endDate)
 
-    setSectionalResults(Constants.preFetchMessage + dataRequirementsFetch.getUrl(), Section.KNOWLEDGE_REPO);
-
     try {
-      setResultsCaller(await dataRequirementsFetch.fetchData(accessToken));
-
+      setResultsCaller(await dataRequirementsFetch.fetchData(accessToken, setSectionalResults, Section.KNOWLEDGE_REPO));
       setLoading(false);
     } catch (error: any) {
       setSectionalResults(error.message, Section.KNOWLEDGE_REPO);
@@ -552,11 +540,9 @@ const App: React.FC = () => {
     const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
       startDate, endDate, useSubject, selectedPatient, patientGroup)
 
-    setSectionalResults(Constants.preFetchMessage + collectDataFetch.getUrl(), Section.DATA_REPO);
-
     // Call the FHIR server to collect the data
     try {
-      const collectDataOutcomeTracker = await collectDataFetch.fetchData(accessToken);
+      const collectDataOutcomeTracker = await collectDataFetch.fetchData(accessToken, setSectionalResults, Section.DATA_REPO);
 
       if (collectDataOutcomeTracker.jsonFormattedString) {
         setCollectedData(collectDataOutcomeTracker.jsonFormattedString);

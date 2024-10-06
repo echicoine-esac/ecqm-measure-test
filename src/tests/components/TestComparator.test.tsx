@@ -257,7 +257,7 @@ test(thisTestFile + ': renders properly', async () => {
 
 const convertToID = (str: any | undefined): string => {
     let strIn: string = '' + str;
-    return (strIn.replace(' ', ''));
+    return (strIn.replaceAll(' ', ''));
 }
 
 const getNow = () => {

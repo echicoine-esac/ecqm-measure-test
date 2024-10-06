@@ -1,5 +1,6 @@
 import { Constants } from '../constants/Constants';
 import { OutcomeTracker } from '../models/OutcomeTracker';
+import { Section } from '../utils/OutcomeTrackerUtils';
 import { StringUtils } from '../utils/StringUtils';
 
 export enum FetchType {
@@ -22,12 +23,19 @@ export abstract class AbstractDataFetch {
     abstract getUrl(): string;
     protected abstract processReturnedData(data: any): OutcomeTracker;
 
-    fetchData = async (token: string): Promise<OutcomeTracker> => {
+    fetchData = async (token: string, setSectionalResults?: CallableFunction, section?: Section): Promise<OutcomeTracker> => {
+
+        //let the user know as much as we can about the fetch:
+        if (setSectionalResults && section) {
+            console.log('present')
+            setSectionalResults(Constants.preFetchMessage + this.getUrl(), section);
+        }
+
         let ret: any;
 
         // Add any token provided to the header
         this.requestOptions = {
-            headers: {"Authorization": `Bearer ${token}`}
+            headers: { "Authorization": `Bearer ${token}` }
         };
 
 
@@ -35,7 +43,7 @@ export abstract class AbstractDataFetch {
 
         await fetch(this.getUrl(), this.requestOptions)
             .then((response) => {
-                if (response?.status === 504){
+                if (response?.status === 504) {
                     throw new Error('504 (Gateway Timeout)')
                 }
 
@@ -47,11 +55,18 @@ export abstract class AbstractDataFetch {
             })
             .catch((error) => {
                 let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
-                if (responseStatusText.length > 0 && responseStatusText !== 'OK' ){
+                if (responseStatusText.length > 0 && responseStatusText !== 'OK') {
                     message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, responseStatusText);
                 }
                 throw new Error(message);
             })
+
+
+        //reset output:
+        if (setSectionalResults) {
+            setSectionalResults('', section)
+        }
+
         return ret;
     };
 

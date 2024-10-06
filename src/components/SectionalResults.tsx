@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Constants } from '../constants/Constants';
 
 // Props for Results panel
@@ -6,22 +6,72 @@ interface Props {
   results: string;
 }
 
-// Results component displays the status messages
+ /**
+  * For displaying errors for each section, as well as displaying the "fetching data from" message
+  * @param param0 
+  * @returns 
+  */
 const SectionalResults: React.FC<Props> = ({ results }) => {
-
+ 
   //we use this panel to inform the user an input error, but also if a fetch is occurring as well:
   const isError = !results.startsWith(Constants.preFetchMessage);
 
-  //scroll results into view when it changes:
-  const resultsDivRef = useRef<HTMLDivElement | null>(null);
+  /**
+   * Takes in our fetch string and parses it out for visual clarity
+   * @param urlString 
+   * @returns 
+   */
+  const parseAndStyleResults = (urlString: string) => {
+    if (!urlString.startsWith(Constants.preFetchMessage)) return urlString;
 
+    urlString = urlString.replace(Constants.preFetchMessage, '');
+    const [baseUrl, queryString] = urlString.split('?');
+    const params: Record<string, string> = {};
 
+    if (queryString) {
+      queryString.split('&').forEach(part => {
+        const [key, value] = part.split('=');
+        if (key) {
+          params[decodeURIComponent(key)] = value ? decodeURIComponent(value) : '';
+        }
+      });
+    }
+
+    return stylizeUrlAndParams({ url: baseUrl, params });
+  };
+
+  /**
+   * Break down the string into html (must be done inside this FC)
+   * @param param0 
+   * @returns 
+   */
+  const stylizeUrlAndParams = ({ url, params }: { url: string; params: Record<string, string> }) => {
+    const elements = [
+      <span key='prefetch'>{Constants.preFetchMessage}</span>,
+      <span key='url' style={{ color: 'blue' }}>{'\t' + url}</span>
+    ];
+
+    const paramsEntries = Object.entries(params);
+    if (paramsEntries.length > 0) {
+      elements.push(<span key='params-separator'>?</span>);
+      paramsEntries.forEach(([key, value]) => {
+        const paramKey = <span key={`param-${key}`} style={{ color: 'black', fontWeight: 'bold' }}><br />{'\t' + key}</span>;
+        const equals = <span key={`equals-${key}`}>=</span>;
+        const paramValue = <span key={`value-${key}`} style={{ color: 'blue' }}>{value}</span>;
+
+        elements.push(paramKey, equals, paramValue);
+        elements.push(<span key={`and-${key}`}>&amp;</span>);
+      });
+      elements.pop();
+    }
+
+    return <>{elements}</>;
+  };
 
   return (
     <div>
       {results && results.length > 0 && (
         <div
-          ref={resultsDivRef}
           className='row mt-1'
           style={{
             background: isError ? '#ce5454' : '#F7F7F7',
@@ -46,17 +96,19 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
                 display: 'inline-block',
               }}>
               <h6
-                data-testid="results-text"
+                data-testid='results-text'
                 style={{
                   height: 'auto',
                   borderRadius: '4px',
                   margin: '0px',
                   display: 'block',
                   whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-all',
                   color: isError ? 'white' : 'black',
-                  fontWeight: isError? undefined : 'normal'
+                  fontWeight: isError ? undefined : 'normal',
+                  lineHeight: isError ? undefined : '1.5'
                 }}>
-                {results}
+                {parseAndStyleResults(results)}
               </h6>
             </div>
           </div>

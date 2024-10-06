@@ -13,7 +13,7 @@ const Populations: React.FC<Props> = ({ showPopulations, populationScoring, meas
 
   const convertToID = (str: any | undefined): string => {
     let strIn: string = '' + str;
-    return (strIn.replace(' ', ''));
+    return (strIn.replaceAll(' ', ''));
   }
   const tableCount = populationScoring ? populationScoring.length : 0;
   const widthPercentage = tableCount >= 3 ? '33%' : tableCount === 2 ? '49%' : '100%'; // Adjust based on count
