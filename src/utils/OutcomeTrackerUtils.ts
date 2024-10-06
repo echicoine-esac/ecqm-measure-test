@@ -56,13 +56,13 @@ export class OutcomeTrackerUtils {
 
     private static getOutcomeMessage(outcome: Outcome, operationName: string, serverUrl: string | undefined): string {
         if (outcome === Outcome.SUCCESS) {
-            return 'SUCCESS: ' + operationName + ' with ' + serverUrl + ' completed successfully:';
+            return operationName + ' with ' + serverUrl + ' completed successfully:';
         } else if (outcome === Outcome.INFO) {
-            return 'INFO: ' + operationName + ' with ' + serverUrl + ':';
+            return operationName + ' with ' + serverUrl + ':';
         } else if (outcome === Outcome.WARNING) {
-            return 'WARNING: ' + operationName + ' with ' + serverUrl + ' had warning(s):';
+            return operationName + ' with ' + serverUrl + ' had warning(s):';
         } else if (outcome === Outcome.FAIL) {
-            return 'FAIL: ' + operationName + ' with ' + serverUrl + ' returned with error(s):';
+            return operationName + ' with ' + serverUrl + ' returned with error(s):';
         }
         return '';
     }

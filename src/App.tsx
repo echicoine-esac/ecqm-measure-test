@@ -772,7 +772,7 @@ const App: React.FC = () => {
       <Results selectedMeasure={selectedMeasure}
         //Populations now captured within results card:
         populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType}
-        outcome={outcomeTracker}
+        outcomeTracker={outcomeTracker}
       />
 
       <br />

@@ -8,7 +8,7 @@ beforeAll(() => {
 test('results text renders and accepts value', () => {
   const outcomeText = 'outcome-text';
   const resultsText = 'results-text';
-  render(<Results outcome={
+  render(<Results outcomeTracker={
     {
       outcomeMessage: outcomeText, 
       outcomeType: Outcome.NONE,

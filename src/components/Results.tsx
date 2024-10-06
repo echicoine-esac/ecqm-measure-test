@@ -11,7 +11,7 @@ import Populations from './Populations';
 // Props for Results panel
 interface Props {
   // results: string;
-  outcome: OutcomeTracker | undefined;
+  outcomeTracker: OutcomeTracker | undefined;
   selectedMeasure?: string;
   showPopulations?: boolean | undefined;
   populationScoring?: PopulationScoring[] | undefined;
@@ -20,8 +20,9 @@ interface Props {
 }
 
 // Results component displays the status messages
-const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, populationScoring, measureScoringType, outcome }) => {
-  const results = outcome?.jsonFormattedString ? outcome?.jsonFormattedString : '';
+const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, populationScoring, measureScoringType, outcomeTracker }) => {
+
+  const results = outcomeTracker?.jsonFormattedString ? outcomeTracker?.jsonFormattedString : '';
 
   // State to handle the dark theme toggle
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -81,12 +82,14 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
   };
 
   const getOutcomeFontColor = () => {
-    if (!outcome) return 'black';
-    if (outcome.outcomeType === Outcome.FAIL) {
+    if (!outcomeTracker) return 'black';
+    if (outcomeTracker.outcomeType === Outcome.FAIL) {
       return 'red';
-    } else if (outcome.outcomeType === Outcome.SUCCESS) {
+    } else if (outcomeTracker.outcomeType === Outcome.SUCCESS) {
       return 'green';
-    } else if (outcome.outcomeType === Outcome.INFO) {
+    } else if (outcomeTracker.outcomeType === Outcome.WARNING) {
+      return 'orange';
+    } else if (outcomeTracker.outcomeType === Outcome.INFO) {
       return 'black'
     } else {
       return 'black';
@@ -101,10 +104,10 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
         <div ref={resultsDivRef} className='row mt-4'
           style={{
             background: '#F7F7F7', border: '1px solid lightgrey',
-            transition: 'border 2s', margin: '2px', borderRadius: '4px', paddingTop: resultsTextIsJson && !outcome?.outcomeMessage.length ? '15px' : '0px'
+            transition: 'border 2s', margin: '2px', borderRadius: '4px', paddingTop: resultsTextIsJson && !outcomeTracker?.outcomeMessage.length ? '15px' : '0px'
           }}>
 
-          {outcome && outcome.outcomeMessage.length > 0 && (
+          {outcomeTracker && outcomeTracker.outcomeMessage.length > 0 && (
 
             <div ref={resultsDivRef} className='row mt-1'
               style={{
@@ -115,7 +118,7 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
               <div className='col-md-12 order-md-1'>
                 <div style={{ height: 'auto', width: 'auto', border: '0px' }}>
 
-                  <h6
+                  <div
                     data-testid="outcome-results-text"
                     style={{
                       height: 'auto',
@@ -124,10 +127,11 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
                       marginBottom: '5px',
                       display: 'block',
                       whiteSpace: 'pre-wrap',
-                      color: getOutcomeFontColor()
+                      fontSize: '13pt'
                     }}>
-                    {outcome.outcomeMessage}
-                  </h6>
+                    <span style={{ fontWeight: 'bold', color: getOutcomeFontColor() }}>{Outcome[outcomeTracker.outcomeType] + ': '}</span>{outcomeTracker.outcomeMessage}
+                    <hr style={{ marginTop: '3px', marginBottom: '-5px', height: '2px', color: getOutcomeFontColor()}}></hr>
+                  </div>
                 </div>
               </div>
             </div >
@@ -171,7 +175,7 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
                     Download {hrefFileName}
                   </a>
                 }
-                
+
               </div>
             )}
 
