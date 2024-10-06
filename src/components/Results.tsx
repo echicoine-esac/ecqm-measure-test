@@ -129,7 +129,7 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
                       whiteSpace: 'pre-wrap',
                       fontSize: '13pt'
                     }}>
-                    <span style={{ fontWeight: 'bold', color: getOutcomeFontColor() }}>{Outcome[outcomeTracker.outcomeType] + ': '}</span>{outcomeTracker.outcomeMessage}
+                    {outcomeTracker?.outcomeType !== Outcome.NONE && <span style={{ fontWeight: 'bold', color: getOutcomeFontColor() }}>{Outcome[outcomeTracker.outcomeType] + ': '}</span>}{outcomeTracker.outcomeMessage}
                     <hr style={{ marginTop: '3px', marginBottom: '-5px', height: '2px', color: getOutcomeFontColor()}}></hr>
                   </div>
                 </div>
