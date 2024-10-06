@@ -170,6 +170,7 @@ const App: React.FC = () => {
   const scrollScreenToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  
   useEffect(() => {
     window.addEventListener('scroll', checkScrollTop);
     return () => {

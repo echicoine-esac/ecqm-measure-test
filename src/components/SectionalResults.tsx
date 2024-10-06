@@ -29,7 +29,7 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
             margin: '0px',
             borderRadius: '4px',
             padding: '6px',
-            width: 'auto',
+            width: isError ? 'auto' : '97.6%',
             maxWidth: '97.6%',
             display: 'inline-block',
             position: 'relative',
@@ -50,11 +50,11 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
                 style={{
                   height: 'auto',
                   borderRadius: '4px',
-                  fontSize: '13pt',
                   margin: '0px',
                   display: 'block',
                   whiteSpace: 'pre-wrap',
                   color: isError ? 'white' : 'black',
+                  fontWeight: isError? undefined : 'normal'
                 }}>
                 {results}
               </h6>
