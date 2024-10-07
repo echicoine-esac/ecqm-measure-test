@@ -9,6 +9,7 @@ export enum Section {
     DATA_REPO,
     MEASURE_EVAL,
     REC_SYS,
+    TEST_COMPARE
 }
 
 export class OutcomeTrackerUtils {

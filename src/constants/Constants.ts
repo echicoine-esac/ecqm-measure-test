@@ -1,7 +1,7 @@
 import { Server } from '../models/Server';
+import { Section } from '../utils/OutcomeTrackerUtils';
 
 export class Constants {
-
     public static readonly title_knowledge_repo = 'Knowledge Repository';
     public static readonly title_data_repo = 'Data Extraction Service/Data Repository';
     public static readonly title_measure_evaluation = 'Measure Evaluation Service';
@@ -9,6 +9,21 @@ export class Constants {
     public static readonly title_test_comparator = 'Test Comparator';
     public static readonly title_reportingPeriod = 'Reporting Period';
     
+    public static readonly id_knowledge_repo = 'knowledge-repo';
+    public static readonly id_data_repo = 'data-repo';
+    public static readonly id_measure_evaluation = 'mea-eva';
+    public static readonly id_receiving_system = 'rec-sys';
+    public static readonly id_test_comparator = 'test-compare';
+    public static readonly id_reportingPeriod = 'reporting-period';
+
+    public static readonly sectionIDs: Map<Section, string> = new Map([
+        [Section.REPORTING_PERIOD, Constants.id_reportingPeriod],
+        [Section.KNOWLEDGE_REPO, Constants.id_knowledge_repo],
+        [Section.DATA_REPO, Constants.id_data_repo],
+        [Section.MEASURE_EVAL, Constants.id_measure_evaluation],
+        [Section.REC_SYS, Constants.id_receiving_system],
+        [Section.TEST_COMPARE, Constants.id_test_comparator],
+    ]);
 
     public static readonly operationOutcomeResourceType = 'OperationOutcome';
     public static readonly upArrow = '↑';
@@ -65,6 +80,9 @@ export class Constants {
 
 
     public static readonly functionNotImplemented = 'This function has not been implemented';
+
+ 
+
 
     //testing purposes:
     public static readonly serverTestData: Server[] = [

@@ -8,8 +8,4 @@ export class StringUtils {
                 ;
         });
     };
-
-    public static formatDisplayURL(url: string) : string {
-        return url.replaceAll('&', '\n\r\t&').replaceAll('?', '\n\r\t?');
-    }
 }

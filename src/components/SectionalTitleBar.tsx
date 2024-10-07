@@ -33,6 +33,7 @@ const SectionalTitleBar: React.FC<Props> = ({ title, showSection, selectedSubjec
       <div style={{ width: 'auto' }} className='col-md-1 order-md-3'>
         {showSection ? (
           <Button
+            id={dataTestID + 'hide-section-button'}
             data-testid={dataTestID + 'hide-section-button'}
             className='btn btn-primary btn-lg float-right'
             onClick={(e) => setshowSection(false)}
@@ -41,6 +42,7 @@ const SectionalTitleBar: React.FC<Props> = ({ title, showSection, selectedSubjec
           </Button>
         ) : (
           <Button
+            id={dataTestID + 'show-section-button'}
             data-testid={dataTestID + 'show-section-button'}
             className='btn btn-primary btn-lg float-right'
             onClick={(e) => setshowSection(true)}

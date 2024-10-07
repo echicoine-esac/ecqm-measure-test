@@ -171,7 +171,7 @@ const App: React.FC = () => {
   const scrollScreenToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
   useEffect(() => {
     window.addEventListener('scroll', checkScrollTop);
     return () => {
@@ -574,7 +574,7 @@ const App: React.FC = () => {
       setSectionalResults(Constants.error_submitData_selectMeasure, Section.MEASURE_EVAL);
       return;
     }
-    
+
     if (collectedData?.length === 0) {
       setSectionalResults(Constants.error_submitData_collectData, Section.MEASURE_EVAL);
       return;
@@ -711,6 +711,33 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
+  const hideAll = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    Constants.sectionIDs.forEach((value: string, key: Section) => {
+      try {
+        if (document.getElementById(value + '-hide-section-button')) {
+          document.getElementById(value + '-hide-section-button')?.click();
+        }
+      } catch (error: any) {
+        console.log(error);
+      }
+    });
+  }
+
+  const showAll = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    Constants.sectionIDs.forEach((value: string, key: Section) => {
+      try {
+        if (document.getElementById(value + '-show-section-button')) {
+          document.getElementById(value + '-show-section-button')?.click();
+        }
+      } catch (error: any) {
+        console.log(error);
+      }
+    });
+  }
+
+  
   return (
     <div className="container">
       <div className="row text-center col-md-11" style={{ marginTop: '20px', padding: '0px', height: '65px' }}>
@@ -719,9 +746,10 @@ const App: React.FC = () => {
             <img className="d-block mx-auto mb-4" src={icfLogo} alt="ICF Logo" />
           </a>
         </div>
-        <div className="col-md-11">
+        <div className="col-md-10">
           <img className="d-block mx-auto mb-4" src={appLogo} alt="eCQM Testing Tool" width='180px' />
         </div>
+
       </div>
       <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
       <br />
@@ -751,8 +779,8 @@ const App: React.FC = () => {
 
         selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
         //used for href to subject
-        selectedDataRepo={selectedDataRepo} 
-        collectedData={collectedData}/>
+        selectedDataRepo={selectedDataRepo}
+        collectedData={collectedData} />
       <SectionalResults results={measureEvalResults} />
       <br />
       <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
@@ -783,13 +811,37 @@ const App: React.FC = () => {
       <br />
 
 
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'fixed',
+        top: '10px',
+        right: '15px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 100,
+        width: '80px',
+        fontSize: '10pt',
+        background: '#F7F7F7',
+        borderRadius: '4px',
+        height: '60px',
+        border: '1px solid lightgrey',
+        lineHeight: '1.75'
+      }}>
+        <div className='row md-4'>
+          <a href='#' onClick={showAll}>Show All</a>
+        </div>
+        <div className='row md-4'>
+          <a href='#' onClick={hideAll}>Hide All</a>
+        </div>
+      </div>
       <button
         onClick={scrollScreenToTop}
         style={{
           display: showScrollToTopButton ? 'flex' : 'none',
           position: 'fixed',
           bottom: '10px',
-          right: '10px',
+          right: '25px',
           backgroundColor: '#0D6EFD',
           color: 'white',
           border: 'none',
