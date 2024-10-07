@@ -746,7 +746,7 @@ const App: React.FC = () => {
             <img className="d-block mx-auto mb-4" src={icfLogo} alt="ICF Logo" />
           </a>
         </div>
-        <div className="col-md-10">
+        <div className="col-md-11">
           <img className="d-block mx-auto mb-4" src={appLogo} alt="eCQM Testing Tool" width='180px' />
         </div>
 
