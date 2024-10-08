@@ -6,6 +6,7 @@ import { Patient } from '../models/Patient';
 import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
+import ServerDropdown from './ServerDropdown';
 
 // Props for MeasureEvaluation
 interface Props {
@@ -68,7 +69,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='mea-eva-' setshowSection={setShowMeasureEvaluation} showSection={showMeasureEvaluation}
+        <SectionalTitleBar dataTestID={Constants.id_measure_evaluation} setshowSection={setShowMeasureEvaluation} showSection={showMeasureEvaluation}
           title={Constants.title_measure_evaluation} />
       </div>
       {showMeasureEvaluation ? (
@@ -79,15 +80,15 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
             </div>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-1'>
-              <select disabled={loading} data-testid='mea-eva-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedMeasureEvaluation?.baseUrl}
-                onChange={(e) => setSelectedMeasureEvaluation(servers[e.target.selectedIndex - 1]!)}>
-                <option value=''>Select a Server...</option>
-                {servers.map((server, index) => (
-                  <option key={index}>{server!.baseUrl}</option>
-                ))}
-              </select>
-            </div>
+
+            <ServerDropdown
+              dataTestID={Constants.id_measure_evaluation}
+              loading={loading}
+              servers={servers}
+              callFunction={setSelectedMeasureEvaluation}
+              baseUrlValue={selectedMeasureEvaluation?.baseUrl}
+            />
+
             <div className='col-md-1 order-md-2'>
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>

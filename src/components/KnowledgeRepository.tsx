@@ -5,6 +5,7 @@ import { Measure } from '../models/Measure';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
 import { Constants } from '../constants/Constants';
+import ServerDropdown from './ServerDropdown';
 
 // Props for KnowledgeRepository
 interface Props {
@@ -31,7 +32,7 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='knowledge-repo-' setshowSection={setShowKnowledgeRepo} showSection={showKnowledgeRepo}
+        <SectionalTitleBar dataTestID={Constants.id_knowledge_repo} setshowSection={setShowKnowledgeRepo} showSection={showKnowledgeRepo}
           title={Constants.title_knowledge_repo} selectedSubjectTitling='Selected Measure' selectedSubject={selectedMeasure} />
       </div>
       {showKnowledgeRepo ? (
@@ -48,16 +49,15 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
             </div>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-1'>
-              <select disabled={loading} data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo?.baseUrl}
-                onChange={(e) => fetchMeasures(servers[e.target.selectedIndex - 1]!)}>
-                <option value={'Select a Server...'}>
-                  Select a Server...</option>
-                {servers.map((server: any, index: React.Key | null | undefined) => (
-                  <option key={index}>{server!.baseUrl}</option>
-                ))}
-              </select>
-            </div>
+
+            <ServerDropdown
+              dataTestID={Constants.id_knowledge_repo}
+              loading={loading}
+              servers={servers}
+              callFunction={fetchMeasures}
+              baseUrlValue={selectedKnowledgeRepo?.baseUrl}
+            />
+
             <div className='col-md-1 order-md-2'>
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>

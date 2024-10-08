@@ -71,8 +71,7 @@ beforeEach(() => {
 test(thisTestFile + ': renders properly', async () => {
   const dataServers: Server[] = Constants.serverTestData;
 
-  const url = dataServers[0].baseUrl;
-  const mockPatientList: Patient[] = await buildPatientData(url);
+  const mockPatientList: Patient[] = await buildPatientData(dataServers[0].baseUrl);
 
   await act(async () => {
     render(<App />);
@@ -91,7 +90,7 @@ test(thisTestFile + ': renders properly', async () => {
   fetchMock.mock(dataServers[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
 
   await act(async () => {
-    const patientFetch = await PatientFetch.createInstance(url);
+    const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
     const mockJsonPatientsData = jsonTestPatientsData;
     fetchMock.once(patientFetch.getUrl(),
       JSON.stringify(mockJsonPatientsData)
@@ -104,7 +103,7 @@ test(thisTestFile + ': renders properly', async () => {
       JSON.stringify(mockJsonGroupData)
       , { method: 'GET' });
 
-    userEvent.selectOptions(serverDropdown, url);
+    userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
   });
   fetchMock.restore();
 
@@ -345,6 +344,30 @@ test(thisTestFile + ': error scenario: Please select a Measure', async () => {
 
   const resultsTextField: HTMLElement = screen.getByTestId('results-text');
   expect(resultsTextField.textContent).toEqual(Constants.error_collectData_selectMeasure);
+
+});
+
+test(thisTestFile + ': deselecting server', async () => {
+  await act(async () => {
+    render(<App />);
+  });
+  //unhide data repository section:
+  const showButton: HTMLButtonElement = screen.getByTestId('data-repo-show-section-button');
+  fireEvent.click(showButton);
+
+  //select server, mock list should return:
+  await act(async () => {
+    const serverDropdown: HTMLSelectElement = screen.getByTestId('data-repo-server-dropdown');
+    userEvent.selectOptions(serverDropdown, Constants.label_selectServer);
+  });
+
+  await waitFor(() => expect(screen.getByTestId('data-repo-collect-data-button')).toBeInTheDocument());
+  //click collect data, 
+  const collectDataButton: HTMLButtonElement = screen.getByTestId('data-repo-collect-data-button');
+  fireEvent.click(collectDataButton);
+
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+  expect(resultsTextField.textContent).toEqual(Constants.error_selectDataRepository);
 
 });
 

@@ -67,6 +67,7 @@ export class Constants {
     //Other
     public static readonly error_patientGroup = 'No Patient Group data could be established for the selected Measure. Select an individual Patient from the Patient dropdown and attempt operation again';
     public static readonly label_largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
+    public static readonly label_selectServer = 'Select a Server...';
 
     //fetch urls
     public static readonly fetch_evaluateMeasureWithSubject = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';

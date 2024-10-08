@@ -7,6 +7,7 @@ import { Member, PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import SectionalTitleBar from './SectionalTitleBar';
+import ServerDropdown from './ServerDropdown';
 
 interface Props {
   showDataRepo: boolean;
@@ -101,7 +102,7 @@ const DataRepository: React.FC<Props> = ({
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='data-repo-' setshowSection={setShowDataRepo} showSection={showDataRepo}
+        <SectionalTitleBar dataTestID={Constants.id_data_repo} setshowSection={setShowDataRepo} showSection={showDataRepo}
           title={Constants.title_data_repo}
           selectedSubjectTitling='Subject' selectedSubject={selectedSubject} />
       </div>
@@ -119,15 +120,15 @@ const DataRepository: React.FC<Props> = ({
             </div>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-1'>
-              <select disabled={loading} data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo?.baseUrl}
-                onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
-                <option value=''>Select a Server...</option>
-                {servers.map((server, index) => (
-                  <option key={index}>{server!.baseUrl}</option>
-                ))}
-              </select>
-            </div>
+
+            <ServerDropdown
+              dataTestID={Constants.id_data_repo}
+              loading={loading}
+              servers={servers}
+              callFunction={fetchPatients}
+              baseUrlValue={selectedDataRepo?.baseUrl}
+            />
+
             <div className='col-md-1 order-md-2'>
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>

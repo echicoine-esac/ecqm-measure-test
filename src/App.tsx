@@ -179,10 +179,7 @@ const App: React.FC = () => {
     };
   }, [showScrollToTopButton]);
 
-  const setSectionalResults = ((message: string, section: Section, outcome?: Outcome) => {
-    if (outcome) {
-      message = outcome + "_" + message;
-    }
+  const setSectionalResults = ((message: string, section: Section) => {
     switch (section) {
       case Section.KNOWLEDGE_REPO: {
         setKnowledgeRepoResults(message);
@@ -420,14 +417,6 @@ const App: React.FC = () => {
     try {
       let evaluateMeasureOutcomeTracker: OutcomeTracker = await evaluateMeasureFetch.fetchData(accessToken, setSectionalResults, Section.MEASURE_EVAL);
 
-      if (!evaluateMeasureOutcomeTracker) {
-        setSectionalResults('Operation returned with erroneous data structure.', Section.MEASURE_EVAL);
-        setShowPopulations(false);
-        setLoading(false);
-        return;
-      }
-      setResultsCaller(evaluateMeasureOutcomeTracker);
-
       // Iterate through the population names to set the state
       const measureGroups: GroupElement[] = evaluateMeasureOutcomeTracker.operationData;
 
@@ -463,8 +452,9 @@ const App: React.FC = () => {
         })
       }
 
+      //show the results:
       setPopulationScoring(populationScoringCollection);
-
+      setResultsCaller(evaluateMeasureOutcomeTracker);
 
       // Show the populations
       setShowPopulations(true);

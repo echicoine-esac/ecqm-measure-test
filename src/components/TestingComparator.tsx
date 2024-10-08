@@ -104,7 +104,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
       }
     `}</style>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='test-compare-' setshowSection={setShowTestCompare} showSection={showTestCompare}
+        <SectionalTitleBar dataTestID={Constants.id_test_comparator} setshowSection={setShowTestCompare} showSection={showTestCompare}
           title={Constants.title_test_comparator} />
       </div>
 

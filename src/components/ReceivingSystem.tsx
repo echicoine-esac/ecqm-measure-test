@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
 import { Constants } from '../constants/Constants';
+import ServerDropdown from './ServerDropdown';
 
 // Props for ReceivingSystem
 interface Props {
@@ -46,7 +47,7 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID='rec-sys-' setshowSection={setShowReceiving} showSection={showReceiving}
+        <SectionalTitleBar dataTestID={Constants.id_receiving_system} setshowSection={setShowReceiving} showSection={showReceiving}
           title={Constants.title_receiving_system} />
       </div>
       {showReceiving ? (
@@ -57,15 +58,15 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
             </div>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-1'>
-              <select disabled={loading} data-testid='rec-sys-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedReceiving?.baseUrl}
-                onChange={(e) => setSelectedReceiving(servers[e.target.selectedIndex - 1]!)}>
-                <option value=''>Select a Server...</option>
-                {servers.map((server, index) => (
-                  <option key={index}>{server!.baseUrl}</option>
-                ))}
-              </select>
-            </div>
+            
+            <ServerDropdown
+              dataTestID={Constants.id_receiving_system}
+              loading={loading}
+              servers={servers}
+              callFunction={setSelectedReceiving}
+              baseUrlValue={selectedReceiving?.baseUrl}
+            />
+
             <div className='col-md-1 order-md-2'>
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>
