@@ -1,5 +1,5 @@
+import { Section } from '../enum/Section.enum';
 import { Server } from '../models/Server';
-import { Section } from '../utils/OutcomeTrackerUtils';
 
 export class Constants {
     public static readonly title_knowledge_repo = 'Knowledge Repository';

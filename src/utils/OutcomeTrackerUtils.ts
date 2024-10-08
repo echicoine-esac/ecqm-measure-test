@@ -2,16 +2,6 @@ import { Constants } from '../constants/Constants';
 import { OperationOutcome } from '../models/OperationOutcome';
 import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 
-
-export enum Section {
-    REPORTING_PERIOD,
-    KNOWLEDGE_REPO,
-    DATA_REPO,
-    MEASURE_EVAL,
-    REC_SYS,
-    TEST_COMPARE
-}
-
 export class OutcomeTrackerUtils {
     /**
      * Builds an OutcomeTracker given specific data.

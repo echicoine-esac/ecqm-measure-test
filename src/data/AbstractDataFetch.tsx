@@ -1,6 +1,6 @@
 import { Constants } from '../constants/Constants';
+import { Section } from '../enum/Section.enum';
 import { OutcomeTracker } from '../models/OutcomeTracker';
-import { Section } from '../utils/OutcomeTrackerUtils';
 import { StringUtils } from '../utils/StringUtils';
 
 export enum FetchType {

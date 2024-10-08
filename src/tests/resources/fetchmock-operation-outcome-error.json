@@ -1,0 +1,16 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "invalid",
+      "details": {
+        "text": "The provided identifier for the patient was not valid."
+      },
+      "diagnostics": "Patient identifier '12345' is missing required prefix 'PAT-'.",
+      "location": [
+        "Patient.identifier"
+      ]
+    }
+  ]
+}

@@ -4,15 +4,11 @@ import fetchMock from 'fetch-mock';
 import App from '../../App';
 import { Constants } from '../../constants/Constants';
 import { GroupFetch } from '../../data/GroupFetch';
-import { MeasureFetch } from '../../data/MeasureFetch';
 import { PatientFetch } from '../../data/PatientFetch';
-import { Measure } from '../../models/Measure';
-import { Patient } from '../../models/Patient';
 import { Server } from '../../models/Server';
 import { HashParamUtils } from '../../utils/HashParamUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
 import jsonTestGroupData from '../resources/fetchmock-group.json';
-import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
 
 const thisTestFile = "Results";

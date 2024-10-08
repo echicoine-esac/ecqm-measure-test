@@ -1,0 +1,8 @@
+export enum Section {
+    REPORTING_PERIOD,
+    KNOWLEDGE_REPO,
+    DATA_REPO,
+    MEASURE_EVAL,
+    REC_SYS,
+    TEST_COMPARE
+}

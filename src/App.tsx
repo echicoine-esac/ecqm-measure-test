@@ -33,7 +33,7 @@ import { HashParamUtils } from './utils/HashParamUtils';
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
-import { Section } from './utils/OutcomeTrackerUtils';
+import { Section } from './enum/Section.enum';
 
 const App: React.FC = () => {
   // Define the state variables

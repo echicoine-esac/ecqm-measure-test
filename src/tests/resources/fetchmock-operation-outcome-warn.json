@@ -1,0 +1,16 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "warning",
+      "code": "structure",
+      "details": {
+        "text": "The resource contains unrecognized extensions that were ignored."
+      },
+      "diagnostics": "Extension 'http://example.com/fhir/StructureDefinition/unrecognized' was not processed.",
+      "location": [
+        "Patient.extension"
+      ]
+    }
+  ]
+}

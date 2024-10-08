@@ -1,7 +1,7 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import App from '../../App';
 import { Constants } from '../../constants/Constants';
-import { Section } from '../../utils/OutcomeTrackerUtils';
+import { Section } from '../../enum/Section.enum';
 
 const thisTestFile = "Show/Hide All Panel";
 
