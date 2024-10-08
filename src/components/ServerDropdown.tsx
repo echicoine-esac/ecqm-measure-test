@@ -9,6 +9,11 @@ interface Props {
     baseUrlValue: string | undefined;
     callFunction?: (a: any) => void;
 }
+/**
+ * Common approach to a server dropdown with just a few differences assigned
+ * @param param0 
+ * @returns 
+ */
 const ServerDropdown: React.FC<Props> = ({ loading, callFunction, servers, dataTestID, baseUrlValue }) => {
     return (
         <div className='col-md-5 order-md-1'>

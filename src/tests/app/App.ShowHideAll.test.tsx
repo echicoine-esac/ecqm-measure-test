@@ -3,7 +3,7 @@ import App from '../../App';
 import { Constants } from '../../constants/Constants';
 import { Section } from '../../enum/Section.enum';
 
-const thisTestFile = "Show/Hide All Panel";
+const thisTestFile = 'Show/Hide All Panel';
 
 
 beforeAll(() => {
@@ -16,8 +16,8 @@ test(thisTestFile + ': scenario: show all reveals every panel', async () => {
     await act(async () => {
         render(<App />);
     });
-    expect(document.getElementById('app-show-all-link')).toBeInTheDocument();
-    const showAllLink: HTMLAnchorElement | null = document.getElementById('app-show-all-link') as HTMLAnchorElement;
+    expect(document.getElementById('app-show-all-btn')).toBeInTheDocument();
+    const showAllLink: HTMLButtonElement | null = document.getElementById('app-show-all-btn') as HTMLButtonElement;
     fireEvent.click(showAllLink);
 
     let allPanelsShown: boolean = true;
@@ -38,8 +38,8 @@ test(thisTestFile + ': scenario: hide all reveals every panel', async () => {
     await act(async () => {
         render(<App />);
     });
-    expect(document.getElementById('app-show-all-link')).toBeInTheDocument();
-    const showAllLink: HTMLAnchorElement | null = document.getElementById('app-hide-all-link') as HTMLAnchorElement;
+    expect(document.getElementById('app-show-all-btn')).toBeInTheDocument();
+    const showAllLink: HTMLButtonElement | null = document.getElementById('app-hide-all-btn') as HTMLButtonElement;
     fireEvent.click(showAllLink);
 
     let allPanelsHidden: boolean = true;

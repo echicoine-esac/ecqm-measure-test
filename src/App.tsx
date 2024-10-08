@@ -3,7 +3,7 @@ import './App.css';
 import DataRepository from './components/DataRepository';
 import KnowledgeRepository from './components/KnowledgeRepository';
 import LoginModal from './components/LoginModal';
-import MeasureEvaluation from "./components/MeasureEvaluation";
+import MeasureEvaluation from './components/MeasureEvaluation';
 import ReceivingSystem from './components/ReceivingSystem';
 import ReportingPeriod from './components/ReportingPeriod';
 import Results from './components/Results';
@@ -177,6 +177,7 @@ const App: React.FC = () => {
     return () => {
       window.removeEventListener('scroll', checkScrollTop);
     };
+    // eslint-disable-next-line 
   }, [showScrollToTopButton]);
 
   const setSectionalResults = ((message: string, section: Section) => {
@@ -277,7 +278,7 @@ const App: React.FC = () => {
       setServers(await ServerUtils.getServerList());
     } catch (error: any) {
       setResultsCaller({
-        outcomeMessage: "An error occurred while attempting to add a server to the system:",
+        outcomeMessage: 'An error occurred while attempting to add a server to the system:',
         outcomeType: Outcome.FAIL,
         //uses jsonString to convey error:
         jsonFormattedString: error.message
@@ -435,9 +436,9 @@ const App: React.FC = () => {
       // //used for testing
       // const scoringConcept: CodeableConcept = {
       //   coding: [{
-      //     system: "http://terminology.hl7.org/CodeSystem/measure-scoring",
-      //     code: "proportion",
-      //     display: "Proportion"
+      //     system: 'http://terminology.hl7.org/CodeSystem/measure-scoring',
+      //     code: 'proportion',
+      //     display: 'Proportion'
       //   }]
       // };
 
@@ -701,8 +702,7 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
-  const hideAll = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    event.preventDefault();
+  const hideAll = () => {
     Constants.sectionIDs.forEach((value: string, key: Section) => {
       try {
         if (document.getElementById(value + '-hide-section-button')) {
@@ -714,8 +714,7 @@ const App: React.FC = () => {
     });
   }
 
-  const showAll = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    event.preventDefault();
+  const showAll = () => {
     Constants.sectionIDs.forEach((value: string, key: Section) => {
       try {
         if (document.getElementById(value + '-show-section-button')) {
@@ -727,17 +726,26 @@ const App: React.FC = () => {
     });
   }
 
+  const showAllHideAllStyling = {
+    padding: 0,
+    textDecoration: 'underline',
+    color: '#007bff',
+    background: 'none',
+    outline: 'none',
+    boxShadow: '0 0 0 0px',
+    fontSize: '11pt'
+  };
 
   return (
-    <div className="container">
-      <div className="row text-center col-md-11" style={{ marginTop: '20px', padding: '0px', height: '65px' }}>
-        <div className="text-center col-md-1">
-          <a href="http://www.icf.com">
-            <img className="d-block mx-auto mb-4" src={icfLogo} alt="ICF Logo" />
+    <div className='container'>
+      <div className='row text-center col-md-11' style={{ marginTop: '20px', padding: '0px', height: '65px' }}>
+        <div className='text-center col-md-1'>
+          <a target='_blank' rel='noreferrer' href='http://www.icf.com'>
+            <img className='d-block mx-auto mb-4' src={icfLogo} alt='ICF Logo' />
           </a>
         </div>
-        <div className="col-md-11">
-          <img className="d-block mx-auto mb-4" src={appLogo} alt="eCQM Testing Tool" width='180px' />
+        <div className='col-md-11'>
+          <img className='d-block mx-auto mb-4' src={appLogo} alt='eCQM Testing Tool' width='180px' />
         </div>
 
       </div>
@@ -801,6 +809,7 @@ const App: React.FC = () => {
       <br />
 
 
+      {/* Show All / Hide All  */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -819,12 +828,26 @@ const App: React.FC = () => {
         lineHeight: '1.75'
       }}>
         <div className='row md-4'>
-          <a id='app-show-all-link' href='#' onClick={showAll}>Show All</a>
+          <button
+            id='app-show-all-btn'
+            className='btn btn-link'
+            onClick={showAll}
+            style={showAllHideAllStyling}>
+            Show All
+          </button>
         </div>
         <div className='row md-4'>
-          <a id='app-hide-all-link' href='#' onClick={hideAll}>Hide All</a>
+          <button
+            id='app-hide-all-btn'
+            className='btn btn-link'
+            onClick={hideAll}
+            style={showAllHideAllStyling}>
+            Hide All
+          </button>
         </div>
       </div>
+
+      {/* Scroll to top button */}
       <button
         onClick={scrollScreenToTop}
         style={{
@@ -844,8 +867,7 @@ const App: React.FC = () => {
           fontSize: '24px',
           transition: 'opacity 0.3s',
           width: '60px'
-        }}
-      >
+        }}>
         {Constants.upArrow}
       </button>
 

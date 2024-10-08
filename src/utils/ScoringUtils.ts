@@ -1,4 +1,4 @@
-import { PopulationElement } from "../models/Scoring";
+import { PopulationElement } from '../models/Scoring';
 
 
 
