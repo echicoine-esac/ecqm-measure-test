@@ -102,29 +102,3 @@ test(thisTestFile + ': scenario: Please select a Measure message renders the res
   expect(resultsTextField.textContent).toEqual(Constants.error_collectData_selectMeasure);
 
 });
-
-
-//mock measure and patient data
-async function buildMeasureData(url: string): Promise<Measure[]> {
-  const measureFetch = new MeasureFetch(url);
-  const mockJsonMeasureData = jsonTestMeasureData;
-  fetchMock.once(measureFetch.getUrl(),
-    JSON.stringify(mockJsonMeasureData)
-    , { method: 'GET' });
-  let measureList: Measure[] = (await measureFetch.fetchData('')).operationData;
-  fetchMock.restore();
-  return measureList;
-}
-
-async function buildPatientData(url: string): Promise<Patient[]> {
-  fetchMock.mock(url + 'Patient?_summary=count', mockPatientTotalCountJSON);
-
-  const patientFetch = await PatientFetch.createInstance(url);
-  const mockJsonPatientData = jsonTestPatientsData;
-  fetchMock.once(patientFetch.getUrl(),
-    JSON.stringify(mockJsonPatientData)
-    , { method: 'GET' });
-  let patientList: Patient[] = (await patientFetch.fetchData('')).operationData;
-  fetchMock.restore();
-  return patientList;
-}

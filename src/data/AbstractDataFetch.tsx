@@ -27,7 +27,6 @@ export abstract class AbstractDataFetch {
 
         //let the user know as much as we can about the fetch:
         if (setSectionalResults && section) {
-            console.log('present')
             setSectionalResults(Constants.preFetchMessage + this.getUrl(), section);
         }
 

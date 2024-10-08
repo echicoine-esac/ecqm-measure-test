@@ -737,7 +737,7 @@ const App: React.FC = () => {
     });
   }
 
-  
+
   return (
     <div className="container">
       <div className="row text-center col-md-11" style={{ marginTop: '20px', padding: '0px', height: '65px' }}>
@@ -829,10 +829,10 @@ const App: React.FC = () => {
         lineHeight: '1.75'
       }}>
         <div className='row md-4'>
-          <a href='#' onClick={showAll}>Show All</a>
+          <a id='app-show-all-link' href='#' onClick={showAll}>Show All</a>
         </div>
         <div className='row md-4'>
-          <a href='#' onClick={hideAll}>Hide All</a>
+          <a id='app-hide-all-link' href='#' onClick={hideAll}>Hide All</a>
         </div>
       </div>
       <button
