@@ -1,17 +1,23 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
+import { Section } from '../enum/Section.enum';
+import { Constants } from '../constants/Constants';
 
 interface Props {
-  title: string;
+  section: Section;
   showSection: boolean;
-  dataTestID: string;
-  setshowSection: (visible: boolean) => void;
+  setShowSection: (visible: boolean) => void;
 
   selectedSubject?: string;
   selectedSubjectTitling?: string;
 }
 
-const SectionalTitleBar: React.FC<Props> = ({ title, showSection, selectedSubject, dataTestID, setshowSection, selectedSubjectTitling }) => {
+const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubject, setShowSection, selectedSubjectTitling }) => {
+
+  const title = Constants.sectionTitles.get(section);
+  const dataTestID = Constants.sectionIDs.get(section);
+
+
   return (
     <div className='row' style={{ display: 'flex', flexWrap: 'nowrap' }}>
       <div style={{
@@ -36,7 +42,7 @@ const SectionalTitleBar: React.FC<Props> = ({ title, showSection, selectedSubjec
             id={dataTestID + '-hide-section-button'}
             data-testid={dataTestID + '-hide-section-button'}
             className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setshowSection(false)}
+            onClick={(e) => setShowSection(false)}
           >
             Hide
           </Button>
@@ -45,7 +51,7 @@ const SectionalTitleBar: React.FC<Props> = ({ title, showSection, selectedSubjec
             id={dataTestID + '-show-section-button'}
             data-testid={dataTestID + '-show-section-button'}
             className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setshowSection(true)}
+            onClick={(e) => setShowSection(true)}
           >
             Show
           </Button>

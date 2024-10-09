@@ -10,6 +10,7 @@ import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import SectionalTitleBar from './SectionalTitleBar';
+import { Section } from '../enum/Section.enum';
 
 
 interface Props {
@@ -103,9 +104,12 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
         }
       }
     `}</style>
+
       <div className='card-header'>
-        <SectionalTitleBar dataTestID={Constants.id_test_comparator} setshowSection={setShowTestCompare} showSection={showTestCompare}
-          title={Constants.title_test_comparator} />
+        <SectionalTitleBar
+          section={Section.TEST_COMPARE}
+          setShowSection={setShowTestCompare}
+          showSection={showTestCompare} />
       </div>
 
       {showTestCompare ? (

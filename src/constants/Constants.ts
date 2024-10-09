@@ -25,6 +25,15 @@ export class Constants {
         [Section.TEST_COMPARE, Constants.id_test_comparator],
     ]);
 
+    public static readonly sectionTitles: Map<Section, string> = new Map([
+        [Section.REPORTING_PERIOD, Constants.title_reportingPeriod],
+        [Section.KNOWLEDGE_REPO, Constants.title_knowledge_repo],
+        [Section.DATA_REPO, Constants.title_data_repo],
+        [Section.MEASURE_EVAL, Constants.title_measure_evaluation],
+        [Section.REC_SYS, Constants.title_receiving_system],
+        [Section.TEST_COMPARE, Constants.title_test_comparator],
+    ]);
+
     public static readonly operationOutcomeResourceType = 'OperationOutcome';
     public static readonly upArrow = '↑';
     public static readonly preFetchMessage = 'Fetching data from:\n\r';

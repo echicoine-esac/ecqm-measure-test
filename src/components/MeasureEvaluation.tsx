@@ -7,6 +7,7 @@ import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
 import ServerDropdown from './ServerDropdown';
+import { Section } from '../enum/Section.enum';
 
 // Props for MeasureEvaluation
 interface Props {
@@ -69,8 +70,12 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID={Constants.id_measure_evaluation} setshowSection={setShowMeasureEvaluation} showSection={showMeasureEvaluation}
-          title={Constants.title_measure_evaluation} />
+
+        <SectionalTitleBar
+          section={Section.MEASURE_EVAL}
+          setShowSection={setShowMeasureEvaluation}
+          showSection={showMeasureEvaluation} />
+          
       </div>
       {showMeasureEvaluation ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>

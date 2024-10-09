@@ -6,6 +6,7 @@ import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
 import { Constants } from '../constants/Constants';
 import ServerDropdown from './ServerDropdown';
+import { Section } from '../enum/Section.enum';
 
 // Props for KnowledgeRepository
 interface Props {
@@ -32,8 +33,14 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID={Constants.id_knowledge_repo} setshowSection={setShowKnowledgeRepo} showSection={showKnowledgeRepo}
-          title={Constants.title_knowledge_repo} selectedSubjectTitling='Selected Measure' selectedSubject={selectedMeasure} />
+
+        <SectionalTitleBar
+          section={Section.KNOWLEDGE_REPO}
+          setShowSection={setShowKnowledgeRepo}
+          showSection={showKnowledgeRepo}
+          selectedSubjectTitling='Selected Measure'
+          selectedSubject={selectedMeasure} />
+
       </div>
       {showKnowledgeRepo ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>

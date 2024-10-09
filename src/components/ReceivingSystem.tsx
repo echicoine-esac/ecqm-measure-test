@@ -5,6 +5,7 @@ import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
 import { Constants } from '../constants/Constants';
 import ServerDropdown from './ServerDropdown';
+import { Section } from '../enum/Section.enum';
 
 // Props for ReceivingSystem
 interface Props {
@@ -47,8 +48,12 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID={Constants.id_receiving_system} setshowSection={setShowReceiving} showSection={showReceiving}
-          title={Constants.title_receiving_system} />
+
+        <SectionalTitleBar
+          section={Section.REC_SYS}
+          setShowSection={setShowReceiving}
+          showSection={showReceiving} />
+
       </div>
       {showReceiving ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>
@@ -58,7 +63,7 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
             </div>
           </div>
           <div className='row'>
-            
+
             <ServerDropdown
               dataTestID={Constants.id_receiving_system}
               loading={loading}

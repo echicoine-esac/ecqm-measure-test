@@ -8,6 +8,7 @@ import { Server } from '../models/Server';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import SectionalTitleBar from './SectionalTitleBar';
 import ServerDropdown from './ServerDropdown';
+import { Section } from '../enum/Section.enum';
 
 interface Props {
   showDataRepo: boolean;
@@ -102,9 +103,13 @@ const DataRepository: React.FC<Props> = ({
   return (
     <div className='card'>
       <div className='card-header'>
-        <SectionalTitleBar dataTestID={Constants.id_data_repo} setshowSection={setShowDataRepo} showSection={showDataRepo}
-          title={Constants.title_data_repo}
-          selectedSubjectTitling='Subject' selectedSubject={selectedSubject} />
+        
+        <SectionalTitleBar section={Section.DATA_REPO}
+          setShowSection={setShowDataRepo}
+          showSection={showDataRepo}
+          selectedSubjectTitling='Subject'
+          selectedSubject={selectedSubject} />
+
       </div>
       {showDataRepo ? (
         <div className='card-body' style={{ transition: 'all .1s' }}>
