@@ -1,8 +1,7 @@
 import { Constants } from '../constants/Constants';
-import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
+import { OutcomeTracker } from '../models/OutcomeTracker';
 import { Patient } from '../models/Patient';
 import { PatientGroup } from '../models/PatientGroup';
-import { GroupElement } from '../models/Scoring';
 import { Server } from '../models/Server';
 import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { StringUtils } from '../utils/StringUtils';
@@ -97,7 +96,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any): OutcomeTracker {
-        const measureGroups = Array.isArray(data?.group) ? data.group : undefined;
+        const measureGroups = data?.group && Array.isArray(data?.group) ? data.group : undefined;
         return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Measure Evaluation', this.selectedMeasureEvaluationServer?.baseUrl, measureGroups);
     }
 

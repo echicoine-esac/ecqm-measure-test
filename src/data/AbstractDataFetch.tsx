@@ -43,10 +43,24 @@ export abstract class AbstractDataFetch {
         await fetch(this.getUrl(), this.requestOptions)
             .then((response) => {
                 if (response?.status === 504) {
-                    throw new Error('504 (Gateway Timeout)')
+                    throw new Error('504 (Gateway Timeout)');
+                } else if (response?.status >= 200 && response?.status < 300) {
+                    responseStatusText = response?.statusText;
+                } else if (response?.status === 400) {
+                    throw new Error('400 (Bad Request)');
+                } else if (response?.status === 401) {
+                    throw new Error('401 (Unauthorized)');
+                } else if (response?.status === 403) {
+                    throw new Error('403 (Forbidden)');
+                } else if (response?.status === 404) {
+                    throw new Error('404 (Not Found)');
+                } else if (response?.status === 500) {
+                    throw new Error('500 (Internal Server Error)');
+                } else if (response?.status === 503) {
+                    throw new Error('503 (Service Unavailable)');
+                } else {
+                    throw new Error(`${response.status} - Unexpected status encountered`);
                 }
-
-                responseStatusText = response?.statusText;
                 return response.json();
             })
             .then((data) => {

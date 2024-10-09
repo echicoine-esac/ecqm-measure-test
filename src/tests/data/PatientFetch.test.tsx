@@ -64,7 +64,7 @@ test('get patients mock function error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using foo/Patient?_count=200 to retrieve Patients caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using foo/Patient?_count=200 for Patients caused: Error: this is a test');
 
     fetchMock.restore();
 
@@ -82,7 +82,7 @@ test('get patients mock return error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using foo/Patient?_count=200 to retrieve Patients caused: Bad Request');
+    expect(errorCatch).toEqual('Using foo/Patient?_count=200 for Patients caused: Error: 400 (Bad Request)');
 
     fetchMock.restore();
 });

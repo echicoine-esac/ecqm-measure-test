@@ -13,7 +13,6 @@ export class OutcomeTrackerUtils {
      * @returns 
      */
     public static buildOutcomeTracker(jsonData: any, operationName: string, serverUrl: string | undefined, optionalData?: any): OutcomeTracker {
-
         try {
             let jsonString = '';
 

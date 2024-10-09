@@ -410,7 +410,7 @@ test(thisTestFile + ' fail scenario: submit', async () => {
 
     const resultsTextField: HTMLElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.textContent).toEqual('Using http://localhost:8080/1/MeasureReport/ to retrieve Post Measure Report caused: Error: this is a test');
+    expect(resultsTextField.textContent).toEqual('Using http://localhost:8080/1/MeasureReport/ for Post Measure Report caused: Error: this is a test');
   }
 
 });

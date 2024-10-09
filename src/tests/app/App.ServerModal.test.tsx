@@ -7,7 +7,7 @@ import { HashParamUtils } from '../../utils/HashParamUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
 
 const thisTestFile = "Server Modal";
-const RESPONSE_ERROR_BAD_REQUEST = 'Bad Request';
+const RESPONSE_ERROR_BAD_REQUEST = '400 (Bad Request)';
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {
   //clean up any missed mocks

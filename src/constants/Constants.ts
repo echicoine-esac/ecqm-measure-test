@@ -31,7 +31,7 @@ export class Constants {
 
     public static readonly missingProperty = 'Missing required property: {0}';
     public static readonly unreachableURL = 'The target URL is unreachable: '
-    public static readonly fetchError = 'Using {0} to retrieve {1} caused: {2}';
+    public static readonly fetchError = 'Using {0} for {1} caused: {2}';
 
     //Reporting Period
     public static readonly defaultStartDate = '2025-01-01';

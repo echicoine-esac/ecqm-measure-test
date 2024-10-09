@@ -103,7 +103,7 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
                   margin: '0px',
                   display: 'block',
                   whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-all',
+                  wordBreak: 'break-word',
                   color: isError ? 'white' : 'black',
                   fontWeight: isError ? undefined : 'normal',
                   lineHeight: isError ? undefined : '1.3',

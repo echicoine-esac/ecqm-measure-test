@@ -41,7 +41,7 @@ test('get measures mock error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using foo/Measure?_count=200 to retrieve Measures caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using foo/Measure?_count=200 for Measures caused: Error: this is a test');
 
     fetchMock.restore();
 

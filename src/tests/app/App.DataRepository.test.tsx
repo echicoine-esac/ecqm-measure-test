@@ -24,7 +24,7 @@ const useSubject = true;
 
 const thisTestFile = "Data Repository";
 
-const RESPONSE_ERROR_BAD_REQUEST = 'Bad Request';
+const RESPONSE_ERROR_BAD_REQUEST = 'Error: 400 (Bad Request)';
 const mockPatientTotalCountJSON = `{
   "resourceType": "Bundle",
   "id": "604e7395-8850-4a15-a2f2-67a1d334b2d0",

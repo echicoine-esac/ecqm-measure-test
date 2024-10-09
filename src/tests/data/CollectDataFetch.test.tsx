@@ -101,7 +101,7 @@ test('get CollectData mock error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=Patient/selectedPatient&reportType=subject-list to retrieve Collect Data caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=Patient/selectedPatient&reportType=subject-list for Collect Data caused: Error: this is a test');
 
     fetchMock.restore();
 
