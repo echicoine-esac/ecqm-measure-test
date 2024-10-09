@@ -79,6 +79,25 @@ export class Constants {
     public static readonly fetch_measures = 'Measure?_count=200';
     public static readonly fetch_groups = 'Group?type=person';
 
+    //fetch response:
+    public static readonly fetch_STATUS_OK = 200;
+    public static readonly fetch_STATUS_BAD_REQUEST = 400;
+    public static readonly fetch_STATUS_UNAUTHORIZED = 401;
+    public static readonly fetch_STATUS_FORBIDDEN = 403;
+    public static readonly fetch_STATUS_NOT_FOUND = 404;
+    public static readonly fetch_STATUS_INTERNAL_SERVER_ERROR = 500;
+    public static readonly fetch_STATUS_SERVICE_UNAVAILABLE = 503;
+    public static readonly fetch_STATUS_GATEWAY_TIMEOUT = 504;
+
+    public static readonly fetch_GATEWAY_TIMEOUT = Constants.fetch_STATUS_GATEWAY_TIMEOUT + ' (Gateway Timeout)';
+    public static readonly fetch_BAD_REQUEST = Constants.fetch_STATUS_BAD_REQUEST + ' (Bad Request)';
+    public static readonly fetch_UNAUTHORIZED = Constants.fetch_STATUS_UNAUTHORIZED + ' (Unauthorized)';
+    public static readonly fetch_FORBIDDEN = Constants.fetch_STATUS_FORBIDDEN + ' (Forbidden)';
+    public static readonly fetch_NOT_FOUND = Constants.fetch_STATUS_NOT_FOUND + ' (Not Found)';
+    public static readonly fetch_INTERNAL_SERVER_ERROR = Constants.fetch_STATUS_INTERNAL_SERVER_ERROR + ' (Internal Server Error)';
+    public static readonly fetch_SERVICE_UNAVAILABLE = Constants.fetch_STATUS_SERVICE_UNAVAILABLE + ' (Service Unavailable)';
+    public static readonly fetch_UNEXPECTED_STATUS = 'Unexpected status encountered';
+
 
     public static readonly functionNotImplemented = 'This function has not been implemented';
 

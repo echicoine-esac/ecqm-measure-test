@@ -42,26 +42,11 @@ export abstract class AbstractDataFetch {
 
         await fetch(this.getUrl(), this.requestOptions)
             .then((response) => {
-                if (response?.status === 504) {
-                    throw new Error('504 (Gateway Timeout)');
-                } else if (response?.status >= 200 && response?.status < 300) {
-                    responseStatusText = response?.statusText;
-                } else if (response?.status === 400) {
-                    throw new Error('400 (Bad Request)');
-                } else if (response?.status === 401) {
-                    throw new Error('401 (Unauthorized)');
-                } else if (response?.status === 403) {
-                    throw new Error('403 (Forbidden)');
-                } else if (response?.status === 404) {
-                    throw new Error('404 (Not Found)');
-                } else if (response?.status === 500) {
-                    throw new Error('500 (Internal Server Error)');
-                } else if (response?.status === 503) {
-                    throw new Error('503 (Service Unavailable)');
-                } else {
-                    throw new Error(`${response.status} - Unexpected status encountered`);
+                try {
+                    return this.handleResponse(response);
+                } catch (error: any) {
+                    throw new Error(error.message);
                 }
-                return response.json();
             })
             .then((data) => {
                 ret = this.processReturnedData(data);
@@ -83,6 +68,29 @@ export abstract class AbstractDataFetch {
         return ret;
     };
 
+
+
+    protected handleResponse(response: Response): any {
+        if (response?.status >= Constants.fetch_STATUS_OK && response?.status < 300) {
+            return response.json();
+        } else if (response?.status === Constants.fetch_STATUS_GATEWAY_TIMEOUT) {
+            throw new Error(Constants.fetch_GATEWAY_TIMEOUT);
+        } else if (response?.status === Constants.fetch_STATUS_BAD_REQUEST) {
+            throw new Error(Constants.fetch_BAD_REQUEST);
+        } else if (response?.status === Constants.fetch_STATUS_UNAUTHORIZED) {
+            throw new Error(Constants.fetch_UNAUTHORIZED);
+        } else if (response?.status === Constants.fetch_STATUS_FORBIDDEN) {
+            throw new Error(Constants.fetch_FORBIDDEN);
+        } else if (response?.status === Constants.fetch_STATUS_NOT_FOUND) {
+            throw new Error(Constants.fetch_NOT_FOUND);
+        } else if (response?.status === Constants.fetch_STATUS_INTERNAL_SERVER_ERROR) {
+            throw new Error(Constants.fetch_INTERNAL_SERVER_ERROR);
+        } else if (response?.status === Constants.fetch_STATUS_SERVICE_UNAVAILABLE) {
+            throw new Error(Constants.fetch_SERVICE_UNAVAILABLE);
+        } else {
+            throw new Error(response.status + ' - ' + Constants.fetch_UNEXPECTED_STATUS);
+        }
+    }
 }
 
 

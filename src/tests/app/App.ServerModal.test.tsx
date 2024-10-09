@@ -7,7 +7,6 @@ import { HashParamUtils } from '../../utils/HashParamUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
 
 const thisTestFile = "Server Modal";
-const RESPONSE_ERROR_BAD_REQUEST = '400 (Bad Request)';
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {
   //clean up any missed mocks
@@ -135,7 +134,7 @@ test(thisTestFile + ': success scenario: createServer called with data', async (
 test(thisTestFile + ': fail scenario: createServer throws error', async () => {
   const createServerJest = jest.spyOn(ServerUtils, 'createServer').mockImplementation(async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
     clientSecret: string, scope: string) => {
-    throw new Error(RESPONSE_ERROR_BAD_REQUEST);
+    throw new Error(Constants.fetch_BAD_REQUEST);
   });
 
   const baseUrlText = 'server-model-baseurl-text';
@@ -174,7 +173,8 @@ test(thisTestFile + ': fail scenario: createServer throws error', async () => {
   });
 
   const resultsTextField: HTMLElement = screen.getByTestId('results-text');
-  expect(resultsTextField.textContent).toEqual(RESPONSE_ERROR_BAD_REQUEST);
+  expect(resultsTextField.textContent).toEqual(Constants.fetch_BAD_REQUEST);
+
   createServerJest.mockRestore();
 });
 

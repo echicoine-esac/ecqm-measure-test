@@ -20,7 +20,7 @@ import jsonTestPatientsData from '../resources/fetchmock-patients.json';
 
 const thisTestFile = "Knowledge Repository";
 
-const RESPONSE_ERROR_BAD_REQUEST = 'Error: 400 (Bad Request)';
+const RESPONSE_ERROR_BAD_REQUEST = 'Error: ' + Constants.fetch_BAD_REQUEST;
 const mockPatientTotalCountJSON = `{
   "resourceType": "Bundle",
   "id": "604e7395-8850-4a15-a2f2-67a1d334b2d0",
