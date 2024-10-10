@@ -753,7 +753,7 @@ const App: React.FC = () => {
       <br />
 
 
-      {/* Authorized servers  */}
+      {/* Authorized servers section used in testing and tracking of multiple oauth servers
       {OAuthHandler.cachedAuthenticationByServer.size > 0 &&
         Array.from(OAuthHandler.cachedAuthenticationByServer.values()).some(value => value.accessCode) && (
 
@@ -792,7 +792,7 @@ const App: React.FC = () => {
             </div>
 
           </div>
-        )}
+        )} */}
 
 
       {/* Show All / Hide All  */}
