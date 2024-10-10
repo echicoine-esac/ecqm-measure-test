@@ -11,7 +11,7 @@ import { PatientFetch } from '../../data/PatientFetch';
 import { Measure } from '../../models/Measure';
 import { Patient } from '../../models/Patient';
 import { Server } from '../../models/Server';
-import { HashParamUtils } from '../../utils/HashParamUtils';
+
 import { ServerUtils } from '../../utils/ServerUtils';
 import { StringUtils } from '../../utils/StringUtils';
 import jsonTestCollectDataData from '../resources/fetchmock-data-repo.json';
@@ -56,9 +56,6 @@ beforeEach(() => {
     return Constants.serverTestData;
   });
 
-  //clear out old accessCode, generateStateCode, and stateCode values
-  HashParamUtils.clearCachedValues();
-
   //reset the selected knowledge repo stored in sessionStorage
   sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
 
@@ -90,13 +87,13 @@ test(thisTestFile + ': renders properly', async () => {
   fetchMock.mock(dataServers[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
 
   await act(async () => {
-    const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
+    const patientFetch = await PatientFetch.createInstance(dataServers[0]);
     const mockJsonPatientsData = jsonTestPatientsData;
     fetchMock.once(patientFetch.getUrl(),
       JSON.stringify(mockJsonPatientsData)
       , { method: 'GET' });
 
-    const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+    const groupFetch = new GroupFetch(dataServers[0]);
 
     const mockJsonGroupData = jsonTestGroupData;
     fetchMock.once(groupFetch.getUrl(),
@@ -152,13 +149,13 @@ test(thisTestFile + ': success scenario: Collect Data', async () => {
 
   //select server, mock list should return:
   await act(async () => {
-    const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
+    const patientFetch = await PatientFetch.createInstance(dataServers[0]);
     const mockJsonPatientData = jsonTestPatientsData;
     fetchMock.once(patientFetch.getUrl(),
       JSON.stringify(mockJsonPatientData)
       , { method: 'GET' });
 
-    const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+    const groupFetch = new GroupFetch(dataServers[0]);
 
     const mockJsonGroupData = jsonTestGroupData;
     fetchMock.once(groupFetch.getUrl(),
@@ -170,7 +167,7 @@ test(thisTestFile + ': success scenario: Collect Data', async () => {
   fetchMock.restore();
 
   //mock measure list server selection will return 
-  const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+  const measureFetch = new MeasureFetch(dataServers[0]);
   const mockJsonMeasureData = jsonTestMeasureData;
   fetchMock.once(measureFetch.getUrl(),
     JSON.stringify(mockJsonMeasureData)
@@ -245,14 +242,14 @@ test(thisTestFile + ': fail scenario: data repository', async () => {
 
   //select server, mock list should return:
   await act(async () => {
-    const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
+    const patientFetch = await PatientFetch.createInstance(dataServers[0]);
     const mockJsonPatientData = jsonTestPatientsData;
     fetchMock.once(patientFetch.getUrl(),
       JSON.stringify(mockJsonPatientData)
       , { method: 'GET' });
 
 
-    const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+    const groupFetch = new GroupFetch(dataServers[0]);
 
     const mockJsonGroupData = jsonTestGroupData;
     fetchMock.once(groupFetch.getUrl(),
@@ -264,7 +261,7 @@ test(thisTestFile + ': fail scenario: data repository', async () => {
   fetchMock.restore();
 
   //mock measure list server selection will return 
-  const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+  const measureFetch = new MeasureFetch(dataServers[0]);
   const mockJsonMeasureData = jsonTestMeasureData;
   fetchMock.once(measureFetch.getUrl(),
     JSON.stringify(mockJsonMeasureData)
@@ -319,12 +316,12 @@ test(thisTestFile + ': error scenario: Please select a Measure', async () => {
   fireEvent.click(showButton);
 
   fetchMock.mock(dataServers[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
-  const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
+  const patientFetch = await PatientFetch.createInstance(dataServers[0]);
   const mockJsonPatientData = jsonTestPatientsData;
   fetchMock.once(patientFetch.getUrl(),
     JSON.stringify(mockJsonPatientData)
     , { method: 'GET' });
-  const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+  const groupFetch = new GroupFetch(dataServers[0]);
   const mockJsonGroupData = jsonTestGroupData;
   fetchMock.once(groupFetch.getUrl(),
     JSON.stringify(mockJsonGroupData)
@@ -374,12 +371,12 @@ test(thisTestFile + ': deselecting server', async () => {
 
 //mock measure and patient data
 async function buildMeasureData(url: string): Promise<Measure[]> {
-  const measureFetch = new MeasureFetch(url);
+  const measureFetch = new MeasureFetch(Constants.serverTestData[0]);
   const mockJsonMeasureData = jsonTestMeasureData;
   fetchMock.once(measureFetch.getUrl(),
     JSON.stringify(mockJsonMeasureData)
     , { method: 'GET' });
-  let measureList: Measure[] = (await measureFetch.fetchData('')).operationData;
+  let measureList: Measure[] = (await measureFetch.fetchData()).operationData;
   fetchMock.restore();
   return measureList;
 }
@@ -387,12 +384,12 @@ async function buildMeasureData(url: string): Promise<Measure[]> {
 async function buildPatientData(url: string): Promise<Patient[]> {
   fetchMock.mock(url + 'Patient?_summary=count', mockPatientTotalCountJSON);
 
-  const patientFetch = await PatientFetch.createInstance(url);
+  const patientFetch = await PatientFetch.createInstance(Constants.serverTestData[0]);
   const mockJsonPatientData = jsonTestPatientsData;
   fetchMock.once(patientFetch.getUrl(),
     JSON.stringify(mockJsonPatientData)
     , { method: 'GET' });
-  let patientList: Patient[] = (await patientFetch.fetchData('')).operationData;
+  let patientList: Patient[] = (await patientFetch.fetchData()).operationData;
   fetchMock.restore();
   return patientList;
 }

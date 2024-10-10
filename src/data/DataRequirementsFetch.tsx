@@ -17,7 +17,8 @@ export class DataRequirementsFetch extends AbstractDataFetch {
         startDate: string,
         endDate: string) {
 
-        super();
+        super(selectedKnowledgeRepo);
+
         this.type = FetchType.DATA_REQUIREMENTS;
 
         if (!selectedKnowledgeRepo) {
@@ -51,7 +52,7 @@ export class DataRequirementsFetch extends AbstractDataFetch {
         return OutcomeTrackerUtils.buildOutcomeTracker(
             data,
             'Data Requirements',
-            this.selectedKnowledgeRepo?.baseUrl);
+            this.selectedBaseServer);
     }
 
 }

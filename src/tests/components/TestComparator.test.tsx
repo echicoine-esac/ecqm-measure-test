@@ -51,16 +51,13 @@ test(thisTestFile + ': renders properly', async () => {
 
     let patientIdx: number = 0;
 
-    const baseUrl = 'http://fhir/';
-
-    const dataServer: Server = Constants.serverTestData[0];
 
     let patientList: Array<Patient | undefined> = [];
 
     await act(async () => {
         //Patient total count mock (used in url formation for Patient fetch)
-        fetchMock.mock(baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
-        const patientFetch = await PatientFetch.createInstance(baseUrl);
+        fetchMock.mock(Constants.serverTestData[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
+        const patientFetch = await PatientFetch.createInstance(Constants.serverTestData[0]);
 
         //Patient fetch mock
         const mockJsonPatientsData = jsonTestPatientsData;
@@ -68,15 +65,15 @@ test(thisTestFile + ': renders properly', async () => {
             JSON.stringify(mockJsonPatientsData)
             , { method: 'GET' });
 
-        patientList = (await patientFetch.fetchData('')).operationData
+        patientList = (await patientFetch.fetchData()).operationData
 
         //Measure list mock
-        const measureFetch = new MeasureFetch(baseUrl);
+        const measureFetch = new MeasureFetch(Constants.serverTestData[0]);
         const mockJsonMeasureData = jsonTestMeasureData;
         fetchMock.once(measureFetch.getUrl(),
             JSON.stringify(mockJsonMeasureData)
             , { method: 'GET' });
-        let measureList: Measure[] = (await measureFetch.fetchData('')).operationData;
+        let measureList: Measure[] = (await measureFetch.fetchData()).operationData;
 
         let measureIdx: number = 0;
         for (const measureEntry of measureList) {
@@ -94,7 +91,7 @@ test(thisTestFile + ': renders properly', async () => {
         }
 
         //Evaluate Measure mock
-        const evaluateMeasuresFetch = new EvaluateMeasureFetch(dataServer,
+        const evaluateMeasuresFetch = new EvaluateMeasureFetch(Constants.serverTestData[0],
             MEASURE_NAME, periodStart, periodEnd, true, patientList[patientIdx]);
         const mockJsonEvaluateMeasureData = jsonTestEvalMeasure;
         fetchMock.once(evaluateMeasuresFetch.getUrl(),
@@ -104,7 +101,7 @@ test(thisTestFile + ': renders properly', async () => {
 
         //Mock MeasureReport:
         const mockJsonMeasureReportData = jsonTestMeasureReport;
-        const measureReportFetch = new MeasureReportFetch(dataServer,
+        const measureReportFetch = new MeasureReportFetch(Constants.serverTestData[0],
             patientList[patientIdx], measureList[measureIdx].name, periodStart, periodEnd);
         fetchMock.once(measureReportFetch.getUrl(),
             JSON.stringify(mockJsonMeasureReportData)
@@ -113,7 +110,7 @@ test(thisTestFile + ': renders properly', async () => {
 
         //MeasureComparisonManager instance:
         const mcMan: MeasureComparisonManager = new MeasureComparisonManager(patientList[patientIdx],
-            measureList[measureIdx], dataServer, dataServer, periodStart, periodEnd, '');
+            measureList[measureIdx], Constants.serverTestData[0], Constants.serverTestData[0], periodStart, periodEnd);
         await mcMan.fetchGroups();
 
         if (patientList[patientIdx]) {
@@ -130,9 +127,9 @@ test(thisTestFile + ': renders properly', async () => {
     render(<TestingComparator showTestCompare={true} setShowTestCompare={setShowTestCompare}
         items={testComparatorMap} compareTestResults={compareTestResults} loading={loadingFlag}
         startDate={periodStart} endDate={periodEnd}
-        selectedDataRepoServer={dataServer} selectedPatientGroup={undefined}
-        selectedMeasureEvaluationServer={dataServer} selectedMeasure={MEASURE_NAME}
-        selectedKnowledgeRepositoryServer={dataServer} selectedPatient={patientList[patientIdx]} />);
+        selectedDataRepoServer={Constants.serverTestData[0]} selectedPatientGroup={undefined}
+        selectedMeasureEvaluationServer={Constants.serverTestData[0]} selectedMeasure={MEASURE_NAME}
+        selectedKnowledgeRepositoryServer={Constants.serverTestData[0]} selectedPatient={patientList[patientIdx]} />);
 
     // const groupID1 = '2D0D08DB-219D-4C41-AB53-DE21F006D602';
 

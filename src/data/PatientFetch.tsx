@@ -1,6 +1,7 @@
 import { Constants } from '../constants/Constants';
 import { BundleEntry } from '../models/BundleEntry';
 import { Patient } from '../models/Patient';
+import { Server } from '../models/Server';
 import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import { StringUtils } from '../utils/StringUtils';
@@ -10,40 +11,38 @@ import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 export class PatientFetch extends AbstractDataFetch {
 
     type: FetchType;
-    url: string = '';
 
     totalPatients: number = 5;
 
-    private constructor(url: string) {
-        super();
+    private constructor(dataRepositoryServer: Server) {
+        super(dataRepositoryServer);
 
-        if (!url || url === '') {
-            throw new Error(StringUtils.format(Constants.missingProperty, 'url'));
+        if (!dataRepositoryServer?.baseUrl || dataRepositoryServer?.baseUrl === '') {
+            throw new Error(StringUtils.format(Constants.missingProperty, 'dataRepositoryServer'));
         }
 
         this.type = FetchType.PATIENT;
-        this.url = url;
     }
 
     // Use this static method to create an instance and wait for totalPatients to be populated
-    public static async createInstance(url: string): Promise<PatientFetch> {
-        const instance = new PatientFetch(url);
-        await instance.initializeTotalPatients(url);
+    public static async createInstance(server: Server): Promise<PatientFetch> {
+        const instance = new PatientFetch(server);
+        await instance.initializeTotalPatients(server);
         return instance;
     }
 
-    private async initializeTotalPatients(url: string): Promise<void> {
+    private async initializeTotalPatients(server: Server): Promise<void> {
         // Wait for the fetch call to finish
-        this.totalPatients = await this.getPatientTotalCount(url);
+        this.totalPatients = await this.getPatientTotalCount(server);
     }
 
     public getUrl(): string {
-        return this.url + Constants.fetch_patients + this.totalPatients;
+        return this.selectedBaseServer?.baseUrl + Constants.fetch_patients + this.totalPatients;
     }
 
-    private async getPatientTotalCount(url: string): Promise<number> {
+    private async getPatientTotalCount(server: Server): Promise<number> {
         let patientCount = 0;
-        await fetch(url + Constants.fetch_patientTotalCount, this.requestOptions)
+        await fetch(server.baseUrl + Constants.fetch_patientTotalCount, this.requestOptions)
             .then((response) => {
                 return response.json();
             })
@@ -75,7 +74,7 @@ export class PatientFetch extends AbstractDataFetch {
             });
 
         }
-        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Patient Fetch', this.url,
+        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Patient Fetch', this.selectedBaseServer,
             patients
         );
     }

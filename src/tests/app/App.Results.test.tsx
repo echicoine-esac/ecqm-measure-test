@@ -6,7 +6,7 @@ import { Constants } from '../../constants/Constants';
 import { GroupFetch } from '../../data/GroupFetch';
 import { PatientFetch } from '../../data/PatientFetch';
 import { Server } from '../../models/Server';
-import { HashParamUtils } from '../../utils/HashParamUtils';
+
 import { ServerUtils } from '../../utils/ServerUtils';
 import jsonTestGroupData from '../resources/fetchmock-group.json';
 import jsonTestPatientsData from '../resources/fetchmock-patients.json';
@@ -44,8 +44,7 @@ beforeEach(() => {
     return Constants.serverTestData;
   });
 
-  //clear out old accessCode, generateStateCode, and stateCode values
-  HashParamUtils.clearCachedValues();
+
 
   //reset the selected knowledge repo stored in sessionStorage
   sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
@@ -71,12 +70,12 @@ test(thisTestFile + ': scenario: Please select a Measure message renders the res
   fireEvent.click(showButton);
 
   fetchMock.mock(dataServers[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
-  const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
+  const patientFetch = await PatientFetch.createInstance(dataServers[0]);
   const mockJsonPatientData = jsonTestPatientsData;
   fetchMock.once(patientFetch.getUrl(),
     JSON.stringify(mockJsonPatientData)
     , { method: 'GET' });
-  const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+  const groupFetch = new GroupFetch(dataServers[0]);
   const mockJsonGroupData = jsonTestGroupData;
   fetchMock.once(groupFetch.getUrl(),
     JSON.stringify(mockJsonGroupData)

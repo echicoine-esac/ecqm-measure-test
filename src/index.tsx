@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import App from './App';
+import './index.css';
+import OAuthRedirectLandingPage from './oauth/OAuthRedirectLandingPage';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(
@@ -9,7 +11,12 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/r" element={<OAuthRedirectLandingPage />} />
+      </Routes>
+    </Router>
   </React.StrictMode>
 );
 

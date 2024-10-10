@@ -4,17 +4,18 @@ import jsonTestOperationOutcomeFatal from '../resources/fetchmock-operation-outc
 import jsonTestOperationOutcomeWarn from '../resources/fetchmock-operation-outcome-warn.json';
 import jsonTestOperationOutcomeInfo from '../resources/fetchmock-operation-outcome-info.json';
 import jsonTestOperationOutcomeError from '../resources/fetchmock-operation-outcome-error.json';
+import { Constants } from '../../constants/Constants';
 
-const url = 'foo/';
+const url = Constants.serverTestData[0].baseUrl;
 
 test('OutcomeTracker builds correctly with jsonData', () => {
     const testOutcomeTracker = OutcomeTrackerUtils.buildOutcomeTracker(
         jsonTestCollectDataData,
         'OutcomeTracker Test with JsonData',
-        url);
+        Constants.serverTestData[0]);
 
     expect(testOutcomeTracker.jsonFormattedString).toEqual(JSON.stringify(jsonTestCollectDataData, undefined, 2))
-    expect(testOutcomeTracker.outcomeMessage).toEqual('OutcomeTracker Test with JsonData with foo/ completed successfully:');
+    expect(testOutcomeTracker.outcomeMessage).toEqual('OutcomeTracker Test with JsonData with ' + url + ' completed successfully:');
 })
 
 test('OutcomeTracker builds correctly with jsonString', () => {
@@ -23,17 +24,17 @@ test('OutcomeTracker builds correctly with jsonString', () => {
     const testOutcomeTracker = OutcomeTrackerUtils.buildOutcomeTracker(
         jsonString,
         'OutcomeTracker Test with JsonString',
-        url);
+        Constants.serverTestData[0]);
 
     expect(testOutcomeTracker.jsonRawData).toEqual(JSON.parse(jsonString))
-    expect(testOutcomeTracker.outcomeMessage).toEqual('OutcomeTracker Test with JsonString with foo/ completed successfully:');
+    expect(testOutcomeTracker.outcomeMessage).toEqual('OutcomeTracker Test with JsonString with ' + url + ' completed successfully:');
 })
 
 test('OutcomeTracker fatal message', () => {
     runOutcomeTrackerTest(
         jsonTestOperationOutcomeFatal,
         'OutcomeTracker Test Fatal',
-        'OutcomeTracker Test Fatal with foo/ returned with error(s):'
+        'OutcomeTracker Test Fatal with ' + url + ' returned with error(s):'
     );
 });
 
@@ -41,7 +42,7 @@ test('OutcomeTracker warn message', () => {
     runOutcomeTrackerTest(
         jsonTestOperationOutcomeWarn,
         'OutcomeTracker Test Warn',
-        'OutcomeTracker Test Warn with foo/ had warning(s):'
+        'OutcomeTracker Test Warn with ' + url + ' had warning(s):'
     );
 });
 
@@ -49,7 +50,7 @@ test('OutcomeTracker info message', () => {
     runOutcomeTrackerTest(
         jsonTestOperationOutcomeInfo,
         'OutcomeTracker Test Info',
-        'OutcomeTracker Test Info with foo/:'
+        'OutcomeTracker Test Info with ' + url + ':'
     );
 });
 
@@ -57,7 +58,7 @@ test('OutcomeTracker error message', () => {
     runOutcomeTrackerTest(
         jsonTestOperationOutcomeError,
         'OutcomeTracker Test Error',
-        'OutcomeTracker Test Error with foo/ returned with error(s):'
+        'OutcomeTracker Test Error with ' + url + ' returned with error(s):'
     );
 });
 
@@ -69,7 +70,7 @@ const runOutcomeTrackerTest = (
     const testOutcomeTracker = OutcomeTrackerUtils.buildOutcomeTracker(
         jsonOutcome,
         operationName,
-        url
+        Constants.serverTestData[0]
     );
 
     expect(testOutcomeTracker.jsonFormattedString).toEqual(JSON.stringify(jsonOutcome, undefined, 2));

@@ -1,9 +1,9 @@
 import { Constants } from '../constants/Constants';
-import { StringUtils } from '../utils/StringUtils';
-import { Server } from '../models/Server';
-import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
-import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
+import { Server } from '../models/Server';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
+import { StringUtils } from '../utils/StringUtils';
+import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
 export class PostMeasureReportFetch extends AbstractDataFetch {
     type: FetchType;
@@ -14,7 +14,8 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
     constructor(selectedReceiving: Server | undefined,
         measureReport: string) {
 
-        super();
+        super(selectedReceiving);
+
         this.type = FetchType.POST_MEASURE;
 
         if (!selectedReceiving || selectedReceiving.baseUrl === '') {
@@ -24,6 +25,8 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
         if (!measureReport || measureReport === '') {
             throw new Error(StringUtils.format(Constants.missingProperty, 'measureReport'));
         }
+
+        this.selectedBaseServer = selectedReceiving;
 
         this.selectedReceiving = selectedReceiving;
         this.measureReport = measureReport;
@@ -37,15 +40,23 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
         return OutcomeTrackerUtils.buildOutcomeTracker(
             data,
             'Post Measure Report',
-            this.selectedReceiving?.baseUrl);
+            this.selectedBaseServer);
     }
 
-    submitData = async (token: string): Promise<OutcomeTracker> => {
+    submitData = async (): Promise<OutcomeTracker> => {
+
+        //handle the OAuth flow if the selectedBaseServer has an authUrl:
+        if (this.selectedBaseServer?.authUrl && this.selectedBaseServer?.authUrl.length > 0) {
+            if (!await this.handleOAuth(this.selectedBaseServer)) {
+                throw new Error('Authorization process for ' + this.selectedBaseServer.baseUrl + ' did not complete successfully.');
+            }
+        }
+
         const requestOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/fhir+json',
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${this.getAccessToken()}`
             },
             body: this.measureReport
         };

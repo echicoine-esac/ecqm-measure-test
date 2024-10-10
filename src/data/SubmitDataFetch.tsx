@@ -17,7 +17,8 @@ export class SubmitDataFetch extends AbstractDataFetch {
         collectedData: string) {
 
 
-        super();
+        super(selectedMeasureEvaluation);
+
         this.type = FetchType.SUBMIT_DATA;
 
         if (!selectedMeasureEvaluation || selectedMeasureEvaluation.baseUrl === '') {
@@ -45,15 +46,23 @@ export class SubmitDataFetch extends AbstractDataFetch {
         return OutcomeTrackerUtils.buildOutcomeTracker(
             data,
             'Submit Data',
-            this.selectedMeasureEvaluation?.baseUrl);
+            this.selectedBaseServer);
     }
 
-    submitData = async (token: string): Promise<OutcomeTracker> => {
+    submitData = async (): Promise<OutcomeTracker> => {
+
+        //handle the OAuth flow if the selectedBaseServer has an authUrl:
+        if (this.selectedBaseServer?.authUrl && this.selectedBaseServer?.authUrl.length > 0) {
+            if (!await this.handleOAuth(this.selectedBaseServer)) {
+                throw new Error('Authorization process for ' + this.selectedBaseServer.baseUrl + ' did not complete successfully.');
+            }
+        }
+
         const requestOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/fhir+json',
-                'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${this.getAccessToken()}`,
             },
             body: this.collectedData
         };

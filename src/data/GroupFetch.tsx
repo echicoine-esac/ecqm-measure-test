@@ -1,6 +1,7 @@
 import { Constants } from '../constants/Constants';
 import { OutcomeTracker } from '../models/OutcomeTracker';
 import { PatientGroup } from '../models/PatientGroup';
+import { Server } from '../models/Server';
 import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
@@ -9,27 +10,25 @@ import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 export class GroupFetch extends AbstractDataFetch {
 
     type: FetchType;
-    url: string = '';
 
     UNKNOWN_MEASURE: string = '#unknown_measure#';
 
-    constructor(url: string) {
-        super();
+    constructor(server: Server) {
+        super(server);
 
-        if (!url || url === '') {
-            throw new Error(StringUtils.format(Constants.missingProperty, 'url'));
+        if (!server || server.baseUrl === '') {
+            throw new Error(StringUtils.format(Constants.missingProperty, 'server.baseUrl'));
         }
 
         this.type = FetchType.GROUP;
-        this.url = url;
     }
 
     public getUrl(): string {
-        return this.url + Constants.fetch_groups;
+        return this.selectedBaseServer?.baseUrl + Constants.fetch_groups;
     }
 
     protected processReturnedData(data: any): OutcomeTracker {
-        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Group Data', this.url, this.buildGroupMap(data.entry));
+        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Group Data', this.selectedBaseServer, this.buildGroupMap(data.entry));
     }
 
     private buildGroupMap(entries: any): Map<string, PatientGroup> {

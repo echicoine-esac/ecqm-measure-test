@@ -107,7 +107,10 @@ export class Constants {
     public static readonly fetch_SERVICE_UNAVAILABLE = Constants.fetch_STATUS_SERVICE_UNAVAILABLE + ' (Service Unavailable)';
     public static readonly fetch_UNEXPECTED_STATUS = 'Unexpected status encountered';
 
+  public static readonly oauth_storedIdentifier = 'Unexpected status encountered';
 
+
+    
     public static readonly functionNotImplemented = 'This function has not been implemented';
 
  

@@ -29,11 +29,12 @@ import { PopulationScoring } from './models/PopulationScoring';
 import { GroupElement } from './models/Scoring';
 import { Server } from './models/Server';
 import { OAuthHandler } from './oauth/OAuthHandler';
-import { HashParamUtils } from './utils/HashParamUtils';
+
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
 import { Section } from './enum/Section.enum';
+import { StringUtils } from './utils/StringUtils';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -152,10 +153,6 @@ const App: React.FC = () => {
   const [collectedData, setCollectedData] = useState<string>('');
   const [measureReport, setMeasureReport] = useState<string>('');
 
-
-  // Handle OAuth redirect
-  const [accessToken, setAccessToken] = useState<string>('');
-
   const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonManager>>(new Map());
 
   const [showScrollToTopButton, setShowScrollToTopButton] = useState(false);
@@ -179,6 +176,7 @@ const App: React.FC = () => {
     };
     // eslint-disable-next-line 
   }, [showScrollToTopButton]);
+
 
   const setSectionalResults = ((message: string, section: Section) => {
     switch (section) {
@@ -207,44 +205,14 @@ const App: React.FC = () => {
     }
   });
 
-  const resumeOAuthFlow = async (previouslySelectedKnowledgeRepo: string) => {
-    //remove the entry:
-    sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
-
-    //ensure generatedStateCode
-    HashParamUtils.buildHashParams();
-
-    //attempt to set the knowledge repo and fetchMeasures (resume flow)
-    let sessionString;
-    try {
-      sessionString = JSON.parse(previouslySelectedKnowledgeRepo);
-      setSelectedKnowledgeRepo(sessionString);
-      // Call fetchMeasures again to finish the workflow
-      await fetchMeasures(sessionString);
-    } catch (error: any) {
-      //sessionString likely 'undefined' 
-      HashParamUtils.removeCodeParam();
-      return;
-    }
-
-    // Remove the code from the URL
-    HashParamUtils.removeCodeParam();
-
-  }
 
   useEffect(() => {
     // Only call to get the servers when the list is empty
     if (servers.length === 0) {
       initializeServers();
     }
-
-    // Get selected oauth server from session  (likely redirected back to here if selectedKnowledgeRepo has value)
-    let previouslySelectedKnowledgeRepo = sessionStorage.getItem('selectedKnowledgeRepo');
-    if (previouslySelectedKnowledgeRepo && previouslySelectedKnowledgeRepo !== 'undefined' && previouslySelectedKnowledgeRepo?.length > 0) {
-      resumeOAuthFlow(previouslySelectedKnowledgeRepo);
-    }
-    // eslint-disable-next-line 
   }, []);
+
 
   useEffect(() => {
     // When a server is selected store it in the session
@@ -253,6 +221,7 @@ const App: React.FC = () => {
       //console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
     }
   }, [selectedKnowledgeRepo]);
+
 
   const initializeServers = async () => {
     setServers(await ServerUtils.getServerList());
@@ -290,17 +259,11 @@ const App: React.FC = () => {
   // Queries the selected server for the list of measures it has
   const fetchMeasures = async (knowledgeRepo: Server) => {
     resetResults();
-
-    if (knowledgeRepo !== selectedKnowledgeRepo) {
-      setMeasures([]);
-      setSelectedMeasure('');
-    }
-
     setLoading(true);
-    if (!knowledgeRepo?.hasOwnProperty('id')) {
+
+    if (!knowledgeRepo?.baseUrl) {
       setSelectedKnowledgeRepo(knowledgeRepo);
       setShowPopulations(false);
-      HashParamUtils.clearCachedValues();
       setLoading(false);
       setMeasures([]);
       setSelectedMeasure('');
@@ -310,26 +273,8 @@ const App: React.FC = () => {
     setSelectedKnowledgeRepo(knowledgeRepo);
     setShowPopulations(false);
 
-    if (HashParamUtils.getAccessCode() && HashParamUtils.getAccessCode() !== '') {
-      try {
-        setAccessToken(await OAuthHandler.getAccessToken(HashParamUtils.getAccessCode(), knowledgeRepo));
-      } catch (error: any) {
-        setAccessToken('');
-      }
-
-    } else if (knowledgeRepo?.authUrl) {
-      if (knowledgeRepo?.authUrl !== '') {
-        //initiate authentication sequence 
-        try {
-          await OAuthHandler.getAccessCode(knowledgeRepo);
-        } catch (error: any) {
-          setLoading(false);
-          return;
-        }
-      }
-    }
     try {
-      setMeasures((await new MeasureFetch(knowledgeRepo.baseUrl).fetchData(accessToken, setResultsCaller)).operationData);
+      setMeasures((await new MeasureFetch(knowledgeRepo).fetchData(setResultsCaller)).operationData);
     } catch (error: any) {
       setSectionalResults(error.message, Section.KNOWLEDGE_REPO);
     }
@@ -338,8 +283,8 @@ const App: React.FC = () => {
 
   // Function for retrieving the patients from the selected server
   const fetchPatients = async (dataRepo: Server) => {
-    setLoading(true);
     resetResults();
+    setLoading(true);
 
     if (!dataRepo?.baseUrl) {
       setLoading(false);
@@ -356,14 +301,14 @@ const App: React.FC = () => {
 
     try {
 
-      const groupFetch = new GroupFetch(dataRepo.baseUrl);
+      const groupFetch = new GroupFetch(dataRepo);
 
-      let groupsMap: Map<string, PatientGroup> = (await groupFetch.fetchData(accessToken)).operationData;
+      let groupsMap: Map<string, PatientGroup> = (await groupFetch.fetchData()).operationData;
 
       setPatientGroups(groupsMap);
 
-      const patientFetch = await PatientFetch.createInstance(dataRepo.baseUrl);
-      setPatients((await patientFetch.fetchData(accessToken)).operationData);
+      const patientFetch = await PatientFetch.createInstance(dataRepo);
+      setPatients((await patientFetch.fetchData()).operationData);
 
 
     } catch (error: any) {
@@ -416,7 +361,7 @@ const App: React.FC = () => {
     setLoading(true);
 
     try {
-      let evaluateMeasureOutcomeTracker: OutcomeTracker = await evaluateMeasureFetch.fetchData(accessToken, setSectionalResults, Section.MEASURE_EVAL);
+      let evaluateMeasureOutcomeTracker: OutcomeTracker = await evaluateMeasureFetch.fetchData(setSectionalResults, Section.MEASURE_EVAL);
 
       // Iterate through the population names to set the state
       const measureGroups: GroupElement[] = evaluateMeasureOutcomeTracker.operationData;
@@ -491,7 +436,7 @@ const App: React.FC = () => {
       selectedMeasure, startDate, endDate)
 
     try {
-      setResultsCaller(await dataRequirementsFetch.fetchData(accessToken, setSectionalResults, Section.KNOWLEDGE_REPO));
+      setResultsCaller(await dataRequirementsFetch.fetchData(setSectionalResults, Section.KNOWLEDGE_REPO));
       setLoading(false);
     } catch (error: any) {
       setSectionalResults(error.message, Section.KNOWLEDGE_REPO);
@@ -533,7 +478,7 @@ const App: React.FC = () => {
 
     // Call the FHIR server to collect the data
     try {
-      const collectDataOutcomeTracker = await collectDataFetch.fetchData(accessToken, setSectionalResults, Section.DATA_REPO);
+      const collectDataOutcomeTracker = await collectDataFetch.fetchData(setSectionalResults, Section.DATA_REPO);
 
       if (collectDataOutcomeTracker.jsonFormattedString) {
         setCollectedData(collectDataOutcomeTracker.jsonFormattedString);
@@ -576,7 +521,7 @@ const App: React.FC = () => {
 
     try {
       setResultsCaller(await new SubmitDataFetch(selectedMeasureEvaluationServer,
-        selectedMeasure, collectedData).submitData(accessToken));
+        selectedMeasure, collectedData).submitData());
 
       setLoading(false);
     } catch (error: any) {
@@ -606,7 +551,7 @@ const App: React.FC = () => {
 
     try {
       setResultsCaller(await new PostMeasureReportFetch(selectedReceiving,
-        measureReport).submitData(accessToken));
+        measureReport).submitData());
       setLoading(false);
     } catch (error: any) {
       setSectionalResults(error.message, Section.REC_SYS);
@@ -683,8 +628,7 @@ const App: React.FC = () => {
           measureObj,
           selectedMeasureEvaluationServer,
           selectedDataRepo,
-          startDate, endDate,
-          accessToken);
+          startDate, endDate);
 
         await mcMan.fetchGroups();
 
@@ -807,6 +751,48 @@ const App: React.FC = () => {
       <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
         setUsername={setUsername} password={password} setPassword={setPassword} />
       <br />
+
+
+      {/* Authorized servers  */}
+      {OAuthHandler.cachedAuthenticationByServer.size > 0 &&
+        Array.from(OAuthHandler.cachedAuthenticationByServer.values()).some(value => value.accessCode) && (
+
+
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'fixed',
+            top: '10px',
+            left: '15px',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 100,
+            width: 'auto',
+            maxWidth: '200px',
+            fontSize: '10pt',
+            background: '#F7F7F7',
+            borderRadius: '4px',
+            height: 'auto',
+            border: '1px solid lightgrey',
+            lineHeight: '1.75',
+            padding: '5px'
+          }}>
+
+
+            <h6>Authorized:</h6>
+            <div style={{ marginLeft: '0px', maxWidth: '155px', wordBreak: 'break-all', fontWeight: 'normal' }}>
+              {Array.from(OAuthHandler.cachedAuthenticationByServer).map(([key, value]) => (
+                <div key={key}>
+                  {value.accessCode &&
+                    <span>{StringUtils.shrinkUrlDisplay(key)}</span>
+                  }
+                </div>
+
+              ))}
+            </div>
+
+          </div>
+        )}
 
 
       {/* Show All / Hide All  */}

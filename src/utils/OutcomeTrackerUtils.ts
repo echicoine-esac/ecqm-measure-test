@@ -1,6 +1,7 @@
 import { Constants } from '../constants/Constants';
 import { OperationOutcome } from '../models/OperationOutcome';
 import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
+import { Server } from '../models/Server';
 
 export class OutcomeTrackerUtils {
     /**
@@ -12,7 +13,10 @@ export class OutcomeTrackerUtils {
      * @param optionalData 
      * @returns 
      */
-    public static buildOutcomeTracker(jsonData: any, operationName: string, serverUrl: string | undefined, optionalData?: any): OutcomeTracker {
+    public static buildOutcomeTracker(jsonData: any, operationName: string, server: Server | undefined, optionalData?: any): OutcomeTracker {
+
+        const serverUrl = server?.baseUrl;
+
         try {
             let jsonString = '';
 

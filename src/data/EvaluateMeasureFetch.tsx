@@ -27,7 +27,8 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         patientGroup?: PatientGroup | undefined,
     ) {
 
-        super();
+        super(selectedMeasureEvaluationServer);
+
         this.type = FetchType.EVALUATE_MEASURE;
 
         if (!selectedMeasureEvaluationServer || selectedMeasureEvaluationServer.baseUrl === '') {
@@ -97,7 +98,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
 
     protected processReturnedData(data: any): OutcomeTracker {
         const measureGroups = data?.group && Array.isArray(data?.group) ? data.group : undefined;
-        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Measure Evaluation', this.selectedMeasureEvaluationServer?.baseUrl, measureGroups);
+        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Measure Evaluation', this.selectedBaseServer, measureGroups);
     }
 
 }

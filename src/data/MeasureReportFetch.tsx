@@ -20,7 +20,8 @@ export class MeasureReportFetch extends AbstractDataFetch {
         startDate: string,
         endDate: string) {
 
-        super();
+        super(selectedServer);
+
         this.type = FetchType.MEASURE_REPORT;
 
         if (!selectedServer || selectedServer.baseUrl === '') {
@@ -76,7 +77,7 @@ export class MeasureReportFetch extends AbstractDataFetch {
             return dateCondition;
         });
 
-        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Measure Fetch', this.selectedServer?.baseUrl,
+        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'MeasureReport Fetch', this.selectedBaseServer,
             optionalData
         );
     }

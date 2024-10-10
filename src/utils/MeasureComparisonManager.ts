@@ -39,8 +39,7 @@ export class MeasureComparisonManager {
         selectedMeasureEvaluationServer: Server,
         selectedDataRepoServer: Server,
         startDate: string,
-        endDate: string,
-        accessToken: string
+        endDate: string
     ) {
         this.selectedPatient = selectedPatient;
         this.selectedMeasure = selectedMeasure;
@@ -64,7 +63,7 @@ export class MeasureComparisonManager {
             this.measureReportURL = measureReportFetch.getUrl();
 
             //MeasureReport fetch filters by date manually (period.start/period.end) comes back as entry array
-            this.fetchedMeasureReportGroups = ScoringUtils.extractBundleMeasureReportGroupData((await measureReportFetch.fetchData(this.accessToken)).operationData);
+            this.fetchedMeasureReportGroups = ScoringUtils.extractBundleMeasureReportGroupData((await measureReportFetch.fetchData()).operationData);
 
 
             const evaluateMeasureFetch = new EvaluateMeasureFetch(this.selectedMeasureEvaluationServer,
@@ -73,7 +72,7 @@ export class MeasureComparisonManager {
             this.evaluatedMeasureURL = evaluateMeasureFetch.getUrl();
 
             //evaluate measure comes back as a single MeasureReport
-            this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonRawData);
+            this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData()).jsonRawData);
 
             this.discrepancyExists = this.compareMeasureGroups();
         } catch (error: any) {

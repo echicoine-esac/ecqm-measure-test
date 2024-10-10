@@ -55,7 +55,7 @@ test('submit data mock', async () => {
         body: Constants.submitPostTestBody,
     });
 
-    const ret: string | undefined = (await submitDataFetch.submitData('')).jsonFormattedString;
+    const ret: string | undefined = (await submitDataFetch.submitData()).jsonFormattedString;
     expect(ret?.length).toEqual(134);
 
     fetchMock.reset();
@@ -69,7 +69,7 @@ test('submit data mock error 400', async () => {
 
     let errorCatch = '';
     try {
-        await submitDataFetch.submitData('')
+        await submitDataFetch.submitData()
     } catch (error: any) {
         errorCatch = error.message;
     }
@@ -88,7 +88,7 @@ test('submit data mock error 500', async () => {
 
     let errorCatch = '';
     try {
-        await submitDataFetch.submitData('')
+        await submitDataFetch.submitData()
     } catch (error: any) {
         errorCatch = error.message;
     }

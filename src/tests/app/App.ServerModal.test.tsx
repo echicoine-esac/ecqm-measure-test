@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import App from '../../App';
 import { Constants } from '../../constants/Constants';
-import { HashParamUtils } from '../../utils/HashParamUtils';
+
 import { ServerUtils } from '../../utils/ServerUtils';
 
 const thisTestFile = "Server Modal";
@@ -18,8 +18,7 @@ beforeEach(() => {
     return Constants.serverTestData;
   });
 
-  //clear out old accessCode, generateStateCode, and stateCode values
-  HashParamUtils.clearCachedValues();
+
 
   //reset the selected knowledge repo stored in sessionStorage
   sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));

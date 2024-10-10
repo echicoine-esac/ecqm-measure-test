@@ -26,7 +26,10 @@ export class CollectDataFetch extends AbstractDataFetch {
         patientGroup?: PatientGroup | undefined
     ) {
 
-        super();
+        //establish a base server to run the fetch against:
+        super(selectedDataRepo);
+
+
         this.type = FetchType.COLLECT_DATA;
 
         if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
@@ -96,7 +99,7 @@ export class CollectDataFetch extends AbstractDataFetch {
         return OutcomeTrackerUtils.buildOutcomeTracker(
             this.makeJsonDataSubmittable(data), 
             'Collect Data', 
-            this.selectedDataRepo?.baseUrl);
+            this.selectedBaseServer);
     }
 
       /**
