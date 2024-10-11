@@ -61,7 +61,6 @@ export abstract class AbstractDataFetch {
                 ret = this.processReturnedData(data);
             })
             .catch((error) => {
-                console.log('error', error);
                 let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
                 if (responseStatusText.length > 0 && responseStatusText !== 'OK') {
                     message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, responseStatusText);
@@ -88,23 +87,28 @@ export abstract class AbstractDataFetch {
      * @returns 
      */
     protected async handleResponse(response: Response): Promise<Response> {
-        // Clone the response to avoid consuming the body multiple times
-        const clonedResponse = response.clone();
+        try {
+            // Clone the response to avoid consuming the body multiple times
+            const clonedResponse = response.clone();
 
-        let operationOutcomeType = false;
-        const data = await clonedResponse.json();
+            let operationOutcomeType = false;
+            const data = await clonedResponse.json();
 
-        // Check if the resource type is OperationOutcome
-        if (data?.resourceType?.toString() === Constants.operationOutcomeResourceType) {
-            console.log(JSON.stringify(data, undefined, 2));
-            operationOutcomeType = true;
-        }
+            // Check if the resource type is OperationOutcome
+            if (data?.resourceType?.toString() === Constants.operationOutcomeResourceType) {
+                operationOutcomeType = true;
+            }
 
-        // If it's an OperationOutcome, return the original response
-        if (operationOutcomeType) {
-            return response;
-        } else {
-            // Otherwise, process the response for error handling
+            // If it's an OperationOutcome, return the original response
+            if (operationOutcomeType) {
+                return response;
+            } else {
+                // Otherwise, process the response for error handling
+                return this.processResponse(response);
+            }
+
+        //an error occurred, so go ahead and process as a non-FHIR response:
+        } catch (error: any) {
             return this.processResponse(response);
         }
     }
@@ -165,7 +169,6 @@ export abstract class AbstractDataFetch {
                 OAuthHandler.buildHashParams(server);
                 const accessCode = OAuthHandler.getAccessCode(server.baseUrl);
                 if (accessCode && accessCode?.length > 0) {
-                    console.log('Success! OAuth flow has established: ', accessCode);
                     try {
                         await OAuthHandler.establishAccessToken(server);
                         return new Promise((resolve) => { resolve(true) });

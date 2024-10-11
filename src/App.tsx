@@ -203,23 +203,12 @@ const App: React.FC = () => {
     }
   });
 
-
   useEffect(() => {
     // Only call to get the servers when the list is empty
     if (servers.length === 0) {
       initializeServers();
     }
   }, []);
-
-
-  useEffect(() => {
-    // When a server is selected store it in the session
-    if (selectedKnowledgeRepo?.baseUrl !== '') {
-      sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(selectedKnowledgeRepo));
-      //console.log('stored selectedKnowledgeRepo in session ' + JSON.stringify(selectedKnowledgeRepo));
-    }
-  }, [selectedKnowledgeRepo]);
-
 
   const initializeServers = async () => {
     setServers(await ServerUtils.getServerList());
