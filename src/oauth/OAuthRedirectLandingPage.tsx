@@ -10,6 +10,8 @@ const OAuthRedirectLandingPage = () => {
   const [dataFound, setDataFound] = useState(false);
 
   const setReturnedData = () => {
+
+    //grab the state and code parameters from the url
     const urlParams = new URLSearchParams(location.search);
     const authCode: string | null = urlParams.get('code');
     const state: string | null = urlParams.get('state');
@@ -19,7 +21,7 @@ const OAuthRedirectLandingPage = () => {
       //clear the url of sensitive data:
       window.history.pushState('', document.title, window.location.pathname);
 
-      // Send the authCode and state back to the main window
+      // Send the authCode and state back to the main window then close this one.
       if (window.opener) {
         window.opener.postMessage({ authCode, state }, window.location.origin);
         window.close();  
@@ -28,6 +30,7 @@ const OAuthRedirectLandingPage = () => {
       // console.log('Stored State:', sessionStorage.getItem('state'));
 
     } else {
+      //user tried to go directly to our url/r so we'll navigate to the home page:
       navigate('/');
     }
 
