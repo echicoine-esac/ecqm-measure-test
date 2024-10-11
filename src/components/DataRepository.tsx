@@ -1,13 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState } from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
-import { PatientFetch } from '../data/PatientFetch';
-import { PatientGroup, Member } from '../models/PatientGroup';
-import { Patient } from '../models/Patient';
-import { Server } from '../models/Server';
 import { Constants } from '../constants/Constants';
+import { Patient } from '../models/Patient';
+import { Member, PatientGroup } from '../models/PatientGroup';
+import { Server } from '../models/Server';
+import { PatientGroupUtils } from '../utils/PatientGroupUtils';
+import SectionalTitleBar from './SectionalTitleBar';
+import ServerDropdown from './ServerDropdown';
+import { Section } from '../enum/Section.enum';
 
-interface props {
+interface Props {
   showDataRepo: boolean;
   setShowDataRepo: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
@@ -25,7 +28,7 @@ interface props {
 
 }
 
-const DataRepository: React.FC<props> = ({
+const DataRepository: React.FC<Props> = ({
   showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients,
   fetchPatients, setSelectedPatient, selectedPatient, collectData, loading,
   setModalShow, selectedMeasure, groups, setSelectedPatientGroup }) => {
@@ -59,7 +62,10 @@ const DataRepository: React.FC<props> = ({
     }
   };
 
-  const selectedSubject = useGroupAsSubject && buildSelectedSubjectText().length > 0 ? buildSelectedSubjectText() + ' on ' + selectedDataRepo?.baseUrl : selectedDataRepo?.baseUrl ? 'ALL Patients on ' + selectedDataRepo?.baseUrl : 'None (no Data Repository selected)';
+  const allPatientsSubject = selectedDataRepo?.baseUrl && patients && patients.length > 0 ? 'ALL Patients on ' + selectedDataRepo?.baseUrl : '';
+
+  const selectedSubject: string = useGroupAsSubject &&
+    buildSelectedSubjectText().length > 0 ? buildSelectedSubjectText() : allPatientsSubject;
 
   useEffect(() => {
     // Update filtered patients and patient group based on selectedMeasure
@@ -67,7 +73,7 @@ const DataRepository: React.FC<props> = ({
     setPatientGroup(updatedPatientGroup);
 
     const filteredPatients = patients.filter((patient) => {
-      const patDisplay = PatientFetch.buildUniquePatientIdentifier(patient);
+      const patDisplay = PatientGroupUtils.buildUniquePatientIdentifier(patient);
       let groupingCondition: boolean = true;
 
       if (updatedPatientGroup) {
@@ -97,30 +103,16 @@ const DataRepository: React.FC<props> = ({
   return (
     <div className='card'>
       <div className='card-header'>
-        <div className='row'>
-          <div className='col-md-3 order-md-1'>Data Extraction Service/Data Repository</div>
-          {showDataRepo ? (
-            <div className='col-md-8 order-md-2 text-muted' />
-          ) : (
-            <div className='col-md-8 order-md-2 text-muted'>
-              Selected Subject: {selectedSubject}
-            </div>
-          )}
-          <div className='col-md-1 order-md-3'>
-            {showDataRepo ? (
-              <Button data-testid='data-repo-hide-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowDataRepo(false)}>
-                Hide
-              </Button>
-            ) : (
-              <Button data-testid='data-repo-show-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowDataRepo(true)}>
-                Show
-              </Button>
-            )}
-          </div>
-        </div>
+        
+        <SectionalTitleBar section={Section.DATA_REPO}
+          setShowSection={setShowDataRepo}
+          showSection={showDataRepo}
+          selectedSubjectTitling='Subject'
+          selectedSubject={selectedSubject} />
+
       </div>
       {showDataRepo ? (
-        <div className='card-body'>
+        <div className='card-body' style={{ transition: 'all .1s' }}>
           <div className='row'>
             <div className='col-md-6 order-md-1'>
               <label>Data Repository Server</label>
@@ -133,15 +125,15 @@ const DataRepository: React.FC<props> = ({
             </div>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-1'>
-              <select disabled={loading} data-testid='data-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedDataRepo?.baseUrl}
-                onChange={(e) => fetchPatients(servers[e.target.selectedIndex - 1]!)}>
-                <option value=''>Select a Server...</option>
-                {servers.map((server, index) => (
-                  <option key={index}>{server!.baseUrl}</option>
-                ))}
-              </select>
-            </div>
+
+            <ServerDropdown
+              dataTestID={Constants.id_data_repo}
+              loading={loading}
+              servers={servers}
+              callFunction={fetchPatients}
+              baseUrlValue={selectedDataRepo?.baseUrl}
+            />
+
             <div className='col-md-1 order-md-2'>
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>
@@ -162,7 +154,7 @@ const DataRepository: React.FC<props> = ({
                 <option value=''>Select a Patient...</option>
                 {filteredPatients.map((patient, index) => (
                   <option key={index} value={patient?.id || ''}>
-                    {PatientFetch.buildUniquePatientIdentifier(patient)}
+                    {PatientGroupUtils.buildUniquePatientIdentifier(patient)}
                   </option>
                 ))}
               </select>
@@ -202,12 +194,12 @@ const DataRepository: React.FC<props> = ({
                   onChange={useGroupAsSubjectHandler}
                   disabled={loading}>
                 </input>
-                {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank' rel='noreferrer'>{buildSubjectText()}</a>
+                {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank' rel='noreferrer'>{buildSubjectText()}↗</a>
               </label>
             }
             {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedDataRepo?.baseUrl) && (
               <div>
-                {Constants.largeDataNOTE}
+                {Constants.label_largeDataNOTE}
               </div>
             )}
           </div>

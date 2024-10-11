@@ -2,46 +2,43 @@ import React from 'react';
 import { PopulationScoring } from '../models/PopulationScoring';
 
 // Props for Populations
-interface props {
-  showPopulations: boolean;
+interface Props {
+  showPopulations: boolean | undefined;
   populationScoring: PopulationScoring[] | undefined;
-  measureScoringType: string;
+  measureScoringType: string | undefined;
 }
 
 // Populations component displays the population cards
-const Populations: React.FC<props> = ({ showPopulations, populationScoring, measureScoringType }) => {
+const Populations: React.FC<Props> = ({ showPopulations, populationScoring, measureScoringType }) => {
 
   const convertToID = (str: any | undefined): string => {
     let strIn: string = '' + str;
-    return (strIn.replace(' ', ''));
+    return (strIn.replaceAll(' ', ''));
   }
   const tableCount = populationScoring ? populationScoring.length : 0;
   const widthPercentage = tableCount >= 3 ? '33%' : tableCount === 2 ? '49%' : '100%'; // Adjust based on count
 
   return (
-    <div>
+    <div style={{ 
+      position: 'relative',
+      top: '-24px',}}>
       {showPopulations ? (
-        <div style={{ textAlign: 'start', marginTop: '20px' }}>
-          <h5 data-testid={'pops-measure-score-type'}>
-            {'Measure Scoring Type: '}
-            {measureScoringType && measureScoringType.length > 0 ? measureScoringType : 'N/A'}
-          </h5>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-
-
+        <div style={{ textAlign: 'start', marginTop:'0px'}}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '0px'}}>
             {populationScoring && Array.from(populationScoring)
               .map((scoring, index) => (
-                <div key={index + scoring.groupID} style={{ flexBasis: widthPercentage }}>
-                  <table className="table mt-4" style={{ width: '100%', border: '2px solid lightgrey' }}>
+                <div key={index + scoring.groupID} style={{ flexBasis: widthPercentage,
+                  }}>
+                  <table className="table mt-4" style={{ width: '100%', border: '2px solid lightgrey', background: 'white'  }}>
                     <thead style={{ background: '#F7F7F7' }}>
                       <tr>
                         <th>
                           <h6 data-testid={'pops-group-id-' + convertToID(scoring.groupID)}>{'Group ID: ' + scoring.groupID}</h6>
                         </th>
                         <th>
-                          <h5 data-testid={'pops-group-score-type-' + convertToID(scoring?.groupScoring?.coding[0]?.code)}>
+                          <h5 data-testid={'pops-group-score-type-' + convertToID(scoring?.groupScoring?.coding[0].code)}>
                             {scoring.groupScoring &&
-                              'Scoring Type: ' + scoring.groupScoring.coding[0].code}
+                              'Scoring Type: ' + scoring?.groupScoring?.coding[0].code}
                           </h5>
                         </th>
                       </tr>
@@ -60,6 +57,10 @@ const Populations: React.FC<props> = ({ showPopulations, populationScoring, meas
               ))
             }
           </div>
+          <h6 style={{marginBottom:'-15px'}} data-testid={'pops-measure-score-type'}>
+            {'Measure Scoring Type: '}
+            {measureScoringType && measureScoringType.length > 0 ? measureScoringType : 'N/A'}
+          </h6>
         </div>
       ) : (
         <div />

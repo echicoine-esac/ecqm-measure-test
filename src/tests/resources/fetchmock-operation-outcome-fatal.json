@@ -1,0 +1,16 @@
+{
+    "resourceType": "OperationOutcome",
+    "issue": [
+        {
+            "severity": "fatal",
+            "code": "processing",
+            "details": {
+                "text": "The server encountered an unexpected condition that prevented it from fulfilling the request."
+            },
+            "diagnostics": "Stack trace or error logs can be provided here.",
+            "location": [
+                "Bundle.entry[0].resource"
+            ]
+        }
+    ]
+}

@@ -12,7 +12,7 @@ export class ServerUtils {
 
     // Handle server queries and mutations
     // Fetches the list of stored servers
-    public static getServerList = async (): Promise<Array<Server>> => {
+    public static async getServerList(): Promise<Array<Server>> {
 
         //returned cached version if populated
         if (ServerUtils.listOfServers && ServerUtils.listOfServers.length > 0) return ServerUtils.listOfServers;
@@ -23,7 +23,7 @@ export class ServerUtils {
         } catch (err) {
             const error = err as any;
             if (error?.errors) {
-                throw new Error ('Error fetching servers: \n' + error.errors);
+                throw new Error('Error fetching servers: \n' + error.errors);
             }
         }
 
@@ -32,7 +32,7 @@ export class ServerUtils {
             const serverB = b.baseUrl + '';
             return serverA.localeCompare(serverB);
         });
-        
+
         // let s = {
         //     id: '1',
         //     baseUrl: 'https://authorization-server.com/',
@@ -48,21 +48,20 @@ export class ServerUtils {
         // return sList;
     };
 
-    private static refreshServerList = async (): Promise<Array<Server>> => {
+    public static async refreshServerList(): Promise<Array<Server>> {
         ServerUtils.listOfServers = [];
         return await ServerUtils.getServerList();
     }
 
     // Uses the GraphQL API to create a server
-    public static createServer = async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
-        clientSecret: string, scope: string) => {
+    public static async createServer(baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
+        clientSecret: string, scope: string) {
         try {
             let serverInput: CreateServersInput = {
                 baseUrl: baseUrl
             };
             if (authUrl !== '') {
                 serverInput.authUrl = authUrl;
-                serverInput.callbackUrl = 'http://localhost/callback';
             }
             if (tokenUrl !== '') {
                 serverInput.tokenUrl = tokenUrl;

@@ -66,7 +66,7 @@ test('get DataRequirements mock', async () => {
     fetchMock.once(dataRequirementsFetch.getUrl(),
         JSON.stringify(mockJsonDataRequirementsData)
         , { method: 'GET' });
-    let collectedData: string = await dataRequirementsFetch.fetchData('')
+    let collectedData: string | undefined = await (await dataRequirementsFetch.fetchData()).jsonFormattedString
     expect(collectedData).toEqual(JSON.stringify(mockJsonDataRequirementsData, undefined, 2));
 
     fetchMock.restore();
@@ -85,12 +85,12 @@ test('get DataRequirements mock error', async () => {
     fetchMock.once(dataRequirementsFetch.getUrl(), { throws: new Error(errorMsg) });
 
     try {
-        await dataRequirementsFetch.fetchData('')
+        await dataRequirementsFetch.fetchData()
     } catch (error: any) {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate to retrieve Data Requirements caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$data-requirements?periodStart=startDate&periodEnd=endDate for Data Requirements caused: Error: this is a test');
 
     fetchMock.restore();
 

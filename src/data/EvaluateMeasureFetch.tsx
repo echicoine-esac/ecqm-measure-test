@@ -1,20 +1,16 @@
 import { Constants } from '../constants/Constants';
+import { OutcomeTracker } from '../models/OutcomeTracker';
 import { Patient } from '../models/Patient';
 import { PatientGroup } from '../models/PatientGroup';
-import { GroupElement } from '../models/Scoring';
 import { Server } from '../models/Server';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
-
-export type EvaluateMeasureResult = {
-    jsonBody: string;
-    measureGroups?: GroupElement[];
-};
 
 export class EvaluateMeasureFetch extends AbstractDataFetch {
     type: FetchType;
 
-    selectedServer: Server | undefined;
+    selectedMeasureEvaluationServer: Server | undefined;
     selectedPatient: Patient | undefined;
     selectedMeasure: string = '';
     startDate: string = '';
@@ -22,7 +18,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
     patientGroup: PatientGroup | undefined;
     useSubject: boolean = false;
 
-    constructor(selectedServer: Server | undefined,
+    constructor(selectedMeasureEvaluationServer: Server | undefined,
         selectedMeasure: string,
         startDate: string,
         endDate: string,
@@ -31,10 +27,11 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         patientGroup?: PatientGroup | undefined,
     ) {
 
-        super();
+        super(selectedMeasureEvaluationServer);
+
         this.type = FetchType.EVALUATE_MEASURE;
 
-        if (!selectedServer || selectedServer.baseUrl === '') {
+        if (!selectedMeasureEvaluationServer || selectedMeasureEvaluationServer.baseUrl === '') {
             throw new Error(StringUtils.format(Constants.missingProperty, 'selectedServer'));
         }
 
@@ -58,7 +55,7 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
             }
         }
 
-        this.selectedServer = selectedServer;
+        this.selectedMeasureEvaluationServer = selectedMeasureEvaluationServer;
         this.selectedMeasure = selectedMeasure;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -80,8 +77,8 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
             } else if (this.patientGroup) {
                 subject = 'Group/' + this.patientGroup.id;
             }
-            return StringUtils.format(Constants.evaluateMeasureWithSubjectFetchURL,
-                this.selectedServer?.baseUrl,
+            return StringUtils.format(Constants.fetch_evaluateMeasureWithSubject,
+                this.selectedMeasureEvaluationServer?.baseUrl,
                 this.selectedMeasure,
                 this.startDate,
                 this.endDate,
@@ -90,8 +87,8 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
         }
 
         //useSubject not true, return url without subject line
-        return StringUtils.format(Constants.evaluateMeasureWithSubjectFetchURL.replace('&subject={4}', ''),
-            this.selectedServer?.baseUrl,
+        return StringUtils.format(Constants.fetch_evaluateMeasureWithSubject.replace('&subject={4}', ''),
+            this.selectedMeasureEvaluationServer?.baseUrl,
             this.selectedMeasure,
             this.startDate,
             this.endDate
@@ -99,12 +96,9 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
 
     }
 
-    protected processReturnedData(data: any) {
-        let measureData: EvaluateMeasureResult = {
-            jsonBody: data,
-            measureGroups: data.group
-        }
-        return measureData;
+    protected processReturnedData(data: any): OutcomeTracker {
+        const measureGroups = data?.group && Array.isArray(data?.group) ? data.group : undefined;
+        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Measure Evaluation', this.selectedBaseServer, measureGroups);
     }
 
 }

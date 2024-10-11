@@ -83,7 +83,6 @@ it('ServerUil createServer success', async () => {
     };
 
     serverInput.authUrl = 'authUrl';
-    serverInput.callbackUrl = 'http://localhost/callback';
     serverInput.tokenUrl = 'tokenUrl';
     serverInput.clientID = 'clientId';
     serverInput.clientSecret = 'clientSecret';

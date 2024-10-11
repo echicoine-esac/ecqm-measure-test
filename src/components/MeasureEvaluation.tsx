@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Server } from '../models/Server';
-import Populations from './Populations';
-import { PopulationScoring } from '../models/PopulationScoring';
+import React, { useEffect, useState } from 'react';
+import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { Constants } from '../constants/Constants';
-import { PatientGroup } from '../models/PatientGroup';
 import { Patient } from '../models/Patient';
+import { PatientGroup } from '../models/PatientGroup';
+import { Server } from '../models/Server';
+import SectionalTitleBar from './SectionalTitleBar';
+import ServerDropdown from './ServerDropdown';
+import { Section } from '../enum/Section.enum';
 
 // Props for MeasureEvaluation
-interface props {
+interface Props {
   showMeasureEvaluation: boolean;
   setShowMeasureEvaluation: React.Dispatch<React.SetStateAction<boolean>>;
   servers: Array<Server | undefined>;
@@ -19,19 +20,16 @@ interface props {
   evaluateMeasure: (b: boolean) => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
-  showPopulations: boolean;
-  populationScoring: PopulationScoring[] | undefined;
-  measureScoringType: string;
   patientGroup?: PatientGroup;
   selectedPatient?: Patient;
   selectedDataRepo: Server | undefined;
+  collectedData?: string | undefined
 }
 
 // MeasureEvaluation component displays the fields for selecting and using the measure evaluation system
-const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation,
-  selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow,
-  showPopulations, populationScoring, measureScoringType, selectedPatient, patientGroup,
-  selectedDataRepo }) => {
+const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation,
+  selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow, selectedPatient, patientGroup,
+  selectedDataRepo, collectedData }) => {
 
 
   const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
@@ -50,40 +48,52 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
     }
   };
 
+  const [href, setHref] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    let objectUrl: string | undefined = undefined;
+    if (collectedData) {
+      // Create a Blob and generate an object URL
+      const blob = new Blob([collectedData], { type: "application/json" });
+      objectUrl = URL.createObjectURL(blob);
+      setHref(objectUrl);
+    }
+
+    // Cleanup: Revoke the previous URL when results change or component unmounts
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+        setHref(undefined);
+      }
+    };
+  }, [collectedData]);
 
   return (
     <div className='card'>
       <div className='card-header'>
-        Measure Evaluation Service
-        {showMeasureEvaluation ? (
-          <Button data-testid='mea-eva-hide-section-button' className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowMeasureEvaluation(false)}>
-            Hide
-          </Button>
-        ) : (
-          <Button data-testid='mea-eva-show-section-button' className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowMeasureEvaluation(true)}>
-            Show
-          </Button>
-        )}
+
+        <SectionalTitleBar
+          section={Section.MEASURE_EVAL}
+          setShowSection={setShowMeasureEvaluation}
+          showSection={showMeasureEvaluation} />
+          
       </div>
       {showMeasureEvaluation ? (
-        <div className='card-body'>
+        <div className='card-body' style={{ transition: 'all .1s' }}>
           <div className='row'>
             <div className='col-md-6 order-md-1'>
               <label>Measure Evaluation Server</label>
             </div>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-1'>
-              <select disabled={loading} data-testid='mea-eva-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedMeasureEvaluation?.baseUrl}
-                onChange={(e) => setSelectedMeasureEvaluation(servers[e.target.selectedIndex - 1]!)}>
-                <option value=''>Select a Server...</option>
-                {servers.map((server, index) => (
-                  <option key={index}>{server!.baseUrl}</option>
-                ))}
-              </select>
-            </div>
+
+            <ServerDropdown
+              dataTestID={Constants.id_measure_evaluation}
+              loading={loading}
+              servers={servers}
+              callFunction={setSelectedMeasureEvaluation}
+              baseUrlValue={selectedMeasureEvaluation?.baseUrl}
+            />
+
             <div className='col-md-1 order-md-2'>
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>
@@ -93,10 +103,19 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
             </div>
           </div>
 
-          <Populations populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType} />
+          {/* checklist style indicator regardin stored collectedData */}
+          <div className='mt-3' style={{ paddingBottom: '0px' }}>
+            <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+
+              <li data-testid='mea-eva-checklist-measure'>
+                {collectedData ? '☑' : '☐'} {href ? <a target='_blank' rel='noreferrer' href={href}>Collected Data for Submission↗</a> : 'Collected Data for Submission'}
+              </li>
+
+            </ul>
+          </div>
+
           <div className='row'>
             <div className='col-md-5 order-md-2'>
-              <br />
               {loading ? (
                 <Button data-testid='mea-eva-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner
@@ -116,7 +135,6 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
               )}
             </div>
             <div className='col-md-5 order-md-2'>
-              <br />
               {loading ? (
                 <Button data-testid='mea-eva-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner
@@ -144,12 +162,12 @@ const MeasureEvaluation: React.FC<props> = ({ showMeasureEvaluation, setShowMeas
                 onChange={useGroupAsSubjectHandler}
                 disabled={loading}>
               </input>
-              {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank' rel='noreferrer'>{buildSubjectText()}</a>
+              {' subject='}<a href={selectedDataRepo?.baseUrl + buildSubjectText()} target='_blank' rel='noreferrer'>{buildSubjectText()}↗</a>
             </label>
             }
             {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedMeasureEvaluation?.baseUrl) && (
               <div>
-                {Constants.largeDataNOTE}
+                {Constants.label_largeDataNOTE}
               </div>
             )}
           </div>

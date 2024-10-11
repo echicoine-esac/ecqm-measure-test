@@ -9,9 +9,11 @@ import { MeasureComparisonManager } from '../utils/MeasureComparisonManager';
 import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
+import SectionalTitleBar from './SectionalTitleBar';
+import { Section } from '../enum/Section.enum';
 
 
-interface props {
+interface Props {
   showTestCompare: boolean;
   setShowTestCompare: React.Dispatch<React.SetStateAction<boolean>>;
   items: Map<Patient, MeasureComparisonManager>;
@@ -46,16 +48,20 @@ interface props {
  * @param param0 
  * @returns 
  */
-const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompare, items,
+const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompare, items,
   compareTestResults, loading, startDate, endDate, selectedPatientGroup, selectedDataRepoServer,
   selectedMeasureEvaluationServer, selectedMeasure, selectedKnowledgeRepositoryServer, selectedPatient }) => {
 
 
-  const requiredDataPresent = selectedPatientGroup && selectedDataRepoServer && selectedMeasureEvaluationServer && selectedMeasure && selectedKnowledgeRepositoryServer;
+  const requiredDataPresent = selectedPatientGroup
+    && selectedDataRepoServer?.baseUrl
+    && selectedMeasureEvaluationServer?.baseUrl
+    && selectedMeasure
+    && selectedKnowledgeRepositoryServer?.baseUrl;
 
   const convertToID = (str: any | undefined): string => {
     let strIn: string = '' + str;
-    return (strIn.replace(' ', ''));
+    return (strIn.replaceAll(' ', ''));
   }
   const componentRef = useRef(null);
   const title = 'Test Comparison Summary for ' + items.get(Array.from(items.keys())[0])?.selectedMeasure.name;
@@ -98,33 +104,16 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
         }
       }
     `}</style>
+
       <div className='card-header'>
-        <div className='row'>
-          <div className='col-md-3'>Test Comparator</div>
-          <div className='col-md-1 ml-auto'>
-            {showTestCompare ? (
-              <Button
-                data-testid='test-compare-hide-section-button'
-                className='btn btn-primary btn-lg float-right'
-                onClick={() => setShowTestCompare(false)}
-              >
-                Hide
-              </Button>
-            ) : (
-              <Button
-                data-testid='test-compare-show-section-button'
-                className='btn btn-primary btn-lg float-right'
-                onClick={() => setShowTestCompare(true)}
-              >
-                Show
-              </Button>
-            )}
-          </div>
-        </div>
+        <SectionalTitleBar
+          section={Section.TEST_COMPARE}
+          setShowSection={setShowTestCompare}
+          showSection={showTestCompare} />
       </div>
 
       {showTestCompare ? (
-        <div className='card-body'>
+        <div className='card-body' style={{ transition: 'all .1s' }}>
 
           <div ref={componentRef}>
             {items.size > 0 ? (
@@ -195,19 +184,19 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                               <td className="text-start" style={{ minWidth: '215px' }}>
                                 Knowledge Repository:
                               </td>
-                              <td data-testid={'test-comp-knowledge-repo-server'} style={{ width: '100%' }}><a href={selectedKnowledgeRepositoryServer?.baseUrl}>{selectedKnowledgeRepositoryServer?.baseUrl}</a></td>
+                              <td data-testid={'test-comp-knowledge-repo-server'} style={{ width: '100%' }}><a target='_blank' rel='noreferrer' href={selectedKnowledgeRepositoryServer?.baseUrl}>{selectedKnowledgeRepositoryServer?.baseUrl}↗</a></td>
                             </tr>
                             <tr>
                               <td className="text-start" style={{ minWidth: '215px' }}>
                                 Data Repository:
                               </td>
-                              <td data-testid={'test-comp-data-repo-server'} style={{ width: '100%' }}><a href={selectedDataRepoServer?.baseUrl}>{selectedDataRepoServer?.baseUrl}</a></td>
+                              <td data-testid={'test-comp-data-repo-server'} style={{ width: '100%' }}><a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl}>{selectedDataRepoServer?.baseUrl}↗</a></td>
                             </tr>
                             <tr>
                               <td className="text-start" style={{ minWidth: '215px' }}>
                                 Measure Evaluation:
                               </td>
-                              <td data-testid={'test-comp-measure-eval-server'} style={{ width: '100%' }}><a href={selectedMeasureEvaluationServer?.baseUrl}>{selectedMeasureEvaluationServer?.baseUrl}</a></td>
+                              <td data-testid={'test-comp-measure-eval-server'} style={{ width: '100%' }}><a target='_blank' rel='noreferrer' href={selectedMeasureEvaluationServer?.baseUrl}>{selectedMeasureEvaluationServer?.baseUrl}↗</a></td>
                             </tr>
                           </tbody>
                         </Table>
@@ -229,15 +218,15 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <li data-testid='test-compare-checklist-measure'>
                     {selectedMeasure ? '☑' : '☐'} Measure
                     {selectedKnowledgeRepositoryServer?.baseUrl && selectedMeasure && (
-                      <span> <a target='_blank' rel='noreferrer' href={selectedKnowledgeRepositoryServer?.baseUrl + 'Measure/' + selectedMeasure}>({selectedMeasure})</a></span>
+                      <span> <a target='_blank' rel='noreferrer' href={selectedKnowledgeRepositoryServer?.baseUrl + 'Measure/' + selectedMeasure}>({selectedMeasure})↗</a></span>
                     )}
                   </li>
 
                   {/* Data Repository Server */}
-                  <li  data-testid='test-compare-checklist-data-repo-server'>
+                  <li data-testid='test-compare-checklist-data-repo-server'>
                     {selectedDataRepoServer?.baseUrl ? '☑' : '☐'} Data Repository Server
                     {selectedDataRepoServer?.baseUrl && (
-                      <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl}>({selectedDataRepoServer.baseUrl})</a></span>
+                      <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl}>({selectedDataRepoServer.baseUrl})↗</a></span>
                     )}
                   </li>
 
@@ -245,7 +234,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <li data-testid='test-compare-checklist-patient-group'>
                     {selectedPatientGroup?.id ? '☑' : '☐'} Patient Group
                     {selectedPatientGroup?.id && selectedDataRepoServer?.baseUrl && (
-                      <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl + 'Group/' + selectedPatientGroup?.id}>(Group/{selectedPatientGroup?.id})</a></span>
+                      <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl + 'Group/' + selectedPatientGroup?.id}>(Group/{selectedPatientGroup?.id})↗</a></span>
                     )}
                   </li>
 
@@ -254,7 +243,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                       <li>
                         {selectedPatient?.id ? '☑' : '☐'} {'Patient (exists in Group)'}
                         {selectedPatient?.id && selectedDataRepoServer?.baseUrl && (
-                          <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl + 'Patient/' + selectedPatient?.id}>(Patient/{selectedPatient?.id})</a></span>
+                          <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl + 'Patient/' + selectedPatient?.id}>(Patient/{selectedPatient?.id})↗</a></span>
                         )}
                       </li>
                     </ul>
@@ -264,7 +253,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <li data-testid='test-compare-checklist-measure-eval-server'>
                     {selectedMeasureEvaluationServer?.baseUrl ? '☑' : '☐'} Measure Evaluation Server
                     {selectedMeasureEvaluationServer?.baseUrl && (
-                      <span> <a target='_blank' rel='noreferrer' href={selectedMeasureEvaluationServer?.baseUrl}>({selectedMeasureEvaluationServer.baseUrl})</a></span>
+                      <span> <a target='_blank' rel='noreferrer' href={selectedMeasureEvaluationServer?.baseUrl}>({selectedMeasureEvaluationServer.baseUrl})↗</a></span>
                     )}
                   </li>
                 </ul>
@@ -283,11 +272,11 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   <Table size='sm' className="table" key={key.display + key.id} style={{ width: '100%', border: '1px solid lightgrey', marginBottom: '0px' }}>
                     <thead style={{ background: '#F7F7F7', border: '1px solid lightgrey' }}>
                       <tr>
-                        <th style={{ width: '50%', textAlign: 'left',  padding: '10px' }}>
+                        <th style={{ width: '50%', textAlign: 'left', padding: '10px' }}>
                           <h5 data-testid={'test-comp-patient-display' + convertToID(key.id)}>{key.display}</h5>
                           <h6 data-testid={'test-comp-patient-id' + convertToID(key.id)}>ID: {key.id}</h6>
                         </th>
-                        <th style={{ width: '50%', textAlign: 'left',  padding: '10px' }}>
+                        <th style={{ width: '50%', textAlign: 'left', padding: '10px' }}>
                           <h6>Comparison Result:</h6>
                           <h5 data-testid={'test-comp-result-' + convertToID(key.id)} className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}>
                             {value.discrepancyExists ? 'Discrepancy' : 'Match'}
@@ -312,7 +301,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                               {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
                                 // mark text in bold if discrepancy exists for this field
                                 <tr style={{ border: '1px solid lightgrey' }} key={index} className={group.discrepancy ? 'fw-bold' : ''}>
-                                  <td style={{ width: '100%', paddingLeft: '10px'}} data-testid={'test-comp-this-eval-group-code-' + index}>{group.code.coding[0].code}</td>
+                                  <td style={{ width: '100%', paddingLeft: '10px' }} data-testid={'test-comp-this-eval-group-code-' + index}>{group.code.coding[0].code}</td>
                                   <td style={{ width: '100%', paddingRight: '15px' }} data-testid={'test-comp-this-eval-group-count-' + index}>{group.count}</td>
                                 </tr>
                               ))}
@@ -339,7 +328,7 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                             </thead>
                             <tbody>
                               {value.fetchedMeasureReportGroups.map((group, index) => (
-                                <tr style={{ border: '1px solid lightgrey'}} key={index} className={group.discrepancy ? 'fw-bold' : ''}>
+                                <tr style={{ border: '1px solid lightgrey' }} key={index} className={group.discrepancy ? 'fw-bold' : ''}>
                                   <td style={{ width: '100%', paddingLeft: '10px' }} data-testid={'test-comp-prev-eval-group-code-' + index}>{group.code.coding[0].code}</td>
                                   <td style={{ width: '100%', paddingRight: '15px' }} data-testid={'test-comp-prev-eval-group-count-' + index}>{group.count}</td>
                                 </tr>
@@ -360,15 +349,23 @@ const TestingComparator: React.FC<props> = ({ showTestCompare, setShowTestCompar
                   </Table>
 
                 ) : (
-                  <div key={key.display + key.id}>
-                    <div className="row mt-4">
-                      <h5>{key.display} - {key.id}</h5>
-                      <h6 className='text-danger'>
-                        Processing Error</h6>
+                  <div key={key.display + key.id}
+                    style={{ border: '1px solid lightgrey', borderRadius: '4px', padding: '8px', marginBottom: '10px' }}>
+                    <div className="row">
+                      <h5><strong style={{ color: 'red' }}>SKIPPED: </strong>{key.display + ' (' + key.id + ')'}</h5>
                     </div>
                     <div data-testid={'test-comp-processing-error' + convertToID(key.display + '-' + key.id)}>
-                      {value.fetchedMeasureReportGroups.length === 0 && <h6>MeasureReport not found for: {key.display} - {key.id} using selected Data Repository Server.</h6>}
-                      {value.fetchedEvaluatedMeasureGroups.length === 0 && <h6>Measure Evaluation was unsuccesful for: {key.display} - {key.id}.<br></br>Please verify results with Measure Evaluation Service.</h6>}
+                      Test comparison could not complete for this Patient due to the following discrepancies: <br />
+                      {value.fetchedMeasureReportGroups.length === 0 && (
+                        <div style={{ padding: '5px' }}>
+                          <strong style={{ marginLeft: '10px' }}> • MeasureReport: </strong> No MeasureReports were retrieved from the selected Data Repository Server.
+                        </div>
+                      )}
+                      {value.fetchedEvaluatedMeasureGroups.length === 0 && (
+                        <div style={{ padding: '5px' }}>
+                          <strong style={{ marginLeft: '10px' }}> • Measure Evaluation: </strong> Measure Evaluation failed with the selected Measure Evaluation Server.
+                        </div>
+                      )}
                     </div>
                   </div>
                 )

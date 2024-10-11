@@ -3,11 +3,10 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import App from '../../App';
 import { Constants } from '../../constants/Constants';
-import { HashParamUtils } from '../../utils/HashParamUtils';
+
 import { ServerUtils } from '../../utils/ServerUtils';
 
 const thisTestFile = "Server Modal";
-const RESPONSE_ERROR_BAD_REQUEST = 'Bad Request';
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
 beforeEach(() => {
   //clean up any missed mocks
@@ -19,8 +18,7 @@ beforeEach(() => {
     return Constants.serverTestData;
   });
 
-  //clear out old accessCode, generateStateCode, and stateCode values
-  HashParamUtils.clearCachedValues();
+
 
   //reset the selected knowledge repo stored in sessionStorage
   sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
@@ -30,6 +28,10 @@ beforeEach(() => {
 
 });
 
+beforeAll(() => {
+  global.URL.createObjectURL = jest.fn();
+  window.HTMLElement.prototype.scrollIntoView = jest.fn();
+});
 
 //SERVER MODAL
 test(thisTestFile + ': success scenario: create new server button opens modal', async () => {
@@ -131,7 +133,7 @@ test(thisTestFile + ': success scenario: createServer called with data', async (
 test(thisTestFile + ': fail scenario: createServer throws error', async () => {
   const createServerJest = jest.spyOn(ServerUtils, 'createServer').mockImplementation(async (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
     clientSecret: string, scope: string) => {
-    throw new Error(RESPONSE_ERROR_BAD_REQUEST);
+    throw new Error(Constants.fetch_BAD_REQUEST);
   });
 
   const baseUrlText = 'server-model-baseurl-text';
@@ -169,8 +171,9 @@ test(thisTestFile + ': fail scenario: createServer throws error', async () => {
     fireEvent.click(submitButtonField);
   });
 
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-  expect(resultsTextField.value).toEqual(RESPONSE_ERROR_BAD_REQUEST);
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+  expect(resultsTextField.textContent).toEqual(Constants.fetch_BAD_REQUEST);
+
   createServerJest.mockRestore();
 });
 

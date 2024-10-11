@@ -1,7 +1,9 @@
 import { Constants } from '../constants/Constants';
 import { BundleEntry } from '../models/BundleEntry';
-import { PatientGroup } from '../models/PatientGroup';
 import { Patient } from '../models/Patient';
+import { Server } from '../models/Server';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
+import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
@@ -9,40 +11,38 @@ import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 export class PatientFetch extends AbstractDataFetch {
 
     type: FetchType;
-    url: string = '';
 
     totalPatients: number = 5;
 
-    private constructor(url: string) {
-        super();
+    private constructor(dataRepositoryServer: Server) {
+        super(dataRepositoryServer);
 
-        if (!url || url === '') {
-            throw new Error(StringUtils.format(Constants.missingProperty, 'url'));
+        if (!dataRepositoryServer?.baseUrl || dataRepositoryServer?.baseUrl === '') {
+            throw new Error(StringUtils.format(Constants.missingProperty, 'dataRepositoryServer'));
         }
 
         this.type = FetchType.PATIENT;
-        this.url = url;
     }
 
     // Use this static method to create an instance and wait for totalPatients to be populated
-    public static async createInstance(url: string): Promise<PatientFetch> {
-        const instance = new PatientFetch(url);
-        await instance.initializeTotalPatients(url);
+    public static async createInstance(server: Server): Promise<PatientFetch> {
+        const instance = new PatientFetch(server);
+        await instance.initializeTotalPatients(server);
         return instance;
     }
 
-    private async initializeTotalPatients(url: string): Promise<void> {
+    private async initializeTotalPatients(server: Server): Promise<void> {
         // Wait for the fetch call to finish
-        this.totalPatients = await this.getPatientTotalCount(url);
+        this.totalPatients = await this.getPatientTotalCount(server);
     }
 
     public getUrl(): string {
-        return this.url + Constants.patientUrlEnding + this.totalPatients;
+        return this.selectedBaseServer?.baseUrl + Constants.fetch_patients + this.totalPatients;
     }
 
-    private async getPatientTotalCount(url: string): Promise<number> {
+    private async getPatientTotalCount(server: Server): Promise<number> {
         let patientCount = 0;
-        await fetch(url + Constants.patientTotalCountUrlEnding, this.requestOptions)
+        await fetch(server.baseUrl + Constants.fetch_patientTotalCount, this.requestOptions)
             .then((response) => {
                 return response.json();
             })
@@ -53,72 +53,58 @@ export class PatientFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        let patients: Patient[];
+        let patients: Patient[] = [];
+        if (Array.isArray(data?.entry) && data?.entry?.length > 0) {
 
-        if (this.isGroup(data)) {
-            patients = this.processAsGroup(data);
-        } else {
-            let entries = data.entry;
-            if (!entries || entries.length === 0) {
-                return [];
-            }
-            patients = entries.map((entry: BundleEntry) => {
-                return {
-                    display: entry.resource.name[0].given[0] + ' ' + entry.resource.name[0].family,
-                    id: entry.resource.id,
-                };
+            for (const entry of data.entry) {
+                const displayName = this.getDisplayName(entry);
 
-            });
-        }
-
-        return patients.sort((a, b) => {
-            const patientA = PatientFetch.buildUniquePatientIdentifier(a) + '';
-            const patientB = PatientFetch.buildUniquePatientIdentifier(b) + '';
-            return patientA.localeCompare(patientB);
-        });
-    }
-
-    protected isGroup(data: any): boolean {
-        if (data && data.resourceType === "Group") {
-            return true;
-        }
-        return false;
-    }
-
-    protected processAsGroup(data: any): Patient[] {
-        const result: Patient[] = [];
-
-        if (data && data.resourceType === "Group" && Array.isArray(data.member)) {
-
-            let patientGroup: PatientGroup = {
-                id: data.id,
-                extension: data.extension,
-                member: data.member
-            }
-
-
-            data.member.forEach((member: { entity: { display: any; reference: string; }; }) => {
-                if (member.entity?.display) {
-                    result.push({
-                        display: member.entity.display,
-                        id: member.entity.reference.split("Patient/")[1],
-                        group: patientGroup
+                if (displayName.length > 0 && entry?.resource?.id) {
+                    patients.push({
+                        display: displayName,
+                        id: entry.resource.id,
                     });
                 }
-            });
-        }
+            }
 
-        return result;
+            patients.sort((a, b) => {
+                const patientA = PatientGroupUtils.buildUniquePatientIdentifier(a) + '';
+                const patientB = PatientGroupUtils.buildUniquePatientIdentifier(b) + '';
+                return patientA.localeCompare(patientB);
+            });
+
+        }
+        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Patient Fetch', this.selectedBaseServer,
+            patients
+        );
     }
 
-    public static buildUniquePatientIdentifier(patient: Patient | undefined) {
-        if (patient) {
-            if (patient.id?.length >= 6) {
-                return patient.display + " - " + patient.id.substring(0, 6) + "...";
-            } else {
-                return patient.display + " - " + patient.id;
+    protected getDisplayName(entry: BundleEntry) {
+        if (!entry) return '';
+
+        let firstName = '';
+        let lastName = '';
+
+        if (Array.isArray(entry?.resource?.name) && entry.resource.name.length > 0) {
+            if (entry.resource.name[0]?.given?.length > 0) {
+                firstName = entry.resource.name[0].given[0];
+            }
+
+            if (entry.resource.name[0]?.family) {
+                lastName = entry.resource.name[0].family;
             }
         }
-    };
+
+        let displayName = '';
+        if (!firstName && !lastName) {
+            return '';
+        } else if (firstName && lastName) {
+            displayName = `${firstName} ${lastName}`;
+        } else {
+            displayName = firstName || lastName;
+        }
+
+        return displayName;
+    }
 
 }

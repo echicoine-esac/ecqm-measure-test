@@ -9,7 +9,7 @@ let populationScoringCollection: PopulationScoring[] = [];
 
 const convertToID = (str: any | undefined): string => {
   let strIn: string = '' + str;
-  return (strIn.replace(' ', ''));
+  return (strIn.replaceAll(' ', ''));
 }
 
 beforeAll(() => {

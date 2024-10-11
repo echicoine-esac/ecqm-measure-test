@@ -75,7 +75,7 @@ test('get CollectData mock', async () => {
     fetchMock.once(collectDataFetch.getUrl(),
         JSON.stringify(mockJsonCollectDataData)
         , { method: 'GET' });
-    let collectedData: string = await collectDataFetch.fetchData('')
+    let collectedData: string | undefined = await (await collectDataFetch.fetchData()).jsonFormattedString
     expect(collectedData).toEqual(JSON.stringify(mockJsonCollectDataData, undefined, 2));
 
     fetchMock.restore();
@@ -96,12 +96,12 @@ test('get CollectData mock error', async () => {
     fetchMock.once(collectDataFetch.getUrl(), { throws: new Error(errorMsg) });
 
     try {
-        await collectDataFetch.fetchData('')
+        await collectDataFetch.fetchData()
     } catch (error: any) {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=Patient/selectedPatient&reportType=subject-list to retrieve Collect Data caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$collect-data?periodStart=startDate&periodEnd=endDate&subject=Patient/selectedPatient&reportType=subject-list for Collect Data caused: Error: this is a test');
 
     fetchMock.restore();
 

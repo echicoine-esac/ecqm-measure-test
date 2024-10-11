@@ -1,0 +1,13 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "information",
+      "code": "informational",
+      "details": {
+        "text": "The operation completed successfully, but no new resources were created."
+      },
+      "diagnostics": "All resources were up-to-date, no updates were needed."
+    }
+  ]
+}

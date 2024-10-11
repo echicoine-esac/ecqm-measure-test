@@ -18,12 +18,13 @@ Amplify.configure(awsExports);
  * advantage of instances of this class.
  */
 export class MeasureComparisonManager {
-    private selectedPatient: Patient | undefined;
-    public selectedMeasure: Measure;
-    private selectedMeasureEvaluation: Server | undefined;
-    private startDate: string = '';
-    private endDate: string = '';
-    private accessToken: string = '';
+    selectedPatient: Patient | undefined;
+    selectedMeasure: Measure;
+    selectedMeasureEvaluationServer: Server | undefined;
+    selectedDataRepoServer: Server | undefined;
+    startDate: string = '';
+    endDate: string = '';
+    accessToken: string = '';
 
     public fetchedEvaluatedMeasureGroups: PopulationElement[] = [];
     public fetchedMeasureReportGroups: PopulationElement[] = [];
@@ -35,19 +36,19 @@ export class MeasureComparisonManager {
 
     constructor(selectedPatient: Patient | undefined,
         selectedMeasure: Measure,
-        selectedMeasureEvaluation: Server,
+        selectedMeasureEvaluationServer: Server,
+        selectedDataRepoServer: Server,
         startDate: string,
-        endDate: string,
-        accessToken: string
+        endDate: string
     ) {
         this.selectedPatient = selectedPatient;
         this.selectedMeasure = selectedMeasure;
-        this.selectedMeasureEvaluation = selectedMeasureEvaluation;
+        this.selectedMeasureEvaluationServer = selectedMeasureEvaluationServer;
+        this.selectedDataRepoServer = selectedDataRepoServer;
         this.startDate = startDate;
         this.endDate = endDate;
 
     }
-
 
     /**
      * Attempts to first evaluate measure against selected patient using specific eval server.
@@ -57,20 +58,21 @@ export class MeasureComparisonManager {
     public async fetchGroups() {
         try {
 
-            const measureReportFetch = new MeasureReportFetch(this.selectedMeasureEvaluation,
+            const measureReportFetch = new MeasureReportFetch(this.selectedDataRepoServer,
                 this.selectedPatient, this.selectedMeasure.name, this.startDate, this.endDate);
             this.measureReportURL = measureReportFetch.getUrl();
 
             //MeasureReport fetch filters by date manually (period.start/period.end) comes back as entry array
-            this.fetchedMeasureReportGroups = ScoringUtils.extractBundleMeasureReportGroupData(await measureReportFetch.fetchData(this.accessToken));
+            this.fetchedMeasureReportGroups = ScoringUtils.extractBundleMeasureReportGroupData((await measureReportFetch.fetchData()).operationData);
 
 
-            const evaluateMeasureFetch = new EvaluateMeasureFetch(this.selectedMeasureEvaluation,
+            const evaluateMeasureFetch = new EvaluateMeasureFetch(this.selectedMeasureEvaluationServer,
                 this.selectedMeasure.name, this.startDate, this.endDate, true, this.selectedPatient);
+
             this.evaluatedMeasureURL = evaluateMeasureFetch.getUrl();
 
             //evaluate measure comes back as a single MeasureReport
-            this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData(this.accessToken)).jsonBody);
+            this.fetchedEvaluatedMeasureGroups = ScoringUtils.extractMeasureReportGroupData((await evaluateMeasureFetch.fetchData()).jsonRawData);
 
             this.discrepancyExists = this.compareMeasureGroups();
         } catch (error: any) {

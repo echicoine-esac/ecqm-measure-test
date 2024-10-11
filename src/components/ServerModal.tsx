@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Constants } from '../constants/Constants';
 
 // Props for ServerModal
-interface props {
+interface Props {
     modalShow: boolean;
     setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
     createServer: (baseUrl: string, authUrl: string, tokenUrl: string, clientId: string,
@@ -12,7 +12,7 @@ interface props {
 }
 
 // ServerModal component collects the information for adding an endpoint
-const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) => {
+const ServerModal: React.FC<Props> = ({modalShow, setModalShow, createServer}) => {
     const [baseUrl, setBaseUrl] = useState<string>('');
     const [authUrl, setAuthUrl] = useState<string>('');
     const [tokenUrl, setTokenUrl] = useState<string>('');
@@ -105,8 +105,8 @@ const ServerModal: React.FC<props> = ({modalShow, setModalShow, createServer}) =
     }
 
     return (
-        <Modal size='lg' centered show={modalShow}>
-            <Form data-testid='server-model-form' noValidate validated={validated} onSubmit={submitServer}>
+        <Modal size='lg' centered show={modalShow} style={{margin: '0px', transition: 'opacity 0.3s'}}>
+            <Form style={{padding: '10px'}} data-testid='server-model-form' noValidate validated={validated} onSubmit={submitServer}>
                 <Modal.Header><h2>Add server endpoint</h2></Modal.Header>
                 <Modal.Body>
                     <div className='row'>

@@ -1,7 +1,8 @@
 import { Constants } from '../constants/Constants';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
-import {Server} from '../models/Server';
+import { Server } from '../models/Server';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 
 export class DataRequirementsFetch extends AbstractDataFetch {
     type: FetchType;
@@ -16,7 +17,8 @@ export class DataRequirementsFetch extends AbstractDataFetch {
         startDate: string,
         endDate: string) {
 
-        super();
+        super(selectedKnowledgeRepo);
+
         this.type = FetchType.DATA_REQUIREMENTS;
 
         if (!selectedKnowledgeRepo) {
@@ -43,12 +45,14 @@ export class DataRequirementsFetch extends AbstractDataFetch {
 
     public getUrl(): string {
         return this.selectedKnowledgeRepo?.baseUrl + 'Measure/' + this.selectedMeasure +
-        '/$data-requirements?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
+            '/$data-requirements?periodStart=' + this.startDate + '&periodEnd=' + this.endDate;
     }
 
     protected processReturnedData(data: any) {
-        const ret: string = JSON.stringify(data, undefined, 2)
-        return ret;
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            data,
+            'Data Requirements',
+            this.selectedBaseServer);
     }
 
 }

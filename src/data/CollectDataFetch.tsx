@@ -2,6 +2,7 @@ import { Constants } from '../constants/Constants';
 import { Patient } from '../models/Patient';
 import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
@@ -25,7 +26,10 @@ export class CollectDataFetch extends AbstractDataFetch {
         patientGroup?: PatientGroup | undefined
     ) {
 
-        super();
+        //establish a base server to run the fetch against:
+        super(selectedDataRepo);
+
+
         this.type = FetchType.COLLECT_DATA;
 
         if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
@@ -72,7 +76,7 @@ export class CollectDataFetch extends AbstractDataFetch {
             } else if (this.patientGroup) {
                 subject = 'Group/' + this.patientGroup.id;
             }
-            return StringUtils.format(Constants.collectDataWithSubjectFetchURL,
+            return StringUtils.format(Constants.fetch_collectDataWithSubject,
                 this.selectedDataRepo?.baseUrl,
                 this.selectedMeasure,
                 this.startDate,
@@ -82,7 +86,7 @@ export class CollectDataFetch extends AbstractDataFetch {
         }
 
         //useSubject not true, return url without subject line
-        return StringUtils.format(Constants.collectDataWithSubjectFetchURL.replace('&subject={4}', ''),
+        return StringUtils.format(Constants.fetch_collectDataWithSubject.replace('&subject={4}', ''),
             this.selectedDataRepo?.baseUrl,
             this.selectedMeasure,
             this.startDate,
@@ -92,12 +96,56 @@ export class CollectDataFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        try {
-            const ret: string = JSON.stringify(data, undefined, 2)
-            return ret;
-        } catch (error: any) {
-            return data;
-        }
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.makeJsonDataSubmittable(data), 
+            'Collect Data', 
+            this.selectedBaseServer);
     }
 
+      /**
+     * Current bugs in hapi-fhir: 
+     * - Data returned using $collect-data associates ids in the name entry for each resource. These names are used in 
+     *   SubmitDataProvider as 'OperationParam' identifiers, which are validating by whole string only, which means 
+     *   'measureReport-1234' will not be found but 'measureReport' will.
+     * 
+     *   Example:   "name": "measureReport-e8029124-d760-40eb-b25a-703e447a3e4d"
+     *               will convert to
+     *              "name": "measureReport"
+     * 
+     * - Measure identification in the data returned by $collect-data includes version.
+     *      
+     *   Example:   "measure": "https://madie.cms.gov/Measure/AlaraCTClinicalFHIR|0.4.000"
+     *              will convert to
+     *              "measure": "https://madie.cms.gov/Measure/AlaraCTClinicalFHIR"
+     * @param jsonString 
+     * @returns 
+     */
+      private makeJsonDataSubmittable(jsonData: any): string {
+        if (jsonData.parameter && Array.isArray(jsonData.parameter)) {
+            jsonData.parameter.forEach((entry: any) => {
+
+                //strip the id in the name field:
+                if (entry.name && typeof entry.name === 'string') {
+                    if (entry.name.startsWith('measureReport-')) {
+                        entry.name = 'measureReport';
+                    }
+                    if (entry.name.startsWith('resource-')) {
+                        entry.name = 'resource';
+                    }
+                }
+
+                //strip measure version if present:
+                if (entry.resource && entry.resource.resourceType === 'Measure') {
+                    if (entry.resource.id && typeof entry.resource.id === 'string') {
+                        const measureIdParts = entry.resource.id.split('|');
+                        if (measureIdParts.length > 1) {
+                            entry.resource.id = measureIdParts[0];
+                        }
+                    }
+                }
+            });
+        }
+
+        return JSON.stringify(jsonData, null, 2);
+    }
 }

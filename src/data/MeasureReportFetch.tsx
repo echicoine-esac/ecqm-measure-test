@@ -1,6 +1,7 @@
 import { Constants } from '../constants/Constants';
 import { Patient } from '../models/Patient';
 import { Server } from '../models/Server';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
 import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
@@ -19,7 +20,8 @@ export class MeasureReportFetch extends AbstractDataFetch {
         startDate: string,
         endDate: string) {
 
-        super();
+        super(selectedServer);
+
         this.type = FetchType.MEASURE_REPORT;
 
         if (!selectedServer || selectedServer.baseUrl === '') {
@@ -50,7 +52,7 @@ export class MeasureReportFetch extends AbstractDataFetch {
     }
 
     public getUrl(): string {
-        return StringUtils.format(Constants.measureReportFetchURL_byMeasure,
+        return StringUtils.format(Constants.fetch_measureReportByMeasure,
             this.selectedServer?.baseUrl,
             this.selectedPatient?.id,
             this.selectedMeasure);
@@ -62,7 +64,8 @@ export class MeasureReportFetch extends AbstractDataFetch {
      * @returns 
      */
     protected processReturnedData(data: any) {
-        return data.entry?.filter((entry: any) => {
+        
+        const optionalData = data.entry?.filter((entry: any) => {
             const entryStartDate = new Date(entry.resource.period?.start);
             const entryEndDate = new Date(entry.resource.period?.end);
             const filterStartDate = new Date(this.startDate);
@@ -73,5 +76,9 @@ export class MeasureReportFetch extends AbstractDataFetch {
 
             return dateCondition;
         });
+
+        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'MeasureReport Fetch', this.selectedBaseServer,
+            optionalData
+        );
     }
 }

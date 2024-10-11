@@ -39,9 +39,11 @@ test('required properties check', async () => {
 test('fetchData and processData override', async () => {
     const dataServer: Server = Constants.serverTestData[0];
 
-    expect(await new SubmitDataFetch(dataServer,
+    expect(
+        (await new SubmitDataFetch(dataServer,
         'selectedMeasure', 'collectedData').fetchData())
-        .toEqual(Constants.submitDataFetchDataError);
+        .outcomeMessage)
+        .toEqual(Constants.functionNotImplemented);
 });
 
 test('submit data mock', async () => {
@@ -49,12 +51,12 @@ test('submit data mock', async () => {
     const submitDataFetch = new SubmitDataFetch(dataServer, 'selectedMeasure', 'collectedData');
     fetchMock.once(submitDataFetch.getUrl(), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/fhir+json' },
         body: Constants.submitPostTestBody,
     });
 
-    const ret: string = await submitDataFetch.submitData('');
-    expect(ret.length).toEqual(145);
+    const ret: string | undefined = (await submitDataFetch.submitData()).jsonFormattedString;
+    expect(ret?.length).toEqual(134);
 
     fetchMock.reset();
 });
@@ -67,14 +69,14 @@ test('submit data mock error 400', async () => {
 
     let errorCatch = '';
     try {
-        await submitDataFetch.submitData('')
+        await submitDataFetch.submitData()
     } catch (error: any) {
         errorCatch = error.message;
     }
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Bad Request');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data for Submit Data caused: Error: 400 (Bad Request)');
 
 });
 
@@ -86,14 +88,14 @@ test('submit data mock error 500', async () => {
 
     let errorCatch = '';
     try {
-        await submitDataFetch.submitData('')
+        await submitDataFetch.submitData()
     } catch (error: any) {
         errorCatch = error.message;
     }
 
     fetchMock.reset();
 
-    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data to retrieve Submit Data caused: Internal Server Error');
+    expect(errorCatch).toEqual('Using http://localhost:8080/1/Measure/selectedMeasure/$submit-data for Submit Data caused: Error: 500 (Internal Server Error)');
 
 });
 

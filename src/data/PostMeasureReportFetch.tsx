@@ -1,6 +1,8 @@
 import { Constants } from '../constants/Constants';
-import { StringUtils } from '../utils/StringUtils';
+import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 import { Server } from '../models/Server';
+import { OutcomeTrackerUtils } from '../utils/OutcomeTrackerUtils';
+import { StringUtils } from '../utils/StringUtils';
 import { AbstractDataFetch, FetchType } from './AbstractDataFetch';
 
 export class PostMeasureReportFetch extends AbstractDataFetch {
@@ -12,7 +14,8 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
     constructor(selectedReceiving: Server | undefined,
         measureReport: string) {
 
-        super();
+        super(selectedReceiving);
+
         this.type = FetchType.POST_MEASURE;
 
         if (!selectedReceiving || selectedReceiving.baseUrl === '') {
@@ -23,6 +26,8 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
             throw new Error(StringUtils.format(Constants.missingProperty, 'measureReport'));
         }
 
+        this.selectedBaseServer = selectedReceiving;
+
         this.selectedReceiving = selectedReceiving;
         this.measureReport = measureReport;
     }
@@ -32,43 +37,56 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any) {
-        return JSON.stringify(data, undefined, 2);
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            data,
+            'Post Measure Report',
+            this.selectedBaseServer);
     }
 
-    submitData = async (token: string): Promise<string> => {
+    submitData = async (): Promise<OutcomeTracker> => {
+
+        //handle the OAuth flow if the selectedBaseServer has an authUrl:
+        if (this.selectedBaseServer?.authUrl && this.selectedBaseServer?.authUrl.length > 0) {
+            if (!await this.handleOAuth(this.selectedBaseServer)) {
+                throw new Error('Authorization process for ' + this.selectedBaseServer.baseUrl + ' did not complete successfully.');
+            }
+        }
+
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/fhir+json',
-                "Authorization": `Bearer ${token}`},
+            headers: {
+                'Content-Type': 'application/fhir+json',
+                "Authorization": `Bearer ${this.getAccessToken()}`
+            },
             body: this.measureReport
         };
 
-        let ret = '';
+        let ret: any;
 
         // Call the FHIR server to submit the data
         let responseStatusText = '';
 
-        await fetch(await this.getUrl(), requestOptions)
-            .then((response) => {
-                responseStatusText = response?.statusText;
-                return response.json()
-            })
-            .then((data) => {
+        await fetch(this.getUrl(), requestOptions)
+            .then(response => this.handleResponse(response))  // Handle the response
+            .then(response => response.json())                // Parse JSON after handling
+            .then(data => {
                 ret = this.processReturnedData(data);
             })
             .catch((error) => {
                 let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
-                if (responseStatusText.length > 0 && responseStatusText !== 'OK' ){
+                if (responseStatusText.length > 0 && responseStatusText !== 'OK') {
                     message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, responseStatusText);
                 }
                 throw new Error(message);
             });
+
         return ret;
     }
 
-    fetchData = async (): Promise<string> => {
-        return Constants.measurePostedFetchDataError;
+    fetchData = async (): Promise<OutcomeTracker> => {
+        return {
+            outcomeMessage: Constants.functionNotImplemented,
+            outcomeType: Outcome.NONE
+        }
     }
 }
-
-

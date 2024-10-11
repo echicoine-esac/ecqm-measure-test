@@ -12,7 +12,8 @@ import { Measure } from '../../models/Measure';
 import { Patient } from '../../models/Patient';
 import { Server } from '../../models/Server';
 import jsonTestMeasureEvaluationData from '../../tests/resources/fetchmock-measure-evaluation.json';
-import { HashParamUtils } from '../../utils/HashParamUtils';
+
+import { PatientGroupUtils } from '../../utils/PatientGroupUtils';
 import { ServerUtils } from '../../utils/ServerUtils';
 import jsonTestGroupData from '../resources/fetchmock-group.json';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
@@ -46,8 +47,7 @@ beforeEach(() => {
     return Constants.serverTestData;
   });
 
-  //clear out old accessCode, generateStateCode, and stateCode values
-  HashParamUtils.clearCachedValues();
+
 
   //reset the selected knowledge repo stored in sessionStorage
   sessionStorage.setItem('selectedKnowledgeRepo', JSON.stringify(''));
@@ -57,6 +57,10 @@ beforeEach(() => {
 
 });
 
+beforeAll(() => {
+  global.URL.createObjectURL = jest.fn();
+  window.HTMLElement.prototype.scrollIntoView = jest.fn();
+});
 
 //RENDERING: 
 test(thisTestFile + ' renders properly', async () => {
@@ -93,9 +97,9 @@ test(thisTestFile + ' fail scenario: submit without any selection', async () => 
   const submitButton: HTMLButtonElement = screen.getByTestId('rec-sys-submit-button');
   fireEvent.click(submitButton);
 
-  const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+  const resultsTextField: HTMLElement = screen.getByTestId('results-text');
   expect(resultsTextField).toBeInTheDocument();
-  expect(resultsTextField.value).toEqual(Constants.error_generateMeasureReport);
+  expect(resultsTextField.textContent).toEqual(Constants.error_receivingSystemServer);
 });
 
 
@@ -122,7 +126,7 @@ test(thisTestFile + ' success scenario: submit', async () => {
 
     //mock measure list server selection will return 
     await act(async () => {
-      const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+      const measureFetch = new MeasureFetch(dataServers[0]);
       const mockJsonMeasureData = jsonTestMeasureData;
       fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
@@ -149,13 +153,13 @@ test(thisTestFile + ' success scenario: submit', async () => {
 
     //select server, mock list should return:
     await act(async () => {
-      const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
+      const patientFetch = await PatientFetch.createInstance(dataServers[0]);
       const mockJsonPatientData = jsonTestPatientsData;
       fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientData)
         , { method: 'GET' });
 
-      const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+      const groupFetch = new GroupFetch(dataServers[0]);
 
       const mockJsonGroupData = jsonTestGroupData;
       fetchMock.once(groupFetch.getUrl(),
@@ -167,7 +171,7 @@ test(thisTestFile + ' success scenario: submit', async () => {
     fetchMock.restore();
 
     //mock measure list server selection will return 
-    const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+    const measureFetch = new MeasureFetch(dataServers[0]);
     const mockJsonMeasureData = jsonTestMeasureData;
     fetchMock.once(measureFetch.getUrl(),
       JSON.stringify(mockJsonMeasureData)
@@ -184,7 +188,7 @@ test(thisTestFile + ' success scenario: submit', async () => {
 
     //now select patient
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
     userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 
@@ -215,8 +219,8 @@ test(thisTestFile + ' success scenario: submit', async () => {
       await fireEvent.click(evaluateButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-    expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+    expect(resultsTextField.textContent).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
 
   }
 
@@ -246,9 +250,9 @@ test(thisTestFile + ' success scenario: submit', async () => {
     });
     fetchMock.restore();
 
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.value).toEqual('true');//Constants.dataSubmitted);
+    expect(resultsTextField.textContent).toEqual('true');
   }
 
 });
@@ -277,7 +281,7 @@ test(thisTestFile + ' fail scenario: submit', async () => {
 
     //mock measure list server selection will return 
     await act(async () => {
-      const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+      const measureFetch = new MeasureFetch(dataServers[0]);
       const mockJsonMeasureData = jsonTestMeasureData;
       fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
@@ -304,13 +308,13 @@ test(thisTestFile + ' fail scenario: submit', async () => {
 
     //select server, mock list should return:
     await act(async () => {
-      const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
+      const patientFetch = await PatientFetch.createInstance(dataServers[0]);
       const mockJsonPatientData = jsonTestPatientsData;
       fetchMock.once(patientFetch.getUrl(),
         JSON.stringify(mockJsonPatientData)
         , { method: 'GET' });
 
-      const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+      const groupFetch = new GroupFetch(dataServers[0]);
 
       const mockJsonGroupData = jsonTestGroupData;
       fetchMock.once(groupFetch.getUrl(),
@@ -322,7 +326,7 @@ test(thisTestFile + ' fail scenario: submit', async () => {
     fetchMock.restore();
 
     //mock measure list server selection will return 
-    const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+    const measureFetch = new MeasureFetch(dataServers[0]);
     const mockJsonMeasureData = jsonTestMeasureData;
     fetchMock.once(measureFetch.getUrl(),
       JSON.stringify(mockJsonMeasureData)
@@ -339,7 +343,7 @@ test(thisTestFile + ' fail scenario: submit', async () => {
 
     //now select patient
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
     userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 
@@ -370,8 +374,8 @@ test(thisTestFile + ' fail scenario: submit', async () => {
       await fireEvent.click(evaluateButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-    expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+    expect(resultsTextField.textContent).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
 
   }
 
@@ -403,9 +407,9 @@ test(thisTestFile + ' fail scenario: submit', async () => {
     });
     fetchMock.restore();
 
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.value).toEqual('Using http://localhost:8080/1/MeasureReport/ to retrieve Post Measure Report caused: Error: this is a test');
+    expect(resultsTextField.textContent).toEqual('Using http://localhost:8080/1/MeasureReport/ for Post Measure Report caused: Error: this is a test');
   }
 
 });
@@ -434,7 +438,7 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
 
     //mock measure list server selection will return 
     await act(async () => {
-      const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+      const measureFetch = new MeasureFetch(dataServers[0]);
       const mockJsonMeasureData = jsonTestMeasureData;
       fetchMock.once(measureFetch.getUrl(), JSON.stringify(mockJsonMeasureData), { method: 'GET' });
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
@@ -461,7 +465,7 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
 
     //select server, mock list should return:
     await act(async () => {
-      const patientFetch = await PatientFetch.createInstance(dataServers[0].baseUrl);
+      const patientFetch = await PatientFetch.createInstance(dataServers[0]);
 
       const mockJsonPatientData = jsonTestPatientsData;
       fetchMock.once(patientFetch.getUrl(),
@@ -469,7 +473,7 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
         , { method: 'GET' });
 
 
-      const groupFetch = new GroupFetch(dataServers[0].baseUrl);
+      const groupFetch = new GroupFetch(dataServers[0]);
 
       const mockJsonGroupData = jsonTestGroupData;
       fetchMock.once(groupFetch.getUrl(),
@@ -481,7 +485,7 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
     fetchMock.restore();
 
     //mock measure list server selection will return 
-    const measureFetch = new MeasureFetch(dataServers[0].baseUrl);
+    const measureFetch = new MeasureFetch(dataServers[0]);
     const mockJsonMeasureData = jsonTestMeasureData;
     fetchMock.once(measureFetch.getUrl(),
       JSON.stringify(mockJsonMeasureData)
@@ -498,7 +502,7 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
 
     //now select patient
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
-    const expectedDisplayName: string = PatientFetch.buildUniquePatientIdentifier(mockPatientList[0]) + '';
+    const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
     userEvent.selectOptions(patientDropdown, expectedDisplayName);
   }
 
@@ -529,8 +533,8 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
       await fireEvent.click(evaluateButton);
     });
     fetchMock.restore();
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
-    expect(resultsTextField.value).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
+    expect(resultsTextField.textContent).toEqual(JSON.stringify(mockJsonResultsData, undefined, 2));
 
   }
 
@@ -548,9 +552,9 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
     });
     fetchMock.restore();
 
-    const resultsTextField: HTMLTextAreaElement = screen.getByTestId('results-text');
+    const resultsTextField: HTMLElement = screen.getByTestId('results-text');
     expect(resultsTextField).toBeInTheDocument();
-    expect(resultsTextField.value).toEqual('Missing required property: selectedReceiving');
+    expect(resultsTextField.textContent).toEqual(Constants.error_receivingSystemServer);
   }
 
 });
@@ -558,12 +562,12 @@ test(thisTestFile + ' fail scenario: submit without server selection', async () 
 
 //mock measure and patient data
 async function buildMeasureData(url: string): Promise<Measure[]> {
-  const measureFetch = new MeasureFetch(url);
+  const measureFetch = new MeasureFetch(Constants.serverTestData[0]);
   const mockJsonMeasureData = jsonTestMeasureData;
   fetchMock.once(measureFetch.getUrl(),
     JSON.stringify(mockJsonMeasureData)
     , { method: 'GET' });
-  let measureList: Measure[] = await measureFetch.fetchData('');
+  let measureList: Measure[] = (await measureFetch.fetchData()).operationData;
   fetchMock.restore();
   return measureList;
 }
@@ -571,12 +575,12 @@ async function buildMeasureData(url: string): Promise<Measure[]> {
 async function buildPatientData(url: string): Promise<Patient[]> {
   fetchMock.mock(url + 'Patient?_summary=count', mockPatientTotalCountJSON);
 
-  const patientFetch = await PatientFetch.createInstance(url);
+  const patientFetch = await PatientFetch.createInstance(Constants.serverTestData[0]);
   const mockJsonPatientData = jsonTestPatientsData;
   fetchMock.once(patientFetch.getUrl(),
     JSON.stringify(mockJsonPatientData)
     , { method: 'GET' });
-  let patientList: Patient[] = await patientFetch.fetchData('');
+  let patientList: Patient[] = (await patientFetch.fetchData()).operationData;
   fetchMock.restore();
   return patientList;
 }

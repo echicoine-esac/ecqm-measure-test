@@ -1,5 +1,5 @@
-import { PatientGroup } from "../models/PatientGroup";
-import { Patient } from "../models/Patient";
+import { PatientGroup } from '../models/PatientGroup';
+import { Patient } from '../models/Patient';
 
 export class PatientGroupUtils {
     public static patientExistsInGroup(patientEntry: Patient | undefined, selectedMeasureGroup: PatientGroup | undefined): boolean {
@@ -11,4 +11,14 @@ export class PatientGroupUtils {
             member => member.entity.reference?.split('Patient/')[1] === patientEntry.id
         );
     }
+
+    public static buildUniquePatientIdentifier(patient: Patient | undefined) {
+        if (patient) {
+            if (patient.id?.length >= 6) {
+                return patient.display + ' - ' + patient.id.substring(0, 6) + '...';
+            } else {
+                return patient.display + ' - ' + patient.id;
+            }
+        }
+    };
 }

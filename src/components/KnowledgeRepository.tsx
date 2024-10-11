@@ -3,9 +3,13 @@ import React from 'react';
 import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import { Measure } from '../models/Measure';
 import { Server } from '../models/Server';
+import SectionalTitleBar from './SectionalTitleBar';
+import { Constants } from '../constants/Constants';
+import ServerDropdown from './ServerDropdown';
+import { Section } from '../enum/Section.enum';
 
 // Props for KnowledgeRepository
-interface props {
+interface Props {
   showKnowledgeRepo: boolean;
   setShowKnowledgeRepo: React.Dispatch<React.SetStateAction<boolean>>;
   servers: any;
@@ -22,37 +26,24 @@ interface props {
 
 
 // KnowledgeRepository component displays the fields for selecting and using the Knowledge Repository
-const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowledgeRepo, servers,
+const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowledgeRepo, servers,
   fetchMeasures, selectedKnowledgeRepo, measures, setSelectedMeasure,
   selectedMeasure, getDataRequirements, loading, setModalShow }) => {
 
   return (
     <div className='card'>
       <div className='card-header'>
-        <div className='row'>
-          <div className='col-md-3 order-md-1'>Knowledge Repository</div>
-          {showKnowledgeRepo ? (
-            <div className='col-md-8 order-md-2 text-muted' />
-          ) : (
-            <div data-testid='selected-measure-div' className='col-md-8 order-md-2 text-muted'>
-              Selected Measure: {selectedMeasure}
-            </div>
-          )}
-          <div className='col-md-1 order-md-3'>
-            {showKnowledgeRepo ? (
-              <Button data-testid='knowledge-repo-hide-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowKnowledgeRepo(false)}>
-                Hide
-              </Button>
-            ) : (
-              <Button data-testid='knowledge-repo-show-section-button' className='btn btn-primary btn-lg float-right' onClick={(e) => setShowKnowledgeRepo(true)}>
-                Show
-              </Button>
-            )}
-          </div>
-        </div>
+
+        <SectionalTitleBar
+          section={Section.KNOWLEDGE_REPO}
+          setShowSection={setShowKnowledgeRepo}
+          showSection={showKnowledgeRepo}
+          selectedSubjectTitling='Selected Measure'
+          selectedSubject={selectedMeasure} />
+
       </div>
       {showKnowledgeRepo ? (
-        <div className='card-body'>
+        <div className='card-body' style={{ transition: 'all .1s' }}>
           <div className='row'>
             <div className='col-md-6 order-md-1'>
               <label>Knowledge Repository Server</label>
@@ -65,16 +56,15 @@ const KnowledgeRepository: React.FC<props> = ({ showKnowledgeRepo, setShowKnowle
             </div>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-1'>
-              <select disabled={loading} data-testid='knowledge-repo-server-dropdown' className='custom-select d-block w-100' id='server' value={selectedKnowledgeRepo?.baseUrl}
-                onChange={(e) => fetchMeasures(servers[e.target.selectedIndex - 1]!)}>
-                <option value={'Select a Server...'}>
-                  Select a Server...</option>
-                {servers.map((server: any, index: React.Key | null | undefined) => (
-                  <option key={index}>{server!.baseUrl}</option>
-                ))}
-              </select>
-            </div>
+
+            <ServerDropdown
+              dataTestID={Constants.id_knowledge_repo}
+              loading={loading}
+              servers={servers}
+              callFunction={fetchMeasures}
+              baseUrlValue={selectedKnowledgeRepo?.baseUrl}
+            />
+
             <div className='col-md-1 order-md-2'>
               <OverlayTrigger placement={'top'} overlay={
                 <Tooltip>Add an Endpoint</Tooltip>
