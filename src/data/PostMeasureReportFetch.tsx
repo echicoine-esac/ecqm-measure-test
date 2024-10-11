@@ -67,15 +67,10 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
         let responseStatusText = '';
 
         await fetch(this.getUrl(), requestOptions)
-            .then((response) => {
-                try {
-                    return this.handleResponse(response);
-                } catch (error: any) {
-                    throw new Error(error.message);
-                }
-            })
-            .then((data) => {
-                ret = data;
+            .then(response => this.handleResponse(response))  // Handle the response
+            .then(response => response.json())                // Parse JSON after handling
+            .then(data => {
+                ret = this.processReturnedData(data);
             })
             .catch((error) => {
                 let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
@@ -85,7 +80,7 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
                 throw new Error(message);
             });
 
-        return this.processReturnedData(ret);
+        return ret;
     }
 
     fetchData = async (): Promise<OutcomeTracker> => {

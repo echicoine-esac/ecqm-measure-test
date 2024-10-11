@@ -70,13 +70,12 @@ export class OutcomeTrackerUtils {
                 //'fatal' | 'error' | 'warning' | 'information';
                 if (entry.severity === 'fatal' || entry.severity === 'error') {
                     outcome = Outcome.FAIL;
+                    break;
                 } else if (entry.severity === 'warning') {
                     outcome = Outcome.WARNING;
+                    break;
                 } else if (entry.severity === 'information') {
                     outcome = Outcome.INFO;
-                }
-
-                if (outcome !== Outcome.SUCCESS) {
                     break;
                 }
             }

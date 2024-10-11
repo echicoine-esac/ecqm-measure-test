@@ -55,24 +55,19 @@ export abstract class AbstractDataFetch {
         let responseStatusText = '';
 
         await fetch(this.getUrl(), this.requestOptions)
-            .then((response) => {
-                try {
-                    return this.handleResponse(response);
-                } catch (error: any) {
-                    throw new Error(error.message);
-                }
-            })
-            .then((data) => {
+            .then(response => this.handleResponse(response))  // Handle the response
+            .then(response => response.json())                // Parse JSON after handling
+            .then(data => {
                 ret = this.processReturnedData(data);
             })
             .catch((error) => {
+                console.log('error', error);
                 let message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, error);
                 if (responseStatusText.length > 0 && responseStatusText !== 'OK') {
                     message = StringUtils.format(Constants.fetchError, this.getUrl(), this.type, responseStatusText);
                 }
                 throw new Error(message);
-            })
-
+            });
 
         //reset output:
         if (setSectionalResults) {
@@ -84,9 +79,41 @@ export abstract class AbstractDataFetch {
 
 
 
-    protected handleResponse(response: Response): any {
+    /**
+     * If the FHIR server returned an OperationOutcome resourceType,
+     * we need to use that to process the outcome and convey it to user.
+     * However, if a response is returned with a not-ok response, and no 
+     * OperationOutcome, an error should be thrown.
+     * @param response 
+     * @returns 
+     */
+    protected async handleResponse(response: Response): Promise<Response> {
+        // Clone the response to avoid consuming the body multiple times
+        const clonedResponse = response.clone();
+
+        let operationOutcomeType = false;
+        const data = await clonedResponse.json();
+
+        // Check if the resource type is OperationOutcome
+        if (data?.resourceType?.toString() === Constants.operationOutcomeResourceType) {
+            console.log(JSON.stringify(data, undefined, 2));
+            operationOutcomeType = true;
+        }
+
+        // If it's an OperationOutcome, return the original response
+        if (operationOutcomeType) {
+            return response;
+        } else {
+            // Otherwise, process the response for error handling
+            return this.processResponse(response);
+        }
+    }
+
+
+    private async processResponse(originalResponse: Response): Promise<Response> {
+        const response = originalResponse.clone();
         if (response?.status >= Constants.fetch_STATUS_OK && response?.status < 300) {
-            return response.json();
+            return originalResponse;
         } else if (response?.status === Constants.fetch_STATUS_GATEWAY_TIMEOUT) {
             throw new Error(Constants.fetch_GATEWAY_TIMEOUT);
         } else if (response?.status === Constants.fetch_STATUS_BAD_REQUEST) {

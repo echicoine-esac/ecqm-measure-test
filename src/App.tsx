@@ -28,13 +28,11 @@ import { PatientGroup } from './models/PatientGroup';
 import { PopulationScoring } from './models/PopulationScoring';
 import { GroupElement } from './models/Scoring';
 import { Server } from './models/Server';
-import { OAuthHandler } from './oauth/OAuthHandler';
 
+import { Section } from './enum/Section.enum';
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
-import { Section } from './enum/Section.enum';
-import { StringUtils } from './utils/StringUtils';
 
 const App: React.FC = () => {
   // Define the state variables
@@ -321,7 +319,6 @@ const App: React.FC = () => {
   const evaluateMeasure = async (useSubject: boolean) => {
     resetResults();
     setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
-
     clearPopulationCounts();
 
     // Make sure all required elements are set
@@ -354,62 +351,46 @@ const App: React.FC = () => {
       return;
     }
 
-    const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
-      selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
-
     // Set the loading state since this call can take a while to return
     setLoading(true);
 
+    const evaluateMeasureFetch = new EvaluateMeasureFetch(selectedMeasureEvaluationServer,
+      selectedMeasure, startDate, endDate, useSubject, selectedPatient, patientGroup)
+
     try {
       let evaluateMeasureOutcomeTracker: OutcomeTracker = await evaluateMeasureFetch.fetchData(setSectionalResults, Section.MEASURE_EVAL);
-
-      // Iterate through the population names to set the state
-      const measureGroups: GroupElement[] = evaluateMeasureOutcomeTracker.operationData;
-
-      if (!measureGroups) {
-        setShowPopulations(false);
-        setLoading(false);
-        return;
-      }
-
+      setResultsCaller(evaluateMeasureOutcomeTracker);
+  
       if (evaluateMeasureOutcomeTracker.jsonFormattedString) {
         setMeasureReport(evaluateMeasureOutcomeTracker.jsonFormattedString);
       }
 
-      let populationScoringCollection: PopulationScoring[] = [];
+      if (evaluateMeasureOutcomeTracker.operationData) {
+        const measureGroups: GroupElement[] = evaluateMeasureOutcomeTracker.operationData;
+        let populationScoringCollection: PopulationScoring[] = [];
 
-      // //used for testing
-      // const scoringConcept: CodeableConcept = {
-      //   coding: [{
-      //     system: 'http://terminology.hl7.org/CodeSystem/measure-scoring',
-      //     code: 'proportion',
-      //     display: 'Proportion'
-      //   }]
-      // };
+        for (const group of measureGroups) {
+          const groupElement: GroupElement = group;
 
-      for (const group of measureGroups) {
-        const groupElement: GroupElement = group;
+          populationScoringCollection.push({
+            groupID: groupElement.id,
+            groupScoring: evaluateMeasureOutcomeTracker.jsonRawData?.scoring ?
+              evaluateMeasureOutcomeTracker.jsonRawData?.scoring.coding[0].code : undefined,
+            groupPopulations: group.population
+          })
+        }
 
-        populationScoringCollection.push({
-          groupID: groupElement.id,
-          groupScoring: evaluateMeasureOutcomeTracker.jsonRawData?.scoring ?
-            evaluateMeasureOutcomeTracker.jsonRawData?.scoring.coding[0].code : undefined,
-          groupPopulations: group.population
-        })
+        //show the results:
+        setPopulationScoring(populationScoringCollection);
+
+        // Show the populations
+        setShowPopulations(true);
       }
-
-      //show the results:
-      setPopulationScoring(populationScoringCollection);
-      setResultsCaller(evaluateMeasureOutcomeTracker);
-
-      // Show the populations
-      setShowPopulations(true);
-
-      setLoading(false);
     } catch (error: any) {
       setSectionalResults(error.message, Section.MEASURE_EVAL);
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   // Function for calling the server to get the data requirements
