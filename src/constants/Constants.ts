@@ -1,4 +1,5 @@
 import { Section } from '../enum/Section.enum';
+import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 import { Server } from '../models/Server';
 
 export class Constants {
@@ -8,7 +9,7 @@ export class Constants {
     public static readonly title_receiving_system = 'Receiving System';
     public static readonly title_test_comparator = 'Test Comparator';
     public static readonly title_reportingPeriod = 'Reporting Period';
-    
+
     public static readonly id_knowledge_repo = 'knowledge-repo';
     public static readonly id_data_repo = 'data-repo';
     public static readonly id_measure_evaluation = 'mea-eva';
@@ -107,14 +108,23 @@ export class Constants {
     public static readonly fetch_SERVICE_UNAVAILABLE = Constants.fetch_STATUS_SERVICE_UNAVAILABLE + ' (Service Unavailable)';
     public static readonly fetch_UNEXPECTED_STATUS = 'Unexpected status encountered';
 
-  public static readonly oauth_storedIdentifier = 'Unexpected status encountered';
-
-
-    
     public static readonly functionNotImplemented = 'This function has not been implemented';
 
- 
+    public static readonly serverDefault: Server = {
+        id: '',
+        baseUrl: '',
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
+    };
 
+    public static readonly outcomeTrackerDefault: OutcomeTracker = {
+        outcomeMessage: '',
+        outcomeType: Outcome.NONE
+    };
 
     //testing purposes:
     public static readonly serverTestData: Server[] = [

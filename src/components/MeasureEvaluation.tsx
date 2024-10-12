@@ -114,8 +114,9 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
             </ul>
           </div>
 
-          <div className='row'>
+          <div className='row' style={{marginTop: '-25px'}}>
             <div className='col-md-5 order-md-2'>
+            <br />
               {loading ? (
                 <Button data-testid='mea-eva-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner
@@ -135,6 +136,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
               )}
             </div>
             <div className='col-md-5 order-md-2'>
+            <br />
               {loading ? (
                 <Button data-testid='mea-eva-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner

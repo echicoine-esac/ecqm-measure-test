@@ -17,32 +17,34 @@ const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubj
   const title = Constants.sectionTitles.get(section);
   const dataTestID = Constants.sectionIDs.get(section);
 
-
   return (
-    <div className='row' style={{ display: 'flex', flexWrap: 'nowrap' }}>
-      <div style={{
-        width: 'auto',
-        display: 'flex',
-        justifyContent: 'left',
-        alignItems: 'center',
-      }}
-        className='col-md-3 order-md-1'>
-        <h5 style={{ fontSize: '14pt', textAlign: 'left' }}>
+    <div className='row align-items-center'>
+      {/* Title Section */}
+      <div className='col-12 col-md-3 text-md-left mb-2 mb-md-0'>
+        <h5 style={{ fontSize: '14pt' }}>
           {title}
         </h5>
       </div>
 
-      <div data-testid={dataTestID + '-selected-div'} style={{ textAlign: 'right', paddingTop: '10px', flexGrow: 1, flexShrink: 1, minWidth: 0 }} className='col-md-8 order-md-2 text-muted'>
-        {!showSection && selectedSubject && selectedSubjectTitling && (selectedSubjectTitling + ': ' + selectedSubject)}
+      {/* Selected Subject Section */}
+      <div
+        data-testid={dataTestID + '-selected-div'}
+        className='col-12 col-md-8 text-muted text-md-right mb-2 mb-md-0'
+        style={{ textAlign: 'right' }}
+      >
+        {!showSection && selectedSubject && selectedSubjectTitling && (
+          selectedSubjectTitling + ': ' + selectedSubject
+        )}
       </div>
 
-      <div style={{ width: 'auto' }} className='col-md-1 order-md-3'>
+      {/* Button Section */}
+      <div className='col-12 col-md-1 text-md-right'>
         {showSection ? (
           <Button
             id={dataTestID + '-hide-section-button'}
             data-testid={dataTestID + '-hide-section-button'}
-            className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowSection(false)}
+            className='btn btn-primary btn-lg'
+            onClick={() => setShowSection(false)}
           >
             Hide
           </Button>
@@ -50,15 +52,14 @@ const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubj
           <Button
             id={dataTestID + '-show-section-button'}
             data-testid={dataTestID + '-show-section-button'}
-            className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowSection(true)}
+            className='btn btn-primary btn-lg'
+            onClick={() => setShowSection(true)}
           >
             Show
           </Button>
         )}
       </div>
     </div>
-
   );
 };
 
