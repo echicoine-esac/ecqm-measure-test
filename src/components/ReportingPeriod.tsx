@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import { Constants } from '../constants/Constants';
+import { Section } from '../enum/Section.enum';
+import SectionalTitleBar from './SectionalTitleBar';
 
 // Props for ReportingPeriod
 interface Props {
@@ -12,23 +13,13 @@ interface Props {
 
 // ReportingPeriod component displays the reporting period card and fields
 const ReportingPeriod: React.FC<Props> = ({ startDate, endDate, setStartDate, setEndDate }) => {
+
   return (
     <div className='card'>
-      <div className='card-header' style={{height: '63.71px'}}>
-        <div className='row' style={{ height: '47px', display: 'flex', flexWrap: 'nowrap' }}>
-          <div style={{
-            width: 'auto',
-            display: 'flex',
-            justifyContent: 'left',  // Horizontally center
-            alignItems: 'center',      // Vertically center
-          }} className='col-md-3 order-md-1'>
-            <h6 style={{ fontSize: '14pt', textAlign: 'center' }}>
-              {Constants.title_reportingPeriod}
-            </h6>
-          </div>
-        </div>
+      <div className='card-header'>
+        <SectionalTitleBar showSection={true} section={Section.REPORTING_PERIOD} />
       </div>
-      <div className='card-body' style={{ transition: 'all .1s' }}>
+      <div className='card-body'>
         <div className='row'>
           <div className='col-md-6 order-md-1'>
             <label>Start Date</label>

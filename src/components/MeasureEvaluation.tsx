@@ -1,13 +1,13 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState } from 'react';
-import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { Constants } from '../constants/Constants';
+import { Section } from '../enum/Section.enum';
 import { Patient } from '../models/Patient';
 import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
 import ServerDropdown from './ServerDropdown';
-import { Section } from '../enum/Section.enum';
 
 // Props for MeasureEvaluation
 interface Props {
@@ -78,33 +78,25 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
           
       </div>
       {showMeasureEvaluation ? (
-        <div className='card-body' style={{ transition: 'all .1s' }}>
-          <div className='row'>
-            <div className='col-md-6 order-md-1'>
-              <label>Measure Evaluation Server</label>
-            </div>
-          </div>
+        <div className='card-body'>
+           
           <div className='row'>
 
             <ServerDropdown
-              dataTestID={Constants.id_measure_evaluation}
+              section={Section.MEASURE_EVAL}
               loading={loading}
               servers={servers}
               callFunction={setSelectedMeasureEvaluation}
               baseUrlValue={selectedMeasureEvaluation?.baseUrl}
+              setModalShow={setModalShow}
             />
 
-            <div className='col-md-1 order-md-2'>
-              <OverlayTrigger placement={'top'} overlay={
-                <Tooltip>Add an Endpoint</Tooltip>
-              }>
-                <Button disabled={loading} variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
-              </OverlayTrigger>
-            </div>
+             
           </div>
 
           {/* checklist style indicator regardin stored collectedData */}
           <div className='mt-3' style={{ paddingBottom: '0px' }}>
+          
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
 
               <li data-testid='mea-eva-checklist-measure'>

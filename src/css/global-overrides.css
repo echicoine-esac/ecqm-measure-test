@@ -1,0 +1,114 @@
+:root {
+    --primary-color: #0188d1;
+    --primary-light: #5bbef2;
+    --primary-dark: #016799;
+    --text-color: #ffffff;
+    --background-light: #f8f9fa;
+    --border-color: #afb4b7;
+    --focus-shadow: rgba(1, 136, 209, 0.5);
+}
+
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    height: 70px;
+    align-items: center;
+    align-content: center;
+    border-bottom: none;
+}
+
+.card-body {
+    border-top: 1px solid var(--border-color);
+    transition: all .1s;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+button[type="submit"],
+button[type="button"],
+button[type="reset"] {
+    background-color: var(--primary-color);
+    border: 1px solid var(--focus-shadow);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.1s ease, border-color 0.1s ease;
+    max-height: 40px;
+    padding-top: 5px;
+    font-size: 14pt;
+    margin: 0px;
+}
+
+button[type="submit"]:hover,
+button[type="button"]:hover,
+button[type="reset"]:hover {
+    background-color: var(--primary-light);
+    border-color: var(--focus-shadow);
+}
+
+button[type="submit"]:active,
+button[type="button"]:active,
+button[type="reset"]:active {
+    background-color: #7da0b1;
+    border-color: #016799;
+}
+
+button[type="submit"]:focus,
+button[type="button"]:focus,
+button[type="reset"]:focus {
+    background-color: var(--primary-light);
+    border-color: var(--focus-shadow);
+}
+
+button[type="submit"]:focus:active,
+button[type="button"]:focus:active,
+button[type="reset"]:focus:active {
+    background-color: var(--primary-light);
+    border-color: var(--focus-shadow);
+}
+
+button[type="submit"]:disabled,
+button[type="button"]:disabled,
+button[type="reset"]:disabled {
+    background-color: #cccccc;
+    border-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+button[type="submit"]:disabled:hover,
+button[type="button"]:disabled:hover,
+button[type="reset"]:disabled:hover,
+
+button[type="submit"]:disabled:active,
+button[type="button"]:disabled:active,
+button[type="reset"]:disabled:active {
+    background-color: #cccccc;
+    border-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+a,
+.btn-link {
+    color: var(--primary-color);
+}
+
+a:hover,
+.btn-link:hover {
+    color: darken(var(--primary-color), 5%);
+}
+
+a:active,
+.btn-link:active {
+    color: darken(var(--primary-color), 20%);
+    border: none;
+}
+
+ 

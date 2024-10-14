@@ -1,12 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
+import { Section } from '../enum/Section.enum';
 import { Measure } from '../models/Measure';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
-import { Constants } from '../constants/Constants';
 import ServerDropdown from './ServerDropdown';
-import { Section } from '../enum/Section.enum';
 
 // Props for KnowledgeRepository
 interface Props {
@@ -43,36 +42,24 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
 
       </div>
       {showKnowledgeRepo ? (
-        <div className='card-body' style={{ transition: 'all .1s' }}>
-          <div className='row'>
-            <div className='col-md-6 order-md-1'>
-              <label>Knowledge Repository Server</label>
-            </div>
-            <div className='col-md-3 order-md-2'>
-              <label>Measure</label>
-            </div>
-            <div className='col-md-3 order-md-3 text-right'>
-              <label style={{ fontSize: '0.8em' }}>Measure List Count: {measures.length}</label>
-            </div>
-          </div>
+        <div className='card-body'>
+
           <div className='row'>
 
             <ServerDropdown
-              dataTestID={Constants.id_knowledge_repo}
+              section={Section.KNOWLEDGE_REPO}
               loading={loading}
               servers={servers}
               callFunction={fetchMeasures}
               baseUrlValue={selectedKnowledgeRepo?.baseUrl}
+              setModalShow={setModalShow}
             />
 
-            <div className='col-md-1 order-md-2'>
-              <OverlayTrigger placement={'top'} overlay={
-                <Tooltip>Add an Endpoint</Tooltip>
-              }>
-                <Button disabled={loading} data-testid='knowledge-repo-server-add-button' variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
-              </OverlayTrigger>
-            </div>
+
             <div className='col-md-6 order-md-3'>
+
+              <label>Measure</label>
+
               <select disabled={loading} data-testid='knowledge-repo-measure-dropdown' className='custom-select d-block w-100' id='measure' value={selectedMeasure}
                 onChange={(e) => setSelectedMeasure(e.target.value)}>
                 <option value=''>Select a Measure...</option>

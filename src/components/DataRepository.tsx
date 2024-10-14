@@ -1,14 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState } from 'react';
-import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { Constants } from '../constants/Constants';
+import { Section } from '../enum/Section.enum';
 import { Patient } from '../models/Patient';
 import { Member, PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import SectionalTitleBar from './SectionalTitleBar';
 import ServerDropdown from './ServerDropdown';
-import { Section } from '../enum/Section.enum';
 
 interface Props {
   showDataRepo: boolean;
@@ -103,8 +103,9 @@ const DataRepository: React.FC<Props> = ({
   return (
     <div className='card'>
       <div className='card-header'>
-        
-        <SectionalTitleBar section={Section.DATA_REPO}
+
+        <SectionalTitleBar 
+          section={Section.DATA_REPO}
           setShowSection={setShowDataRepo}
           showSection={showDataRepo}
           selectedSubjectTitling='Subject'
@@ -112,36 +113,20 @@ const DataRepository: React.FC<Props> = ({
 
       </div>
       {showDataRepo ? (
-        <div className='card-body' style={{ transition: 'all .1s' }}>
+        <div className='card-body'>
           <div className='row'>
-            <div className='col-md-6 order-md-1'>
-              <label>Data Repository Server</label>
-            </div>
-            <div className='col-md-3 order-md-2'>
-              <label>Patient (optional)</label>
-            </div>
-            <div className='col-md-3 order-md-3 text-right'>
-              <label style={{ fontSize: '0.8em' }}>Patient List Count: {filteredPatients.length}</label>
-            </div>
-          </div>
-          <div className='row'>
+              
+              <ServerDropdown
+                section={Section.DATA_REPO}
+                loading={loading}
+                servers={servers}
+                callFunction={fetchPatients}
+                baseUrlValue={selectedDataRepo?.baseUrl}
+                setModalShow={setModalShow}
+              />
 
-            <ServerDropdown
-              dataTestID={Constants.id_data_repo}
-              loading={loading}
-              servers={servers}
-              callFunction={fetchPatients}
-              baseUrlValue={selectedDataRepo?.baseUrl}
-            />
-
-            <div className='col-md-1 order-md-2'>
-              <OverlayTrigger placement={'top'} overlay={
-                <Tooltip>Add an Endpoint</Tooltip>
-              }>
-                <Button disabled={loading} variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
-              </OverlayTrigger>
-            </div>
             <div className='col-md-6 order-md-2'>
+            <label>Patient (optional)</label>
               <select disabled={loading} data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
                 onChange={(e) => {
                   const selectedPatientId = e.target.value;

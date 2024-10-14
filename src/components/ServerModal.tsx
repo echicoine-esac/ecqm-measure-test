@@ -105,61 +105,138 @@ const ServerModal: React.FC<Props> = ({modalShow, setModalShow, createServer}) =
     }
 
     return (
-        <Modal size='lg' centered show={modalShow} style={{margin: '0px', transition: 'opacity 0.3s'}}>
-            <Form style={{padding: '10px'}} data-testid='server-model-form' noValidate validated={validated} onSubmit={submitServer}>
-                <Modal.Header><h2>Add server endpoint</h2></Modal.Header>
-                <Modal.Body>
-                    <div className='row'>
-                        By adding your server to this testing tool you are allowing anyone to run the tool
-                        against your server and to see your server URL. Please ensure that the server does not contain
-                        PHI or PII data and you may choose to secure your endpoint with OAuth2 to limit only those
-                        with the username and password to access it.
-                        <hr/>
-                    </div>
-                    <Form.Group controlId='form.baseUrl'>
-                        <Form.Label>Base URL (required)</Form.Label>
-                        <Form.Control data-testid='server-model-baseurl-text' type='text' value={baseUrl} placeholder='https://example.com/fhir/'
-                                      onChange={baseUrlHandler} isInvalid={errors.baseUrl !== ''} required/>
-                        <Form.Control.Feedback data-testid='server-model-baseurl-feedback' type='invalid'>{Constants.error_url}{errors.baseUrl}</Form.Control.Feedback>
-                    </Form.Group>
-                    <hr/>
-                    If your server requires OAuth authentication then please provide the additional values
-                    <Form.Group controlId='form.authUrl'>
-                        <Form.Label>Authentication URL</Form.Label>
-                        <Form.Control data-testid='server-model-authurl-text' type='text' value={authUrl} placeholder='https://example.com/auth/'
-                                      onChange={authUrlHandler} isInvalid={errors.authUrl !== ''}/>
-                        <Form.Control.Feedback data-testid='server-model-authurl-feedback'  type='invalid'>{Constants.error_url}{errors.authUrl}</Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId='form.tokenUrl'>
-                        <Form.Label>Token Access URL</Form.Label>
-                        <Form.Control data-testid='server-model-accessurl-text' type='text' value={tokenUrl} placeholder='https://example.com/token/'
-                                      onChange={tokenUrlHandler} isInvalid={errors.tokenUrl !== ''}/>
-                        <Form.Control.Feedback data-testid='server-model-accessurl-feedback' type='invalid'>{Constants.error_url}{errors.tokenUrl}</Form.Control.Feedback>
- 
-                    </Form.Group>
-                    <Form.Group controlId='form.clientId'>
-                        <Form.Label>Client ID</Form.Label>
-                        <Form.Control data-testid='server-model-clientid-text' type='text' value={clientId} placeholder='AC3487FB-8743-BC24-F309857698'
-                                      onChange={clientIdHandler}/>
-                    </Form.Group>
-                    <Form.Group controlId='form.clientSecret'>
-                        <Form.Label>Client Secret</Form.Label>
-                        <Form.Control data-testid='server-model-clientsecret-text' type='text' value={clientSecret} placeholder='32838A84B90'
-                                      onChange={clientSecretHandler}/>
-                    </Form.Group>
-                    <Form.Group controlId='form.scope'>
-                        <Form.Label>Scope</Form.Label>
-                        <Form.Control data-testid='server-model-scope-text' type='text' value={scope} placeholder='user/*.read'
-                                      onChange={scopeHandler}/>
-                    </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button data-testid='server-model-cancel-button' onClick={() => setModalShow(false)}>Cancel</Button>
-                    <Button data-testid='server-model-submit-button' type='submit'>Save</Button>
-                </Modal.Footer>
-            </Form>
+        <Modal
+          size='lg'
+          centered
+          show={modalShow}
+          style={{ margin: '0px', transition: 'opacity 0.3s' }}
+        >
+          <Form
+            style={{ padding: '10px' }}
+            data-testid='server-model-form'
+            noValidate
+            validated={validated}
+            onSubmit={submitServer}
+          >
+            <Modal.Header>
+              <h2>Add server endpoint</h2>
+            </Modal.Header>
+            <Modal.Body>
+              <div className='row'>
+                <p>
+                  By adding your server to this testing tool you are allowing
+                  anyone to run the tool against your server and to see your server
+                  URL. Please ensure that the server does not contain PHI or PII
+                  data, and you may choose to secure your endpoint with OAuth2 to
+                  limit only those with the username and password to access it.
+                </p>
+                <hr />
+              </div>
+              <Form.Group controlId='form.baseUrl'>
+                <Form.Label>Base URL (required)</Form.Label>
+                <Form.Control
+                  data-testid='server-model-baseurl-text'
+                  type='text'
+                  value={baseUrl}
+                  placeholder='https://example.com/fhir/'
+                  onChange={baseUrlHandler}
+                  isInvalid={errors.baseUrl !== ''}
+                  required
+                />
+                <Form.Control.Feedback
+                  data-testid='server-model-baseurl-feedback'
+                  type='invalid'
+                >
+                  {Constants.error_url}
+                  {errors.baseUrl}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <hr />
+              <p>If your server requires OAuth authentication then please provide the additional values</p>
+              <Form.Group controlId='form.authUrl'>
+                <Form.Label>Authentication URL</Form.Label>
+                <Form.Control
+                  data-testid='server-model-authurl-text'
+                  type='text'
+                  value={authUrl}
+                  placeholder='https://example.com/auth/'
+                  onChange={authUrlHandler}
+                  isInvalid={errors.authUrl !== ''}
+                />
+                <Form.Control.Feedback
+                  data-testid='server-model-authurl-feedback'
+                  type='invalid'
+                >
+                  {Constants.error_url}
+                  {errors.authUrl}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId='form.tokenUrl'>
+                <Form.Label>Token Access URL</Form.Label>
+                <Form.Control
+                  data-testid='server-model-accessurl-text'
+                  type='text'
+                  value={tokenUrl}
+                  placeholder='https://example.com/token/'
+                  onChange={tokenUrlHandler}
+                  isInvalid={errors.tokenUrl !== ''}
+                />
+                <Form.Control.Feedback
+                  data-testid='server-model-accessurl-feedback'
+                  type='invalid'
+                >
+                  {Constants.error_url}
+                  {errors.tokenUrl}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId='form.clientId'>
+                <Form.Label>Client ID</Form.Label>
+                <Form.Control
+                  data-testid='server-model-clientid-text'
+                  type='text'
+                  value={clientId}
+                  placeholder='AC3487FB-8743-BC24-F309857698'
+                  onChange={clientIdHandler}
+                />
+              </Form.Group>
+              <Form.Group controlId='form.clientSecret'>
+                <Form.Label>Client Secret</Form.Label>
+                <Form.Control
+                  data-testid='server-model-clientsecret-text'
+                  type='text'
+                  value={clientSecret}
+                  placeholder='32838A84B90'
+                  onChange={clientSecretHandler}
+                />
+              </Form.Group>
+              <Form.Group controlId='form.scope'>
+                <Form.Label>Scope</Form.Label>
+                <Form.Control
+                  data-testid='server-model-scope-text'
+                  type='text'
+                  value={scope}
+                  placeholder='user/*.read'
+                  onChange={scopeHandler}
+                />
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                data-testid='server-model-cancel-button'
+                onClick={() => setModalShow(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                data-testid='server-model-submit-button'
+                type='submit'
+              >
+                Save
+              </Button>
+            </Modal.Footer>
+          </Form>
         </Modal>
-    );
-};
-
-export default ServerModal;
+      );
+    };
+    
+    export default ServerModal;

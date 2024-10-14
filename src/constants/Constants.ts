@@ -73,7 +73,8 @@ export class Constants {
 
     //Test Comparator
     public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with previous MeasureReports and displays a summary of discrepancies and matches. The existing MeasureReports are pulled from the Data Repository server, and the current Measure Evaluation will be executed against the selected Measure Evaluation Server. To begin, verify the following items are established:';
-
+    public static readonly renderWidthInfo: string = 'For optimal viewing, please ensure your display window is at least 725px wide. This will allow the report to render correctly and ensure all content is visible and properly formatted.';
+    
     //Other
     public static readonly error_patientGroup = 'No Patient Group data could be established for the selected Measure. Select an individual Patient from the Patient dropdown and attempt operation again';
     public static readonly label_largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
@@ -172,4 +173,5 @@ export class Constants {
 
     public static readonly testOauthServer = Constants.serverTestData[3];
     static readonly submitPostTestBody = `{'prop1': 'val1', 'prop2': 'val2'}`
+  
 }

@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useEffect, useState } from 'react';
+import { Button, Spinner } from 'react-bootstrap';
+import { Section } from '../enum/Section.enum';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
-import { Constants } from '../constants/Constants';
 import ServerDropdown from './ServerDropdown';
-import { Section } from '../enum/Section.enum';
 
 // Props for ReceivingSystem
 interface Props {
@@ -56,29 +55,19 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
 
       </div>
       {showReceiving ? (
-        <div className='card-body' style={{ transition: 'all .1s' }}>
-          <div className='row'>
-            <div className='col-md-6 order-md-1'>
-              <label>Receiving System Server</label>
-            </div>
-          </div>
+        <div className='card-body'>
+
           <div className='row'>
 
             <ServerDropdown
-              dataTestID={Constants.id_receiving_system}
+              section={Section.REC_SYS}
               loading={loading}
               servers={servers}
               callFunction={setSelectedReceiving}
               baseUrlValue={selectedReceiving?.baseUrl}
+              setModalShow={setModalShow}
             />
 
-            <div className='col-md-1 order-md-2'>
-              <OverlayTrigger placement={'top'} overlay={
-                <Tooltip>Add an Endpoint</Tooltip>
-              }>
-                <Button disabled={loading} variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
-              </OverlayTrigger>
-            </div>
           </div>
 
           {/* checklist style indicator regardin stored measurereport */}

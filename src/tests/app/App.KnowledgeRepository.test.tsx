@@ -79,7 +79,6 @@ test(thisTestFile + ': renders properly', async () => {
   //hide section, show section
   const hideButton: HTMLButtonElement = screen.getByTestId('knowledge-repo-hide-section-button');
   fireEvent.click(hideButton);
-  expect(screen.getByTestId('knowledge-repo-selected-div')).toBeInTheDocument();
   expect(screen.queryByText('Select a Server...')).not.toBeInTheDocument();
   expect(screen.queryByText('Select a Measure...')).not.toBeInTheDocument();
   expect(screen.queryByText('Get Data Requirements')).not.toBeInTheDocument();
@@ -111,6 +110,7 @@ test(thisTestFile + ': renders properly', async () => {
 
   //hiding the section should now reveal 'Selected Measure: BreastCancerScreeningsFHIR'
   fireEvent.click(hideButton);
+
   expect(screen.getByTestId('knowledge-repo-selected-div')).toBeInTheDocument();
 
   //restore section to get to button

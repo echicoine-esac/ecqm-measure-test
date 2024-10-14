@@ -128,7 +128,6 @@ export class OAuthHandler {
         // Open the authentication popup
         const popupWindow = window.open(authenticationUrl, '_blank', 'width=600,height=800');
         if (!popupWindow) {
-            alert('Please allow pop-ups for this site');
             return false;
         }
 

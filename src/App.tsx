@@ -28,13 +28,16 @@ import { PatientGroup } from './models/PatientGroup';
 import { PopulationScoring } from './models/PopulationScoring';
 import { GroupElement } from './models/Scoring';
 import { Server } from './models/Server';
-
 import { Section } from './enum/Section.enum';
 import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
+import './css/global-overrides.css';
 
 const App: React.FC = () => {
+  //responsive design
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 667);
+
   // Define the state variables
   // First define the state for reporting period
   const [startDate, setStartDate] = useState<string>(Constants.defaultStartDate);
@@ -175,6 +178,25 @@ const App: React.FC = () => {
     // eslint-disable-next-line 
   }, [showScrollToTopButton]);
 
+  useEffect(() => {
+    // Only call to get the servers when the list is empty
+    if (servers.length === 0) {
+      initializeServers();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 667);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const setSectionalResults = ((message: string, section: Section) => {
     switch (section) {
@@ -203,12 +225,6 @@ const App: React.FC = () => {
     }
   });
 
-  useEffect(() => {
-    // Only call to get the servers when the list is empty
-    if (servers.length === 0) {
-      initializeServers();
-    }
-  }, []);
 
   const initializeServers = async () => {
     setServers(await ServerUtils.getServerList());
@@ -349,7 +365,7 @@ const App: React.FC = () => {
     try {
       let evaluateMeasureOutcomeTracker: OutcomeTracker = await evaluateMeasureFetch.fetchData(setSectionalResults, Section.MEASURE_EVAL);
       setResultsCaller(evaluateMeasureOutcomeTracker);
-  
+
       if (evaluateMeasureOutcomeTracker.jsonFormattedString) {
         setMeasureReport(evaluateMeasureOutcomeTracker.jsonFormattedString);
       }
@@ -643,26 +659,32 @@ const App: React.FC = () => {
   const showAllHideAllStyling = {
     padding: 0,
     textDecoration: 'underline',
-    color: '#007bff',
     background: 'none',
     outline: 'none',
-    boxShadow: '0 0 0 0px',
     fontSize: '11pt'
   };
 
+
+
   return (
     <div className='container'>
-      <div className='row text-center col-md-11' style={{ marginTop: '20px', padding: '0px', height: '65px' }}>
-        <div className='text-center col-md-1'>
-          <a target='_blank' rel='noreferrer' href='http://www.icf.com'>
-            <img className='d-block mx-auto mb-4' src={icfLogo} alt='ICF Logo' />
-          </a>
-        </div>
-        <div className='col-md-11'>
-          <img className='d-block mx-auto mb-4' src={appLogo} alt='eCQM Testing Tool' width='180px' />
-        </div>
+      <div className="container-fluid">
+        <div className="row align-items-center" style={{ height: '65px', margin: '20px', padding: '0px' }}>
+          <div className="col-2 col-md-1 text-left">
+            <a target="_blank" rel="noreferrer" href="http://www.icf.com">
+              <img className="img-fluid" src={icfLogo} alt="ICF Logo" style={{ maxHeight: '65px' }} />
+            </a>
+          </div>
 
+          <div className="col-8 col-md-10 text-center">
+            <img className="img-fluid" src={appLogo} alt="eCQM Testing Tool" style={{ maxHeight: '65px', width: 'auto' }} />
+          </div>
+
+          <div className="col-2 col-md-1"></div>
+        </div>
       </div>
+
+
       <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
       <br />
       <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
@@ -766,23 +788,23 @@ const App: React.FC = () => {
 
 
       {/* Show All / Hide All  */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'fixed',
-        top: '10px',
-        right: '15px',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 100,
-        width: '80px',
-        fontSize: '10pt',
-        background: '#F7F7F7',
-        borderRadius: '4px',
-        height: '60px',
-        border: '1px solid lightgrey',
-        lineHeight: '1.75'
-      }}>
+      <div className='card'
+        style={{
+          display: isMobile ? 'none' : 'flex',
+          flexDirection: 'column',
+          position: 'fixed',
+          top: '10px',
+          right: '15px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 100,
+          width: '80px',
+          fontSize: '10pt',
+          background: '#F7F7F7',
+          height: '60px',
+          lineHeight: '1.75',
+        }}
+      >
         <div className='row md-4'>
           <button
             id='app-show-all-btn'
@@ -822,7 +844,7 @@ const App: React.FC = () => {
           zIndex: 100,
           fontSize: '24px',
           transition: 'opacity 0.3s',
-          width: '60px'
+          width: '60px',
         }}>
         {Constants.upArrow}
       </button>
