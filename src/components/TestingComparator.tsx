@@ -115,7 +115,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
           {isMobile ?
             <span>{Constants.renderWidthInfo}</span>
             :
-            <div ref={componentRef}>
+            <div ref={componentRef} className="printable-content">
               {items.size > 0 ? (
 
                 <Table size="sm" style={{ marginBottom: '0px' }}>
@@ -437,10 +437,11 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
           }
 
           <div className='row'>
-            <div className='col-md-5 order-md-2'>
+            <div className='col-md-6 order-md-1'>
               <br />
               {loading ? (
-                <Button data-testid='test-compare-generate-summary-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
+                <Button data-testid='test-compare-generate-summary-button-spinner'
+                  className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
                   <Spinner
                     as='span'
                     variant='light'
@@ -461,7 +462,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
                   Generate Test Comparison</Button>
               )}
             </div>
-            <div className='col-md-5 order-md-2'>
+            <div className='col-md-6 order-md-2'>
               <br />
               {loading ? (
                 <Button

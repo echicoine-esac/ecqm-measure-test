@@ -16,20 +16,22 @@ const Populations: React.FC<Props> = ({ showPopulations, populationScoring, meas
     return (strIn.replaceAll(' ', ''));
   }
   const tableCount = populationScoring ? populationScoring.length : 0;
-  const widthPercentage = tableCount >= 3 ? '33%' : tableCount === 2 ? '49%' : '100%'; // Adjust based on count
+  const widthPercentage = tableCount >= 3 ? '32.96%' : tableCount === 2 ? '49.72%' : '100%'; // Adjust based on count
 
   return (
-    <div style={{ 
+    <div style={{
       position: 'relative',
-      top: '-24px',}}>
+      top: '-24px',
+    }}>
       {showPopulations ? (
-        <div style={{ textAlign: 'start', marginTop:'0px'}}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '0px'}}>
+        <div style={{ textAlign: 'start', marginTop: '0px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', margin: '0px', gap: '5px'}}>
             {populationScoring && Array.from(populationScoring)
               .map((scoring, index) => (
-                <div key={index + scoring.groupID} style={{ flexBasis: widthPercentage,
-                  }}>
-                  <table className="table mt-4" style={{ width: '100%', border: '2px solid lightgrey', background: 'white'  }}>
+                <div key={index + scoring.groupID} style={{
+                  flexBasis: widthPercentage,
+                }}>
+                  <table className="table mt-4" style={{ margin: '0px', width: '100%', border: '2px solid lightgrey', background: 'white' }}>
                     <thead style={{ background: '#F7F7F7' }}>
                       <tr>
                         <th>
@@ -57,7 +59,7 @@ const Populations: React.FC<Props> = ({ showPopulations, populationScoring, meas
               ))
             }
           </div>
-          <h6 style={{marginBottom:'-15px'}} data-testid={'pops-measure-score-type'}>
+          <h6 style={{ marginTop: '5px', marginBottom: '-15px' }} data-testid={'pops-measure-score-type'}>
             {'Measure Scoring Type: '}
             {measureScoringType && measureScoringType.length > 0 ? measureScoringType : 'N/A'}
           </h6>

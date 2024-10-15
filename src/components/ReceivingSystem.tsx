@@ -81,7 +81,7 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
             </ul>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-2' style={{ marginTop: '0px' }}>
+            <div className='col-md-6 order-md-2' style={{ marginTop: '0px' }}>
               {loading ? (
                 <Button data-testid='rec-sys-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner

@@ -17,12 +17,12 @@ const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubj
   const title = Constants.sectionTitles.get(section);
   const dataTestID = Constants.sectionIDs.get(section);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isTooNarrow, setIsTooNarrow] = useState(window.innerWidth < 445);
 
   // Update isMobile state on window resize
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsTooNarrow(window.innerWidth < 445);
     };
 
     window.addEventListener('resize', handleResize);
@@ -39,22 +39,22 @@ const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubj
         <div>
           <h5
             style={{
-              fontSize: isMobile ? '12pt' : '14pt',
-              marginBottom: isMobile ? '0.25rem' : 0,
+              fontSize: isTooNarrow ? '12pt' : '14pt',
+              marginBottom: isTooNarrow ? '0.25rem' : 0,
             }}
           >
             {title}
           </h5>
         </div>
 
-        {!showSection && selectedSubject && selectedSubjectTitling && (
+        {!isTooNarrow && !showSection && selectedSubject && selectedSubjectTitling && (
           <div
 
-          //knowledge-repo-selected-div
+            //knowledge-repo-selected-div
             data-testid={dataTestID + '-selected-div'}
             style={{
-              fontSize: isMobile ? '10pt' : 'inherit',
-              marginLeft: isMobile ? '0' : 'auto',
+              fontSize: isTooNarrow ? '10pt' : 'inherit',
+              marginLeft: isTooNarrow ? '0' : 'auto',
             }}
             className='text-muted' >
             {selectedSubjectTitling + ': ' + selectedSubject}

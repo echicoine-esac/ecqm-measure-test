@@ -104,7 +104,7 @@ const DataRepository: React.FC<Props> = ({
     <div className='card'>
       <div className='card-header'>
 
-        <SectionalTitleBar 
+        <SectionalTitleBar
           section={Section.DATA_REPO}
           setShowSection={setShowDataRepo}
           showSection={showDataRepo}
@@ -115,18 +115,20 @@ const DataRepository: React.FC<Props> = ({
       {showDataRepo ? (
         <div className='card-body'>
           <div className='row'>
-              
-              <ServerDropdown
-                section={Section.DATA_REPO}
-                loading={loading}
-                servers={servers}
-                callFunction={fetchPatients}
-                baseUrlValue={selectedDataRepo?.baseUrl}
-                setModalShow={setModalShow}
-              />
+
+            <ServerDropdown
+              section={Section.DATA_REPO}
+              loading={loading}
+              servers={servers}
+              callFunction={fetchPatients}
+              baseUrlValue={selectedDataRepo?.baseUrl}
+              setModalShow={setModalShow}
+            />
 
             <div className='col-md-6 order-md-2'>
-            <label>Patient (optional)</label>
+
+              <label>Patient (optional)</label>
+
               <select disabled={loading} data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
                 onChange={(e) => {
                   const selectedPatientId = e.target.value;
@@ -146,7 +148,7 @@ const DataRepository: React.FC<Props> = ({
               <input disabled={loading} type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
                 onChange={(e) => setPatientFilter(e.target.value)} />
             </div>
-            <div className='col-md-5 order-md-2'>
+            <div className='col-md-6 order-md-3'>
               <br />
               {loading ? (
                 <Button data-testid='data-repo-collect-data-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>

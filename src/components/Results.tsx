@@ -117,7 +117,7 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
               }}>
 
               <div className='col-md-12 order-md-1' >
-                <div style={{ height: 'auto', width: 'auto', border: '0px' }}>
+                <div style={{ paddingTop: '5px', height: 'auto', width: 'auto', border: '0px' }}>
 
                   <div
                     data-testid="outcome-results-text"

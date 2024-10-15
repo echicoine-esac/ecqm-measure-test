@@ -56,7 +56,7 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
             />
 
 
-            <div className='col-md-6 order-md-3'>
+            <div className='col-md-6 order-md-2'>
 
               <label>Measure</label>
 
@@ -70,7 +70,7 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
             </div>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-2'>
+            <div className='col-md-6 order-md-3'>
               <br />
               {loading ? (
                 <Button data-testid='get-data-requirements-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>

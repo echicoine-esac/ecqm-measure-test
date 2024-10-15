@@ -15,7 +15,7 @@
 }
 
 .card-header {
-    height: 70px;
+    height: 60px;
     align-items: center;
     align-content: center;
     border-bottom: none;
@@ -28,7 +28,8 @@
 
 .container {
     margin: 0 auto;
-    max-width: 1200px;
+    max-width: 960px;
+    width: 100%;
 }
 
 button[type="submit"],
@@ -111,4 +112,8 @@ a:active,
     border: none;
 }
 
- 
+@media print {
+    .printable-content {
+        margin: 35px;
+    }
+}
