@@ -43,6 +43,13 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
     };
   }, [selectedMeasureReport]);
 
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    // Fallback for iOS Safari, which does not support `download` attribute
+    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+      e.preventDefault();
+      window.open(href ?? '', '_blank');
+    }
+  };
 
   return (
     <div className='card'>
@@ -75,7 +82,13 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
 
               <li data-testid='rec-sys-checklist-measure'>
-                {selectedMeasureReport ? '☑' : '☐'} {href ? <a target='_blank' rel='noreferrer' href={href}>Generated Measure Report↗</a> : 'Generated Measure Report'}
+                {selectedMeasureReport ? '☑' : '☐'} {href ?
+                  <a href={href ?? '#'}
+                    onClick={handleDownload}>
+                    Generated Measure Report↗
+                  </a>
+                  :
+                  'Generated Measure Report'}
               </li>
 
             </ul>

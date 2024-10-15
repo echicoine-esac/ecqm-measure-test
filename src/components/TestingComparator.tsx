@@ -4,13 +4,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, Spinner, Table } from 'react-bootstrap';
 import ReactToPrint from 'react-to-print';
 import { Constants } from '../constants/Constants';
+import { Section } from '../enum/Section.enum';
 import { Patient } from '../models/Patient';
-import { MeasureComparisonManager } from '../utils/MeasureComparisonManager';
 import { PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
+import { MeasureComparisonManager } from '../utils/MeasureComparisonManager';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import SectionalTitleBar from './SectionalTitleBar';
-import { Section } from '../enum/Section.enum';
 
 
 interface Props {
@@ -52,9 +52,33 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
   compareTestResults, loading, startDate, endDate, selectedPatientGroup, selectedDataRepoServer,
   selectedMeasureEvaluationServer, selectedMeasure, selectedKnowledgeRepositoryServer, selectedPatient }) => {
 
+
+  // Hook for getting screen orientation
+  const getOrientation = () => window.screen.orientation.type;
+
+  const useScreenOrientation = () => {
+    const [orientation, setOrientation] = useState(getOrientation());
+
+    const updateOrientation = () => {
+      setShowTestCompare(false);
+      setOrientation(getOrientation());
+    };
+
+    useEffect(() => {
+      window.addEventListener('orientationchange', updateOrientation);
+
+      return () => {
+        window.removeEventListener('orientationchange', updateOrientation);
+      };
+    }, []);
+
+    return orientation;
+  };
+
   const [isMobile, setIsMobile] = useState(window.innerWidth < 725);
 
-  // Update isMobile state on window resize
+  const orientation = useScreenOrientation();
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 725);
@@ -62,11 +86,17 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
 
     window.addEventListener('resize', handleResize);
 
-    // Cleanup the event listener on unmount
+    // Cleanup listener on unmount
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    // This will also handle the orientation change directly
+    setIsMobile(window.innerWidth < 725);
+  }, [orientation]); // Update isMobile when orientation changes
+
 
   const requiredDataPresent = selectedPatientGroup
     && selectedDataRepoServer?.baseUrl
@@ -97,10 +127,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
     return formattedDate;
   }
 
-
   return (
-
-
     <div className='card'>
 
       <div className='card-header'>
@@ -113,7 +140,12 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
       {showTestCompare ? (
         <div className='card-body'>
           {isMobile ?
-            <span>{Constants.renderWidthInfo}</span>
+            <span>
+              {Constants.renderWidthInfo}
+              <br></br>
+              <br></br>
+              Current screen width: {window.innerWidth}px
+            </span>
             :
             <div ref={componentRef} className="printable-content">
               {items.size > 0 ? (
@@ -127,7 +159,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr style={{ fontSize: '10pt' }}>
                       <td style={{ borderRight: '1px solid lightgrey', borderBottom: 'none' }}>
                         <Table size="sm" borderless>
                           <tbody>

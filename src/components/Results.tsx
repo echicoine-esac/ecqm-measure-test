@@ -81,6 +81,14 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
     }
   };
 
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    // Fallback for iOS Safari, which does not support `download` attribute
+    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+      e.preventDefault();
+      window.open(href ?? '', '_blank');
+    }
+  };
+
   const getOutcomeFontColor = () => {
     if (!outcomeTracker) return 'black';
     if (outcomeTracker.outcomeType === Outcome.FAIL) {
@@ -172,8 +180,9 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
                 </label>
 
                 {!hrefFileName.startsWith('OperationOutcome') &&
-                  <a href={href ?? '#'} download={hrefFileName}>
-                    Download {hrefFileName}
+                  <a href={href ?? '#'}
+                    onClick={handleDownload}>
+                    {hrefFileName}
                   </a>
                 }
 

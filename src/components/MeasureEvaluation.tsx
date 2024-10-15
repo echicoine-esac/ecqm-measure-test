@@ -67,6 +67,14 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
     };
   }, [collectedData]);
 
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    // Fallback for iOS Safari, which does not support `download` attribute
+    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+      e.preventDefault();
+      window.open(href ?? '', '_blank');
+    }
+  };
+
   return (
     <div className='card'>
       <div className='card-header'>
@@ -75,11 +83,11 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
           section={Section.MEASURE_EVAL}
           setShowSection={setShowMeasureEvaluation}
           showSection={showMeasureEvaluation} />
-          
+
       </div>
       {showMeasureEvaluation ? (
         <div className='card-body'>
-           
+
           <div className='row'>
 
             <ServerDropdown
@@ -91,24 +99,30 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
               setModalShow={setModalShow}
             />
 
-             
+
           </div>
 
           {/* checklist style indicator regardin stored collectedData */}
           <div className='mt-3' style={{ paddingBottom: '0px' }}>
-          
+
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
 
               <li data-testid='mea-eva-checklist-measure'>
-                {collectedData ? '☑' : '☐'} {href ? <a target='_blank' rel='noreferrer' href={href}>Collected Data for Submission↗</a> : 'Collected Data for Submission'}
+                {collectedData ? '☑' : '☐'} {href ?
+                  <a href={href ?? '#'}
+                    onClick={handleDownload}>
+                    Collected Data for Submission↗
+                  </a>
+                  :
+                  'Collected Data for Submission'}
               </li>
 
             </ul>
           </div>
 
-          <div className='row' style={{marginTop: '-25px'}}>
+          <div className='row' style={{ marginTop: '-25px' }}>
             <div className='col-md-6 order-md-2'>
-            <br />
+              <br />
               {loading ? (
                 <Button data-testid='mea-eva-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner
@@ -128,7 +142,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
               )}
             </div>
             <div className='col-md-6 order-md-3'>
-            <br />
+              <br />
               {loading ? (
                 <Button data-testid='mea-eva-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
                   <Spinner
