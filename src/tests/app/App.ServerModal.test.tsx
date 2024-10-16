@@ -219,7 +219,7 @@ test(thisTestFile + ': fail scenario: createServer called with no base url', asy
 
   const baseUrlTextFieldError: HTMLDivElement = screen.getByTestId('server-model-baseurl-feedback')
 
-  expect(baseUrlTextFieldError.innerHTML).toEqual(Constants.error_url);
+  expect(baseUrlTextFieldError.innerHTML).toEqual('Base URL is required.');
 
   createServerJest.mockRestore();
 });
