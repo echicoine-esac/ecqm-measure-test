@@ -17,38 +17,42 @@ interface Props {
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
   selectedMeasureReport?: string | undefined;
+  resetSection?: (s: Section) => void;
 }
 
 // ReceivingSystem component displays the fields for selecting and using the receiving system
 const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, servers, setSelectedReceiving,
-  selectedReceiving, postMeasureReport, loading, setModalShow, selectedMeasureReport }) => {
-
+  selectedReceiving, postMeasureReport, loading, setModalShow, selectedMeasureReport,
+  resetSection }) => {
 
   const [href, setHref] = useState<string | undefined>(undefined);
+
   useEffect(() => {
     let objectUrl: string | undefined = undefined;
-    if (selectedMeasureReport) {
-      // Create a Blob and generate an object URL
+
+    if (selectedMeasureReport && selectedMeasureReport.trim() !== '') {
+      // Create a Blob and generate an object URL if there's valid content
       const blob = new Blob([selectedMeasureReport], { type: "application/json" });
       objectUrl = URL.createObjectURL(blob);
       setHref(objectUrl);
+    } else {
+      // Reset href if the string is empty
+      setHref(undefined);
     }
 
     // Cleanup: Revoke the previous URL when results change or component unmounts
     return () => {
       if (objectUrl) {
         URL.revokeObjectURL(objectUrl);
-        setHref(undefined)
       }
+      setHref(undefined);
     };
   }, [selectedMeasureReport]);
 
+
   const handleDownload = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    // Fallback for iOS Safari, which does not support `download` attribute
-    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
       e.preventDefault();
-      window.open(href ?? '', '_blank');
-    }
+      window.open(href ?? '', '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -73,6 +77,7 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
               callFunction={setSelectedReceiving}
               baseUrlValue={selectedReceiving?.baseUrl}
               setModalShow={setModalShow}
+              resetSection={resetSection}
             />
 
           </div>

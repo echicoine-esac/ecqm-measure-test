@@ -52,56 +52,43 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
   compareTestResults, loading, startDate, endDate, selectedPatientGroup, selectedDataRepoServer,
   selectedMeasureEvaluationServer, selectedMeasure, selectedKnowledgeRepositoryServer, selectedPatient }) => {
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 725);
 
-  // Hook for getting screen orientation
-  const getOrientation = () => window.screen.orientation.type;
 
+  //Used in monitoring screen orientation and window width on mobile devices
+  const getOrientation = () => window.screen.orientation.type || 'landscape-primary';
   const useScreenOrientation = () => {
     const [orientation, setOrientation] = useState(getOrientation());
-
     const updateOrientation = () => {
       setShowTestCompare(false);
       setOrientation(getOrientation());
     };
-
     useEffect(() => {
       window.addEventListener('orientationchange', updateOrientation);
-
       return () => {
         window.removeEventListener('orientationchange', updateOrientation);
       };
     }, []);
-
     return orientation;
   };
-
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 725);
-
   const orientation = useScreenOrientation();
-
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 725);
     };
-
     window.addEventListener('resize', handleResize);
-
-    // Cleanup listener on unmount
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
   useEffect(() => {
-    // This will also handle the orientation change directly
     setIsMobile(window.innerWidth < 725);
-  }, [orientation]); // Update isMobile when orientation changes
-
+  }, [orientation]);
 
   const requiredDataPresent = selectedPatientGroup
     && selectedDataRepoServer?.baseUrl
     && selectedMeasureEvaluationServer?.baseUrl
-    && selectedMeasure
+    && selectedMeasure && selectedMeasure.length > 0
     && selectedKnowledgeRepositoryServer?.baseUrl;
 
   const convertToID = (str: any | undefined): string => {
@@ -258,7 +245,7 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
 
                     {/* Measure */}
                     <li data-testid='test-compare-checklist-measure'>
-                      {selectedMeasure ? '☑' : '☐'} Measure
+                      {selectedMeasure && selectedMeasure.length > 0 ? '☑' : '☐'} Measure
                       {selectedKnowledgeRepositoryServer?.baseUrl && selectedMeasure && (
                         <span> <a target='_blank' rel='noreferrer' href={selectedKnowledgeRepositoryServer?.baseUrl + 'Measure/' + selectedMeasure}>({selectedMeasure})↗</a></span>
                       )}

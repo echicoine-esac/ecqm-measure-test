@@ -25,13 +25,14 @@ interface Props {
   selectedMeasure?: string;
   groups?: Map<string, PatientGroup>
   setSelectedPatientGroup: React.Dispatch<React.SetStateAction<PatientGroup | undefined>>;
-
+  resetSection?: (s: Section) => void;
 }
 
 const DataRepository: React.FC<Props> = ({
   showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients,
   fetchPatients, setSelectedPatient, selectedPatient, collectData, loading,
-  setModalShow, selectedMeasure, groups, setSelectedPatientGroup }) => {
+  setModalShow, selectedMeasure, groups, setSelectedPatientGroup,
+  resetSection }) => {
 
   const [patientFilter, setPatientFilter] = useState<string>('');
   const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
@@ -69,7 +70,7 @@ const DataRepository: React.FC<Props> = ({
 
   useEffect(() => {
     // Update filtered patients and patient group based on selectedMeasure
-    const updatedPatientGroup = selectedMeasure ? groups?.get(selectedMeasure) : undefined;
+    const updatedPatientGroup = selectedMeasure && selectedMeasure.length > 0 ? groups?.get(selectedMeasure) : undefined;
     setPatientGroup(updatedPatientGroup);
 
     const filteredPatients = patients.filter((patient) => {
@@ -123,12 +124,19 @@ const DataRepository: React.FC<Props> = ({
               callFunction={fetchPatients}
               baseUrlValue={selectedDataRepo?.baseUrl}
               setModalShow={setModalShow}
+              resetSection={resetSection}
             />
 
             <div className='col-md-6 order-md-2'>
 
-              <label>Patient (optional)</label>
-
+              <div className='row'>
+                <div className='col'>
+                  <label>Patient (optional)</label>
+                </div>
+                <div className='col text-right'>
+                  <label style={{ fontSize: '0.8em' }}>Patient List Count: {filteredPatients.length}</label>
+                </div>
+              </div>
               <select disabled={loading} data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
                 onChange={(e) => {
                   const selectedPatientId = e.target.value;
@@ -145,11 +153,16 @@ const DataRepository: React.FC<Props> = ({
                   </option>
                 ))}
               </select>
-              <input disabled={loading} type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
+              <input
+                style={{ marginBottom: '5px', marginTop: '3px' }}
+                disabled={loading}
+                type='text'
+                className='form-control'
+                placeholder='Filter patients...'
+                value={patientFilter}
                 onChange={(e) => setPatientFilter(e.target.value)} />
             </div>
             <div className='col-md-6 order-md-3'>
-              <br />
               {loading ? (
                 <Button data-testid='data-repo-collect-data-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
                   <Spinner

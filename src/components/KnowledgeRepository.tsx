@@ -20,6 +20,7 @@ interface Props {
   getDataRequirements: () => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
+  resetSection?: (s: Section) => void;
 }
 
 
@@ -27,7 +28,8 @@ interface Props {
 // KnowledgeRepository component displays the fields for selecting and using the Knowledge Repository
 const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowledgeRepo, servers,
   fetchMeasures, selectedKnowledgeRepo, measures, setSelectedMeasure,
-  selectedMeasure, getDataRequirements, loading, setModalShow }) => {
+  selectedMeasure, getDataRequirements, loading, setModalShow,
+  resetSection }) => {
 
   return (
     <div className='card'>
@@ -53,12 +55,20 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
               callFunction={fetchMeasures}
               baseUrlValue={selectedKnowledgeRepo?.baseUrl}
               setModalShow={setModalShow}
+              resetSection={resetSection}
             />
 
 
             <div className='col-md-6 order-md-2'>
 
-              <label>Measure</label>
+              <div className='row'>
+                <div className='col'>
+                  <label>Measure</label>
+                </div>
+                <div className='col text-right'>
+                  <label style={{ fontSize: '0.8em' }}>Measure List Count: {measures.length}</label>
+                </div>
+              </div>
 
               <select disabled={loading} data-testid='knowledge-repo-measure-dropdown' className='custom-select d-block w-100' id='measure' value={selectedMeasure}
                 onChange={(e) => setSelectedMeasure(e.target.value)}>

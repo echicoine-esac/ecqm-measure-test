@@ -9,7 +9,8 @@ interface Props {
     servers: any;
     section: Section;
     baseUrlValue: string | undefined;
-    setModalShow: (a: boolean) => void;
+    setModalShow: (b: boolean) => void;
+    resetSection?: (s: Section) => void;
     callFunction?: (a: any) => void;
 
 }
@@ -18,10 +19,20 @@ interface Props {
  * @param param0 
  * @returns 
  */
-const ServerDropdown: React.FC<Props> = ({ loading, callFunction, servers, section, baseUrlValue, setModalShow }) => {
+const ServerDropdown: React.FC<Props> = ({ loading, callFunction, servers, section, baseUrlValue, setModalShow, resetSection: resetterFunction }) => {
 
     const dataTestID = Constants.sectionIDs.get(section);
     const labelText = Constants.sectionTitles.get(section) + ' Server'
+
+    const triggerSelectionChange = (a: any) =>{
+        if (resetterFunction){
+            resetterFunction(section);
+        }
+
+        if (callFunction){
+            callFunction(a);
+        }
+    }
 
     return (
         <div className='col-md-6 order-md-1' style={{ display: 'inline-block', paddingRight: '0px' }}>
@@ -31,7 +42,7 @@ const ServerDropdown: React.FC<Props> = ({ loading, callFunction, servers, secti
                     data-testid={dataTestID + '-server-dropdown'}
                     className='custom-select d-block w-100' id='server'
                     value={baseUrlValue}
-                    onChange={(e) => callFunction && callFunction(servers[e.target.selectedIndex - 1])}>
+                    onChange={(e) => triggerSelectionChange(servers[e.target.selectedIndex - 1])}>
                     <option value=''>{Constants.label_selectServer}</option>
                     {servers.map((server: any, index: React.Key | null | undefined) => (
                         <option key={index}>{server?.baseUrl}</option>
@@ -52,7 +63,8 @@ const ServerDropdown: React.FC<Props> = ({ loading, callFunction, servers, secti
                             alignContent: 'center',
                             textAlign: 'center',
                             color: 'black',
-                            backgroundColor: 'white'
+                            backgroundColor: 'white',
+                            marginLeft: '5px'
                         }}
                         disabled={loading}
                         variant='outline-primary'

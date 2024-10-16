@@ -31,6 +31,10 @@ const mockPatientTotalCountJSON = `{
 beforeAll(() => {
   global.URL.createObjectURL = jest.fn();
   window.HTMLElement.prototype.scrollIntoView = jest.fn();
+  Object.defineProperty(window.screen, 'orientation', {
+    writable: true,
+    value: { type: 'landscape-primary' },
+  });
 });
 
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
@@ -59,7 +63,7 @@ test(thisTestFile + ': scenario: Please select a Measure message renders the res
   await act(async () => {
     render(<App />);
   });
-  
+
   // Assert that the element is not in the document
   expect(screen.queryByTestId('results-text')).not.toBeInTheDocument();
 

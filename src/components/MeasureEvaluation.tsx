@@ -24,12 +24,14 @@ interface Props {
   selectedPatient?: Patient;
   selectedDataRepo: Server | undefined;
   collectedData?: string | undefined
+  resetSection?: (s: Section) => void;
 }
 
 // MeasureEvaluation component displays the fields for selecting and using the measure evaluation system
 const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeasureEvaluation, servers, setSelectedMeasureEvaluation,
   selectedMeasureEvaluation, submitData, evaluateMeasure, loading, setModalShow, selectedPatient, patientGroup,
-  selectedDataRepo, collectedData }) => {
+  selectedDataRepo, collectedData,
+  resetSection }) => {
 
 
   const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
@@ -49,30 +51,32 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
   };
 
   const [href, setHref] = useState<string | undefined>(undefined);
+
   useEffect(() => {
     let objectUrl: string | undefined = undefined;
-    if (collectedData) {
-      // Create a Blob and generate an object URL
+
+    if (collectedData && collectedData.trim() !== '') {
+      // Create a Blob and generate an object URL if there's valid content
       const blob = new Blob([collectedData], { type: "application/json" });
       objectUrl = URL.createObjectURL(blob);
       setHref(objectUrl);
+    } else {
+      // Reset href if the string is empty
+      setHref(undefined);
     }
 
     // Cleanup: Revoke the previous URL when results change or component unmounts
     return () => {
       if (objectUrl) {
         URL.revokeObjectURL(objectUrl);
-        setHref(undefined);
       }
+      setHref(undefined);
     };
   }, [collectedData]);
 
   const handleDownload = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    // Fallback for iOS Safari, which does not support `download` attribute
-    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-      e.preventDefault();
-      window.open(href ?? '', '_blank');
-    }
+    e.preventDefault();
+    window.open(href ?? '', '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -97,8 +101,8 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
               callFunction={setSelectedMeasureEvaluation}
               baseUrlValue={selectedMeasureEvaluation?.baseUrl}
               setModalShow={setModalShow}
+              resetSection={resetSection}
             />
-
 
           </div>
 

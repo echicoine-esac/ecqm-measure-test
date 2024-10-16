@@ -126,7 +126,8 @@ export class OAuthHandler {
         const authenticationUrl = OAuthHandler.buildAuthenticationUrl(server);
 
         // Open the authentication popup
-        const popupWindow = window.open(authenticationUrl, '_blank', 'width=600,height=800');
+        const popupWindow = window.open(authenticationUrl, '_blank', 'width=600,height=800,noopener,noreferrer');
+
         if (!popupWindow) {
             return false;
         }

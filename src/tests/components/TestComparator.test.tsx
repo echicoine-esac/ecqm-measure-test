@@ -32,6 +32,15 @@ const mockPatientTotalCountJSON = `{
   "total": 2355
 }`;
 
+beforeAll(() => {
+    global.URL.createObjectURL = jest.fn();
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    Object.defineProperty(window.screen, 'orientation', {
+        writable: true,
+        value: { type: 'landscape-primary' },
+    });
+});
+
 const INITIAL_POPULATION = 'initial-population';
 const DENOMINATOR = 'denominator';
 const DENOMINATOR_EXCLUSION = 'denominator-exclusion';

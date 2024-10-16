@@ -4,7 +4,12 @@ import { Outcome } from '../../models/OutcomeTracker';
 beforeAll(() => {
   global.URL.createObjectURL = jest.fn();
   window.HTMLElement.prototype.scrollIntoView = jest.fn();
+  Object.defineProperty(window.screen, 'orientation', {
+    writable: true,
+    value: { type: 'landscape-primary' },  
+  });
 });
+
 test('results text renders and accepts value', () => {
   const outcomeText = 'outcome-text';
   const resultsText = 'results-text';

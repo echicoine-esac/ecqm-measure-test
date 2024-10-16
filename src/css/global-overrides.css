@@ -8,10 +8,19 @@
     --focus-shadow: rgba(1, 136, 209, 0.5);
 }
 
+.showAllHideAll {
+    padding: 0px;
+    text-decoration: underline;
+    background: none;
+    outline: none;
+    font-size: 11pt;
+}
+
 .card {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
 .card-header {

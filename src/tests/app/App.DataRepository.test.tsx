@@ -43,6 +43,10 @@ const mockPatientTotalCountJSON = `{
 beforeAll(() => {
   global.URL.createObjectURL = jest.fn();
   window.HTMLElement.prototype.scrollIntoView = jest.fn();
+  Object.defineProperty(window.screen, 'orientation', {
+    writable: true,
+    value: { type: 'landscape-primary' },
+  });
 });
 
 //mock getServerList and createServer entirely. API.graphQL calls are mocked in ServerUtils.test.tsx
