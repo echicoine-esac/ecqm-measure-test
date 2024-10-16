@@ -171,6 +171,7 @@ const App: React.FC = () => {
       case Section.KNOWLEDGE_REPO: {
         setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
         setMeasureReport('');
+        setCollectedData('')
         setMeasures([]);
         clearPopulationCounts();
         setSelectedMeasure('');

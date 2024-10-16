@@ -182,18 +182,6 @@ test(thisTestFile + ' success scenario: generate a valid test comparison summary
     });
     fetchMock.restore();
 
-    //mock measure list server selection will return 
-    const measureFetch = new MeasureFetch(dataServers[0]);
-    const mockJsonMeasureData = jsonTestMeasureData;
-    fetchMock.once(measureFetch.getUrl(),
-      JSON.stringify(mockJsonMeasureData)
-      , { method: 'GET' });
-    await act(async () => {
-      //select server, mock list should return:
-      userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
-    });
-    fetchMock.restore();
-
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
 
     const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
