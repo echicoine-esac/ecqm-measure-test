@@ -32,7 +32,7 @@ const ServerModal: React.FC<Props> = ({ modalShow, setModalShow, createServer })
       if (!url.startsWith('http://') && !url.startsWith('https://')) {
         message = Constants.error_url + Constants.error_urlStartsWith;
       } else if (!url.endsWith('/')) {
-        message = Constants.error_url +Constants.error_urlEndsWith;
+        message = Constants.error_url + Constants.error_urlEndsWith;
       }
     }
 
@@ -43,61 +43,68 @@ const ServerModal: React.FC<Props> = ({ modalShow, setModalShow, createServer })
     event.preventDefault();
     event.stopPropagation();
 
+    // Perform basic validation
     let hasErrors = false;
     const newErrors = { ...errors };
 
-    // Custom validation for Base URL
-    let message = validateUrl(baseUrl);
-    const baseUrlInput = event.currentTarget.elements.namedItem('form.baseUrl') as HTMLInputElement;
-    if (message !== '') {
-      baseUrlInput.setCustomValidity('invalid');
-      newErrors.baseUrl = message;
+    // Validate Base URL
+    if (!baseUrl) {
+      newErrors.baseUrl = "Base URL is required.";
       hasErrors = true;
     } else {
-      baseUrlInput.setCustomValidity('');
-      newErrors.baseUrl = '';
+      const message = validateUrl(baseUrl);
+      if (message !== '') {
+        newErrors.baseUrl = message;
+        hasErrors = true;
+      } else {
+        newErrors.baseUrl = '';
+      }
     }
 
-    // Custom validation for optional authUrl
+    // Validate optional authUrl
     if (authUrl) {
-      message = validateUrl(authUrl);
-      const authUrlInput = event.currentTarget.elements.namedItem('form.authUrl') as HTMLInputElement;
+      const message = validateUrl(authUrl);
       if (message !== '') {
-        authUrlInput.setCustomValidity('invalid');
         newErrors.authUrl = message;
         hasErrors = true;
       } else {
-        authUrlInput.setCustomValidity('');
         newErrors.authUrl = '';
       }
     }
 
-    // Custom validation for optional tokenUrl
+    // Validate optional tokenUrl
     if (tokenUrl) {
-      message = validateUrl(tokenUrl);
-      const tokenUrlInput = event.currentTarget.elements.namedItem('form.tokenUrl') as HTMLInputElement;
+      const message = validateUrl(tokenUrl);
       if (message !== '') {
-        tokenUrlInput.setCustomValidity('invalid');
         newErrors.tokenUrl = message;
         hasErrors = true;
       } else {
-        tokenUrlInput.setCustomValidity('');
         newErrors.tokenUrl = '';
       }
     }
 
     setErrors(newErrors);
 
+    // If there are errors, prevent submission
     if (hasErrors) {
       setValidated(false);
       return;
     }
 
+    // Otherwise, mark the form as validated and submit the data
     setValidated(true);
     createServer(baseUrl, authUrl, tokenUrl, clientId, clientSecret, scope);
-    setModalShow(false);
+
+    // Clear the form and close the modal
     setBaseUrl('');
+    setAuthUrl('');
+    setTokenUrl('');
+    setClientId('');
+    setClientSecret('');
+    setScope('user/*.read');
+    setModalShow(false);
   };
+
 
   return (
     <Modal
@@ -114,8 +121,7 @@ const ServerModal: React.FC<Props> = ({ modalShow, setModalShow, createServer })
         data-testid='server-model-form'
         noValidate
         validated={validated}
-        onSubmit={submitServer}
-      >
+        onSubmit={submitServer} >
         <Modal.Header>
           <h2>Add Server Endpoint</h2>
         </Modal.Header>
@@ -146,8 +152,7 @@ const ServerModal: React.FC<Props> = ({ modalShow, setModalShow, createServer })
               placeholder='https://example.com/fhir/'
               onChange={(e) => setBaseUrl(e.target.value)}
               isInvalid={errors.baseUrl !== ''}
-              required
-            />
+              required />
             <Form.Control.Feedback type='invalid'
               data-testid='server-model-baseurl-feedback'>
               {errors.baseUrl || Constants.error_url}
@@ -172,8 +177,7 @@ const ServerModal: React.FC<Props> = ({ modalShow, setModalShow, createServer })
               value={authUrl}
               placeholder='https://example.com/auth/'
               onChange={(e) => setAuthUrl(e.target.value)}
-              isInvalid={errors.authUrl !== ''}
-            />
+              isInvalid={errors.authUrl !== ''} />
             <Form.Control.Feedback type='invalid'
               data-testid='server-model-authurl-feedback'>
               {errors.authUrl || Constants.error_url}
@@ -193,8 +197,7 @@ const ServerModal: React.FC<Props> = ({ modalShow, setModalShow, createServer })
               value={tokenUrl}
               placeholder='https://example.com/token/'
               onChange={(e) => setTokenUrl(e.target.value)}
-              isInvalid={errors.tokenUrl !== ''}
-            />
+              isInvalid={errors.tokenUrl !== ''} />
             <Form.Control.Feedback type='invalid'
               data-testid='server-model-accessurl-feedback'>
               {errors.tokenUrl || Constants.error_url}
@@ -212,8 +215,7 @@ const ServerModal: React.FC<Props> = ({ modalShow, setModalShow, createServer })
               data-testid='server-model-clientid-text'
               type='text'
               value={clientId}
-              onChange={(e) => setClientId(e.target.value)}
-            />
+              onChange={(e) => setClientId(e.target.value)} />
           </Form.Group>
           <Form.Group controlId='form.clientSecret'>
             <Form.Label
@@ -227,8 +229,7 @@ const ServerModal: React.FC<Props> = ({ modalShow, setModalShow, createServer })
               data-testid='server-model-clientsecret-text'
               type='text'
               value={clientSecret}
-              onChange={(e) => setClientSecret(e.target.value)}
-            />
+              onChange={(e) => setClientSecret(e.target.value)} />
           </Form.Group>
           <Form.Group controlId='form.scope'>
             <Form.Label
@@ -242,18 +243,36 @@ const ServerModal: React.FC<Props> = ({ modalShow, setModalShow, createServer })
               data-testid='server-model-scope-text'
               type='text'
               value={scope}
-              onChange={(e) => setScope(e.target.value)}
-            />
+              onChange={(e) => setScope(e.target.value)} />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button
             data-testid='server-model-cancel-button'
-            onClick={() => setModalShow(false)}
-          >
+            onClick={() => {
+              // Clear form fields
+              setBaseUrl('');
+              setAuthUrl('');
+              setTokenUrl('');
+              setClientId('');
+              setClientSecret('');
+              setScope('');
+
+              // Clear validation errors
+              setErrors({ baseUrl: '', authUrl: '', tokenUrl: '' });
+
+              // Reset validation state
+              setValidated(false);
+
+              // Close the modal
+              setModalShow(false)
+            }
+            } >
             Cancel
           </Button>
-          <Button data-testid='server-model-submit-button' type='submit'>
+          <Button
+            data-testid='server-model-submit-button'
+            type='submit'>
             Save
           </Button>
         </Modal.Footer>
