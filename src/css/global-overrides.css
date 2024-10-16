@@ -126,3 +126,7 @@ a:active,
         margin: 35px;
     }
 }
+
+.form-group {
+    margin-bottom: 30px;
+}
