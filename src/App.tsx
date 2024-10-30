@@ -29,10 +29,11 @@ import { PopulationScoring } from './models/PopulationScoring';
 import { GroupElement } from './models/Scoring';
 import { Server } from './models/Server';
 import { Section } from './enum/Section.enum';
-import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
 import './css/global-overrides.css';
+import { MeasureComparisonData } from './data/MeasureComparisonData';
+import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 
 const App: React.FC = () => {
   //responsive design
@@ -55,7 +56,7 @@ const App: React.FC = () => {
    */
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
   const setSelectedMeasureCaller = (measureName: SetStateAction<string>) => {
-    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+    setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
     clearPopulationCounts();
     resetResults();
     setCollectedData('');
@@ -68,7 +69,7 @@ const App: React.FC = () => {
    */
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
   const setSelectedPatientCaller = (patient: SetStateAction<Patient | undefined>) => {
-    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+    setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
     clearPopulationCounts();
     resetResults();
     setCollectedData('');
@@ -119,7 +120,7 @@ const App: React.FC = () => {
   const [collectedData, setCollectedData] = useState<string>('');
   const [measureReport, setMeasureReport] = useState<string>('');
 
-  const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonManager>>(new Map());
+  const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonData>>(new Map());
 
   const [showScrollToTopButton, setShowScrollToTopButton] = useState(false);
 
@@ -169,7 +170,7 @@ const App: React.FC = () => {
     setSectionalResults('', section);
     switch (section) {
       case Section.KNOWLEDGE_REPO: {
-        setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+        setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
         setMeasureReport('');
         setCollectedData('')
         setMeasures([]);
@@ -179,7 +180,7 @@ const App: React.FC = () => {
         return;
       }
       case Section.DATA_REPO: {
-        setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+        setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
         clearPopulationCounts();
         setCollectedData('');
         setPatients([]);
@@ -190,7 +191,7 @@ const App: React.FC = () => {
         return;
       }
       case Section.MEASURE_EVAL: {
-        setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+        setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
         clearPopulationCounts();
         setMeasureReport('');
         resetResults();
@@ -547,7 +548,7 @@ const App: React.FC = () => {
   // and scoring is compared, mapped, and a summary in differences/matches presented to user.
   const compareTestResults = async () => {
     resetResults();
-    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+    setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
 
     //validation of required fields done via checklist which enables/disables generate button
 
@@ -575,7 +576,7 @@ const App: React.FC = () => {
     }
 
     //Now begin processing valid patients in our list:
-    const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
+    const newTestComparatorMap = new Map<Patient, MeasureComparisonData>();
     setLoading(true);
     clearPopulationCounts();
 
@@ -592,13 +593,11 @@ const App: React.FC = () => {
     if (measureObj) {
       for (const patientEntry of patientCompareList) {
         //patient belongs to this group, proceed:
-        const mcMan = new MeasureComparisonManager(patientEntry,
+        const mcMan = await new MeasureComparisonManager(new MeasureComparisonData(patientEntry,
           measureObj,
           selectedMeasureEvaluationServer,
           selectedDataRepositoryServer,
-          startDate, endDate);
-
-        await mcMan.fetchGroups();
+          startDate, endDate)).fetchAndCompareGroups();
 
         const patientDisplayKey = '' + patientEntry?.display;
 

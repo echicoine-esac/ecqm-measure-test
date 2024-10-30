@@ -3,12 +3,12 @@ import fetchMock from 'fetch-mock';
 import TestingComparator from '../../components/TestingComparator';
 import { Constants } from '../../constants/Constants';
 import { EvaluateMeasureFetch } from '../../data/EvaluateMeasureFetch';
+import { MeasureComparisonData } from '../../data/MeasureComparisonData';
 import { MeasureFetch } from '../../data/MeasureFetch';
 import { MeasureReportFetch } from '../../data/MeasureReportFetch';
 import { PatientFetch } from '../../data/PatientFetch';
 import { Measure } from '../../models/Measure';
 import { Patient } from '../../models/Patient';
-import { Server } from '../../models/Server';
 import { MeasureComparisonManager } from '../../utils/MeasureComparisonManager';
 import jsonTestMeasureData from '../resources/fetchmock-measure.json';
 import jsonTestEvalMeasure from '../resources/fetchmock-test-compare-evaluate-measure.json';
@@ -52,7 +52,7 @@ test(thisTestFile + ': renders properly', async () => {
     const setShowTestCompare = jest.fn();
     const periodStart = '2025-01-01';
     const periodEnd = '2025-12-31';
-    const testComparatorMap = new Map<Patient, MeasureComparisonManager>();
+    const testComparatorMap = new Map<Patient, MeasureComparisonData>();
 
     const MEASURE_NAME = 'AlaraCTClinicalFHIR';
     const PATIENT_ID = 'e8029124-d760-40eb-b25a-703e447a3e4d';
@@ -118,9 +118,8 @@ test(thisTestFile + ': renders properly', async () => {
 
 
         //MeasureComparisonManager instance:
-        const mcMan: MeasureComparisonManager = new MeasureComparisonManager(patientList[patientIdx],
-            measureList[measureIdx], Constants.serverTestData[0], Constants.serverTestData[0], periodStart, periodEnd);
-        await mcMan.fetchGroups();
+        const mcMan = await new MeasureComparisonManager(new MeasureComparisonData(patientList[patientIdx],
+            measureList[measureIdx], Constants.serverTestData[0], Constants.serverTestData[0], periodStart, periodEnd)).fetchAndCompareGroups();
 
         if (patientList[patientIdx]) {
             const patient: Patient | undefined = patientList[patientIdx];
