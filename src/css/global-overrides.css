@@ -38,6 +38,7 @@
 
 .container {
     margin: 0 auto;
+    margin-bottom: 30px;
     max-width: 1060px;
     width: 100%;
 }

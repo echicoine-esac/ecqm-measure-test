@@ -108,8 +108,9 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
 
         <div ref={resultsDivRef} className='card row mt-4'
           style={{
-            background: '#F7F7F7', border: '1px solid lightgrey',
-            transition: 'border 2s', margin: '2px', paddingTop: resultsTextIsJson && !outcomeTracker?.outcomeMessage.length ? '15px' : '0px'
+            background: '#F7F7F7',
+            margin: '2px',
+            paddingTop: resultsTextIsJson && !outcomeTracker?.outcomeMessage.length ? '15px' : '0px'
           }}>
 
           {outcomeTracker && outcomeTracker.outcomeMessage.length > 0 && (
