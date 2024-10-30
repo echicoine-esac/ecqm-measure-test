@@ -820,7 +820,7 @@ const App: React.FC = () => {
             position: 'fixed',
             bottom: '10px',
             right: '25px',
-            backgroundColor: '#0D6EFD',
+            backgroundColor: 'var(--primary-color)',
             color: 'white',
             border: 'none',
             padding: '10px',
@@ -830,7 +830,6 @@ const App: React.FC = () => {
             alignItems: 'center',
             zIndex: 100,
             fontSize: '24px',
-            transition: 'opacity 0.3s',
             width: '60px',
           }}>
           {Constants.upArrow}
