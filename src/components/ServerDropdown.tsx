@@ -24,23 +24,26 @@ const ServerDropdown: React.FC<Props> = ({ loading, callFunction, servers, secti
     const dataTestID = Constants.sectionIDs.get(section);
     const labelText = Constants.sectionTitles.get(section) + ' Server'
 
-    const triggerSelectionChange = (a: any) =>{
-        if (resetterFunction){
+    const triggerSelectionChange = (a: any) => {
+        if (resetterFunction) {
             resetterFunction(section);
         }
 
-        if (callFunction){
+        if (callFunction) {
             callFunction(a);
         }
     }
 
     return (
         <div className='col-md-6 order-md-1' style={{ display: 'inline-block', paddingRight: '0px' }}>
-            <label>{labelText}</label>
+            <label htmlFor='server-dropdown'>{labelText}</label>
             <div style={{ display: 'flex', paddingRight: '12px' }}>
-                <select disabled={loading}
+                <select
+                    id='server-dropdown'
+                    aria-label={labelText + ' dropdown.'}
+                    disabled={loading}
                     data-testid={dataTestID + '-server-dropdown'}
-                    className='custom-select d-block w-100' id='server'
+                    className='custom-select d-block w-100'
                     value={baseUrlValue}
                     onChange={(e) => triggerSelectionChange(servers[e.target.selectedIndex - 1])}>
                     <option value=''>{Constants.label_selectServer}</option>
@@ -51,6 +54,7 @@ const ServerDropdown: React.FC<Props> = ({ loading, callFunction, servers, secti
                 <OverlayTrigger placement={'top'}
                     overlay={<Tooltip>Add an Endpoint</Tooltip>}>
                     <Button
+                        aria-label='Add server button, add a new server entry to the server dropdown. '
                         data-testid={dataTestID + '-server-add-button'}
                         style={{
                             border: '1px solid lightgrey',

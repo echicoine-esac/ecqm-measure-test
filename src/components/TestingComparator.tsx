@@ -125,21 +125,39 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
 
               !items || items?.size === 0 ? (
                 <div className='card-body'>
-                  {Constants.testComparisonInstruction}
-                  <br></br>
-                  <br></br>
-                  <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+
+                  {/* 508 trick to add extra info to the panel description for screen readers only: */}
+                  <label tabIndex={0}>
+                    <span aria-hidden="true">{Constants.testComparisonInstruction}</span>
+                    <span className='screen-reader-only'>{Constants.testComparisonInstruction + ' a measure, a data repository server, an established patient group for the measure, and a measure evaluation server.'}</span>
+                  </label>
+
+                  <hr />
+
+                  <ul tabIndex={0}
+                    aria-label='Checklist of required items. '
+                    style={{ listStyleType: 'none', paddingLeft: 0 }}>
 
                     {/* Measure */}
-                    <li data-testid='test-compare-checklist-measure'>
-                      {selectedMeasure && selectedMeasure.length > 0 ? '☑' : '☐'} Measure
-                      {selectedKnowledgeRepositoryServer?.baseUrl && selectedMeasure && (
+                    <li
+                      tabIndex={0}
+
+                      aria-label={selectedKnowledgeRepositoryServer?.baseUrl && selectedMeasure && selectedMeasure.length > 0 ? 'Measure: ' + selectedMeasure + '. ' : 'Measure: None selected. '}
+
+                      data-testid='test-compare-checklist-measure'>
+                      {selectedKnowledgeRepositoryServer?.baseUrl && selectedMeasure && selectedMeasure.length > 0 ? '☑' : '☐'} Measure
+                      {selectedMeasure && selectedMeasure.length > 0 && (
                         <span> <a target='_blank' rel='noreferrer' href={selectedKnowledgeRepositoryServer?.baseUrl + 'Measure/' + selectedMeasure}>({selectedMeasure})↗</a></span>
                       )}
                     </li>
 
                     {/* Data Repository Server */}
-                    <li data-testid='test-compare-checklist-data-repo-server'>
+                    <li
+                      tabIndex={0}
+
+                      aria-label={selectedDataRepoServer?.baseUrl ? 'Data Repository Server: ' + selectedDataRepoServer?.baseUrl + '. ' : 'Data Repository Server: None selected. '}
+
+                      data-testid='test-compare-checklist-data-repo-server'>
                       {selectedDataRepoServer?.baseUrl ? '☑' : '☐'} Data Repository Server
                       {selectedDataRepoServer?.baseUrl && (
                         <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl}>({selectedDataRepoServer.baseUrl})↗</a></span>
@@ -147,7 +165,12 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
                     </li>
 
                     {/* Patient Group */}
-                    <li data-testid='test-compare-checklist-patient-group'>
+                    <li
+                      tabIndex={0}
+
+                      aria-label={selectedPatientGroup?.id ? 'Patient Group: ' + selectedPatientGroup?.id + '. ' : 'Patient Group: None selected. '}
+
+                      data-testid='test-compare-checklist-patient-group'>
                       {selectedPatientGroup?.id ? '☑' : '☐'} Patient Group
                       {selectedPatientGroup?.id && selectedDataRepoServer?.baseUrl && (
                         <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl + 'Group/' + selectedPatientGroup?.id}>(Group/{selectedPatientGroup?.id})↗</a></span>
@@ -156,7 +179,10 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
 
                     {PatientGroupUtils.patientExistsInGroup(selectedPatient, selectedPatientGroup) &&
                       <ul style={{ listStyleType: 'none', paddingLeft: '20px' }}>
-                        <li>
+                        <li
+                          tabIndex={0}
+                          aria-label={selectedPatient?.id ? 'Patient: ' + selectedPatient?.display + '. ' : 'Patient: None selected. '}
+                        >
                           {selectedPatient?.id ? '☑' : '☐'} {'Patient (exists in Group)'}
                           {selectedPatient?.id && selectedDataRepoServer?.baseUrl && (
                             <span> <a target='_blank' rel='noreferrer' href={selectedDataRepoServer?.baseUrl + 'Patient/' + selectedPatient?.id}>(Patient/{selectedPatient?.id})↗</a></span>
@@ -166,7 +192,12 @@ const TestingComparator: React.FC<Props> = ({ showTestCompare, setShowTestCompar
                     }
 
                     {/* Measure Evaluation Server */}
-                    <li data-testid='test-compare-checklist-measure-eval-server'>
+                    <li
+                      tabIndex={0}
+
+                      aria-label={selectedMeasureEvaluationServer?.baseUrl ? 'Measure Evaluation Server: ' + selectedMeasureEvaluationServer?.baseUrl + '. ' : 'Measure Evaluation Server: None selected. '}
+
+                      data-testid='test-compare-checklist-measure-eval-server'>
                       {selectedMeasureEvaluationServer?.baseUrl ? '☑' : '☐'} Measure Evaluation Server
                       {selectedMeasureEvaluationServer?.baseUrl && (
                         <span> <a target='_blank' rel='noreferrer' href={selectedMeasureEvaluationServer?.baseUrl}>({selectedMeasureEvaluationServer.baseUrl})↗</a></span>

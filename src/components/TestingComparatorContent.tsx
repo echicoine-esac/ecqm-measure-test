@@ -66,7 +66,7 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
         <thead className="text-center">
           <tr>
             <th colSpan={3} style={{ width: '100%', border: 'none', padding: '0px' }}>
-              <h5 data-testid={'test-comp-title'}>{title}</h5>
+              <h5 tabIndex={0} data-testid={'test-comp-title'}>{title}</h5>
             </th>
           </tr>
         </thead>
@@ -75,19 +75,19 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
             <td style={{ borderRight: '1px solid lightgrey', borderBottom: 'none' }}>
               <Table size="sm" borderless>
                 <tbody>
-                  <tr>
+                  <tr tabIndex={0} >
                     <td className="text-start">
                       Patients Evaluated:
                     </td>
                     <td data-testid={'test-comp-pat-eval-count'} >{items?.size}</td>
                   </tr>
-                  <tr>
+                  <tr tabIndex={0} >
                     <td className="text-start">
                       Discrepancies Found:
                     </td>
                     <td data-testid={'test-comp-disc-found-count'} >{trueCount}</td>
                   </tr>
-                  <tr>
+                  <tr tabIndex={0}>
                     <td className="text-start">
                       Matching Data Found:
                     </td>
@@ -99,19 +99,19 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
             <td style={{ borderRight: '1px solid lightgrey', borderBottom: 'none' }}>
               <Table size="sm" borderless>
                 <tbody>
-                  <tr>
+                  <tr tabIndex={0}>
                     <td className="text-start">
                       Period Start Date:
                     </td>
                     <td data-testid={'test-comp-start-date'} >{startDate}</td>
                   </tr>
-                  <tr>
+                  <tr tabIndex={0}>
                     <td className="text-start">
                       Period End Date:
                     </td>
                     <td data-testid={'test-comp-end-date'} >{endDate}</td>
                   </tr>
-                  <tr>
+                  <tr tabIndex={0}>
                     <td className="text-start">
                       Comparison Date:
                     </td>
@@ -123,7 +123,7 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
             <td style={{ borderBottom: 'none' }}>
               <Table size="sm" borderless>
                 <tbody>
-                  <tr>
+                  <tr tabIndex={0}>
                     <td className="text-start">
                       Knowledge Repository:
                     </td>
@@ -133,7 +133,7 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
                       </a>
                     </td>
                   </tr>
-                  <tr>
+                  <tr tabIndex={0}>
                     <td className="text-start">
                       Data Repository:
                     </td>
@@ -143,7 +143,7 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
                       </a>
                     </td>
                   </tr>
-                  <tr>
+                  <tr tabIndex={0}>
                     <td className="text-start">
                       Measure Evaluation:
                     </td>
@@ -184,7 +184,8 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
             >
               <thead style={{ background: '#F7F7F7', border: '1px solid lightgrey' }}>
                 <tr>
-                  <th
+                  <th tabIndex={0}
+                    aria-label={'Comparison for patient: ' + key.display + ' with ID: ' + key.id + '. '}
                     style={{
                       width: '50%',
                       textAlign: 'left',
@@ -204,14 +205,15 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
                       ID: {key.id}
                     </h6>
                   </th>
-                  <th
+                  <th tabIndex={0}
+                    aria-label={'Comparison result: ' + (value.discrepancyExists ? 'Discrepancy. ' : 'Match. ')}
                     style={{
                       width: '50%',
                       textAlign: 'left',
                       padding: '8px', // Reduced padding
                     }}
                   >
-                    <h6>Comparison Result:</h6>
+                    <h6 >Comparison Result:</h6>
                     <h5
                       data-testid={'test-comp-result-' + convertToID(key.id)}
                       className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}
@@ -224,12 +226,15 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
               </thead>
               <tbody>
                 <tr>
-                  <td style={{ padding: '4px' }}> {/* Reduced padding for inner tables */}
+                  <td tabIndex={0}
+                    aria-label='This evaluation result. '
+                    style={{ padding: '4px', paddingBottom: '-10px' }}> {/* Reduced padding for inner tables */}
                     <Table size="sm" borderless>
                       <thead>
                         <tr>
                           <th>
-                            <a target="_blank" rel="noreferrer" href={value.evaluatedMeasureURL}>
+                            <a tabIndex={-1}
+                              target="_blank" rel="noreferrer" href={value.evaluatedMeasureURL}>
                               <h6 style={{ fontSize: '0.9em' }}>This Evaluation:</h6>
                             </a>
                           </th>
@@ -237,7 +242,8 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
                       </thead>
                       <tbody>
                         {value.fetchedEvaluatedMeasureGroups.map((group, index) => (
-                          <tr
+                          <tr tabIndex={0}
+                            aria-label={group.code.coding[0].code + ': ' + group.count + '... '}
                             style={{ border: '1px solid lightgrey' }}
                             key={index}
                             className={group.discrepancy ? 'fw-bold' : ''}
@@ -252,20 +258,25 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
                         ))}
                         <tr>
                           <td>
-                            <div style={{ fontSize: '10px', wordBreak: 'break-all' }}>
-                              {value.evaluatedMeasureURL}
+                            {/* 508 trick to add extra info to the panel description for screen readers only: */}
+                            <div tabIndex={0} style={{ fontSize: '10px', wordBreak: 'break-word', marginBottom: '0px' }}>
+                              <span aria-hidden="true">{value.evaluatedMeasureURL}</span>
+                              <span className='screen-reader-only'>{'... To run this measure evaluation, visit ' + value.evaluatedMeasureURL + '... '}</span>
                             </div>
                           </td>
                         </tr>
                       </tbody>
                     </Table>
                   </td>
-                  <td style={{ padding: '4px' }}>
+                  <td tabIndex={0}
+                    aria-label='Previous measure report data. '
+                    style={{ padding: '4px', paddingBottom: '-10px' }}>
                     <Table size="sm" borderless>
                       <thead>
                         <tr>
                           <th>
-                            <a target="_blank" rel="noreferrer" href={value.measureReportURL}>
+                            <a tabIndex={-1}
+                              target="_blank" rel="noreferrer" href={value.measureReportURL}>
                               <h6 style={{ fontSize: '0.9em' }}>Previous Measure Report:</h6>
                             </a>
                           </th>
@@ -273,7 +284,8 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
                       </thead>
                       <tbody>
                         {value.fetchedMeasureReportGroups.map((group, index) => (
-                          <tr
+                          <tr tabIndex={0}
+                            aria-label={group.code.coding[0].code + ': ' + group.count + '... '}
                             style={{ border: '1px solid lightgrey' }}
                             key={index}
                             className={group.discrepancy ? 'fw-bold' : ''}
@@ -288,8 +300,11 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
                         ))}
                         <tr>
                           <td>
-                            <div style={{ fontSize: '10px', wordBreak: 'break-all' }}>
-                              {value.measureReportURL}
+
+                            {/* 508 trick to add extra info to the panel description for screen readers only: */}
+                            <div tabIndex={0} style={{ fontSize: '10px', wordBreak: 'break-word', marginBottom: '0px' }}>
+                              <span aria-hidden="true">{value.measureReportURL}</span>
+                              <span className='screen-reader-only'>{'... To retrieve a copy of the report, visit ' + value.measureReportURL + '... '}</span>
                             </div>
                           </td>
                         </tr>

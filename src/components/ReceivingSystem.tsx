@@ -51,8 +51,8 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
 
 
   const handleDownload = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e.preventDefault();
-      window.open(href ?? '', '_blank', 'noopener,noreferrer');
+    e.preventDefault();
+    window.open(href ?? '', '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -83,7 +83,13 @@ const ReceivingSystem: React.FC<Props> = ({ showReceiving, setShowReceiving, ser
           </div>
 
           {/* checklist style indicator regardin stored measurereport */}
-          <div className='mt-3' style={{ paddingBottom: '0px' }}>
+          <div
+
+            tabIndex={0}
+            aria-label={href ? 'Generated measure report. This link will open a snapshot of the stored measure report to be posted to the recieving system.' :
+              'Generated measure report. When populated, this link will open a snapshot of the stored measure report to be posted to the recieving system. You can generate a MeasureReport using the Evaluate Measure function in the Measure Evaluation panel. '}
+
+            className='mt-3' style={{ paddingBottom: '0px' }}>
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
 
               <li data-testid='rec-sys-checklist-measure'>

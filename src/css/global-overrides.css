@@ -1,7 +1,8 @@
 :root {
-    --primary-color: #0188d1;
+    --primary-color: #0074b3;
+    /* --primary-color: #0188d1; */
     --primary-light: #5bbef2;
-    --primary-dark: #016799;
+    --primary-dark: #00456a;
     --text-color: #ffffff;
     --background-light: #f8f9fa;
     --border-color: #afb4b7;
@@ -37,7 +38,7 @@
 
 .container {
     margin: 0 auto;
-    max-width: 960px;
+    max-width: 1060px;
     width: 100%;
 }
 
@@ -130,3 +131,19 @@ a:active,
 .form-group {
     margin-bottom: 30px;
 }
+
+/* This is just a way to give screen readers a different thing to read than what visual users see. For example: */
+/* <label>
+  <span aria-hidden="true">{Constants.testComparisonInstruction}</span>
+  <span className="sr-only">This description is being read by screen readers only.</span>  
+</label> */
+.screen-reader-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }

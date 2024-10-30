@@ -77,7 +77,7 @@ export class Constants {
     
     //Other
     public static readonly error_patientGroup = 'No Patient Group data could be established for the selected Measure. Select an individual Patient from the Patient dropdown and attempt operation again';
-    public static readonly label_largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
+    public static readonly label_largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout.'
     public static readonly label_selectServer = 'Select a Server...';
 
     //fetch urls

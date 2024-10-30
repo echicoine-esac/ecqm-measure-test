@@ -22,23 +22,28 @@ const ReportingPeriod: React.FC<Props> = ({ startDate, endDate, setStartDate, se
       <div className='card-body'>
         <div className='row'>
           <div className='col-md-6 order-md-1'>
-            <label>Start Date</label>
+            <label htmlFor='start-date'>Start Date</label>
             <Form.Control
+              id='start-date'
               data-testid='start-date-control'
               type='date' name='startDate'
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              style={{ minWidth: '95%', alignContent: 'center'}}
-               />
+              style={{ minWidth: '95%', alignContent: 'center' }}
+              aria-label='Start date for the reporting period.'
+            />
           </div>
           <div className='col-md-6 order-md-2'>
-            <label>End Date</label>
+            <label htmlFor='end-date'>End Date</label>
             <Form.Control
+              id='end-date'
               data-testid='end-date-control'
               type='date' name='endDate'
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              style={{ minWidth: '95%', alignContent: 'center' }} />
+              style={{ minWidth: '95%', alignContent: 'center' }}
+              aria-label='End date for the reporting period.'
+            />
           </div>
         </div>
       </div>

@@ -82,8 +82,8 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
   };
 
   const handleDownload = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e.preventDefault();
-      window.open(href ?? '', '_blank', 'noopener,noreferrer');
+    e.preventDefault();
+    window.open(href ?? '', '_blank', 'noopener,noreferrer');
   };
 
   const getOutcomeFontColor = () => {
@@ -125,6 +125,7 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
                 <div style={{ paddingTop: '5px', height: 'auto', width: 'auto', border: '0px' }}>
 
                   <div
+                    tabIndex={0}
                     data-testid="outcome-results-text"
                     style={{
                       height: 'auto',
@@ -167,8 +168,11 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
             </div>
             {resultsTextIsJson && (
               <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
-                <label style={{ marginRight: 'auto', display: 'flex', alignItems: 'center' }}>
+                <label htmlFor='theme-toggler'
+                  style={{ marginRight: 'auto', display: 'flex', alignItems: 'center' }}>
                   <input
+                    aria-label='Toggle the color syntax theme in the results panel between dark and light.'
+                    id='theme-toggler'
                     type='checkbox'
                     checked={isDarkTheme}
                     onChange={() => setIsDarkTheme(!isDarkTheme)}
@@ -178,6 +182,7 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
 
                 {!hrefFileName.startsWith('OperationOutcome') &&
                   <a href={href ?? '#'}
+                    aria-label={'Download jason data in results panel using file name ' + hrefFileName + '. '}
                     onClick={handleDownload}>
                     {hrefFileName}
                   </a>

@@ -57,7 +57,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
 
     if (collectedData && collectedData.trim() !== '') {
       // Create a Blob and generate an object URL if there's valid content
-      const blob = new Blob([collectedData], { type: "application/json" });
+      const blob = new Blob([collectedData], { type: 'application/json' });
       objectUrl = URL.createObjectURL(blob);
       setHref(objectUrl);
     } else {
@@ -107,14 +107,21 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
           </div>
 
           {/* checklist style indicator regardin stored collectedData */}
-          <div className='mt-3' style={{ paddingBottom: '0px' }}>
+          <div 
+          
+          tabIndex={0}
+          aria-label={href ? 'Collected data for submission. This link will open a snapshot of the stored collected data used for submission.' :
+            'Collected data for submission. When populated, this link will open a snapshot of the stored collected data used for submission. You can Collect Data for the selected Measure using the Data Extraction Service slash Data Repository panel. '}
+
+          className='mt-3' style={{ paddingBottom: '0px' }}>
 
             <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
 
               <li data-testid='mea-eva-checklist-measure'>
                 {collectedData ? '☑' : '☐'} {href ?
                   <a href={href ?? '#'}
-                    onClick={handleDownload}>
+                    onClick={handleDownload}
+                  >
                     Collected Data for Submission↗
                   </a>
                   :
@@ -128,7 +135,10 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
             <div className='col-md-6 order-md-2'>
               <br />
               {loading ? (
-                <Button data-testid='mea-eva-submit-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
+                <Button
+                  data-testid='mea-eva-submit-button-spinner'
+                  className='w-100 btn btn-primary btn-lg'
+                  disabled={loading}>
                   <Spinner
                     as='span'
                     variant='light'
@@ -139,7 +149,11 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
                   Loading...
                 </Button>
               ) : (
-                <Button data-testid='mea-eva-submit-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
+                <Button
+                  aria-label='Submit data button. Submit the collected data to the selected server.'
+                  data-testid='mea-eva-submit-button'
+                  className='w-100 btn btn-primary btn-lg'
+                  disabled={loading}
                   onClick={(e) => submitData()}>
                   Submit Data
                 </Button>
@@ -148,7 +162,11 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
             <div className='col-md-6 order-md-3'>
               <br />
               {loading ? (
-                <Button data-testid='mea-eva-evaluate-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>
+                <Button
+                  aria-label='Evaluate measure button. Run measure evaluation against selection.'
+                  data-testid='mea-eva-evaluate-button-spinner'
+                  className='w-100 btn btn-primary btn-lg'
+                  disabled={loading}>
                   <Spinner
                     as='span'
                     variant='light'
@@ -159,7 +177,10 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
                   Loading...
                 </Button>
               ) : (
-                <Button data-testid='mea-eva-evaluate-button' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}
+                <Button
+                  data-testid='mea-eva-evaluate-button'
+                  className='w-100 btn btn-primary btn-lg'
+                  disabled={loading}
                   onClick={(e) => evaluateMeasure(useGroupAsSubject && buildSubjectText().length > 0)}>
                   Evaluate Measure
                 </Button>
@@ -169,7 +190,8 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
           <div className='row-md-1 ml-auto'>
             {buildSubjectText().length > 0 && <label>
               <input
-                type="checkbox"
+                aria-label='Subject selection. Toggle subject identifier for queries pertaining to the Measure Evaluation panel.'
+                type='checkbox'
                 checked={useGroupAsSubject}
                 onChange={useGroupAsSubjectHandler}
                 disabled={loading}>
@@ -178,7 +200,7 @@ const MeasureEvaluation: React.FC<Props> = ({ showMeasureEvaluation, setShowMeas
             </label>
             }
             {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedMeasureEvaluation?.baseUrl) && (
-              <div>
+              <div tabIndex={0}>
                 {Constants.label_largeDataNOTE}
               </div>
             )}

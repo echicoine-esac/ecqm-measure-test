@@ -63,14 +63,20 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
 
               <div className='row'>
                 <div className='col'>
-                  <label>Measure</label>
+                  <label htmlFor='knowledge-repo-measure-dropdown'>Measure</label>
                 </div>
                 <div className='col text-right'>
-                  <label style={{ fontSize: '0.8em' }}>Measure List Count: {measures.length}</label>
+                  <span tabIndex={0} style={{ fontSize: '0.8em' }}>Measure List Count: {measures.length}</span>
                 </div>
               </div>
 
-              <select disabled={loading} data-testid='knowledge-repo-measure-dropdown' className='custom-select d-block w-100' id='measure' value={selectedMeasure}
+              <select
+                aria-label='Measure selection dropdown.'
+                disabled={loading}
+                data-testid='knowledge-repo-measure-dropdown'
+                className='custom-select d-block w-100'
+                id='knowledge-repo-measure-dropdown'
+                value={selectedMeasure}
                 onChange={(e) => setSelectedMeasure(e.target.value)}>
                 <option value=''>Select a Measure...</option>
                 {measures.map((measure, index) => (

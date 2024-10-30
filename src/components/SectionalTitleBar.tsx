@@ -38,6 +38,8 @@ const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubj
       <div className='flex-grow-1 d-flex flex-column flex-md-row align-items-md-center'>
         <div>
           <h5
+            tabIndex={0}
+            aria-label={title + ' panel. '}
             style={{
               fontSize: isTooNarrow ? '12pt' : '14pt',
               marginBottom: isTooNarrow ? '0.25rem' : 0,
@@ -49,8 +51,7 @@ const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubj
 
         {!isTooNarrow && !showSection && selectedSubject && selectedSubjectTitling && (
           <div
-
-            //knowledge-repo-selected-div
+            tabIndex={0}
             data-testid={dataTestID + '-selected-div'}
             style={{
               fontSize: isTooNarrow ? '10pt' : 'inherit',
@@ -66,6 +67,7 @@ const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubj
         <div className='ml-3'>
           {showSection ? (
             <Button
+              aria-label={'Hide the ' + title + ' panel. '}
               id={dataTestID + '-hide-section-button'}
               data-testid={dataTestID + '-hide-section-button'}
               className='btn btn-primary btn-lg'
@@ -75,6 +77,7 @@ const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubj
             </Button>
           ) : (
             <Button
+              aria-label={'Show the ' + title + ' panel. '}
               id={dataTestID + '-show-section-button'}
               data-testid={dataTestID + '-show-section-button'}
               className='btn btn-primary btn-lg'

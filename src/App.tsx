@@ -638,84 +638,94 @@ const App: React.FC = () => {
   }
 
   return (
+
     <div className='container'>
-      <div className="container-fluid">
-        <div className="row align-items-center" style={{ height: '65px', margin: '20px', padding: '0px' }}>
-          <div className="col-2 col-md-1 text-left">
-            <a target="_blank" rel="noreferrer" href="http://www.icf.com">
-              <img className="img-fluid" src={icfLogo} alt="ICF Logo" style={{ maxHeight: '65px' }} />
-            </a>
-          </div>
+      <header>
+        <div className='container-fluid'>
+          <div className='row align-items-center' style={{ height: '65px', margin: '20px', padding: '0px' }}>
+            <div className='col-2 col-md-1 text-left'>
+              <a target='_blank' rel='noreferrer' href='http://www.icf.com'>
+                <img
+                  tabIndex={0}
+                  aria-label='ICF logo. Click here to visit i c f dot com. '
+                  className='img-fluid' src={icfLogo} style={{ maxHeight: '65px' }} />
+              </a>
+            </div>
 
-          <div className="col-8 col-md-10 text-center">
-            <img className="img-fluid" src={appLogo} alt="eCQM Testing Tool" style={{ maxHeight: '65px', width: 'auto' }} />
-          </div>
+            <div className='col-8 col-md-10 text-center'>
+              <img
+                tabIndex={0}
+                aria-label='Welcome to the e c q m testing tool. '
+                className='img-fluid' src={appLogo} style={{ maxHeight: '65px', width: 'auto' }} />
+            </div>
 
-          <div className="col-2 col-md-1"></div>
+            <div className='col-2 col-md-1'></div>
+          </div>
         </div>
-      </div>
+      </header>
+
+      <main>
+        <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
+
+        <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
+          servers={servers} fetchMeasures={fetchMeasures}
+          selectedKnowledgeRepo={selectedKnowledgeRepositoryServer}
+          measures={measures} setSelectedMeasure={setSelectedMeasureCaller}
+          selectedMeasure={selectedMeasure}
+          getDataRequirements={getDataRequirements} loading={loading}
+          setModalShow={setServerModalShow}
+          resetSection={resetSection} />
+        <SectionalResults results={knowledgeRepositoryResults} />
+
+        <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
+          selectedDataRepo={selectedDataRepositoryServer} patients={patients}
+          fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatientCaller}
+          selectedPatient={selectedPatient}
+          collectData={collectData} loading={loading} setModalShow={setServerModalShow}
+          selectedMeasure={selectedMeasure}
+          groups={patientGroups}
+          setSelectedPatientGroup={setSelectedPatientGroup}
+          resetSection={resetSection} />
+        <SectionalResults results={dataRepositoryResults} />
+
+        <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
+          servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluationServer}
+          selectedMeasureEvaluation={selectedMeasureEvaluationServer} submitData={submitData}
+          evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
+          selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
+          selectedDataRepo={selectedDataRepositoryServer}
+          collectedData={collectedData}
+          resetSection={resetSection} />
+        <SectionalResults results={measureEvaluationResults} />
+
+        <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
+          servers={servers} setSelectedReceiving={setSelectedReceivingSystemServer}
+          selectedReceiving={selectedReceivingSystemServer}
+          postMeasureReport={postMeasureReport} loading={loading}
+          setModalShow={setServerModalShow} selectedMeasureReport={measureReport}
+          resetSection={resetSection} />
+        <SectionalResults results={receivingSystemResults} />
+
+        <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}
+          items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
+          startDate={startDate} endDate={endDate} selectedDataRepoServer={selectedDataRepositoryServer}
+          selectedPatientGroup={selectedPatientGroup} selectedMeasureEvaluationServer={selectedMeasureEvaluationServer}
+          selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepositoryServer}
+          selectedPatient={selectedPatient} />
+
+        <Results selectedMeasure={selectedMeasure}
+          //Populations now captured within results card:
+          populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType}
+          outcomeTracker={outcomeTracker}
+        />
 
 
-      <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
+        <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
 
-      <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
-        servers={servers} fetchMeasures={fetchMeasures}
-        selectedKnowledgeRepo={selectedKnowledgeRepositoryServer}
-        measures={measures} setSelectedMeasure={setSelectedMeasureCaller}
-        selectedMeasure={selectedMeasure}
-        getDataRequirements={getDataRequirements} loading={loading}
-        setModalShow={setServerModalShow}
-        resetSection={resetSection} />
-      <SectionalResults results={knowledgeRepositoryResults} />
-      
-      <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
-        selectedDataRepo={selectedDataRepositoryServer} patients={patients}
-        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatientCaller}
-        selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading} setModalShow={setServerModalShow}
-        selectedMeasure={selectedMeasure}
-        groups={patientGroups}
-        setSelectedPatientGroup={setSelectedPatientGroup}
-        resetSection={resetSection} />
-      <SectionalResults results={dataRepositoryResults} />
+        <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
+          setUsername={setUsername} password={password} setPassword={setPassword} />
 
-      <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
-        servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluationServer}
-        selectedMeasureEvaluation={selectedMeasureEvaluationServer} submitData={submitData}
-        evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
-        selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
-        selectedDataRepo={selectedDataRepositoryServer}
-        collectedData={collectedData}
-        resetSection={resetSection} />
-      <SectionalResults results={measureEvaluationResults} />
-
-      <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
-        servers={servers} setSelectedReceiving={setSelectedReceivingSystemServer}
-        selectedReceiving={selectedReceivingSystemServer}
-        postMeasureReport={postMeasureReport} loading={loading}
-        setModalShow={setServerModalShow} selectedMeasureReport={measureReport}
-        resetSection={resetSection} />
-      <SectionalResults results={receivingSystemResults} />
-
-      <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}
-        items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
-        startDate={startDate} endDate={endDate} selectedDataRepoServer={selectedDataRepositoryServer}
-        selectedPatientGroup={selectedPatientGroup} selectedMeasureEvaluationServer={selectedMeasureEvaluationServer}
-        selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepositoryServer}
-        selectedPatient={selectedPatient} />
-
-      <Results selectedMeasure={selectedMeasure}
-        //Populations now captured within results card:
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType}
-        outcomeTracker={outcomeTracker}
-      />
-
-
-      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
-
-      <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
-        setUsername={setUsername} password={password} setPassword={setPassword} />
-
+      </main>
 
 
       {/* Authorized servers section used in testing and tracking of multiple oauth servers
@@ -760,66 +770,73 @@ const App: React.FC = () => {
         )} */}
 
 
-      {/* Show All / Hide All  */}
-      <div className='card'
-        style={{
-          display: isMobile ? 'none' : 'flex',
-          flexDirection: 'column',
-          position: 'fixed',
-          top: '10px',
-          right: '15px',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 100,
-          width: '80px',
-          fontSize: '10pt',
-          background: '#F7F7F7',
-          height: '60px',
-          lineHeight: '1.75',
-        }}
-      >
-        <div className='row md-4'>
-          <button
-            id='app-show-all-btn'
-            className='btn btn-link showAllHideAll'
-            onClick={showAll}>
-            Show All
-          </button>
-        </div>
-        <div className='row md-4'>
-          <button
-            id='app-hide-all-btn'
-            className='btn btn-link showAllHideAll'
-            onClick={hideAll}>
-            Hide All
-          </button>
-        </div>
-      </div>
+      <nav>
 
-      {/* Scroll to top button */}
-      <button
-        onClick={scrollScreenToTop}
-        style={{
-          display: showScrollToTopButton ? 'flex' : 'none',
-          position: 'fixed',
-          bottom: '10px',
-          right: '25px',
-          backgroundColor: '#0D6EFD',
-          color: 'white',
-          border: 'none',
-          padding: '10px',
-          borderRadius: '50%',
-          cursor: 'pointer',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 100,
-          fontSize: '24px',
-          transition: 'opacity 0.3s',
-          width: '60px',
-        }}>
-        {Constants.upArrow}
-      </button>
 
+        {/* Show All / Hide All  */}
+        <div className='card'
+          style={{
+            display: isMobile ? 'none' : 'flex',
+            flexDirection: 'column',
+            position: 'fixed',
+            top: '10px',
+            right: '15px',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 100,
+            width: '80px',
+            fontSize: '10pt',
+            background: '#F7F7F7',
+            height: '60px',
+            lineHeight: '1.75',
+          }}
+        >
+          <div className='row md-4'>
+            <button
+              aria-label='Show all panels button.'
+              id='app-show-all-btn'
+              className='btn btn-link showAllHideAll'
+              onClick={showAll}>
+              Show All
+            </button>
+          </div>
+          <div className='row md-4'>
+            <button
+              aria-label='Hide all panels button.'
+              id='app-hide-all-btn'
+              className='btn btn-link showAllHideAll'
+              onClick={hideAll}>
+              Hide All
+            </button>
+          </div>
+        </div>
+
+        {/* Scroll to top button */}
+        <button
+          onClick={scrollScreenToTop}
+          aria-label='Scroll to the top button. '
+          style={{
+            display: showScrollToTopButton ? 'flex' : 'none',
+            position: 'fixed',
+            bottom: '10px',
+            right: '25px',
+            backgroundColor: '#0D6EFD',
+            color: 'white',
+            border: 'none',
+            padding: '10px',
+            borderRadius: '50%',
+            cursor: 'pointer',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 100,
+            fontSize: '24px',
+            transition: 'opacity 0.3s',
+            width: '60px',
+          }}>
+          {Constants.upArrow}
+        </button>
+
+      </nav>
     </div>
   );
 }

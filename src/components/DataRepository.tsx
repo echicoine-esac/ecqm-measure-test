@@ -131,13 +131,19 @@ const DataRepository: React.FC<Props> = ({
 
               <div className='row'>
                 <div className='col'>
-                  <label>Patient (optional)</label>
+                  <label htmlFor='data-repo-patient-dropdown'>Patient (optional)</label>
                 </div>
                 <div className='col text-right'>
-                  <label style={{ fontSize: '0.8em' }}>Patient List Count: {filteredPatients.length}</label>
+                  <span tabIndex={0} style={{ fontSize: '0.8em' }}>Patient List Count: {filteredPatients.length}</span>
                 </div>
               </div>
-              <select disabled={loading} data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
+              <select
+                aria-label='Patient selection dropdown.'
+                disabled={loading}
+                data-testid='data-repo-patient-dropdown'
+                className='custom-select d-block w-100'
+                id='data-repo-patient-dropdown'
+                value={selectedPatient?.id || ''}
                 onChange={(e) => {
                   const selectedPatientId = e.target.value;
                   const selectedPatientObject = patients.find(
@@ -159,6 +165,7 @@ const DataRepository: React.FC<Props> = ({
                 type='text'
                 className='form-control'
                 placeholder='Filter patients...'
+                aria-label='Filter patient text field, limit the patient list dropdown to only entries containing text entered here. '
                 value={patientFilter}
                 onChange={(e) => setPatientFilter(e.target.value)} />
             </div>
@@ -189,6 +196,7 @@ const DataRepository: React.FC<Props> = ({
             {buildSubjectText().length > 0 &&
               <label>
                 <input
+                  aria-label='Subject selection. Toggle subject identifier for queries pertaining to the data extraction service slash data repository panel. '
                   type="checkbox"
                   checked={useGroupAsSubject}
                   onChange={useGroupAsSubjectHandler}
@@ -198,7 +206,7 @@ const DataRepository: React.FC<Props> = ({
               </label>
             }
             {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedDataRepo?.baseUrl) && (
-              <div>
+              <div tabIndex={0}>
                 {Constants.label_largeDataNOTE}
               </div>
             )}
