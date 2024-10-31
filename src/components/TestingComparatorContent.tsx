@@ -216,8 +216,9 @@ const TestingComparatorContent: React.FC<TestingComparatorContentProps> = ({ ite
                     <h6 >Comparison Result:</h6>
                     <h5
                       data-testid={'test-comp-result-' + convertToID(key.id)}
-                      className={`${value.discrepancyExists ? 'text-danger' : 'text-success'}`}
-                      style={{ fontSize: '1.1em' }} // Slightly smaller font size
+                      style={{ fontSize: '1.1em',
+                        color: value.discrepancyExists ? 'var(--discrepancy)' : 'var(--match)'
+                       }} // Slightly smaller font size
                     >
                       {value.discrepancyExists ? 'Discrepancy' : 'Match'}
                     </h5>

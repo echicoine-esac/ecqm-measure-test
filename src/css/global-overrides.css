@@ -6,6 +6,8 @@
     --background-light: #f8f9fa;
     --border-color: #afb4b7;
     --focus-shadow: rgba(1, 136, 209, 0.5);
+    --discrepancy: #aa0000;
+    --match: #026500;
 }
 
 .showAllHideAll {
