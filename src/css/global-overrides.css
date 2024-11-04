@@ -5,9 +5,9 @@
     --text-color: #ffffff;
     --background-light: #f8f9fa;
     --border-color: #afb4b7;
-    --focus-shadow: rgba(1, 136, 209, 0.5);
-    --discrepancy: #aa0000;
-    --match: #026500;
+    --focus-shadow: rgba(0, 55, 85, 0.5);
+    --error: #aa0000;
+    --success: #026500;
 }
 
 .showAllHideAll {
@@ -68,8 +68,8 @@ button[type="reset"]:hover {
 button[type="submit"]:active,
 button[type="button"]:active,
 button[type="reset"]:active {
-    background-color: #7da0b1;
-    border-color: #016799;
+    background-color: var(--primary-light);
+    border-color: var(--primary-color);
 }
 
 button[type="submit"]:focus,
