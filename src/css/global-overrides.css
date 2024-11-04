@@ -67,6 +67,14 @@ button[type="reset"]:hover {
     border-color: var(--focus-shadow);
     color: var(--focus-shadow);
 }
+
+button[type="submit"]:active,
+button[type="button"]:active,
+button[type="reset"]:active {
+    background-color: var(--primary-color) !important;
+    border: 1px solid var(--focus-shadow) !important;
+    color: var(--text-color) !important;
+}
  
 a,
 .btn-link {
