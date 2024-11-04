@@ -1,11 +1,11 @@
 :root {
     --primary-color: #0074b3;
-    --primary-light: #5bbef2;
+    --primary-light: #b1e4ff;
     --primary-dark: #00456a;
     --text-color: #ffffff;
     --background-light: #f8f9fa;
     --border-color: #afb4b7;
-    --focus-shadow: rgba(0, 55, 85, 0.5);
+    --focus-shadow: #282828;
     --error: #aa0000;
     --success: #026500;
 }
@@ -51,63 +51,23 @@ button[type="reset"] {
     border: 1px solid var(--focus-shadow);
     color: var(--text-color);
     cursor: pointer;
-    transition: background-color 0.1s ease, border-color 0.1s ease;
     max-height: 40px;
     padding-top: 5px;
     font-size: 14pt;
     margin: 0px;
 }
 
+button[type="submit"]:focus,
+button[type="button"]:focus,
+button[type="reset"]:focus,
 button[type="submit"]:hover,
 button[type="button"]:hover,
 button[type="reset"]:hover {
-    background-color: var(--primary-light);
+    background-color: lighten(var(--primary-light));
     border-color: var(--focus-shadow);
+    color: var(--focus-shadow);
 }
-
-button[type="submit"]:active,
-button[type="button"]:active,
-button[type="reset"]:active {
-    background-color: var(--primary-light);
-    border-color: var(--primary-color);
-}
-
-button[type="submit"]:focus,
-button[type="button"]:focus,
-button[type="reset"]:focus {
-    background-color: var(--primary-light);
-    border-color: var(--focus-shadow);
-}
-
-button[type="submit"]:focus:active,
-button[type="button"]:focus:active,
-button[type="reset"]:focus:active {
-    background-color: var(--primary-light);
-    border-color: var(--focus-shadow);
-}
-
-button[type="submit"]:disabled,
-button[type="button"]:disabled,
-button[type="reset"]:disabled {
-    background-color: #cccccc;
-    border-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-}
-
-button[type="submit"]:disabled:hover,
-button[type="button"]:disabled:hover,
-button[type="reset"]:disabled:hover,
-
-button[type="submit"]:disabled:active,
-button[type="button"]:disabled:active,
-button[type="reset"]:disabled:active {
-    background-color: #cccccc;
-    border-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-}
-
+ 
 a,
 .btn-link {
     color: var(--primary-color);
@@ -148,4 +108,4 @@ a:active,
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
-  }
+}
