@@ -74,8 +74,7 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
         <div
           className='card row'
           style={{
-            background: isError ? 'var(--error)' : 'var(--success)',
-            border: 'solid 1px lightgrey',
+            background: isError ? 'var(--error)' : 'var(--notify_bg)',
             margin: '0px',
             padding: '6px',
             width: isError ? 'auto' : '96.9%',
