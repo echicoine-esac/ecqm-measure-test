@@ -19,7 +19,7 @@ test('ServerModel form validation - base url starts with ', async () => {
     );
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
     await userEvent.type(baseUrlTextField, 'localhost:8080/fhir');
-    
+
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
     fireEvent.click(submitButtonField);
@@ -28,7 +28,7 @@ test('ServerModel form validation - base url starts with ', async () => {
     expect(screen.getByTestId(baseUrlFeedback).innerHTML).toEqual(Constants.error_url + Constants.error_urlStartsWith);
 
 });
- 
+
 test('ServerModel form validation - auth url starts with ', async () => {
     const modalShow = true;
     const createServer = jest.fn();
@@ -43,14 +43,14 @@ test('ServerModel form validation - auth url starts with ', async () => {
             createServer={createServer}
         />
     );
-    
+
     const baseUrlText = 'server-model-baseurl-text';
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
     await userEvent.type(baseUrlTextField, 'http://localhost:8080/fhir/base/');
 
     const authUrlTextField: HTMLInputElement = screen.getByTestId(authUrlText);
     await userEvent.type(authUrlTextField, 'localhost:8080/fhir');
-    
+
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
     fireEvent.click(submitButtonField);
@@ -59,7 +59,7 @@ test('ServerModel form validation - auth url starts with ', async () => {
     expect(screen.getByTestId(authUrlFeedback).innerHTML).toEqual(Constants.error_url + Constants.error_urlStartsWith);
 
 });
- 
+
 test('ServerModel form validation - access url starts with', async () => {
     const modalShow = true;
     const createServer = jest.fn();
@@ -80,7 +80,7 @@ test('ServerModel form validation - access url starts with', async () => {
 
     const accessUrlTextField: HTMLInputElement = screen.getByTestId(accessUrlText);
     await userEvent.type(accessUrlTextField, 'localhost:8080/fhir');
-    
+
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
     fireEvent.click(submitButtonField);
@@ -89,7 +89,7 @@ test('ServerModel form validation - access url starts with', async () => {
     expect(screen.getByTestId(accessUrlFeedback).innerHTML).toEqual(Constants.error_url + Constants.error_urlStartsWith);
 
 });
- 
+
 
 test('ServerModel form validation - base url ends with ', async () => {
     const modalShow = true;
@@ -105,10 +105,10 @@ test('ServerModel form validation - base url ends with ', async () => {
             createServer={createServer}
         />
     );
-    
+
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
     await userEvent.type(baseUrlTextField, 'http://localhost:8080/fhir');
-    
+
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
     fireEvent.click(submitButtonField);
@@ -117,7 +117,7 @@ test('ServerModel form validation - base url ends with ', async () => {
     expect(screen.getByTestId(baseUrlFeedback).innerHTML).toEqual(Constants.error_url + Constants.error_urlEndsWith);
 
 });
- 
+
 test('ServerModel form validation - auth url ends with ', async () => {
     const modalShow = true;
     const createServer = jest.fn();
@@ -138,7 +138,7 @@ test('ServerModel form validation - auth url ends with ', async () => {
 
     const authUrlTextField: HTMLInputElement = screen.getByTestId(authUrlText);
     await userEvent.type(authUrlTextField, 'http://localhost:8080/fhir');
-    
+
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
     fireEvent.click(submitButtonField);
@@ -147,7 +147,7 @@ test('ServerModel form validation - auth url ends with ', async () => {
     expect(screen.getByTestId(authUrlFeedback).innerHTML).toEqual(Constants.error_url + Constants.error_urlEndsWith);
 
 });
- 
+
 test('ServerModel form validation - access url ends with', async () => {
     const modalShow = true;
     const createServer = jest.fn();
@@ -168,7 +168,7 @@ test('ServerModel form validation - access url ends with', async () => {
 
     const accessUrlTextField: HTMLInputElement = screen.getByTestId(accessUrlText);
     await userEvent.type(accessUrlTextField, 'http://localhost:8080/fhir');
-    
+
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
     fireEvent.click(submitButtonField);
@@ -177,7 +177,7 @@ test('ServerModel form validation - access url ends with', async () => {
     expect(screen.getByTestId(accessUrlFeedback).innerHTML).toEqual(Constants.error_url + Constants.error_urlEndsWith);
 
 });
- 
+
 
 
 test('Server Model - createServer called with correct data', async () => {
@@ -231,10 +231,6 @@ test('Server Model - createServer called with only required data', async () => {
     const setModalShow = jest.fn();
 
     const baseUrlText = 'server-model-baseurl-text';
-    const authUrlText = 'server-model-authurl-text';
-    const accessUrlText = 'server-model-accessurl-text';
-    const clientIdText = 'server-model-clientid-text';
-    const scopeText = 'server-model-scope-text';
     const submitButton = 'server-model-submit-button';
 
     render(
@@ -245,15 +241,9 @@ test('Server Model - createServer called with only required data', async () => {
         />
     );
     const baseUrlTextField: HTMLInputElement = screen.getByTestId(baseUrlText);
-    const authUrlTextField: HTMLInputElement = screen.getByTestId(authUrlText);
-    const accessUrlTextField: HTMLInputElement = screen.getByTestId(accessUrlText);
-    const clientIdTextField: HTMLInputElement = screen.getByTestId(clientIdText);
-    const scopeTextField: HTMLInputElement = screen.getByTestId(scopeText);
     const submitButtonField: HTMLButtonElement = screen.getByTestId(submitButton);
 
-
     await userEvent.type(baseUrlTextField, 'http://localhost:8080/baseUrl/');
-   
 
     fireEvent.click(submitButtonField);
     expect(createServer).toHaveBeenCalledWith(

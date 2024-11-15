@@ -1,14 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState } from 'react';
-import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { Constants } from '../constants/Constants';
+import { Section } from '../enum/Section.enum';
 import { Patient } from '../models/Patient';
 import { Member, PatientGroup } from '../models/PatientGroup';
 import { Server } from '../models/Server';
 import { PatientGroupUtils } from '../utils/PatientGroupUtils';
 import SectionalTitleBar from './SectionalTitleBar';
 import ServerDropdown from './ServerDropdown';
-import { Section } from '../enum/Section.enum';
 
 interface Props {
   showDataRepo: boolean;
@@ -25,13 +25,14 @@ interface Props {
   selectedMeasure?: string;
   groups?: Map<string, PatientGroup>
   setSelectedPatientGroup: React.Dispatch<React.SetStateAction<PatientGroup | undefined>>;
-
+  resetSection?: (s: Section) => void;
 }
 
 const DataRepository: React.FC<Props> = ({
   showDataRepo, setShowDataRepo, servers, selectedDataRepo, patients,
   fetchPatients, setSelectedPatient, selectedPatient, collectData, loading,
-  setModalShow, selectedMeasure, groups, setSelectedPatientGroup }) => {
+  setModalShow, selectedMeasure, groups, setSelectedPatientGroup,
+  resetSection }) => {
 
   const [patientFilter, setPatientFilter] = useState<string>('');
   const [useGroupAsSubject, setUseGroupAsSubject] = useState<boolean>(true);
@@ -69,7 +70,7 @@ const DataRepository: React.FC<Props> = ({
 
   useEffect(() => {
     // Update filtered patients and patient group based on selectedMeasure
-    const updatedPatientGroup = selectedMeasure ? groups?.get(selectedMeasure) : undefined;
+    const updatedPatientGroup = selectedMeasure && selectedMeasure.length > 0 ? groups?.get(selectedMeasure) : undefined;
     setPatientGroup(updatedPatientGroup);
 
     const filteredPatients = patients.filter((patient) => {
@@ -103,8 +104,9 @@ const DataRepository: React.FC<Props> = ({
   return (
     <div className='card'>
       <div className='card-header'>
-        
-        <SectionalTitleBar section={Section.DATA_REPO}
+
+        <SectionalTitleBar
+          section={Section.DATA_REPO}
           setShowSection={setShowDataRepo}
           showSection={showDataRepo}
           selectedSubjectTitling='Subject'
@@ -112,37 +114,36 @@ const DataRepository: React.FC<Props> = ({
 
       </div>
       {showDataRepo ? (
-        <div className='card-body' style={{ transition: 'all .1s' }}>
-          <div className='row'>
-            <div className='col-md-6 order-md-1'>
-              <label>Data Repository Server</label>
-            </div>
-            <div className='col-md-3 order-md-2'>
-              <label>Patient (optional)</label>
-            </div>
-            <div className='col-md-3 order-md-3 text-right'>
-              <label style={{ fontSize: '0.8em' }}>Patient List Count: {filteredPatients.length}</label>
-            </div>
-          </div>
+        <div className='card-body'>
           <div className='row'>
 
             <ServerDropdown
-              dataTestID={Constants.id_data_repo}
+              section={Section.DATA_REPO}
               loading={loading}
               servers={servers}
               callFunction={fetchPatients}
               baseUrlValue={selectedDataRepo?.baseUrl}
+              setModalShow={setModalShow}
+              resetSection={resetSection}
             />
 
-            <div className='col-md-1 order-md-2'>
-              <OverlayTrigger placement={'top'} overlay={
-                <Tooltip>Add an Endpoint</Tooltip>
-              }>
-                <Button disabled={loading} variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
-              </OverlayTrigger>
-            </div>
             <div className='col-md-6 order-md-2'>
-              <select disabled={loading} data-testid='data-repo-patient-dropdown' className='custom-select d-block w-100' id='patient' value={selectedPatient?.id || ''}
+
+              <div className='row'>
+                <div className='col'>
+                  <label htmlFor='data-repo-patient-dropdown'>Patient (optional)</label>
+                </div>
+                <div className='col text-right'>
+                  <span tabIndex={0} style={{ fontSize: '0.8em' }}>Patient List Count: {filteredPatients.length}</span>
+                </div>
+              </div>
+              <select
+                aria-label='Patient selection dropdown.'
+                disabled={loading}
+                data-testid='data-repo-patient-dropdown'
+                className='custom-select d-block w-100'
+                id='data-repo-patient-dropdown'
+                value={selectedPatient?.id || ''}
                 onChange={(e) => {
                   const selectedPatientId = e.target.value;
                   const selectedPatientObject = patients.find(
@@ -158,11 +159,17 @@ const DataRepository: React.FC<Props> = ({
                   </option>
                 ))}
               </select>
-              <input disabled={loading} type='text' className='form-control' placeholder='Filter patients...' value={patientFilter}
+              <input
+                style={{ marginBottom: '5px', marginTop: '3px' }}
+                disabled={loading}
+                type='text'
+                className='form-control'
+                placeholder='Filter patients...'
+                aria-label='Filter patient text field, limit the patient list dropdown to only entries containing text entered here. '
+                value={patientFilter}
                 onChange={(e) => setPatientFilter(e.target.value)} />
             </div>
-            <div className='col-md-5 order-md-2'>
-              <br />
+            <div className='col-md-6 order-md-3'>
               {loading ? (
                 <Button data-testid='data-repo-collect-data-button-spinner' className='w-100 btn btn-primary btn-lg' id='evaluate' disabled={loading}>
                   <Spinner
@@ -189,6 +196,7 @@ const DataRepository: React.FC<Props> = ({
             {buildSubjectText().length > 0 &&
               <label>
                 <input
+                  aria-label='Subject selection. Toggle subject identifier for queries pertaining to the data extraction service slash data repository panel. '
                   type="checkbox"
                   checked={useGroupAsSubject}
                   onChange={useGroupAsSubjectHandler}
@@ -198,7 +206,7 @@ const DataRepository: React.FC<Props> = ({
               </label>
             }
             {((!useGroupAsSubject || buildSubjectText().length === 0) && selectedDataRepo?.baseUrl) && (
-              <div>
+              <div tabIndex={0}>
                 {Constants.label_largeDataNOTE}
               </div>
             )}

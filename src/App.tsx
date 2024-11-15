@@ -20,7 +20,7 @@ import { PatientFetch } from './data/PatientFetch';
 import { PostMeasureReportFetch } from './data/PostMeasureReportFetch';
 import { SubmitDataFetch } from './data/SubmitDataFetch';
 import appLogo from './ecqmTestingToolLogo.png';
-import icfLogo from './icf_logo.png';
+import icfLogo from './ICF-logo-black.png';
 import { Measure } from './models/Measure';
 import { Outcome, OutcomeTracker } from './models/OutcomeTracker';
 import { Patient } from './models/Patient';
@@ -28,13 +28,17 @@ import { PatientGroup } from './models/PatientGroup';
 import { PopulationScoring } from './models/PopulationScoring';
 import { GroupElement } from './models/Scoring';
 import { Server } from './models/Server';
-
 import { Section } from './enum/Section.enum';
-import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 import { PatientGroupUtils } from './utils/PatientGroupUtils';
 import { ServerUtils } from './utils/ServerUtils';
+import './css/global-overrides.css';
+import { MeasureComparisonData } from './data/MeasureComparisonData';
+import { MeasureComparisonManager } from './utils/MeasureComparisonManager';
 
 const App: React.FC = () => {
+  //responsive design
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 667);
+
   // Define the state variables
   // First define the state for reporting period
   const [startDate, setStartDate] = useState<string>(Constants.defaultStartDate);
@@ -47,85 +51,50 @@ const App: React.FC = () => {
   const [patientGroups, setPatientGroups] = useState<Map<string, PatientGroup> | undefined>(undefined);
 
   // Selected States
-
+  /**
+   * Selecting a new Measure should reset the selectedPatient, test comparator, collected data, and evaluated measure (measure report)
+   */
   const [selectedMeasure, setSelectedMeasure] = useState<string>('');
   const setSelectedMeasureCaller = (measureName: SetStateAction<string>) => {
-    //reset our test comparator when new measure is selected:
-    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
-    //reset our selectedPatient to ensure patient data lines up with measure
-    setSelectedPatient(undefined);
-    //reset scoring:
-    setShowPopulations(false);
-    //reset any results panel:
+    setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
+    clearPopulationCounts();
     resetResults();
-    //reset stored data:
     setCollectedData('');
     setMeasureReport('');
-    //set the selected measure:
     setSelectedMeasure(measureName);
   };
 
+  /**
+   * Selecting a new patient should reset the test comparator, collected data, and evaluated measure (measure report)
+   */
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
   const setSelectedPatientCaller = (patient: SetStateAction<Patient | undefined>) => {
-    //reset our test comparator when new patient is selected:
-    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+    setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
+    clearPopulationCounts();
+    resetResults();
+    setCollectedData('');
+    setMeasureReport('');
+
     setSelectedPatient(patient);
   };
 
   const [selectedPatientGroup, setSelectedPatientGroup] = useState<PatientGroup | undefined>(undefined);
-  const [selectedKnowledgeRepo, setSelectedKnowledgeRepo] = useState<Server>({
-    id: '',
-    baseUrl: '',
-    authUrl: '',
-    tokenUrl: '',
-    callbackUrl: '',
-    clientID: '',
-    clientSecret: '',
-    scope: ''
-  });
-  const [selectedDataRepo, setSelectedDataRepo] = useState<Server>({
-    id: '',
-    baseUrl: '',
-    authUrl: '',
-    tokenUrl: '',
-    callbackUrl: '',
-    clientID: '',
-    clientSecret: '',
-    scope: ''
-  });
-  const [selectedMeasureEvaluationServer, setSelectedMeasureEvaluationServer] = useState<Server>({
-    id: '',
-    baseUrl: '',
-    authUrl: '',
-    tokenUrl: '',
-    callbackUrl: '',
-    clientID: '',
-    clientSecret: '',
-    scope: ''
-  });
-  const [selectedReceiving, setSelectedReceiving] = useState<Server>({
-    id: '',
-    baseUrl: '',
-    authUrl: '',
-    tokenUrl: '',
-    callbackUrl: '',
-    clientID: '',
-    clientSecret: '',
-    scope: ''
-  });
+  const [selectedKnowledgeRepositoryServer, setSelectedKnowledgeRepositoryServer] = useState<Server>(Constants.serverDefault);
+  const [selectedDataRepositoryServer, setSelectedDataRepositoryServer] = useState<Server>(Constants.serverDefault);
+  const [selectedMeasureEvaluationServer, setSelectedMeasureEvaluationServer] = useState<Server>(Constants.serverDefault);
+  const [selectedReceivingSystemServer, setSelectedReceivingSystemServer] = useState<Server>(Constants.serverDefault);
 
   //Output text field holding results of various operations
   const [outcomeTracker, setOutcomeTracker] = useState<OutcomeTracker | undefined>();
-
   const setResultsCaller = ((outcomeTracker: OutcomeTracker) => {
     resetResults();
     setOutcomeTracker(outcomeTracker);
   });
 
-  const [dataRepoResults, setDataRepoResults] = useState<string>('');
-  const [knowledgeRepoResults, setKnowledgeRepoResults] = useState<string>('');
-  const [measureEvalResults, setMeasureEvalResults] = useState<string>('');
-  const [recSysResults, setRecSysResults] = useState<string>('');
+  const [dataRepositoryResults, setDataRepositoryResults] = useState<string>('');
+  const [knowledgeRepositoryResults, setKnowledgeRepositoryResults] = useState<string>('');
+  const [measureEvaluationResults, setMeasureEvaluationResults] = useState<string>('');
+  const [receivingSystemResults, setReceivingSystemResults] = useState<string>('');
 
   // Show states
   const [loading, setLoading] = useState<boolean>(false);
@@ -151,9 +120,98 @@ const App: React.FC = () => {
   const [collectedData, setCollectedData] = useState<string>('');
   const [measureReport, setMeasureReport] = useState<string>('');
 
-  const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonManager>>(new Map());
+  const [testComparatorMap, setTestComparatorMap] = useState<Map<Patient, MeasureComparisonData>>(new Map());
 
   const [showScrollToTopButton, setShowScrollToTopButton] = useState(false);
+
+  //reset functions
+  const setSectionalResults = ((message: string, section: Section) => {
+    switch (section) {
+      case Section.KNOWLEDGE_REPO: {
+        setKnowledgeRepositoryResults(message);
+        return;
+      }
+      case Section.DATA_REPO: {
+        setDataRepositoryResults(message);
+        return;
+      }
+      case Section.MEASURE_EVAL: {
+        setMeasureEvaluationResults(message);
+        return;
+      }
+      case Section.REC_SYS: {
+        setReceivingSystemResults(message);
+        return;
+      }
+      default: {
+        setResultsCaller({
+          outcomeMessage: message,
+          outcomeType: Outcome.NONE,
+        });
+      }
+    }
+  });
+
+  const resetResults = () => {
+    setOutcomeTracker(Constants.outcomeTrackerDefault)
+    setDataRepositoryResults('');
+    setKnowledgeRepositoryResults('');
+    setMeasureEvaluationResults('');
+    setReceivingSystemResults('');
+  }
+
+  /**
+   * Used mainly when a server gets selected and in doing so would impact 
+   * certain functions as new sources of data could be present
+   * @param section 
+   * @returns 
+   */
+  const resetSection = (section: Section) => {
+    setSectionalResults('', section);
+    switch (section) {
+      case Section.KNOWLEDGE_REPO: {
+        setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
+        setMeasureReport('');
+        setCollectedData('')
+        setMeasures([]);
+        clearPopulationCounts();
+        setSelectedMeasure('');
+        resetResults();
+        return;
+      }
+      case Section.DATA_REPO: {
+        setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
+        clearPopulationCounts();
+        setCollectedData('');
+        setPatients([]);
+        setSelectedPatient(undefined);
+        setSelectedPatientGroup(undefined);
+        setPatientGroups(undefined);
+        resetResults();
+        return;
+      }
+      case Section.MEASURE_EVAL: {
+        setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
+        clearPopulationCounts();
+        setMeasureReport('');
+        resetResults();
+        return;
+      }
+    }
+  }
+
+  // Function for clearing all population counts
+  const clearPopulationCounts = () => {
+    const populationScoringInstance: PopulationScoring[] = [{
+      groupID: '-',
+      // Optionally set:
+      groupScoring: undefined,
+      groupPopulations: []
+    }];
+    setPopulationScoring(populationScoringInstance);
+    setMeasureScoringType('');
+    setShowPopulations(false);
+  }
 
   //Simple scroll to top button:
   const checkScrollTop = () => {
@@ -175,34 +233,6 @@ const App: React.FC = () => {
     // eslint-disable-next-line 
   }, [showScrollToTopButton]);
 
-
-  const setSectionalResults = ((message: string, section: Section) => {
-    switch (section) {
-      case Section.KNOWLEDGE_REPO: {
-        setKnowledgeRepoResults(message);
-        return;
-      }
-      case Section.DATA_REPO: {
-        setDataRepoResults(message);
-        return;
-      }
-      case Section.MEASURE_EVAL: {
-        setMeasureEvalResults(message);
-        return;
-      }
-      case Section.REC_SYS: {
-        setRecSysResults(message);
-        return;
-      }
-      default: {
-        setResultsCaller({
-          outcomeMessage: message,
-          outcomeType: Outcome.NONE,
-        });
-      }
-    }
-  });
-
   useEffect(() => {
     // Only call to get the servers when the list is empty
     if (servers.length === 0) {
@@ -210,20 +240,21 @@ const App: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 667);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const initializeServers = async () => {
     setServers(await ServerUtils.getServerList());
-  }
-
-  const resetResults = () => {
-    setOutcomeTracker({
-      outcomeMessage: '',
-      outcomeType: Outcome.NONE
-    })
-    setDataRepoResults('');
-    setKnowledgeRepoResults('');
-    setMeasureEvalResults('');
-    setRecSysResults('');
-    setOutcomeTracker(undefined);
   }
 
   // Uses the GraphQL API to create a server
@@ -242,61 +273,48 @@ const App: React.FC = () => {
     }
   }
 
+  /**
+   * AUTOMATICALLY CALLED:
+   * fetchMeasures is called when selecting a new knowledge repository server
+   */
+  const fetchMeasures = async (selectedKnowledgeRepositoryServer: Server) => {
+    setSelectedKnowledgeRepositoryServer(selectedKnowledgeRepositoryServer);
 
-  // Queries the selected server for the list of measures it has
-  const fetchMeasures = async (knowledgeRepo: Server) => {
-    resetResults();
-    setLoading(true);
-
-    if (!knowledgeRepo?.baseUrl) {
-      setSelectedKnowledgeRepo(knowledgeRepo);
-      setShowPopulations(false);
-      setLoading(false);
-      setMeasures([]);
-      setSelectedMeasure('');
+    //user selecting default or unselecting a server:
+    if (!selectedKnowledgeRepositoryServer?.baseUrl) {
       return;
     }
 
-    setSelectedKnowledgeRepo(knowledgeRepo);
-    setShowPopulations(false);
-
+    setLoading(true)
     try {
-      setMeasures((await new MeasureFetch(knowledgeRepo).fetchData(setResultsCaller)).operationData);
+      setMeasures((await new MeasureFetch(selectedKnowledgeRepositoryServer).fetchData(setResultsCaller)).operationData);
     } catch (error: any) {
       setSectionalResults(error.message, Section.KNOWLEDGE_REPO);
     }
     setLoading(false);
   };
 
-  // Function for retrieving the patients from the selected server
-  const fetchPatients = async (dataRepo: Server) => {
-    resetResults();
-    setLoading(true);
+  /**
+   * AUTOMATICALLY CALLED:
+   * fetchPatients is called when selecting a new data repository server
+   * @param selectedDataRepositoryServer 
+   * @returns 
+   */
+  const fetchPatients = async (selectedDataRepositoryServer: Server) => {
+    setSelectedDataRepositoryServer(selectedDataRepositoryServer);
 
-    if (!dataRepo?.baseUrl) {
-      setLoading(false);
-      setPatients([]);
-      setSelectedPatient(undefined);
-      setSelectedPatientGroup(undefined);
-      setPatientGroups(undefined);
-      setSelectedDataRepo(dataRepo);
+    //user selecting default or unselecting a server:
+    if (!selectedDataRepositoryServer?.baseUrl) {
       return;
     }
 
-    setSelectedDataRepo(dataRepo);
-    setShowPopulations(false);
-
+    setLoading(true);
     try {
 
-      const groupFetch = new GroupFetch(dataRepo);
-
-      let groupsMap: Map<string, PatientGroup> = (await groupFetch.fetchData()).operationData;
-
-      setPatientGroups(groupsMap);
-
-      const patientFetch = await PatientFetch.createInstance(dataRepo);
+      let groupsMap: Map<string, PatientGroup> = (await new GroupFetch(selectedDataRepositoryServer).fetchData()).operationData;
+      const patientFetch = await PatientFetch.createInstance(selectedDataRepositoryServer);
       setPatients((await patientFetch.fetchData()).operationData);
-
+      setPatientGroups(groupsMap);
 
     } catch (error: any) {
       setSectionalResults(error.message, Section.DATA_REPO);
@@ -304,15 +322,13 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
+
   // Function for calling the server to perform the measure evaluation
   const evaluateMeasure = async (useSubject: boolean) => {
-    resetResults();
-    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
-    clearPopulationCounts();
+    resetSection(Section.MEASURE_EVAL);
 
-    // Make sure all required elements are set
     if (!selectedMeasureEvaluationServer?.baseUrl) {
-      setMeasureEvalResults(Constants.error_measureEvaluationServer);
+      setMeasureEvaluationResults(Constants.error_measureEvaluationServer);
       return;
     }
 
@@ -327,7 +343,7 @@ const App: React.FC = () => {
     }
 
     if (!measureObj) {
-      setMeasureEvalResults(Constants.error_selectMeasure);
+      setMeasureEvaluationResults(Constants.error_selectMeasure);
       return;
     } else if (measureObj.scoring?.coding) {
       setMeasureScoringType(measureObj?.scoring?.coding[0].code);
@@ -336,7 +352,7 @@ const App: React.FC = () => {
     const patientGroup: PatientGroup | undefined = patientGroups?.has(selectedMeasure) ? patientGroups.get(selectedMeasure) : undefined;
 
     if (!selectedPatient && !patientGroup && useSubject) {
-      setMeasureEvalResults(Constants.error_patientGroup);
+      setMeasureEvaluationResults(Constants.error_patientGroup);
       return;
     }
 
@@ -349,7 +365,7 @@ const App: React.FC = () => {
     try {
       let evaluateMeasureOutcomeTracker: OutcomeTracker = await evaluateMeasureFetch.fetchData(setSectionalResults, Section.MEASURE_EVAL);
       setResultsCaller(evaluateMeasureOutcomeTracker);
-  
+
       if (evaluateMeasureOutcomeTracker.jsonFormattedString) {
         setMeasureReport(evaluateMeasureOutcomeTracker.jsonFormattedString);
       }
@@ -386,13 +402,11 @@ const App: React.FC = () => {
   const getDataRequirements = async () => {
     resetResults();
 
-    setShowPopulations(false);
-
-    // Make sure all required elements are set
-    if (!selectedKnowledgeRepo || selectedKnowledgeRepo.baseUrl === '') {
+    if (!selectedKnowledgeRepositoryServer?.baseUrl) {
       setSectionalResults(Constants.error_selectKnowledgeRepository, Section.KNOWLEDGE_REPO);
       return;
     }
+
     if (selectedMeasure === '') {
       setSectionalResults(Constants.error_selectMeasureDR, Section.KNOWLEDGE_REPO);
       return;
@@ -402,7 +416,7 @@ const App: React.FC = () => {
     setLoading(true);
 
     // Build the data requirements URL based on the options selected
-    const dataRequirementsFetch = new DataRequirementsFetch(selectedKnowledgeRepo,
+    const dataRequirementsFetch = new DataRequirementsFetch(selectedKnowledgeRepositoryServer,
       selectedMeasure, startDate, endDate)
 
     try {
@@ -422,7 +436,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (!selectedDataRepo || selectedDataRepo.baseUrl === '') {
+    if (!selectedDataRepositoryServer || selectedDataRepositoryServer.baseUrl === '') {
       setSectionalResults(Constants.error_selectDataRepository, Section.DATA_REPO);
       return;
     }
@@ -438,12 +452,11 @@ const App: React.FC = () => {
       return;
     }
 
-
     // Set loading to true for spinner
     setLoading(true);
 
 
-    const collectDataFetch = new CollectDataFetch(selectedDataRepo, selectedMeasure,
+    const collectDataFetch = new CollectDataFetch(selectedDataRepositoryServer, selectedMeasure,
       startDate, endDate, useSubject, selectedPatient, patientGroup)
 
     // Call the FHIR server to collect the data
@@ -507,7 +520,7 @@ const App: React.FC = () => {
     setShowPopulations(false);
 
     // Make sure all required elements are set
-    if (!selectedReceiving?.baseUrl) {
+    if (!selectedReceivingSystemServer?.baseUrl) {
       setSectionalResults(Constants.error_receivingSystemServer, Section.REC_SYS);
       return;
     }
@@ -520,7 +533,7 @@ const App: React.FC = () => {
     setLoading(true);
 
     try {
-      setResultsCaller(await new PostMeasureReportFetch(selectedReceiving,
+      setResultsCaller(await new PostMeasureReportFetch(selectedReceivingSystemServer,
         measureReport).submitData());
       setLoading(false);
     } catch (error: any) {
@@ -529,27 +542,13 @@ const App: React.FC = () => {
     }
   };
 
-  // Function for clearing all population counts
-  const clearPopulationCounts = () => {
-    const populationScoringInstance: PopulationScoring[] = [{
-      groupID: '-',
-      // Optionally set:
-      groupScoring: undefined,
-      groupPopulations: []
-    }];
-    setPopulationScoring(populationScoringInstance);
-    resetResults();
-    setMeasureScoringType('');
-    setShowPopulations(false);
-  }
-
 
   // This function acts a lot like evaluateMeasure, except after evaluating our measure,
   // a MeasureReport based on the subject ('Patient/' + selectedPatient.id) is fetched
   // and scoring is compared, mapped, and a summary in differences/matches presented to user.
   const compareTestResults = async () => {
     resetResults();
-    setTestComparatorMap(new Map<Patient, MeasureComparisonManager>());
+    setTestComparatorMap(new Map<Patient, MeasureComparisonData>());
 
     //validation of required fields done via checklist which enables/disables generate button
 
@@ -577,7 +576,7 @@ const App: React.FC = () => {
     }
 
     //Now begin processing valid patients in our list:
-    const newTestComparatorMap = new Map<Patient, MeasureComparisonManager>();
+    const newTestComparatorMap = new Map<Patient, MeasureComparisonData>();
     setLoading(true);
     clearPopulationCounts();
 
@@ -594,13 +593,11 @@ const App: React.FC = () => {
     if (measureObj) {
       for (const patientEntry of patientCompareList) {
         //patient belongs to this group, proceed:
-        const mcMan = new MeasureComparisonManager(patientEntry,
+        const mcMan = await new MeasureComparisonManager(new MeasureComparisonData(patientEntry,
           measureObj,
           selectedMeasureEvaluationServer,
-          selectedDataRepo,
-          startDate, endDate);
-
-        await mcMan.fetchGroups();
+          selectedDataRepositoryServer,
+          startDate, endDate)).fetchAndCompareGroups();
 
         const patientDisplayKey = '' + patientEntry?.display;
 
@@ -640,87 +637,95 @@ const App: React.FC = () => {
     });
   }
 
-  const showAllHideAllStyling = {
-    padding: 0,
-    textDecoration: 'underline',
-    color: '#007bff',
-    background: 'none',
-    outline: 'none',
-    boxShadow: '0 0 0 0px',
-    fontSize: '11pt'
-  };
-
   return (
+
     <div className='container'>
-      <div className='row text-center col-md-11' style={{ marginTop: '20px', padding: '0px', height: '65px' }}>
-        <div className='text-center col-md-1'>
-          <a target='_blank' rel='noreferrer' href='http://www.icf.com'>
-            <img className='d-block mx-auto mb-4' src={icfLogo} alt='ICF Logo' />
-          </a>
+      <header>
+        <div className='container-fluid'>
+          <div className='row align-items-center' style={{ height: '65px', margin: '20px', padding: '0px' }}>
+            <div className='col-2 col-md-1 text-left'>
+              <a target='_blank' rel='noreferrer' href='http://www.icf.com'>
+                <img
+                  tabIndex={0}
+                  aria-label='ICF logo. Click here to visit i c f dot com. '
+                  className='img-fluid' src={icfLogo} style={{ maxHeight: '65px' }} />
+              </a>
+            </div>
+
+            <div className='col-8 col-md-10 text-center'>
+              <img
+                tabIndex={0}
+                aria-label='Welcome to the e c q m testing tool. '
+                className='img-fluid' src={appLogo} style={{ maxHeight: '65px', width: 'auto' }} />
+            </div>
+
+            <div className='col-2 col-md-1'></div>
+          </div>
         </div>
-        <div className='col-md-11'>
-          <img className='d-block mx-auto mb-4' src={appLogo} alt='eCQM Testing Tool' width='180px' />
-        </div>
+      </header>
 
-      </div>
-      <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
-      <br />
-      <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
-        servers={servers} fetchMeasures={fetchMeasures}
-        selectedKnowledgeRepo={selectedKnowledgeRepo}
-        measures={measures} setSelectedMeasure={setSelectedMeasureCaller}
-        selectedMeasure={selectedMeasure}
-        getDataRequirements={getDataRequirements} loading={loading}
-        setModalShow={setServerModalShow} />
-      <SectionalResults results={knowledgeRepoResults} />
-      <br />
-      <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
-        selectedDataRepo={selectedDataRepo} patients={patients}
-        fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatientCaller}
-        selectedPatient={selectedPatient}
-        collectData={collectData} loading={loading} setModalShow={setServerModalShow}
-        selectedMeasure={selectedMeasure}
-        groups={patientGroups}
-        setSelectedPatientGroup={setSelectedPatientGroup} />
-      <SectionalResults results={dataRepoResults} />
-      <br />
-      <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
-        servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluationServer}
-        selectedMeasureEvaluation={selectedMeasureEvaluationServer} submitData={submitData}
-        evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
+      <main>
+        <ReportingPeriod startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
 
-        selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
-        //used for href to subject
-        selectedDataRepo={selectedDataRepo}
-        collectedData={collectedData} />
-      <SectionalResults results={measureEvalResults} />
-      <br />
-      <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
-        servers={servers} setSelectedReceiving={setSelectedReceiving}
-        selectedReceiving={selectedReceiving}
-        postMeasureReport={postMeasureReport} loading={loading}
-        setModalShow={setServerModalShow} selectedMeasureReport={measureReport} />
-      <SectionalResults results={recSysResults} />
-      <br />
-      <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}
-        items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
-        startDate={startDate} endDate={endDate} selectedDataRepoServer={selectedDataRepo}
-        selectedPatientGroup={selectedPatientGroup} selectedMeasureEvaluationServer={selectedMeasureEvaluationServer}
-        selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepo}
-        selectedPatient={selectedPatient} />
+        <KnowledgeRepository showKnowledgeRepo={showKnowledgeRepo} setShowKnowledgeRepo={setShowKnowledgeRepo}
+          servers={servers} fetchMeasures={fetchMeasures}
+          selectedKnowledgeRepo={selectedKnowledgeRepositoryServer}
+          measures={measures} setSelectedMeasure={setSelectedMeasureCaller}
+          selectedMeasure={selectedMeasure}
+          getDataRequirements={getDataRequirements} loading={loading}
+          setModalShow={setServerModalShow}
+          resetSection={resetSection} />
+        <SectionalResults results={knowledgeRepositoryResults} />
 
-      <Results selectedMeasure={selectedMeasure}
-        //Populations now captured within results card:
-        populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType}
-        outcomeTracker={outcomeTracker}
-      />
+        <DataRepository showDataRepo={showDataRepo} setShowDataRepo={setShowDataRepo} servers={servers}
+          selectedDataRepo={selectedDataRepositoryServer} patients={patients}
+          fetchPatients={fetchPatients} setSelectedPatient={setSelectedPatientCaller}
+          selectedPatient={selectedPatient}
+          collectData={collectData} loading={loading} setModalShow={setServerModalShow}
+          selectedMeasure={selectedMeasure}
+          groups={patientGroups}
+          setSelectedPatientGroup={setSelectedPatientGroup}
+          resetSection={resetSection} />
+        <SectionalResults results={dataRepositoryResults} />
 
-      <br />
-      <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
+        <MeasureEvaluation showMeasureEvaluation={showMeasureEvaluation} setShowMeasureEvaluation={setShowMeasureEvaluation}
+          servers={servers} setSelectedMeasureEvaluation={setSelectedMeasureEvaluationServer}
+          selectedMeasureEvaluation={selectedMeasureEvaluationServer} submitData={submitData}
+          evaluateMeasure={evaluateMeasure} loading={loading} setModalShow={setServerModalShow}
+          selectedPatient={selectedPatient} patientGroup={selectedPatientGroup}
+          selectedDataRepo={selectedDataRepositoryServer}
+          collectedData={collectedData}
+          resetSection={resetSection} />
+        <SectionalResults results={measureEvaluationResults} />
 
-      <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
-        setUsername={setUsername} password={password} setPassword={setPassword} />
-      <br />
+        <ReceivingSystem showReceiving={showReceiving} setShowReceiving={setShowReceiving}
+          servers={servers} setSelectedReceiving={setSelectedReceivingSystemServer}
+          selectedReceiving={selectedReceivingSystemServer}
+          postMeasureReport={postMeasureReport} loading={loading}
+          setModalShow={setServerModalShow} selectedMeasureReport={measureReport}
+          resetSection={resetSection} />
+        <SectionalResults results={receivingSystemResults} />
+
+        <TestingComparator showTestCompare={showTestCompare} setShowTestCompare={setShowTestCompare}
+          items={testComparatorMap} compareTestResults={compareTestResults} loading={loading}
+          startDate={startDate} endDate={endDate} selectedDataRepoServer={selectedDataRepositoryServer}
+          selectedPatientGroup={selectedPatientGroup} selectedMeasureEvaluationServer={selectedMeasureEvaluationServer}
+          selectedMeasure={selectedMeasure} selectedKnowledgeRepositoryServer={selectedKnowledgeRepositoryServer}
+          selectedPatient={selectedPatient} />
+
+        <Results selectedMeasure={selectedMeasure}
+          //Populations now captured within results card:
+          populationScoring={populationScoring} showPopulations={showPopulations} measureScoringType={measureScoringType}
+          outcomeTracker={outcomeTracker}
+        />
+
+
+        <ServerModal modalShow={serverModalShow} setModalShow={setServerModalShow} createServer={createServer} />
+
+        <LoginModal modalShow={loginModalShow} setModalShow={setLoginModalShow} username={username}
+          setUsername={setUsername} password={password} setPassword={setPassword} />
+
+      </main>
 
 
       {/* Authorized servers section used in testing and tracking of multiple oauth servers
@@ -765,68 +770,72 @@ const App: React.FC = () => {
         )} */}
 
 
-      {/* Show All / Hide All  */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'fixed',
-        top: '10px',
-        right: '15px',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 100,
-        width: '80px',
-        fontSize: '10pt',
-        background: '#F7F7F7',
-        borderRadius: '4px',
-        height: '60px',
-        border: '1px solid lightgrey',
-        lineHeight: '1.75'
-      }}>
-        <div className='row md-4'>
-          <button
-            id='app-show-all-btn'
-            className='btn btn-link'
-            onClick={showAll}
-            style={showAllHideAllStyling}>
-            Show All
-          </button>
-        </div>
-        <div className='row md-4'>
-          <button
-            id='app-hide-all-btn'
-            className='btn btn-link'
-            onClick={hideAll}
-            style={showAllHideAllStyling}>
-            Hide All
-          </button>
-        </div>
-      </div>
+      <nav>
 
-      {/* Scroll to top button */}
-      <button
-        onClick={scrollScreenToTop}
-        style={{
-          display: showScrollToTopButton ? 'flex' : 'none',
-          position: 'fixed',
-          bottom: '10px',
-          right: '25px',
-          backgroundColor: '#0D6EFD',
-          color: 'white',
-          border: 'none',
-          padding: '10px',
-          borderRadius: '50%',
-          cursor: 'pointer',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 100,
-          fontSize: '24px',
-          transition: 'opacity 0.3s',
-          width: '60px'
-        }}>
-        {Constants.upArrow}
-      </button>
 
+        {/* Show All / Hide All  */}
+        <div className='card'
+          style={{
+            display: isMobile ? 'none' : 'flex',
+            flexDirection: 'column',
+            position: 'fixed',
+            top: '10px',
+            right: '15px',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 100,
+            width: '80px',
+            fontSize: '10pt',
+            background: '#F7F7F7',
+            height: '60px',
+            lineHeight: '1.75',
+          }}
+        >
+          <div className='row md-4'>
+            <button
+              aria-label='Show all panels button.'
+              id='app-show-all-btn'
+              className='btn btn-link showAllHideAll'
+              onClick={showAll}>
+              Show All
+            </button>
+          </div>
+          <div className='row md-4'>
+            <button
+              aria-label='Hide all panels button.'
+              id='app-hide-all-btn'
+              className='btn btn-link showAllHideAll'
+              onClick={hideAll}>
+              Hide All
+            </button>
+          </div>
+        </div>
+
+        {/* Scroll to top button */}
+        <button
+          onClick={scrollScreenToTop}
+          aria-label='Scroll to the top button. '
+          style={{
+            display: showScrollToTopButton ? 'flex' : 'none',
+            position: 'fixed',
+            bottom: '10px',
+            right: '25px',
+            backgroundColor: 'var(--primary-color)',
+            color: 'white',
+            border: 'none',
+            padding: '10px',
+            borderRadius: '50%',
+            cursor: 'pointer',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 100,
+            fontSize: '24px',
+            width: '60px',
+          }}>
+          {Constants.upArrow}
+        </button>
+
+      </nav>
     </div>
   );
 }

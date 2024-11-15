@@ -72,18 +72,19 @@ const SectionalResults: React.FC<Props> = ({ results }) => {
     <div>
       {results && results.length > 0 && (
         <div
-          className='row mt-1'
+          className='card row'
           style={{
-            background: isError ? '#ce5454' : '#F7F7F7',
+            background: isError ? 'var(--error)' : 'var(--success)',
             border: 'solid 1px lightgrey',
             margin: '0px',
-            borderRadius: '4px',
             padding: '6px',
-            width: isError ? 'auto' : '97.6%',
-            maxWidth: '97.6%',
+            width: isError ? 'auto' : '96.9%',
+            maxWidth: '96.9%',
             display: 'inline-block',
             position: 'relative',
-            top: '-8px',
+            top: '-30px',
+            paddingTop: '13px',
+            marginBottom: '-15px',
             left: '15px',
             zIndex: '-1',
           }}>

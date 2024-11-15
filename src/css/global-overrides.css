@@ -1,0 +1,119 @@
+:root {
+    --primary-color: #0074b3;
+    --primary-light: #b1e4ff;
+    --primary-dark: #00456a;
+    --text-color: #ffffff;
+    --background-light: #f8f9fa;
+    --border-color: #afb4b7;
+    --focus-shadow: #282828;
+    --error: #aa0000;
+    --success: #026500;
+}
+
+.showAllHideAll {
+    padding: 0px;
+    text-decoration: underline;
+    background: none;
+    outline: none;
+    font-size: 11pt;
+}
+
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    height: 60px;
+    align-items: center;
+    align-content: center;
+    border-bottom: none;
+}
+
+.card-body {
+    border-top: 1px solid var(--border-color);
+    transition: all .1s;
+}
+
+.container {
+    margin: 0 auto;
+    margin-bottom: 30px;
+    max-width: 1060px;
+    width: 100%;
+}
+
+button[type="submit"],
+button[type="button"],
+button[type="reset"] {
+    background-color: var(--primary-color);
+    border: 1px solid var(--focus-shadow);
+    color: var(--text-color);
+    cursor: pointer;
+    max-height: 40px;
+    padding-top: 5px;
+    font-size: 14pt;
+    margin: 0px;
+}
+
+button[type="submit"]:focus,
+button[type="button"]:focus,
+button[type="reset"]:focus,
+button[type="submit"]:hover,
+button[type="button"]:hover,
+button[type="reset"]:hover {
+    background-color: lighten(var(--primary-light));
+    border-color: var(--focus-shadow);
+    color: var(--focus-shadow);
+}
+
+button[type="submit"]:active,
+button[type="button"]:active,
+button[type="reset"]:active {
+    background-color: var(--primary-color) !important;
+    border: 1px solid var(--focus-shadow) !important;
+    color: var(--text-color) !important;
+}
+ 
+a,
+.btn-link {
+    color: var(--primary-color);
+}
+
+a:hover,
+.btn-link:hover {
+    color: darken(var(--primary-color), 5%);
+}
+
+a:active,
+.btn-link:active {
+    color: darken(var(--primary-color), 20%);
+    border: none;
+}
+
+@media print {
+    .printable-content {
+        margin: 35px;
+    }
+}
+
+.form-group {
+    margin-bottom: 30px;
+}
+
+/* This is just a way to give screen readers a different thing to read than what visual users see. For example: */
+/* <label>
+  <span aria-hidden="true">{Constants.testComparisonInstruction}</span>
+  <span className="sr-only">This description is being read by screen readers only.</span>  
+</label> */
+.screen-reader-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}

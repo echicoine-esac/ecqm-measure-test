@@ -31,6 +31,10 @@ beforeEach(() => {
 beforeAll(() => {
   global.URL.createObjectURL = jest.fn();
   window.HTMLElement.prototype.scrollIntoView = jest.fn();
+  Object.defineProperty(window.screen, 'orientation', {
+    writable: true,
+    value: { type: 'landscape-primary' },
+  });
 });
 
 //SERVER MODAL
@@ -215,7 +219,7 @@ test(thisTestFile + ': fail scenario: createServer called with no base url', asy
 
   const baseUrlTextFieldError: HTMLDivElement = screen.getByTestId('server-model-baseurl-feedback')
 
-  expect(baseUrlTextFieldError.innerHTML).toEqual(Constants.error_url);
+  expect(baseUrlTextFieldError.innerHTML).toEqual('Base URL is required.');
 
   createServerJest.mockRestore();
 });

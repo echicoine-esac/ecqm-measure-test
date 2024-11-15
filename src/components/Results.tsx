@@ -81,6 +81,11 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
     }
   };
 
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+    window.open(href ?? '', '_blank', 'noopener,noreferrer');
+  };
+
   const getOutcomeFontColor = () => {
     if (!outcomeTracker) return 'black';
     if (outcomeTracker.outcomeType === Outcome.FAIL) {
@@ -97,40 +102,43 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
   }
 
   return (
-    <div>
+    <>
 
       {results && results.length > 0 && (
 
-        <div ref={resultsDivRef} className='row mt-4'
+        <div ref={resultsDivRef} className='card row mt-4'
           style={{
-            background: '#F7F7F7', border: '1px solid lightgrey',
-            transition: 'border 2s', margin: '2px', borderRadius: '4px', paddingTop: resultsTextIsJson && !outcomeTracker?.outcomeMessage.length ? '15px' : '0px'
+            background: '#F7F7F7',
+            margin: '2px',
+            paddingTop: resultsTextIsJson && !outcomeTracker?.outcomeMessage.length ? '15px' : '0px'
           }}>
 
           {outcomeTracker && outcomeTracker.outcomeMessage.length > 0 && (
 
             <div ref={resultsDivRef} className='row mt-1'
               style={{
-                background: '#F7F7F7', border: 'none',
-                transition: 'border 1s', margin: '0px', borderRadius: '4px', padding: '0px'
+                border: 'none',
+                margin: '0px',
+                padding: '0px'
               }}>
 
-              <div className='col-md-12 order-md-1'>
-                <div style={{ height: 'auto', width: 'auto', border: '0px' }}>
+              <div className='col-md-12 order-md-1' >
+                <div style={{ paddingTop: '5px', height: 'auto', width: 'auto', border: '0px' }}>
 
                   <div
+                    tabIndex={0}
                     data-testid="outcome-results-text"
                     style={{
                       height: 'auto',
-                      borderRadius: '4px',
-                      marginTop: '10px',
+                      padding: '0px',
                       marginBottom: '5px',
                       display: 'block',
                       whiteSpace: 'pre-wrap',
-                      fontSize: '13pt'
+                      fontSize: '13pt',
+
                     }}>
                     {outcomeTracker?.outcomeType !== Outcome.NONE && <span style={{ fontWeight: 'bold', color: getOutcomeFontColor() }}>{Outcome[outcomeTracker.outcomeType] + ': '}</span>}{outcomeTracker.outcomeMessage}
-                    <hr style={{ marginTop: '3px', marginBottom: '-5px', height: '2px', color: getOutcomeFontColor()}}></hr>
+                    <hr style={{ marginTop: '3px', marginBottom: '-5px', height: '2px', color: getOutcomeFontColor() }}></hr>
                   </div>
                 </div>
               </div>
@@ -161,8 +169,11 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
             </div>
             {resultsTextIsJson && (
               <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
-                <label style={{ marginRight: 'auto', display: 'flex', alignItems: 'center' }}>
+                <label htmlFor='theme-toggler'
+                  style={{ marginRight: 'auto', display: 'flex', alignItems: 'center' }}>
                   <input
+                    aria-label='Toggle the color syntax theme in the results panel between dark and light.'
+                    id='theme-toggler'
                     type='checkbox'
                     checked={isDarkTheme}
                     onChange={() => setIsDarkTheme(!isDarkTheme)}
@@ -171,8 +182,10 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
                 </label>
 
                 {!hrefFileName.startsWith('OperationOutcome') &&
-                  <a href={href ?? '#'} download={hrefFileName}>
-                    Download {hrefFileName}
+                  <a href={href ?? '#'}
+                    aria-label={'Download jason data in results panel using file name ' + hrefFileName + '. '}
+                    onClick={handleDownload}>
+                    {hrefFileName}
                   </a>
                 }
 
@@ -182,7 +195,7 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
           </div>
         </div >
       )}
-    </div >
+    </ >
   );
 };
 

@@ -1,12 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { Button, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
+import { Section } from '../enum/Section.enum';
 import { Measure } from '../models/Measure';
 import { Server } from '../models/Server';
 import SectionalTitleBar from './SectionalTitleBar';
-import { Constants } from '../constants/Constants';
 import ServerDropdown from './ServerDropdown';
-import { Section } from '../enum/Section.enum';
 
 // Props for KnowledgeRepository
 interface Props {
@@ -21,6 +20,7 @@ interface Props {
   getDataRequirements: () => void;
   loading: boolean;
   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
+  resetSection?: (s: Section) => void;
 }
 
 
@@ -28,7 +28,8 @@ interface Props {
 // KnowledgeRepository component displays the fields for selecting and using the Knowledge Repository
 const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowledgeRepo, servers,
   fetchMeasures, selectedKnowledgeRepo, measures, setSelectedMeasure,
-  selectedMeasure, getDataRequirements, loading, setModalShow }) => {
+  selectedMeasure, getDataRequirements, loading, setModalShow,
+  resetSection }) => {
 
   return (
     <div className='card'>
@@ -43,37 +44,39 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
 
       </div>
       {showKnowledgeRepo ? (
-        <div className='card-body' style={{ transition: 'all .1s' }}>
-          <div className='row'>
-            <div className='col-md-6 order-md-1'>
-              <label>Knowledge Repository Server</label>
-            </div>
-            <div className='col-md-3 order-md-2'>
-              <label>Measure</label>
-            </div>
-            <div className='col-md-3 order-md-3 text-right'>
-              <label style={{ fontSize: '0.8em' }}>Measure List Count: {measures.length}</label>
-            </div>
-          </div>
+        <div className='card-body'>
+
           <div className='row'>
 
             <ServerDropdown
-              dataTestID={Constants.id_knowledge_repo}
+              section={Section.KNOWLEDGE_REPO}
               loading={loading}
               servers={servers}
               callFunction={fetchMeasures}
               baseUrlValue={selectedKnowledgeRepo?.baseUrl}
+              setModalShow={setModalShow}
+              resetSection={resetSection}
             />
 
-            <div className='col-md-1 order-md-2'>
-              <OverlayTrigger placement={'top'} overlay={
-                <Tooltip>Add an Endpoint</Tooltip>
-              }>
-                <Button disabled={loading} data-testid='knowledge-repo-server-add-button' variant='outline-primary' onClick={() => setModalShow(true)}>+</Button>
-              </OverlayTrigger>
-            </div>
-            <div className='col-md-6 order-md-3'>
-              <select disabled={loading} data-testid='knowledge-repo-measure-dropdown' className='custom-select d-block w-100' id='measure' value={selectedMeasure}
+
+            <div className='col-md-6 order-md-2'>
+
+              <div className='row'>
+                <div className='col'>
+                  <label htmlFor='knowledge-repo-measure-dropdown'>Measure</label>
+                </div>
+                <div className='col text-right'>
+                  <span tabIndex={0} style={{ fontSize: '0.8em' }}>Measure List Count: {measures.length}</span>
+                </div>
+              </div>
+
+              <select
+                aria-label='Measure selection dropdown.'
+                disabled={loading}
+                data-testid='knowledge-repo-measure-dropdown'
+                className='custom-select d-block w-100'
+                id='knowledge-repo-measure-dropdown'
+                value={selectedMeasure}
                 onChange={(e) => setSelectedMeasure(e.target.value)}>
                 <option value=''>Select a Measure...</option>
                 {measures.map((measure, index) => (
@@ -83,7 +86,7 @@ const KnowledgeRepository: React.FC<Props> = ({ showKnowledgeRepo, setShowKnowle
             </div>
           </div>
           <div className='row'>
-            <div className='col-md-5 order-md-2'>
+            <div className='col-md-6 order-md-3'>
               <br />
               {loading ? (
                 <Button data-testid='get-data-requirements-button-spinner' className='w-100 btn btn-primary btn-lg' id='getData' disabled={loading}>

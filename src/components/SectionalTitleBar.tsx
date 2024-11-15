@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { Section } from '../enum/Section.enum';
 import { Constants } from '../constants/Constants';
+import { Section } from '../enum/Section.enum';
 
 interface Props {
   section: Section;
   showSection: boolean;
-  setShowSection: (visible: boolean) => void;
+  setShowSection?: (visible: boolean) => void;
 
   selectedSubject?: string;
   selectedSubjectTitling?: string;
@@ -17,48 +17,78 @@ const SectionalTitleBar: React.FC<Props> = ({ section, showSection, selectedSubj
   const title = Constants.sectionTitles.get(section);
   const dataTestID = Constants.sectionIDs.get(section);
 
+  const [isTooNarrow, setIsTooNarrow] = useState(window.innerWidth < 445);
+
+  // Update isMobile state on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsTooNarrow(window.innerWidth < 445);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup the event listener on unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
-    <div className='row' style={{ display: 'flex', flexWrap: 'nowrap' }}>
-      <div style={{
-        width: 'auto',
-        display: 'flex',
-        justifyContent: 'left',
-        alignItems: 'center',
-      }}
-        className='col-md-3 order-md-1'>
-        <h5 style={{ fontSize: '14pt', textAlign: 'left' }}>
-          {title}
-        </h5>
-      </div>
-
-      <div data-testid={dataTestID + '-selected-div'} style={{ textAlign: 'right', paddingTop: '10px', flexGrow: 1, flexShrink: 1, minWidth: 0 }} className='col-md-8 order-md-2 text-muted'>
-        {!showSection && selectedSubject && selectedSubjectTitling && (selectedSubjectTitling + ': ' + selectedSubject)}
-      </div>
-
-      <div style={{ width: 'auto' }} className='col-md-1 order-md-3'>
-        {showSection ? (
-          <Button
-            id={dataTestID + '-hide-section-button'}
-            data-testid={dataTestID + '-hide-section-button'}
-            className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowSection(false)}
+    <div className='d-flex align-items-center justify-content-between'>
+      <div className='flex-grow-1 d-flex flex-column flex-md-row align-items-md-center'>
+        <div>
+          <h5
+            tabIndex={0}
+            aria-label={title + ' panel. '}
+            style={{
+              fontSize: isTooNarrow ? '12pt' : '14pt',
+              marginBottom: isTooNarrow ? '0.25rem' : 0,
+            }}
           >
-            Hide
-          </Button>
-        ) : (
-          <Button
-            id={dataTestID + '-show-section-button'}
-            data-testid={dataTestID + '-show-section-button'}
-            className='btn btn-primary btn-lg float-right'
-            onClick={(e) => setShowSection(true)}
-          >
-            Show
-          </Button>
+            {title}
+          </h5>
+        </div>
+
+        {!isTooNarrow && !showSection && selectedSubject && selectedSubjectTitling && (
+          <div
+            tabIndex={0}
+            data-testid={dataTestID + '-selected-div'}
+            style={{
+              fontSize: isTooNarrow ? '10pt' : 'inherit',
+              marginLeft: isTooNarrow ? '0' : 'auto',
+            }}
+            className='text-muted' >
+            {selectedSubjectTitling + ': ' + selectedSubject}
+          </div>
         )}
       </div>
-    </div>
 
+      {setShowSection &&
+        <div className='ml-3'>
+          {showSection ? (
+            <Button
+              aria-label={'Hide the ' + title + ' panel. '}
+              id={dataTestID + '-hide-section-button'}
+              data-testid={dataTestID + '-hide-section-button'}
+              className='btn btn-primary btn-lg'
+              onClick={() => setShowSection(false)}
+            >
+              Hide
+            </Button>
+          ) : (
+            <Button
+              aria-label={'Show the ' + title + ' panel. '}
+              id={dataTestID + '-show-section-button'}
+              data-testid={dataTestID + '-show-section-button'}
+              className='btn btn-primary btn-lg'
+              onClick={() => setShowSection(true)}
+            >
+              Show
+            </Button>
+          )}
+        </div>
+      }
+    </div>
   );
 };
 

@@ -64,6 +64,10 @@ beforeEach(() => {
 beforeAll(() => {
   global.URL.createObjectURL = jest.fn();
   window.HTMLElement.prototype.scrollIntoView = jest.fn();
+  Object.defineProperty(window.screen, 'orientation', {
+    writable: true,
+    value: { type: 'landscape-primary' },
+  });
 });
 
 //RENDERING: 
@@ -152,18 +156,6 @@ test(thisTestFile + ' success scenario: evaluate data', async () => {
     });
     fetchMock.restore();
 
-    //mock measure list server selection will return 
-    const measureFetch = new MeasureFetch(dataServers[0]);
-    const mockJsonMeasureData = jsonTestMeasureData;
-    fetchMock.once(measureFetch.getUrl(),
-      JSON.stringify(mockJsonMeasureData)
-      , { method: 'GET' });
-    await act(async () => {
-      //select server, mock list should return:
-      userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
-    });
-    fetchMock.restore();
-
     const patientDropdown: HTMLSelectElement = screen.getByTestId('data-repo-patient-dropdown');
 
     const expectedDisplayName: string = PatientGroupUtils.buildUniquePatientIdentifier(mockPatientList[0]) + '';
@@ -246,7 +238,6 @@ test(thisTestFile + ' success scenario: submit data', async () => {
 
     await waitFor(() => expect(screen.getByTestId('data-repo-collect-data-button')).toBeInTheDocument());
 
-    const knowledgeRepoServerDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
     const serverDropdown: HTMLSelectElement = screen.getByTestId('data-repo-server-dropdown');
 
     fetchMock.mock(dataServers[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
@@ -267,18 +258,6 @@ test(thisTestFile + ' success scenario: submit data', async () => {
         , { method: 'GET' });
 
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
-    });
-    fetchMock.restore();
-
-    //mock measure list server selection will return 
-    const measureFetch = new MeasureFetch(dataServers[0]);
-    const mockJsonMeasureData = jsonTestMeasureData;
-    fetchMock.once(measureFetch.getUrl(),
-      JSON.stringify(mockJsonMeasureData)
-      , { method: 'GET' });
-    await act(async () => {
-      //select server, mock list should return:
-      userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
     });
     fetchMock.restore();
 
@@ -373,7 +352,6 @@ test(thisTestFile + ' fail scenario: submit data', async () => {
 
     await waitFor(() => expect(screen.getByTestId('data-repo-collect-data-button')).toBeInTheDocument());
 
-    const knowledgeRepoServerDropdown: HTMLSelectElement = screen.getByTestId('knowledge-repo-server-dropdown');
     const serverDropdown: HTMLSelectElement = screen.getByTestId('data-repo-server-dropdown');
 
     fetchMock.mock(dataServers[0].baseUrl + 'Patient?_summary=count', mockPatientTotalCountJSON);
@@ -394,18 +372,6 @@ test(thisTestFile + ' fail scenario: submit data', async () => {
         , { method: 'GET' });
 
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
-    });
-    fetchMock.restore();
-
-    //mock measure list server selection will return 
-    const measureFetch = new MeasureFetch(dataServers[0]);
-    const mockJsonMeasureData = jsonTestMeasureData;
-    fetchMock.once(measureFetch.getUrl(),
-      JSON.stringify(mockJsonMeasureData)
-      , { method: 'GET' });
-    await act(async () => {
-      //select server, mock list should return:
-      userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
     });
     fetchMock.restore();
 

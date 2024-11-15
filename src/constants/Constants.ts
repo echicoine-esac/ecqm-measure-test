@@ -1,4 +1,5 @@
 import { Section } from '../enum/Section.enum';
+import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 import { Server } from '../models/Server';
 
 export class Constants {
@@ -8,7 +9,7 @@ export class Constants {
     public static readonly title_receiving_system = 'Receiving System';
     public static readonly title_test_comparator = 'Test Comparator';
     public static readonly title_reportingPeriod = 'Reporting Period';
-    
+
     public static readonly id_knowledge_repo = 'knowledge-repo';
     public static readonly id_data_repo = 'data-repo';
     public static readonly id_measure_evaluation = 'mea-eva';
@@ -72,10 +73,11 @@ export class Constants {
 
     //Test Comparator
     public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with previous MeasureReports and displays a summary of discrepancies and matches. The existing MeasureReports are pulled from the Data Repository server, and the current Measure Evaluation will be executed against the selected Measure Evaluation Server. To begin, verify the following items are established:';
-
+    public static readonly renderWidthInfo: string = 'For optimal viewing, please ensure your display window is at least 725px wide. This will allow the report to render correctly and ensure all content is visible and properly formatted.';
+    
     //Other
     public static readonly error_patientGroup = 'No Patient Group data could be established for the selected Measure. Select an individual Patient from the Patient dropdown and attempt operation again';
-    public static readonly label_largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout'
+    public static readonly label_largeDataNOTE = ' NOTE: Without subject, ALL Patient data is analyzed. Complexity may cause 504 Timeout.'
     public static readonly label_selectServer = 'Select a Server...';
 
     //fetch urls
@@ -107,14 +109,23 @@ export class Constants {
     public static readonly fetch_SERVICE_UNAVAILABLE = Constants.fetch_STATUS_SERVICE_UNAVAILABLE + ' (Service Unavailable)';
     public static readonly fetch_UNEXPECTED_STATUS = 'Unexpected status encountered';
 
-  public static readonly oauth_storedIdentifier = 'Unexpected status encountered';
-
-
-    
     public static readonly functionNotImplemented = 'This function has not been implemented';
 
- 
+    public static readonly serverDefault: Server = {
+        id: '',
+        baseUrl: '',
+        authUrl: '',
+        tokenUrl: '',
+        callbackUrl: '',
+        clientID: '',
+        clientSecret: '',
+        scope: ''
+    };
 
+    public static readonly outcomeTrackerDefault: OutcomeTracker = {
+        outcomeMessage: '',
+        outcomeType: Outcome.NONE
+    };
 
     //testing purposes:
     public static readonly serverTestData: Server[] = [
@@ -162,4 +173,5 @@ export class Constants {
 
     public static readonly testOauthServer = Constants.serverTestData[3];
     static readonly submitPostTestBody = `{'prop1': 'val1', 'prop2': 'val2'}`
+  
 }

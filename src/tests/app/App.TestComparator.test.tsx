@@ -58,6 +58,15 @@ beforeEach(() => {
 
 });
 
+beforeAll(() => {
+  global.URL.createObjectURL = jest.fn();
+  window.HTMLElement.prototype.scrollIntoView = jest.fn();
+  Object.defineProperty(window.screen, 'orientation', {
+    writable: true,
+    value: { type: 'landscape-primary' },
+  });
+});
+
 //RENDERING: 
 test(thisTestFile + 'renders properly', async () => {
   await act(async () => {
@@ -170,18 +179,6 @@ test(thisTestFile + ' success scenario: generate a valid test comparison summary
         , { method: 'GET' });
 
       userEvent.selectOptions(serverDropdown, dataServers[0].baseUrl);
-    });
-    fetchMock.restore();
-
-    //mock measure list server selection will return 
-    const measureFetch = new MeasureFetch(dataServers[0]);
-    const mockJsonMeasureData = jsonTestMeasureData;
-    fetchMock.once(measureFetch.getUrl(),
-      JSON.stringify(mockJsonMeasureData)
-      , { method: 'GET' });
-    await act(async () => {
-      //select server, mock list should return:
-      userEvent.selectOptions(knowledgeRepoServerDropdown, dataServers[0].baseUrl);
     });
     fetchMock.restore();
 
