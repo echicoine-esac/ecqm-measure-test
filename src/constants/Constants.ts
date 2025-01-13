@@ -72,7 +72,6 @@ export class Constants {
     public static readonly error_urlEndsWith = 'Must end with /';
 
     //Test Comparator
-    public static readonly testComparisonInstruction = `This utility compares current Measure evaluations done in real-time with previous MeasureReports from MADiE (<a href='https://ecqi.healthit.gov/tool/madie' target='_blank' rel='noreferrer'>https://ecqi.healthit.gov/tool/madie ↗</a>) and displays a summary of discrepancies and matches. The existing MeasureReports are pulled from the Data Repository server, and the current Measure Evaluation will be executed against the selected Measure Evaluation Server. To begin, verify the following items are established:`;
     public static readonly renderWidthInfo: string = 'For optimal viewing, please ensure your display window is at least 725px wide. This will allow the report to render correctly and ensure all content is visible and properly formatted.';
     
     //Other
