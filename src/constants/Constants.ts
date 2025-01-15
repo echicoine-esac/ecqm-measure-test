@@ -72,7 +72,6 @@ export class Constants {
     public static readonly error_urlEndsWith = 'Must end with /';
 
     //Test Comparator
-    public static readonly testComparisonInstruction = 'This utility compares real-time Measure evaluations with previous MeasureReports and displays a summary of discrepancies and matches. The existing MeasureReports are pulled from the Data Repository server, and the current Measure Evaluation will be executed against the selected Measure Evaluation Server. To begin, verify the following items are established:';
     public static readonly renderWidthInfo: string = 'For optimal viewing, please ensure your display window is at least 725px wide. This will allow the report to render correctly and ensure all content is visible and properly formatted.';
     
     //Other
@@ -83,7 +82,7 @@ export class Constants {
     //fetch urls
     public static readonly fetch_evaluateMeasureWithSubject = '{0}Measure/{1}/$evaluate-measure?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';
     public static readonly fetch_measureReportByEvaluatedResource = '{0}MeasureReport?evaluated-resource=Patient/{1}';
-    public static readonly fetch_measureReportByMeasure = '{0}MeasureReport?evaluated-resource=Patient/{1}&measure=Measure/{2}';
+    public static readonly fetch_measureReportByMeasure = '{0}MeasureReport?evaluated-resource=Patient/{1}&measure=https://madie.cms.gov/Measure/{2}';
     public static readonly fetch_collectDataWithSubject = '{0}Measure/{1}/$collect-data?periodStart={2}&periodEnd={3}&subject={4}&reportType=subject-list';
     public static readonly fetch_patients = 'Patient?_count=';
     public static readonly fetch_patientTotalCount = 'Patient?_summary=count';
