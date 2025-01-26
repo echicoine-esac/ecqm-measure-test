@@ -28,7 +28,12 @@ export class GroupFetch extends AbstractDataFetch {
     }
 
     protected processReturnedData(data: any): OutcomeTracker {
-        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Group Data', this.selectedBaseServer, this.buildGroupMap(data.entry));
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.getUrl(),
+            data,
+            'Group Data',
+            this.selectedBaseServer,
+            this.buildGroupMap(data.entry));
     }
 
     private buildGroupMap(entries: any): Map<string, PatientGroup> {
@@ -40,7 +45,7 @@ export class GroupFetch extends AbstractDataFetch {
                     //It is possible the server returns a Patient Group file, but with no measure information. 
                     let measureName = this.extractMeasureNameFromEntry(entry);
 
-                    if (measureName.length > 0 && 
+                    if (measureName.length > 0 &&
                         (entry?.resource?.id && entry?.resource?.extension && entry?.resource?.member)) {
                         // console.log(measureName + ' has a Group file.')
                         groupMap.set(measureName, {
@@ -48,8 +53,6 @@ export class GroupFetch extends AbstractDataFetch {
                             extension: entry.resource.extension,
                             member: entry.resource.member
                         })
-                    } else {
-                        break;
                     }
                 }
 

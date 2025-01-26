@@ -64,7 +64,7 @@ export class MeasureReportFetch extends AbstractDataFetch {
      * @returns 
      */
     protected processReturnedData(data: any) {
-        
+
         const optionalData = data.entry?.filter((entry: any) => {
             const entryStartDate = new Date(entry.resource.period?.start);
             const entryEndDate = new Date(entry.resource.period?.end);
@@ -77,7 +77,11 @@ export class MeasureReportFetch extends AbstractDataFetch {
             return dateCondition;
         });
 
-        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'MeasureReport Fetch', this.selectedBaseServer,
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.getUrl(),
+            data,
+            'MeasureReport Fetch',
+            this.selectedBaseServer,
             optionalData
         );
     }

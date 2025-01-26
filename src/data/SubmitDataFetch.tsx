@@ -44,6 +44,7 @@ export class SubmitDataFetch extends AbstractDataFetch {
 
     protected processReturnedData(data: any) {
         return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.getUrl(),
             data,
             'Submit Data',
             this.selectedBaseServer);
@@ -92,7 +93,8 @@ export class SubmitDataFetch extends AbstractDataFetch {
     fetchData = async (): Promise<OutcomeTracker> => {
         return {
             outcomeMessage: Constants.functionNotImplemented,
-            outcomeType: Outcome.NONE
+            outcomeType: Outcome.NONE,
+            fetchUrl: ''
         };
     }
 

@@ -74,7 +74,11 @@ export class PatientFetch extends AbstractDataFetch {
             });
 
         }
-        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Patient Fetch', this.selectedBaseServer,
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.getUrl(),
+            data,
+            'Patient Fetch',
+            this.selectedBaseServer,
             patients
         );
     }

@@ -6,6 +6,7 @@ import nnfxDark from 'react-syntax-highlighter/dist/cjs/styles/hljs/nnfx-dark';
 import { Outcome, OutcomeTracker } from '../models/OutcomeTracker';
 import { PopulationScoring } from '../models/PopulationScoring';
 import Populations from './Populations';
+import { Constants } from '../constants/Constants';
 
 
 // Props for Results panel
@@ -101,6 +102,7 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
     }
   }
 
+
   return (
     <>
 
@@ -166,7 +168,27 @@ const Results: React.FC<Props> = ({ selectedMeasure, showPopulations, population
                 }}>
                 {results}
               </Light>
+
+
             </div>
+            {outcomeTracker?.fetchUrl && 
+            outcomeTracker?.fetchUrl.length > 0 &&
+            outcomeTracker.outcomeType !== Outcome.FAIL
+            && (
+              <div style={{ borderBottom: '1px solid lightgrey', marginBottom: '5px', padding: '5px',fontSize: '12px' }}>
+                <div style={{ display: 'inline-block', verticalAlign: 'top', width: '115px' }}>Data fetched from:</div>
+                <div style={{ display: 'inline-block', verticalAlign: 'center', width: 'calc(100% - 115px)' }}>
+                  <a
+                    href={outcomeTracker.fetchUrl}
+                    target='_blank'
+                    rel='noreferrer'
+                  >
+                    {outcomeTracker.fetchUrl} ↗
+                  </a>
+                </div>
+              </div>
+            )}
+
             {resultsTextIsJson && (
               <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
                 <label htmlFor='theme-toggler'

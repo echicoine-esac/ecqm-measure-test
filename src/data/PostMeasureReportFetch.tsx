@@ -38,6 +38,7 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
 
     protected processReturnedData(data: any) {
         return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.getUrl(),
             data,
             'Post Measure Report',
             this.selectedBaseServer);
@@ -86,7 +87,8 @@ export class PostMeasureReportFetch extends AbstractDataFetch {
     fetchData = async (): Promise<OutcomeTracker> => {
         return {
             outcomeMessage: Constants.functionNotImplemented,
-            outcomeType: Outcome.NONE
+            outcomeType: Outcome.NONE,
+            fetchUrl: ''
         }
     }
 }

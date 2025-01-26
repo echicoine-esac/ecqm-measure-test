@@ -42,7 +42,11 @@ export class MeasureFetch extends AbstractDataFetch {
                 return measureA.localeCompare(measureB);
             });
         }
-        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Measure Fetch', this.selectedBaseServer,
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.getUrl(),
+            data,
+            'Measure Fetch',
+            this.selectedBaseServer,
             measureList
         );
     }

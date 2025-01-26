@@ -9,6 +9,7 @@ export type OutcomeTracker = {
   jsonFormattedString?: string;
   jsonRawData?: any;
   operationData?: any;
+  fetchUrl: string;
 };
 export enum Outcome {
   NONE,

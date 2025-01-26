@@ -11,9 +11,10 @@ export class OutcomeTrackerUtils {
      * @param operationName 
      * @param serverUrl 
      * @param optionalData 
+     * @param fetchUrl
      * @returns 
      */
-    public static buildOutcomeTracker(jsonData: any, operationName: string, server: Server | undefined, optionalData?: any): OutcomeTracker {
+    public static buildOutcomeTracker(fetchUrl: string, jsonData: any, operationName: string, server: Server | undefined, optionalData?: any): OutcomeTracker {
 
         const serverUrl = server?.baseUrl;
 
@@ -38,12 +39,14 @@ export class OutcomeTrackerUtils {
                 outcomeType: outcome,
                 jsonFormattedString: jsonString,
                 jsonRawData: data,
-                operationData: optionalData
+                operationData: optionalData,
+                fetchUrl: fetchUrl
             }
         } catch (error: any) {
             return {
                 outcomeMessage: operationName + ' using ' + serverUrl + ' recieved non-json response.',
-                outcomeType: Outcome.FAIL
+                outcomeType: Outcome.FAIL,
+                fetchUrl: fetchUrl
             }
         }
     }

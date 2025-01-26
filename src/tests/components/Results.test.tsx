@@ -15,6 +15,7 @@ test('results text renders and accepts value', () => {
   const resultsText = 'results-text';
   render(<Results outcomeTracker={
     {
+      fetchUrl: 'fetchUrl',
       outcomeMessage: outcomeText, 
       outcomeType: Outcome.NONE,
       jsonFormattedString: resultsText

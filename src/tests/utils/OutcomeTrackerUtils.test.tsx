@@ -10,6 +10,7 @@ const url = Constants.serverTestData[0].baseUrl;
 
 test('OutcomeTracker builds correctly with jsonData', () => {
     const testOutcomeTracker = OutcomeTrackerUtils.buildOutcomeTracker(
+        url,
         jsonTestCollectDataData,
         'OutcomeTracker Test with JsonData',
         Constants.serverTestData[0]);
@@ -22,6 +23,7 @@ test('OutcomeTracker builds correctly with jsonString', () => {
     const jsonString = JSON.stringify(jsonTestCollectDataData, undefined, 2);
 
     const testOutcomeTracker = OutcomeTrackerUtils.buildOutcomeTracker(
+        url,
         jsonString,
         'OutcomeTracker Test with JsonString',
         Constants.serverTestData[0]);
@@ -68,6 +70,7 @@ const runOutcomeTrackerTest = (
     expectedOutcomeMessage: string) => {
 
     const testOutcomeTracker = OutcomeTrackerUtils.buildOutcomeTracker(
+        url,
         jsonOutcome,
         operationName,
         Constants.serverTestData[0]

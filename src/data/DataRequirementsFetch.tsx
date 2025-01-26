@@ -50,6 +50,7 @@ export class DataRequirementsFetch extends AbstractDataFetch {
 
     protected processReturnedData(data: any) {
         return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.getUrl(),
             data,
             'Data Requirements',
             this.selectedBaseServer);

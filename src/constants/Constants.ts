@@ -87,7 +87,7 @@ export class Constants {
     public static readonly fetch_patients = 'Patient?_count=';
     public static readonly fetch_patientTotalCount = 'Patient?_summary=count';
     public static readonly fetch_measures = 'Measure?_count=200';
-    public static readonly fetch_groups = 'Group?type=person';
+    public static readonly fetch_groups = 'Group?_count=1000';
 
     //fetch response:
     public static readonly fetch_STATUS_OK = 200;
@@ -123,7 +123,8 @@ export class Constants {
 
     public static readonly outcomeTrackerDefault: OutcomeTracker = {
         outcomeMessage: '',
-        outcomeType: Outcome.NONE
+        outcomeType: Outcome.NONE,
+        fetchUrl: ''
     };
 
     //testing purposes:

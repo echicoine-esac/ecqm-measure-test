@@ -97,30 +97,31 @@ export class CollectDataFetch extends AbstractDataFetch {
 
     protected processReturnedData(data: any) {
         return OutcomeTrackerUtils.buildOutcomeTracker(
-            this.makeJsonDataSubmittable(data), 
-            'Collect Data', 
+            this.getUrl(),
+            this.makeJsonDataSubmittable(data),
+            'Collect Data',
             this.selectedBaseServer);
     }
 
-      /**
-     * Current bugs in hapi-fhir: 
-     * - Data returned using $collect-data associates ids in the name entry for each resource. These names are used in 
-     *   SubmitDataProvider as 'OperationParam' identifiers, which are validating by whole string only, which means 
-     *   'measureReport-1234' will not be found but 'measureReport' will.
-     * 
-     *   Example:   "name": "measureReport-e8029124-d760-40eb-b25a-703e447a3e4d"
-     *               will convert to
-     *              "name": "measureReport"
-     * 
-     * - Measure identification in the data returned by $collect-data includes version.
-     *      
-     *   Example:   "measure": "https://madie.cms.gov/Measure/AlaraCTClinicalFHIR|0.4.000"
-     *              will convert to
-     *              "measure": "https://madie.cms.gov/Measure/AlaraCTClinicalFHIR"
-     * @param jsonString 
-     * @returns 
-     */
-      private makeJsonDataSubmittable(jsonData: any): string {
+    /**
+   * Current bugs in hapi-fhir: 
+   * - Data returned using $collect-data associates ids in the name entry for each resource. These names are used in 
+   *   SubmitDataProvider as 'OperationParam' identifiers, which are validating by whole string only, which means 
+   *   'measureReport-1234' will not be found but 'measureReport' will.
+   * 
+   *   Example:   "name": "measureReport-e8029124-d760-40eb-b25a-703e447a3e4d"
+   *               will convert to
+   *              "name": "measureReport"
+   * 
+   * - Measure identification in the data returned by $collect-data includes version.
+   *      
+   *   Example:   "measure": "https://madie.cms.gov/Measure/AlaraCTClinicalFHIR|0.4.000"
+   *              will convert to
+   *              "measure": "https://madie.cms.gov/Measure/AlaraCTClinicalFHIR"
+   * @param jsonString 
+   * @returns 
+   */
+    private makeJsonDataSubmittable(jsonData: any): string {
         if (jsonData.parameter && Array.isArray(jsonData.parameter)) {
             jsonData.parameter.forEach((entry: any) => {
 

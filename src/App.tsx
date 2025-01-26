@@ -147,6 +147,7 @@ const App: React.FC = () => {
         setResultsCaller({
           outcomeMessage: message,
           outcomeType: Outcome.NONE,
+          fetchUrl: ''
         });
       }
     }
@@ -265,6 +266,7 @@ const App: React.FC = () => {
       setServers(await ServerUtils.getServerList());
     } catch (error: any) {
       setResultsCaller({
+        fetchUrl: '',
         outcomeMessage: 'An error occurred while attempting to add a server to the system:',
         outcomeType: Outcome.FAIL,
         //uses jsonString to convey error:

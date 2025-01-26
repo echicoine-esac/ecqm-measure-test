@@ -98,7 +98,12 @@ export class EvaluateMeasureFetch extends AbstractDataFetch {
 
     protected processReturnedData(data: any): OutcomeTracker {
         const measureGroups = data?.group && Array.isArray(data?.group) ? data.group : undefined;
-        return OutcomeTrackerUtils.buildOutcomeTracker(data, 'Measure Evaluation', this.selectedBaseServer, measureGroups);
+        return OutcomeTrackerUtils.buildOutcomeTracker(
+            this.getUrl(),
+            data,
+            'Measure Evaluation',
+            this.selectedBaseServer,
+            measureGroups);
     }
 
 }
