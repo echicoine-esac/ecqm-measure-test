@@ -51,7 +51,7 @@ test('get group mock function error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using ' + Constants.serverTestData[0].baseUrl +'Group?type=person for Group caused: Error: this is a test');
+    expect(errorCatch).toEqual('Using ' + Constants.serverTestData[0].baseUrl +'Group?_count=1000 for Group caused: Error: this is a test');
 
     fetchMock.restore();
 
@@ -69,7 +69,7 @@ test('get group mock return error', async () => {
         errorCatch = error.message;
     }
 
-    expect(errorCatch).toEqual('Using ' + Constants.serverTestData[0].baseUrl +'Group?type=person for Group caused: Error: 400 (Bad Request)');
+    expect(errorCatch).toEqual('Using ' + Constants.serverTestData[0].baseUrl +'Group?_count=1000 for Group caused: Error: 400 (Bad Request)');
 
     fetchMock.restore();
 });
@@ -77,6 +77,6 @@ test('get group mock return error', async () => {
 test('test urlformat', async () => {
     let groupFetch = new GroupFetch(Constants.serverTestData[0]);
     expect(groupFetch.getUrl())
-        .toEqual(Constants.serverTestData[0].baseUrl +'Group?type=person');
+        .toEqual(Constants.serverTestData[0].baseUrl +'Group?_count=1000');
 });
 
